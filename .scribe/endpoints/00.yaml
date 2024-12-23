@@ -27,14 +27,14 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: ducimus
+        example: blanditiis
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      username: ducimus
+      username: blanditiis
     fileParameters: []
     responses:
       -
@@ -52,7 +52,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a4Pe86hV61vbZd3gEfDac5k'
+      - 'Bearer kvdcg8h6EPa4DaVb1f6e5Z3'
     controller: null
     method: null
     route: null
@@ -83,14 +83,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: iste
+        example: incidunt
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: iste
+      share_code: incidunt
     fileParameters: []
     responses:
       -
@@ -590,7 +590,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PevdchgV68b1DaZ3a54k6fE'
+      - 'Bearer eVk4g5h3Dbaf8aEcPd6Zv61'
     controller: null
     method: null
     route: null
@@ -621,14 +621,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: aperiam
+        example: expedita
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: aperiam
+      share_code: expedita
     fileParameters: []
     responses:
       -
@@ -649,7 +649,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1775,
+                      "line": 1766,
                       "function": "abort"
                   },
                   {
@@ -1128,7 +1128,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6V1gdPvcefE58kha4Z6a3Db'
+      - 'Bearer ZaDgcPaVb43d1e8h6kvf6E5'
     controller: null
     method: null
     route: null
@@ -1159,110 +1159,147 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: maiores
+        example: iste
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: maiores
+      share_code: iste
     fileParameters: []
     responses:
       -
-        status: 500
+        status: 404
         content: |-
           {
-              "message": "syntax error, unexpected token \"public\"",
-              "exception": "ParseError",
-              "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Services/TransactionService.php",
-              "line": 98,
+              "message": "",
+              "exception": "Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException",
+              "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+              "line": 1144,
               "trace": [
                   {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/composer/ClassLoader.php",
-                      "line": 427,
-                      "function": "Composer\\Autoload\\{closure}"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php",
-                      "line": 43,
-                      "function": "loadClass",
-                      "class": "Composer\\Autoload\\ClassLoader",
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php",
+                      "line": 45,
+                      "function": "abort",
+                      "class": "Illuminate\\Foundation\\Application",
                       "type": "->"
                   },
                   {
-                      "function": "__construct",
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php",
+                      "line": 1230,
+                      "function": "abort"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php",
+                      "line": 54,
+                      "function": "getPublicOfferPublicView",
                       "class": "App\\Http\\Controllers\\Api\\MerchantOfferController",
                       "type": "->"
                   },
                   {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php",
-                      "line": 929,
-                      "function": "newInstanceArgs",
-                      "class": "ReflectionClass",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php",
-                      "line": 770,
-                      "function": "build",
-                      "class": "Illuminate\\Container\\Container",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
-                      "line": 856,
-                      "function": "resolve",
-                      "class": "Illuminate\\Container\\Container",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php",
-                      "line": 706,
-                      "function": "resolve",
-                      "class": "Illuminate\\Foundation\\Application",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
-                      "line": 841,
-                      "function": "make",
-                      "class": "Illuminate\\Container\\Container",
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php",
+                      "line": 43,
+                      "function": "callAction",
+                      "class": "Illuminate\\Routing\\Controller",
                       "type": "->"
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php",
-                      "line": 274,
-                      "function": "make",
-                      "class": "Illuminate\\Foundation\\Application",
+                      "line": 259,
+                      "function": "dispatch",
+                      "class": "Illuminate\\Routing\\ControllerDispatcher",
                       "type": "->"
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php",
-                      "line": 1099,
-                      "function": "getController",
-                      "class": "Illuminate\\Routing\\Route",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php",
-                      "line": 1030,
-                      "function": "controllerMiddleware",
+                      "line": 205,
+                      "function": "runController",
                       "class": "Illuminate\\Routing\\Route",
                       "type": "->"
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
-                      "line": 810,
-                      "function": "gatherMiddleware",
+                      "line": 798,
+                      "function": "run",
                       "class": "Illuminate\\Routing\\Route",
                       "type": "->"
                   },
                   {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
-                      "line": 792,
-                      "function": "gatherRouteMiddleware",
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+                      "line": 141,
+                      "function": "Illuminate\\Routing\\{closure}",
                       "class": "Illuminate\\Routing\\Router",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php",
+                      "line": 48,
+                      "function": "Illuminate\\Pipeline\\{closure}",
+                      "class": "Illuminate\\Pipeline\\Pipeline",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+                      "line": 180,
+                      "function": "handle",
+                      "class": "App\\Http\\Middleware\\SetLocaleFromHeader",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php",
+                      "line": 50,
+                      "function": "Illuminate\\Pipeline\\{closure}",
+                      "class": "Illuminate\\Pipeline\\Pipeline",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+                      "line": 180,
+                      "function": "handle",
+                      "class": "Illuminate\\Routing\\Middleware\\SubstituteBindings",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php",
+                      "line": 126,
+                      "function": "Illuminate\\Pipeline\\{closure}",
+                      "class": "Illuminate\\Pipeline\\Pipeline",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php",
+                      "line": 92,
+                      "function": "handleRequest",
+                      "class": "Illuminate\\Routing\\Middleware\\ThrottleRequests",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php",
+                      "line": 54,
+                      "function": "handleRequestUsingNamedLimiter",
+                      "class": "Illuminate\\Routing\\Middleware\\ThrottleRequests",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+                      "line": 180,
+                      "function": "handle",
+                      "class": "Illuminate\\Routing\\Middleware\\ThrottleRequests",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+                      "line": 116,
+                      "function": "Illuminate\\Pipeline\\{closure}",
+                      "class": "Illuminate\\Pipeline\\Pipeline",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
+                      "line": 797,
+                      "function": "then",
+                      "class": "Illuminate\\Pipeline\\Pipeline",
                       "type": "->"
                   },
                   {
@@ -1620,6 +1657,8 @@ endpoints:
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
+          x-ratelimit-limit: '120'
+          x-ratelimit-remaining: '115'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1627,7 +1666,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Veda3f5gh618DEkcbPva64Z'
+      - 'Bearer b5h36fekZ8cPD1a4vdaVg6E'
     controller: null
     method: null
     route: null
@@ -1667,7 +1706,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '116'
+          x-ratelimit-remaining: '114'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1675,7 +1714,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vagfh3bkdDP66154Zevca8E'
+      - 'Bearer eVDaP86d1ckf35abZh4gv6E'
     controller: null
     method: null
     route: null
@@ -1714,7 +1753,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '115'
+          x-ratelimit-remaining: '113'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1722,7 +1761,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pv4dE5bc6fD8h6g3akae1ZV'
+      - 'Bearer h4dg3e66cbEVfv5Z1PakDa8'
     controller: null
     method: null
     route: null
@@ -1758,7 +1797,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 36aPEd1bDkf4ac6hegZ5v8V'
+      - 'Bearer Zagah1PEfb46Vv83c6eDd5k'
     controller: null
     method: null
     route: null
@@ -1794,7 +1833,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6bd81hEaZV34c6fv5aPkegD'
+      - 'Bearer fcbg6aEkDZvP5614Vhd3e8a'
     controller: null
     method: null
     route: null
@@ -1830,7 +1869,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1aZh6gdVa43v5fc8EbDk6eP'
+      - 'Bearer gZ65Da6VEb34dkf18hvcaeP'
     controller: null
     method: null
     route: null
@@ -1866,7 +1905,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3bgDaZh6e8f1k5d6VEv4caP'
+      - 'Bearer 86vP5a6cke1g4aE3hbfZDdV'
     controller: null
     method: null
     route: null
@@ -1902,7 +1941,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Da41dab5ZEcfVkP8v3e6h6g'
+      - 'Bearer 1V3c6bkdE8eDZhPga654vfa'
     controller: null
     method: null
     route: null
@@ -1938,7 +1977,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer evbV5P648h1DE3d6Zaakgcf'
+      - 'Bearer g6k831EavaZhcV4fbDePd65'
     controller: null
     method: null
     route: null
@@ -1974,7 +2013,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1dk6b8eD4fZEhac6avP3Vg5'
+      - 'Bearer 3f6PcdeVbE65ah8kZD4ga1v'
     controller: null
     method: null
     route: null
@@ -2004,14 +2043,14 @@ endpoints:
         name: merchant_id
         description: 'The ID of the merchant.'
         required: true
-        example: nihil
+        example: aspernatur
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      merchant_id: nihil
+      merchant_id: aspernatur
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -2025,7 +2064,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '114'
+          x-ratelimit-remaining: '112'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -2033,7 +2072,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z1eVkfaga36E4Pd5b8h6cDv'
+      - 'Bearer 4ZPfegV6vd53kD618aEbcha'
     controller: null
     method: null
     route: null
@@ -2063,14 +2102,14 @@ endpoints:
         name: store_id
         description: 'The ID of the store.'
         required: true
-        example: facere
+        example: veniam
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      store_id: facere
+      store_id: veniam
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -2084,7 +2123,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '113'
+          x-ratelimit-remaining: '111'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -2092,7 +2131,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k5DagEd61vPch8bf4V63Zea'
+      - 'Bearer 1EfaghV6b6ke3DP58caZd4v'
     controller: null
     method: null
     route: null

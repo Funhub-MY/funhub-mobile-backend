@@ -74,12 +74,12 @@ paths:
                 id:
                   type: integer
                   description: 'This field is required when <code>slug</code> is <code>null</code>.'
-                  example: 20
+                  example: 3
                   nullable: false
                 slug:
                   type: string
                   description: 'This field is required when <code>id</code> is <code>null</code>.'
-                  example: dolor
+                  example: ut
                   nullable: false
     parameters:
       -
@@ -462,7 +462,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 17
+                  example: 11
                   nullable: false
                 reason:
                   type: string
@@ -472,12 +472,12 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: magnam
+                  example: voluptatem
                   nullable: false
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: at
+                  example: sunt
                   nullable: false
                 article:
                   type: integer
@@ -649,7 +649,7 @@ paths:
                   type: array
                   description: 'Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - inventore
+                    - non
                   items:
                     type: string
               required:
@@ -681,7 +681,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - necessitatibus
+                    - ut
                   items:
                     type: string
                 category_ids:
@@ -771,7 +771,7 @@ paths:
                 keyword_id:
                   type: integer
                   description: 'The <code>id</code> of an existing record in the search_keywords table.'
-                  example: 19
+                  example: 18
                   nullable: false
               required:
                 - keyword_id
@@ -845,7 +845,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - omnis
+                    - rerum
                   items:
                     type: string
                 category_ids:
@@ -1612,7 +1612,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: est
+        example: soluta
         required: true
         schema:
           type: string
@@ -1703,12 +1703,12 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: dolores
+                  example: aut
                   nullable: false
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: voluptatem
+                  example: consequuntur
                   nullable: false
               required:
                 - comment_id
@@ -2036,7 +2036,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: dolore
+        example: itaque
         required: true
         schema:
           type: string
@@ -2991,7 +2991,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: johnnie.medhurst@example.com
+                  example: zoila.gerlach@example.net
                   nullable: false
                 phone:
                   type: string
@@ -3085,7 +3085,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: ducimus
+                  example: blanditiis
                   nullable: false
               required:
                 - username
@@ -3966,7 +3966,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: iste
+                  example: incidunt
                   nullable: false
               required:
                 - share_code
@@ -3997,7 +3997,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1775
+                      line: 1766
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -4419,7 +4419,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1775
+                        line: 1766
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -4847,7 +4847,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: aperiam
+                  example: expedita
                   nullable: false
               required:
                 - share_code
@@ -4858,91 +4858,123 @@ paths:
       description: ''
       parameters: []
       responses:
-        500:
+        404:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'syntax error, unexpected token "public"'
-                  exception: ParseError
-                  file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Services/TransactionService.php
-                  line: 98
+                  message: ''
+                  exception: Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+                  file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
+                  line: 1144
                   trace:
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/composer/ClassLoader.php
-                      line: 427
-                      function: 'Composer\Autoload\{closure}'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                      line: 43
-                      function: loadClass
-                      class: Composer\Autoload\ClassLoader
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php
+                      line: 45
+                      function: abort
+                      class: Illuminate\Foundation\Application
                       type: '->'
                     -
-                      function: __construct
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
+                      line: 1230
+                      function: abort
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
+                      line: 54
+                      function: getPublicOfferPublicView
                       class: App\Http\Controllers\Api\MerchantOfferController
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
-                      line: 929
-                      function: newInstanceArgs
-                      class: ReflectionClass
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
-                      line: 770
-                      function: build
-                      class: Illuminate\Container\Container
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
-                      line: 856
-                      function: resolve
-                      class: Illuminate\Container\Container
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
-                      line: 706
-                      function: resolve
-                      class: Illuminate\Foundation\Application
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
-                      line: 841
-                      function: make
-                      class: Illuminate\Container\Container
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php
+                      line: 43
+                      function: callAction
+                      class: Illuminate\Routing\Controller
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                      line: 274
-                      function: make
-                      class: Illuminate\Foundation\Application
+                      line: 259
+                      function: dispatch
+                      class: Illuminate\Routing\ControllerDispatcher
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                      line: 1099
-                      function: getController
-                      class: Illuminate\Routing\Route
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                      line: 1030
-                      function: controllerMiddleware
+                      line: 205
+                      function: runController
                       class: Illuminate\Routing\Route
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                      line: 810
-                      function: gatherMiddleware
+                      line: 798
+                      function: run
                       class: Illuminate\Routing\Route
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                      line: 792
-                      function: gatherRouteMiddleware
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      line: 141
+                      function: 'Illuminate\Routing\{closure}'
                       class: Illuminate\Routing\Router
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
+                      line: 48
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      line: 180
+                      function: handle
+                      class: App\Http\Middleware\SetLocaleFromHeader
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
+                      line: 50
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      line: 180
+                      function: handle
+                      class: Illuminate\Routing\Middleware\SubstituteBindings
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
+                      line: 126
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
+                      line: 92
+                      function: handleRequest
+                      class: Illuminate\Routing\Middleware\ThrottleRequests
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
+                      line: 54
+                      function: handleRequestUsingNamedLimiter
+                      class: Illuminate\Routing\Middleware\ThrottleRequests
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      line: 180
+                      function: handle
+                      class: Illuminate\Routing\Middleware\ThrottleRequests
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      line: 116
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                      line: 797
+                      function: then
+                      class: Illuminate\Pipeline\Pipeline
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
@@ -5247,92 +5279,124 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'syntax error, unexpected token "public"'
+                    example: ''
                   exception:
                     type: string
-                    example: ParseError
+                    example: Symfony\Component\HttpKernel\Exception\NotFoundHttpException
                   file:
                     type: string
-                    example: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Services/TransactionService.php
+                    example: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
                   line:
                     type: integer
-                    example: 98
+                    example: 1144
                   trace:
                     type: array
                     example:
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/composer/ClassLoader.php
-                        line: 427
-                        function: 'Composer\Autoload\{closure}'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                        line: 43
-                        function: loadClass
-                        class: Composer\Autoload\ClassLoader
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php
+                        line: 45
+                        function: abort
+                        class: Illuminate\Foundation\Application
                         type: '->'
                       -
-                        function: __construct
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
+                        line: 1230
+                        function: abort
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
+                        line: 54
+                        function: getPublicOfferPublicView
                         class: App\Http\Controllers\Api\MerchantOfferController
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
-                        line: 929
-                        function: newInstanceArgs
-                        class: ReflectionClass
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
-                        line: 770
-                        function: build
-                        class: Illuminate\Container\Container
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
-                        line: 856
-                        function: resolve
-                        class: Illuminate\Container\Container
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
-                        line: 706
-                        function: resolve
-                        class: Illuminate\Foundation\Application
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
-                        line: 841
-                        function: make
-                        class: Illuminate\Container\Container
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php
+                        line: 43
+                        function: callAction
+                        class: Illuminate\Routing\Controller
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                        line: 274
-                        function: make
-                        class: Illuminate\Foundation\Application
+                        line: 259
+                        function: dispatch
+                        class: Illuminate\Routing\ControllerDispatcher
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                        line: 1099
-                        function: getController
-                        class: Illuminate\Routing\Route
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                        line: 1030
-                        function: controllerMiddleware
+                        line: 205
+                        function: runController
                         class: Illuminate\Routing\Route
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                        line: 810
-                        function: gatherMiddleware
+                        line: 798
+                        function: run
                         class: Illuminate\Routing\Route
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                        line: 792
-                        function: gatherRouteMiddleware
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 141
+                        function: 'Illuminate\Routing\{closure}'
                         class: Illuminate\Routing\Router
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
+                        line: 48
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 180
+                        function: handle
+                        class: App\Http\Middleware\SetLocaleFromHeader
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
+                        line: 50
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 180
+                        function: handle
+                        class: Illuminate\Routing\Middleware\SubstituteBindings
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
+                        line: 126
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
+                        line: 92
+                        function: handleRequest
+                        class: Illuminate\Routing\Middleware\ThrottleRequests
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
+                        line: 54
+                        function: handleRequestUsingNamedLimiter
+                        class: Illuminate\Routing\Middleware\ThrottleRequests
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 180
+                        function: handle
+                        class: Illuminate\Routing\Middleware\ThrottleRequests
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 116
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                        line: 797
+                        function: then
+                        class: Illuminate\Pipeline\Pipeline
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
@@ -5639,13 +5703,19 @@ paths:
                       properties:
                         file:
                           type: string
-                          example: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/composer/ClassLoader.php
+                          example: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php
                         line:
                           type: integer
-                          example: 427
+                          example: 45
                         function:
                           type: string
-                          example: 'Composer\Autoload\{closure}'
+                          example: abort
+                        class:
+                          type: string
+                          example: Illuminate\Foundation\Application
+                        type:
+                          type: string
+                          example: '->'
       tags:
         - Endpoints
       requestBody:
@@ -5658,7 +5728,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: maiores
+                  example: iste
                   nullable: false
               required:
                 - share_code
@@ -5793,7 +5863,7 @@ paths:
         in: path
         name: merchant_id
         description: 'The ID of the merchant.'
-        example: nihil
+        example: aspernatur
         required: true
         schema:
           type: string
@@ -5823,7 +5893,7 @@ paths:
         in: path
         name: store_id
         description: 'The ID of the store.'
-        example: facere
+        example: veniam
         required: true
         schema:
           type: string
@@ -5986,7 +6056,7 @@ paths:
                 supportable_id:
                   type: integer
                   description: 'This field is required when <code>supportable</code> is present.'
-                  example: 14
+                  example: 9
                   nullable: false
                 category_id:
                   type: integer
@@ -6541,7 +6611,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - velit
+                    - tempore
                   items:
                     type: string
                 name:
@@ -6606,7 +6676,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - cum
+                    - rem
                   items:
                     type: string
                 name:
@@ -6790,794 +6860,110 @@ paths:
       description: ''
       parameters: []
       responses:
-        500:
+        200:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'syntax error, unexpected token "public"'
-                  exception: ParseError
-                  file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Services/TransactionService.php
-                  line: 98
-                  trace:
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/composer/ClassLoader.php
-                      line: 427
-                      function: 'Composer\Autoload\{closure}'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                      line: 43
-                      function: loadClass
-                      class: Composer\Autoload\ClassLoader
-                      type: '->'
-                    -
-                      function: __construct
-                      class: App\Http\Controllers\Api\MerchantOfferController
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
-                      line: 929
-                      function: newInstanceArgs
-                      class: ReflectionClass
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
-                      line: 770
-                      function: build
-                      class: Illuminate\Container\Container
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
-                      line: 856
-                      function: resolve
-                      class: Illuminate\Container\Container
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
-                      line: 706
-                      function: resolve
-                      class: Illuminate\Foundation\Application
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
-                      line: 841
-                      function: make
-                      class: Illuminate\Container\Container
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                      line: 274
-                      function: make
-                      class: Illuminate\Foundation\Application
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                      line: 1099
-                      function: getController
-                      class: Illuminate\Routing\Route
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                      line: 1030
-                      function: controllerMiddleware
-                      class: Illuminate\Routing\Route
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                      line: 810
-                      function: gatherMiddleware
-                      class: Illuminate\Routing\Route
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                      line: 792
-                      function: gatherRouteMiddleware
-                      class: Illuminate\Routing\Router
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                      line: 776
-                      function: runRouteWithinStack
-                      class: Illuminate\Routing\Router
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                      line: 740
-                      function: runRoute
-                      class: Illuminate\Routing\Router
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                      line: 729
-                      function: dispatchToRoute
-                      class: Illuminate\Routing\Router
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                      line: 190
-                      function: dispatch
-                      class: Illuminate\Routing\Router
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 141
-                      function: 'Illuminate\Foundation\Http\{closure}'
-                      class: Illuminate\Foundation\Http\Kernel
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php
-                      line: 19
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Livewire\DisableBrowserCache
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
-                      line: 21
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php
-                      line: 31
-                      function: handle
-                      class: Illuminate\Foundation\Http\Middleware\TransformsRequest
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
-                      line: 21
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php
-                      line: 40
-                      function: handle
-                      class: Illuminate\Foundation\Http\Middleware\TransformsRequest
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Illuminate\Foundation\Http\Middleware\TrimStrings
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php
-                      line: 27
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Illuminate\Foundation\Http\Middleware\ValidatePostSize
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php
-                      line: 86
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php
-                      line: 62
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Illuminate\Http\Middleware\HandleCors
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php
-                      line: 39
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Illuminate\Http\Middleware\TrustProxies
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 116
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                      line: 165
-                      function: then
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                      line: 134
-                      function: sendRequestThroughRouter
-                      class: Illuminate\Foundation\Http\Kernel
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                      line: 310
-                      function: handle
-                      class: Illuminate\Foundation\Http\Kernel
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                      line: 298
-                      function: callLaravelOrLumenRoute
-                      class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                      line: 91
-                      function: makeApiCall
-                      class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                      line: 44
-                      function: makeResponseCall
-                      class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                      line: 35
-                      function: makeResponseCallIfConditionsPass
-                      class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
-                      line: 237
-                      function: __invoke
-                      class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
-                      line: 163
-                      function: iterateThroughStrategies
-                      class: Knuckles\Scribe\Extracting\Extractor
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
-                      line: 95
-                      function: fetchResponses
-                      class: Knuckles\Scribe\Extracting\Extractor
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
-                      line: 125
-                      function: processRoute
-                      class: Knuckles\Scribe\Extracting\Extractor
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
-                      line: 72
-                      function: extractEndpointsInfoFromLaravelApp
-                      class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
-                      line: 50
-                      function: extractEndpointsInfoAndWriteToDisk
-                      class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Commands/GenerateDocumentation.php
-                      line: 53
-                      function: get
-                      class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
-                      line: 36
-                      function: handle
-                      class: Knuckles\Scribe\Commands\GenerateDocumentation
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Util.php
-                      line: 41
-                      function: 'Illuminate\Container\{closure}'
-                      class: Illuminate\Container\BoundMethod
-                      type: '::'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
-                      line: 93
-                      function: unwrapIfClosure
-                      class: Illuminate\Container\Util
-                      type: '::'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
-                      line: 35
-                      function: callBoundMethod
-                      class: Illuminate\Container\BoundMethod
-                      type: '::'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
-                      line: 661
-                      function: call
-                      class: Illuminate\Container\BoundMethod
-                      type: '::'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
-                      line: 183
-                      function: call
-                      class: Illuminate\Container\Container
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Command/Command.php
-                      line: 326
-                      function: execute
-                      class: Illuminate\Console\Command
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
-                      line: 152
-                      function: run
-                      class: Symfony\Component\Console\Command\Command
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
-                      line: 1078
-                      function: run
-                      class: Illuminate\Console\Command
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
-                      line: 324
-                      function: doRunCommand
-                      class: Symfony\Component\Console\Application
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
-                      line: 175
-                      function: doRun
-                      class: Symfony\Component\Console\Application
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Application.php
-                      line: 102
-                      function: run
-                      class: Symfony\Component\Console\Application
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php
-                      line: 155
-                      function: run
-                      class: Illuminate\Console\Application
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/artisan
-                      line: 35
-                      function: handle
-                      class: Illuminate\Foundation\Console\Kernel
-                      type: '->'
+                  data: []
+                  links:
+                    first: 'https://funhub-mobile-backend.test/api/v1/public_offers?page=1'
+                    last: 'https://funhub-mobile-backend.test/api/v1/public_offers?page=1'
+                    prev: null
+                    next: null
+                  meta:
+                    current_page: 1
+                    from: null
+                    last_page: 1
+                    links:
+                      -
+                        url: null
+                        label: '&laquo; Previous'
+                        active: false
+                      -
+                        url: 'https://funhub-mobile-backend.test/api/v1/public_offers?page=1'
+                        label: '1'
+                        active: true
+                      -
+                        url: null
+                        label: 'Next &raquo;'
+                        active: false
+                    path: 'https://funhub-mobile-backend.test/api/v1/public_offers'
+                    per_page: 10
+                    to: null
+                    total: 0
                 properties:
-                  message:
-                    type: string
-                    example: 'syntax error, unexpected token "public"'
-                  exception:
-                    type: string
-                    example: ParseError
-                  file:
-                    type: string
-                    example: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Services/TransactionService.php
-                  line:
-                    type: integer
-                    example: 98
-                  trace:
+                  data:
                     type: array
-                    example:
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/composer/ClassLoader.php
-                        line: 427
-                        function: 'Composer\Autoload\{closure}'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                        line: 43
-                        function: loadClass
-                        class: Composer\Autoload\ClassLoader
-                        type: '->'
-                      -
-                        function: __construct
-                        class: App\Http\Controllers\Api\MerchantOfferController
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
-                        line: 929
-                        function: newInstanceArgs
-                        class: ReflectionClass
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
-                        line: 770
-                        function: build
-                        class: Illuminate\Container\Container
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
-                        line: 856
-                        function: resolve
-                        class: Illuminate\Container\Container
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
-                        line: 706
-                        function: resolve
-                        class: Illuminate\Foundation\Application
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
-                        line: 841
-                        function: make
-                        class: Illuminate\Container\Container
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                        line: 274
-                        function: make
-                        class: Illuminate\Foundation\Application
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                        line: 1099
-                        function: getController
-                        class: Illuminate\Routing\Route
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                        line: 1030
-                        function: controllerMiddleware
-                        class: Illuminate\Routing\Route
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                        line: 810
-                        function: gatherMiddleware
-                        class: Illuminate\Routing\Route
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                        line: 792
-                        function: gatherRouteMiddleware
-                        class: Illuminate\Routing\Router
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                        line: 776
-                        function: runRouteWithinStack
-                        class: Illuminate\Routing\Router
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                        line: 740
-                        function: runRoute
-                        class: Illuminate\Routing\Router
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                        line: 729
-                        function: dispatchToRoute
-                        class: Illuminate\Routing\Router
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                        line: 190
-                        function: dispatch
-                        class: Illuminate\Routing\Router
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 141
-                        function: 'Illuminate\Foundation\Http\{closure}'
-                        class: Illuminate\Foundation\Http\Kernel
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php
-                        line: 19
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Livewire\DisableBrowserCache
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
-                        line: 21
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php
-                        line: 31
-                        function: handle
-                        class: Illuminate\Foundation\Http\Middleware\TransformsRequest
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
-                        line: 21
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php
-                        line: 40
-                        function: handle
-                        class: Illuminate\Foundation\Http\Middleware\TransformsRequest
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Illuminate\Foundation\Http\Middleware\TrimStrings
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php
-                        line: 27
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Illuminate\Foundation\Http\Middleware\ValidatePostSize
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php
-                        line: 86
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php
-                        line: 62
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Illuminate\Http\Middleware\HandleCors
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php
-                        line: 39
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Illuminate\Http\Middleware\TrustProxies
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 116
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                        line: 165
-                        function: then
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                        line: 134
-                        function: sendRequestThroughRouter
-                        class: Illuminate\Foundation\Http\Kernel
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                        line: 310
-                        function: handle
-                        class: Illuminate\Foundation\Http\Kernel
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                        line: 298
-                        function: callLaravelOrLumenRoute
-                        class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                        line: 91
-                        function: makeApiCall
-                        class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                        line: 44
-                        function: makeResponseCall
-                        class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                        line: 35
-                        function: makeResponseCallIfConditionsPass
-                        class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
-                        line: 237
-                        function: __invoke
-                        class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
-                        line: 163
-                        function: iterateThroughStrategies
-                        class: Knuckles\Scribe\Extracting\Extractor
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
-                        line: 95
-                        function: fetchResponses
-                        class: Knuckles\Scribe\Extracting\Extractor
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
-                        line: 125
-                        function: processRoute
-                        class: Knuckles\Scribe\Extracting\Extractor
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
-                        line: 72
-                        function: extractEndpointsInfoFromLaravelApp
-                        class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
-                        line: 50
-                        function: extractEndpointsInfoAndWriteToDisk
-                        class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Commands/GenerateDocumentation.php
-                        line: 53
-                        function: get
-                        class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
-                        line: 36
-                        function: handle
-                        class: Knuckles\Scribe\Commands\GenerateDocumentation
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Util.php
-                        line: 41
-                        function: 'Illuminate\Container\{closure}'
-                        class: Illuminate\Container\BoundMethod
-                        type: '::'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
-                        line: 93
-                        function: unwrapIfClosure
-                        class: Illuminate\Container\Util
-                        type: '::'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
-                        line: 35
-                        function: callBoundMethod
-                        class: Illuminate\Container\BoundMethod
-                        type: '::'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
-                        line: 661
-                        function: call
-                        class: Illuminate\Container\BoundMethod
-                        type: '::'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
-                        line: 183
-                        function: call
-                        class: Illuminate\Container\Container
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Command/Command.php
-                        line: 326
-                        function: execute
-                        class: Illuminate\Console\Command
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
-                        line: 152
-                        function: run
-                        class: Symfony\Component\Console\Command\Command
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
-                        line: 1078
-                        function: run
-                        class: Illuminate\Console\Command
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
-                        line: 324
-                        function: doRunCommand
-                        class: Symfony\Component\Console\Application
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
-                        line: 175
-                        function: doRun
-                        class: Symfony\Component\Console\Application
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Application.php
-                        line: 102
-                        function: run
-                        class: Symfony\Component\Console\Application
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php
-                        line: 155
-                        function: run
-                        class: Illuminate\Console\Application
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/artisan
-                        line: 35
-                        function: handle
-                        class: Illuminate\Foundation\Console\Kernel
-                        type: '->'
-                    items:
-                      type: object
-                      properties:
-                        file:
-                          type: string
-                          example: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/composer/ClassLoader.php
-                        line:
-                          type: integer
-                          example: 427
-                        function:
-                          type: string
-                          example: 'Composer\Autoload\{closure}'
+                    example: []
+                  links:
+                    type: object
+                    properties:
+                      first:
+                        type: string
+                        example: 'https://funhub-mobile-backend.test/api/v1/public_offers?page=1'
+                      last:
+                        type: string
+                        example: 'https://funhub-mobile-backend.test/api/v1/public_offers?page=1'
+                      prev:
+                        type: string
+                        example: null
+                      next:
+                        type: string
+                        example: null
+                  meta:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      from:
+                        type: string
+                        example: null
+                      last_page:
+                        type: integer
+                        example: 1
+                      links:
+                        type: array
+                        example:
+                          -
+                            url: null
+                            label: '&laquo; Previous'
+                            active: false
+                          -
+                            url: 'https://funhub-mobile-backend.test/api/v1/public_offers?page=1'
+                            label: '1'
+                            active: true
+                          -
+                            url: null
+                            label: 'Next &raquo;'
+                            active: false
+                        items:
+                          type: object
+                          properties:
+                            url:
+                              type: string
+                              example: null
+                            label:
+                              type: string
+                              example: '&laquo; Previous'
+                            active:
+                              type: boolean
+                              example: false
+                      path:
+                        type: string
+                        example: 'https://funhub-mobile-backend.test/api/v1/public_offers'
+                      per_page:
+                        type: integer
+                        example: 10
+                      to:
+                        type: string
+                        example: null
+                      total:
+                        type: integer
+                        example: 0
       tags:
         - Merchant
     parameters:
@@ -7724,7 +7110,7 @@ paths:
                 id:
                   type: integer
                   description: 'This field is required when <code>sku</code> is <code>null</code>.'
-                  example: 20
+                  example: 7
                   nullable: false
                 sku:
                   type: string
@@ -7789,13 +7175,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - eius
+            - sint
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - eius
+              - sint
             items:
               type: string
         -
@@ -7996,7 +7382,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - nemo
+                    - optio
                   items:
                     type: string
                 city:
@@ -8436,7 +7822,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: dolores
+        example: fugit
         required: true
         schema:
           type: string
@@ -9322,6 +8708,37 @@ paths:
           present:
             summary: 'When the value is present'
             value: 'one-off,daily,monthly,accumulated'
+  /api/v1/missions/frequency:
+    get:
+      summary: 'Get enabled mission frequencies'
+      operationId: getEnabledMissionFrequencies
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    - one-off
+                    - daily
+                    - monthly
+                    - accumulated
+                properties:
+                  data:
+                    type: array
+                    example:
+                      - one-off
+                      - daily
+                      - monthly
+                      - accumulated
+                    items:
+                      type: string
+      tags:
+        - Mission
   /api/v1/missions/complete:
     post:
       summary: 'Complete all missions or single mission'
@@ -10198,7 +9615,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: id
+                  example: minus
                   nullable: false
               required:
                 - store_ids
@@ -10262,7 +9679,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: consequuntur
+                  example: perspiciatis
                   nullable: false
               required:
                 - store_ids
@@ -10310,7 +9727,7 @@ paths:
                 location_id:
                   type: string
                   description: ''
-                  example: voluptatem
+                  example: eaque
                   nullable: false
               required:
                 - location_id
@@ -10912,7 +10329,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 14
+                  example: 16
                   nullable: false
               required:
                 - user_id
@@ -10959,7 +10376,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 1
+                  example: 6
                   nullable: false
               required:
                 - user_id
@@ -11006,7 +10423,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 10
+                  example: 2
                   nullable: false
               required:
                 - user_id
@@ -11041,7 +10458,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 10
+                  example: 4
                   nullable: false
               required:
                 - user_id
@@ -11111,7 +10528,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: deserunt
+                  example: est
                   nullable: false
                 violation_level:
                   type: required
@@ -11121,7 +10538,7 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: assumenda
+                  example: sint
                   nullable: false
                 also_block_user:
                   type: boolean
@@ -11395,7 +10812,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: iste
+                  example: deserunt
                   nullable: false
               required:
                 - user_ids

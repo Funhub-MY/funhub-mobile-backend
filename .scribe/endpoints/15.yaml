@@ -101,7 +101,55 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8Da5vVZbg1PahE63fk64ecd'
+      - 'Bearer 3kgbZDcfe661aVEh5da48vP'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/missions/frequency
+    metadata:
+      groupName: Mission
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get enabled mission frequencies'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+           "one-off",
+           "daily",
+           "monthly",
+           "accumulated"
+          ]
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ea68b5c3VE6fDP4v1gZdakh'
     controller: null
     method: null
     route: null
@@ -162,7 +210,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vdgk6eacv48D5bhaZE6fP31'
+      - 'Bearer a653bcD8gPekv6Zf4h1EdVa'
     controller: null
     method: null
     route: null
@@ -211,7 +259,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pv3D5g6aZcefkVdEb816h4a'
+      - 'Bearer fPeb6d1V6c35kZha4vEDag8'
     controller: null
     method: null
     route: null

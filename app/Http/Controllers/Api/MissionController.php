@@ -433,4 +433,32 @@ class MissionController extends Controller
 
         return MissionResource::collection($claimableMissions);
     }
+
+    /**
+     * Get enabled mission frequencies
+     *
+     * @return MissionResource
+     *
+     * @group Mission
+     * @response scenario=success {
+     * "data": [
+     *  "one-off",
+     *  "daily",
+     *  "monthly",
+     *  "accumulated"
+     * ]
+     * }
+     */
+    public function getEnabledMissionFrequency()
+    {
+        $frequencies = Mission::enabled()
+            ->select('frequency')
+            ->distinct()
+            ->pluck('frequency')
+            ->toArray();
+
+        return response()->json([
+            'data' => $frequencies
+        ]);
+    }
 }
