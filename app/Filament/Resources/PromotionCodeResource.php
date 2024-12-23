@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PromotionCodeResource\Pages;
 use App\Models\PromotionCode;
+use App\Models\PromotionCodeGroup;
 use App\Models\Reward;
 use App\Models\RewardComponent;
 use Filament\Forms;
@@ -14,7 +15,11 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Filament\Notifications\Notification;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Illuminate\Database\Eloquent\Model;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use pxlrbt\FilamentExcel\Columns\Column;
 
 class PromotionCodeResource extends Resource
 {
@@ -33,7 +38,6 @@ class PromotionCodeResource extends Resource
     {
         return false;
     }
-
 
     public static function form(Form $form): Form
     {
@@ -141,6 +145,12 @@ class PromotionCodeResource extends Resource
                     ->sortable(),
             ])
             ->filters([
+                Tables\Filters\SelectFilter::make('promotion_code_group')
+                    ->label('Promotion Group')
+                    ->relationship('promotionCodeGroup', 'name')
+                    ->searchable()
+                    ->multiple(),
+
                 Tables\Filters\SelectFilter::make('is_redeemed')
                     ->options([
                         '1' => 'Redeemed',
@@ -149,62 +159,79 @@ class PromotionCodeResource extends Resource
                 Tables\Filters\Filter::make('tags')
                     ->form([
                         Forms\Components\TagsInput::make('tags')
-                            ->separator(','),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query->when(
-                            $data['tags'],
-                            fn (Builder $query, $tags): Builder => $query->whereJsonContains('tags', $tags)
-                        );
-                    }),
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-                Tables\Actions\BulkAction::make('updateTags')
-                    ->label('Update Tags')
-                    ->icon('heroicon-o-tag')
-                    ->form([
-                        Forms\Components\TagsInput::make('tags')
-                            ->label('Tags')
-                            ->required()
+                            ->separator(',')
                             ->suggestions([
                                 'promotion',
                                 'event',
                                 'seasonal',
                                 'special',
-                            ])
+                            ]),
                     ])
-                    ->action(function (Collection $records, array $data): void {
-                        foreach ($records as $record) {
-                            $record->update([
-                                'tags' => $data['tags'],
-                            ]);
-                        }
-
-                        Notification::make()
-                            ->success()
-                            ->title('Tags updated')
-                            ->body('The tags have been updated for the selected promotion codes.');
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['tags'],
+                                fn (Builder $query, $tags): Builder => $query->whereJsonContains('tags', $tags),
+                            );
                     })
-                    ->deselectRecordsAfterCompletion()
+            ])
+            ->actions([
+            ])
+            ->bulkActions([
+                DeleteBulkAction::make()
+                    ->requiresConfirmation(),
+                ExportBulkAction::make()
+                    ->exports([
+                        ExcelExport::make()
+                            ->label('Export Promotion Codes')
+                            ->withColumns([
+                                Column::make('code')
+                                    ->heading('Code'),
+                                Column::make('promotionCodeGroup.name')
+                                    ->heading('Group Name'),
+                                Column::make('reward_name')
+                                    ->heading('Reward')
+                                    ->getStateUsing(function ($record) {
+                                        if ($record->reward->first()) {
+                                            return $record->reward->first()->name;
+                                        }
+                                        return $record->rewardComponent->first()?->name;
+                                    }),
+                                Column::make('reward_quantity')
+                                    ->heading('Quantity')
+                                    ->getStateUsing(function ($record) {
+                                        if ($record->reward->first()) {
+                                            return $record->reward->first()->pivot->quantity;
+                                        }
+                                        return $record->rewardComponent->first()?->pivot?->quantity;
+                                    }),
+                                Column::make('is_redeemed')
+                                    ->heading('Status')
+                                    ->getStateUsing(fn ($record) => $record->is_redeemed ? 'Redeemed' : 'Not Redeemed'),
+                                Column::make('claimedBy.name')
+                                    ->heading('Claimed By'),
+                                Column::make('redeemed_at')
+                                    ->heading('Redeemed At')
+                                    ->formatStateUsing(fn ($state) => $state ? $state->format('Y-m-d H:i:s') : ''),
+                                Column::make('tags')
+                                    ->heading('Tags')
+                                    ->getStateUsing(fn ($record) => implode(', ', $record->tags ?? [])),
+                            ])
+                            ->withFilename(fn() => 'promotion-codes-' . date('Y-m-d'))
+                            ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
+                    ]),
             ]);
     }
 
-    public static function getEloquentQuery(): Builder
+    protected static function getNavigationBadge(): ?string
     {
-        return parent::getEloquentQuery()
-            ->with(['reward', 'rewardComponent']);
+        return static::getModel()::where('is_redeemed', false)->count();
     }
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListPromotionCodes::route('/'),
-            'edit' => Pages\EditPromotionCode::route('/{record}/edit'),
         ];
     }
 }
