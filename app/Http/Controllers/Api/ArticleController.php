@@ -1071,8 +1071,11 @@ class ArticleController extends Controller
 
         if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
             $locations = Location::where('google_id', $locationData['google_id'])->get();
-        } else {
-            // if location cant be found by google_id, then find by lat,lng
+
+        }
+
+        // if location cant be found by google_id, then find by lat,lng
+        if(empty($locations)){
             $locations = Location::where('lat', $locationData['lat'])
                 ->where('lng', $locationData['lng'])
                 ->get();
