@@ -28,10 +28,10 @@ class PurchasedOfferNotification extends Notification implements ShouldQueue
         $this->quantity = $quantity;
         $this->subtotal = $subtotal;
         $this->currencyType = $currencyType;
-		$this->purchaseDate = $purchaseDate;
-		$this->purchaseTime = $purchaseTime;
-		$this->redemptionStartDate = $redemptionStartDate;
-		$this->redemptionEndDate = $redemptionEndDate;
+        $this->purchaseDate = $purchaseDate;
+        $this->purchaseTime = $purchaseTime;
+        $this->redemptionStartDate = $redemptionStartDate;
+        $this->redemptionEndDate = $redemptionEndDate;
         $this->encryptedData = $encryptedData;
         $this->merchantName = $merchantName;
         $this->userName = $userName;
@@ -66,15 +66,15 @@ class PurchasedOfferNotification extends Notification implements ShouldQueue
                 'quantity' => $this->quantity,
                 'subtotal' => $this->subtotal,
                 'currencyType' => $this->currencyType,
-				'purchaseDate' => $this->purchaseDate,
-				'purchaseTime' => $this->purchaseTime,
-				'redemptionStartDate' => $this->redemptionStartDate,
-				'redemptionEndDate' => $this->redemptionEndDate,
+                'purchaseDate' => $this->purchaseDate,
+                'purchaseTime' => $this->purchaseTime,
+                'redemptionStartDate' => $this->redemptionStartDate,
+                'redemptionEndDate' => $this->redemptionEndDate,
                 'encryptedData' => $this->encryptedData,
                 'merchantName' => $this->merchantName,
                 'userName' => $this->userName,
-				'merchantOfferCover' => $this->merchantOfferCover
-			]);
+                'merchantOfferCover' => $this->merchantOfferCover
+            ]);
     }
 
     /**
