@@ -81,7 +81,7 @@
                     <td style="text-align: center;">
                         <img src="{{ config('app.url') }}/images/merchant_email/web-banner.jpg" alt="FUNHUB banner" style="max-width: 150px; height: auto;">
                     </td>
-                </tr>       
+                </tr>
             </table>
         </div>
         <h1 style="font-size: 28px">Hi {{ $userName }},</h1>
@@ -89,7 +89,7 @@
         <p>You can find your voucher in this email. Make sure to check how to redeem the voucher before you visit <span style="font-weight: bold">{{ $merchantName }}</span>.</p>
         <p>You can redeem your voucher via <span style="font-weight: bold">downloading the app</span> or clicking the <span style="font-weight: bold">"Redeem Voucher Now"</span> button in this email:</p>
         <div style="text-align: center">
-            <img src="{{ $merchantOfferCover }}" alt="voucher" class="voucher-img" style="text-align: center max-width: 150px; height: auto;">
+            <img src="{{ $merchantOfferCover }}" alt="voucher" class="voucher-img" style="max-width: 150px; height: auto; text-align: center">
         </div>
         <div class="voucher-info-container">
             <h2>{{ $itemTitle }}</h2>
@@ -158,9 +158,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td>
-                    <img src="{{ config('app.url') }}/images/success-en/step_4.png" alt="app icon" style="max-width: 150px; height: auto; border-radius: 10px">
-                </td>
+                <td> <img src="{{ config('app.url') }}/images/success-en/step_4.png" alt="app icon" style="max-width: 150px; height: auto; border-radius: 10px"></td>
             </tr>
         </table>
         <div style="margin: 0 auto; text-align: center">
@@ -188,7 +186,7 @@
         <div style="margin: 15px auto; text-align: center">
             <a href="{{ config('app.frontend_app').'/redeem/voucher?data='.urlencode($encryptedData) }}" style="font-size:18px; margin-top: 20px; background-color: #ffe200; padding: 10px 25px; border: none; border-radius: 8px">Redeem Voucher Now</a>
         </div>
-        <div style="background:  linear-gradient(to bottom, #FFF6B7, #FFFCE9); padding: 20px; border-radius: 0 0 8px 8px;">
+        <div style="background: linear-gradient(to bottom, #FFF6B7, #FFFCE9); padding: 20px; border-radius: 0 0 8px 8px;">
             <table cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                     <td style="text-align: center;">
