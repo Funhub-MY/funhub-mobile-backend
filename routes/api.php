@@ -296,6 +296,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         // Missions
         Route::prefix('/missions')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\MissionController::class, 'index']);
+            Route::get('/frequency', [\App\Http\Controllers\Api\MissionController::class, 'getEnabledMissionFrequency']);
             Route::post('/complete', [\App\Http\Controllers\Api\MissionController::class, 'postCompleteMission']);
             Route::get('/claimables', [\App\Http\Controllers\Api\MissionController::class, 'getClaimableMissions']);
         });
