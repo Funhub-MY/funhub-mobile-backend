@@ -39,6 +39,12 @@ class SyncMerchantPortal
         return $this->callAPI($this->domain."/api/v1/external/merchant/reject", "POST", "Reject merchant", ['id' => $id]);
     }
 
+    //  Trigger the merchant portal to send login email 
+    public function sendLoginEmail($merchantIds)
+    {
+        return $this->callAPI($this->domain."/api/v1/external/merchant/sendLoginEmail", "POST", "Send Login Email to merchant users", ['ids' => $merchantIds]);
+    }
+
     //  Call the signal to merchant portal to sync the data with base portal
     public function syncMerchant($id)
     {
