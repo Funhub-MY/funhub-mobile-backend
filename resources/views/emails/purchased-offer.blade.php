@@ -29,6 +29,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+	<meta name="supported-color-schemes" content="light">
     <style>
         .container {
             width: 600px;
@@ -75,6 +77,11 @@
                         <img src="{{ config('app.url') }}/images/merchant_email/logo.png" alt="FUNHUB Logo" style="max-width: 150px; height: auto;">
                     </td>
                 </tr>
+                <tr>
+                    <td style="text-align: center;">
+                        <img src="{{ config('app.url') }}/images/merchant_email/web-banner.jpg" alt="FUNHUB banner" style="max-width: 150px; height: auto;">
+                    </td>
+                </tr>       
             </table>
         </div>
         <h1 style="font-size: 28px">Hi {{ $userName }},</h1>
@@ -82,7 +89,7 @@
         <p>You can find your voucher in this email. Make sure to check how to redeem the voucher before you visit <span style="font-weight: bold">{{ $merchantName }}</span>.</p>
         <p>You can redeem your voucher via <span style="font-weight: bold">downloading the app</span> or clicking the <span style="font-weight: bold">"Redeem Voucher Now"</span> button in this email:</p>
         <div style="text-align: center">
-            <img src="{{ $merchantOfferCover }}" alt="voucher" class="voucher-img" style="text-align: center">
+            <img src="{{ $merchantOfferCover }}" alt="voucher" class="voucher-img" style="text-align: center max-width: 150px; height: auto;">
         </div>
         <div class="voucher-info-container">
             <h2>{{ $itemTitle }}</h2>
@@ -118,7 +125,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td><img src="{{ config('app.url') }}/images/success-en/app_icon.png" alt="app icon" style="border-radius: 10px"></td>
+                <td><img src="{{ config('app.url') }}/images/success-en/app_icon.png" alt="app icon" style="max-width: 150px; height: auto; border-radius: 10px"></td>
             </tr>
 
             <tr style="height: 25px"></tr>
@@ -128,7 +135,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td><img src="{{ config('app.url') }}/images/success-en/step_2.png" alt="app icon" style="border-radius: 10px"></td>
+                <td><img src="{{ config('app.url') }}/images/success-en/step_2.png" alt="app icon" style="max-width: 150px; height: auto; border-radius: 10px"></td>
             </tr>
 
             <tr style="height: 25px"></tr>
@@ -139,8 +146,8 @@
             <tr>
                 <td></td>
                 <td>
-                    <img src="{{ config('app.url') }}/images/success-en/step_3_1.png" alt="app icon" style="border-radius: 10px">
-                    <img src="{{ config('app.url') }}/images/success-en/step_3_2.png" alt="app icon" style="border-radius: 10px">
+                    <img src="{{ config('app.url') }}/images/success-en/step_3_1.png" alt="app icon" style="max-width: 150px; height: auto; border-radius: 10px">
+                    <img src="{{ config('app.url') }}/images/success-en/step_3_2.png" alt="app icon" style="max-width: 150px; height: auto; border-radius: 10px">
                 </td>
             </tr>
 
@@ -151,7 +158,9 @@
             </tr>
             <tr>
                 <td></td>
-                <td> <img src="{{ config('app.url') }}/images/success-en/step_4.png" alt="app icon" style="border-radius: 10px"></td>
+                <td>
+                    <img src="{{ config('app.url') }}/images/success-en/step_4.png" alt="app icon" style="max-width: 150px; height: auto; border-radius: 10px">
+                </td>
             </tr>
         </table>
         <div style="margin: 0 auto; text-align: center">
