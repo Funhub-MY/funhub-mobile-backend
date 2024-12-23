@@ -1055,8 +1055,8 @@ class ArticleController extends Controller
         // // detach existing location first
         // $article->location()->detach(); // detaches all
 
-        // // Mall outlets incorrect attaching issue
-        // // if location exists, check if is_mall, if is mall check if name of locationData same as location name
+        // Mall outlets incorrect attaching issue
+        // if location exists, check if is_mall, if is mall check if name of locationData same as location name
         // if ($location && $location->is_mall && $locationData['name'] != $location->name) {
         //     // eg. location name is Chagee @ Sunway Pyramid it will have same lat,lng and google_id as Sunway Pyramid
         //     // to prevent Chagee @ Sunway Pyramid being attached incorrectly to Sunway Pyramid
@@ -1078,13 +1078,8 @@ class ArticleController extends Controller
                 ->get();
         }
         
-        //  Grab all the same latitude and longitude to find the most matching records.
         if($locations){
-            foreach($locations as $keys => $loc){
-                //  Default set the 1st location
-                if($keys == 0){
-                    $location = $loc;
-                }
+            foreach($locations as $loc){
                 //  Calculate the percentage of similar both text
                 similar_text(strtolower($locationData['name']), strtolower($loc->name), $percentage);
 
@@ -1866,8 +1861,8 @@ class ArticleController extends Controller
             'slug' => 'required_if:id,null|string',
         ]);
 
-        $article = Article::where('available_for_web', true)
-            ->published()
+        // $article = Article::where('available_for_web', true)
+        $article = Article::published()
             ->where('visibility', Article::VISIBILITY_PUBLIC)
             ->where(function ($query) use ($request) {
                 if ($request->has('id')) {
