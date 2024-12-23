@@ -14,6 +14,7 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Model;
 
 class PromotionCodeResource extends Resource
 {
@@ -21,6 +22,18 @@ class PromotionCodeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-ticket';
     protected static ?string $navigationGroup = 'Points & Rewards';
+
+    // disallow edit / create
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
+
 
     public static function form(Form $form): Form
     {
@@ -108,12 +121,12 @@ class PromotionCodeResource extends Resource
                 Tables\Columns\BadgeColumn::make('is_redeemed')
                     ->label('Status')
                     ->enum([
-                        false => 'Available',
+                        false => 'Not Redeemed',
                         true => 'Redeemed',
                     ])
                     ->colors([
-                        'success' => false,
-                        'danger' => true,
+                        'warning' => false,
+                        'success' => true,
                     ]),
 
                 Tables\Columns\TagsColumn::make('tags')

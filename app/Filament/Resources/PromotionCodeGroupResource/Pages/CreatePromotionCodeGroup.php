@@ -20,6 +20,7 @@ class CreatePromotionCodeGroup extends CreateRecord
         Log::info($data);
         return DB::transaction(function () use ($data) {
             $totalCodes = $data['total_codes'];
+            $batchSize = 1000; // Insert 1000 records at a time
 
             // rewards data
             $rewardable_type = $data['rewardable_type'];
@@ -34,27 +35,65 @@ class CreatePromotionCodeGroup extends CreateRecord
             // create the promotion code group
             $group = static::getModel()::create($data);
 
+            // Generate all codes first
+            $codes = [];
+            $rewardPivotData = [];
+            $now = now();
+
             for ($i = 0; $i < $totalCodes; $i++) {
-                $code = PromotionCode::create([
-                    'code' => PromotionCode::generateUniqueCode(),
+                $code = PromotionCode::generateUniqueCode();
+                $codes[] = [
+                    'code' => $code,
                     'promotion_code_group_id' => $group->id,
                     'status' => $group->status,
-                ]);
-
-                if ($rewardable_type === Reward::class) {
-                    $code->reward()->attach($rewardable_id, ['quantity' => $quantity]);
-                } else if ($rewardable_type === RewardComponent::class) {
-                    $code->rewardComponent()->attach($rewardable_id, ['quantity' => $quantity]);
-                }
-
-                Log::info('[PromotionCodeGroup] Created Promotion Code', [
-                    'promotion_code_group_id' => $group->id,
-                    'code' => $code->code,
-                    'rewardable_type' => $rewardable_type,
-                    'rewardable_id' => $rewardable_id,
-                    'quantity' => $quantity,
-                ]);
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
             }
+
+            // insert codes in batches
+            foreach (array_chunk($codes, $batchSize) as $batch) {
+                $insertedCodes = DB::table('promotion_codes')->insert($batch);
+            }
+
+            // get all inserted promotion codes
+            $promotionCodes = PromotionCode::where('promotion_code_group_id', $group->id)->get();
+
+            // prepare reward pivot data
+            foreach ($promotionCodes as $code) {
+                if ($rewardable_type === Reward::class) {
+                    $rewardPivotData[] = [
+                        'promotion_code_id' => $code->id,
+                        'rewardable_id' => $rewardable_id,
+                        'rewardable_type' => $rewardable_type,
+                        'quantity' => $quantity,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
+                } else if ($rewardable_type === RewardComponent::class) {
+                    $rewardPivotData[] = [
+                        'promotion_code_id' => $code->id,
+                        'rewardable_id' => $rewardable_id,
+                        'rewardable_type' => $rewardable_type,
+                        'quantity' => $quantity,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
+                }
+            }
+
+            // insert reward pivot data in batches
+            foreach (array_chunk($rewardPivotData, $batchSize) as $batch) {
+                DB::table('promotion_code_rewardable')->insert($batch);
+            }
+
+            Log::info('[PromotionCodeGroup] Created Promotion Codes', [
+                'promotion_code_group_id' => $group->id,
+                'total_codes' => $totalCodes,
+                'rewardable_type' => $rewardable_type,
+                'rewardable_id' => $rewardable_id,
+                'quantity' => $quantity,
+            ]);
 
             return $group;
         });
