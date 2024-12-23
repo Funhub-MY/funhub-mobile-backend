@@ -446,6 +446,11 @@ class MissionService
      */
     public function disburseReward(Mission $mission, User $user): void
     {
+        if (empty($this->currentUser) || is_null($this->currentUser)) {
+            // update current user when processing mission claim outside of misson service class possuble currentUser is empty
+            $this->currentUser = $user;
+        }
+
         if ($this->hasReachedRewardLimit($mission)) {
             Log::info('Mission reward limit reached', [
                 'mission_id' => $mission->id,
