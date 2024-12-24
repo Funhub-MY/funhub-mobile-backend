@@ -7,7 +7,7 @@ use App\Models\Merchant;
 use App\Models\MerchantCategory;
 use App\Models\RatingCategory;
 use App\Models\Store;
-
+use App\Models\MerchantUserAutolink;
 use App\Models\User;
 use App\Models\MerchantOfferCampaign;
 use App\Models\MerchantOfferVoucher;
@@ -25,6 +25,7 @@ use App\Http\Resources\SyncStoreResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class SyncMerchantPortalController extends Controller
 {
@@ -104,8 +105,40 @@ class SyncMerchantPortalController extends Controller
                 'authorised_personnel_ic_no' => 'required'
             ]);
 
+            //  Create or Link the User Data due to the User is required
+            $user = null;
+            $hasAutoLinkedUser = false;
+            // create a default password
+            $password       = Str::random(8);
+            $countryCode    = substr($request->pic_phone_no, 0, 2);
+            $phoneNo        = substr($request->pic_phone_no, 2);
+
+            //  Find the user based on country code and phone no
+            $user = User::where('phone_no', $phoneNo)
+                ->where('phone_country_code', $countryCode)
+                ->first();
+
+            //  If found the user, do auto link
+            if ($user) {
+                $hasAutoLinkedUser = true;
+            }
+
+            //  If can't find the user, create the new user
+            if (!$user) {
+                $user = User::create([
+                    'name' => $request->brand_name,
+                    'phone_no' => $phoneNo,
+                    'phone_country_code' => $countryCode,
+                    'password' => bcrypt($password),
+                ]);
+            }
+
+            //  Assign the user to merchant role (Is this still need?)
+            $user->assignRole('merchant');
+
             //  Merchant data
             $merchant_data = [
+                'user_id' => $user->id,
                 'name' => $request->business_name,
                 'email' => $request->pic_email,
                 'business_name' => $request->business_name, 
@@ -130,6 +163,17 @@ class SyncMerchantPortalController extends Controller
             ];
 
             $merchant = Merchant::create($merchant_data); 
+
+            //  Add log for Auto Linked User and create Auto Link
+            if ($hasAutoLinkedUser) {
+                Log::info('[SyncMerchantPortalController] Auto linked user with phone_no: ' . $request->pic_phone_no);
+                MerchantUserAutolink::create([
+                    'merchant_id' => $merchant->id,
+                    'user_id' => $user->id,
+                    'phone_no' => $phoneNo,
+                    'phone_country_code' => $countryCode
+                ]);
+            }   
 
             return response()->json([
                 'error'     => false,
