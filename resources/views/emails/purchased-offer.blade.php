@@ -77,13 +77,15 @@
                         <img src="{{ config('app.url') }}/images/merchant_email/logo.png" alt="FUNHUB Logo" style="max-width: 150px; height: auto;">
                     </td>
                 </tr>
-                <tr>
-                    <td style="text-align: center;">
-                        <img src="{{ config('app.url') }}/images/merchant_email/web-banner.jpg" alt="FUNHUB banner" style="max-width: 150px; height: auto;">
-                    </td>
-                </tr>
             </table>
         </div>
+        <table cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+                <td style="text-align: center;">
+                    <img src="{{ config('app.url') }}/images/merchant_email/web-banner.jpg" alt="FUNHUB banner" style="max-width: 150px; height: auto;">
+                </td>
+            </tr>
+        </table>
         <h1 style="font-size: 28px">Hi {{ $userName }},</h1>
         <p>Thank you for purchasing <span style="font-weight: bold">{{ $itemTitle }}</span>.</p>
         <p>You can find your voucher in this email. Make sure to check how to redeem the voucher before you visit <span style="font-weight: bold">{{ $merchantName }}</span>.</p>
