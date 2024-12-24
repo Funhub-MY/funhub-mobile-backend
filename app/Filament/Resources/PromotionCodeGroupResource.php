@@ -13,8 +13,10 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
@@ -136,6 +138,27 @@ class PromotionCodeGroupResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\BulkAction::make('updateStatus')
+                    ->label('Update Status')
+                    ->icon('heroicon-o-check-circle')
+                    ->form([
+                        Forms\Components\Toggle::make('status')
+                            ->label('Active')
+                            ->default(true)
+                            ->required(),
+                    ])
+                    ->action(function (Collection $records, array $data) {
+                        $records->each(fn ($record) => $record->update([
+                            'status' => $data['status'],
+                        ]));
+
+                        Notification::make()
+                            ->title('Status updated successfully')
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->deselectRecordsAfterCompletion(),
             ]);
     }
     
