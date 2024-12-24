@@ -110,13 +110,15 @@ class PaymentController extends Controller
             );
 
             // has transaction validate secure hash first from mpay
-            if (!$this->validateSecureHash(
-                $request->mid,
-                $request->responseCode,
-                $request->authCode,
-                $request->invno,
-                $request->amt
-            )) {
+            if (
+                !$this->validateSecureHash(
+                    $request->mid,
+                    $request->responseCode,
+                    $request->authCode,
+                    $request->invno,
+                    $request->amt
+                )
+            ) {
                 Log::error('Payment return failed', [
                     'error' => 'Secure Hash validation failed',
                     'request' => request()->all()
@@ -136,37 +138,37 @@ class PaymentController extends Controller
 
                 if ($transaction->status == \App\Models\Transaction::STATUS_SUCCESS) {
                     // SUCCESS
-					$offer_name = null;
-					$claim_id = null;
-					$redemption_start_date = null;
-					$redemption_end_date = null;
-					if ($transaction->transactionable_type == \App\Models\MerchantOffer::class) {
-						$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
-						$offer_name = $merchantOffer ? $merchantOffer->name : null;
+                    $offer_name = null;
+                    $claim_id = null;
+                    $redemption_start_date = null;
+                    $redemption_end_date = null;
+                    if ($transaction->transactionable_type == \App\Models\MerchantOffer::class) {
+                        $merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
+                        $offer_name = $merchantOffer ? $merchantOffer->name : null;
 
-						$claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
-							->where('user_id', $transaction->user_id)
-							->latest()
-							->first();
+                        $claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
+                            ->where('user_id', $transaction->user_id)
+                            ->latest()
+                            ->first();
 
-						if ($claim) {
-							$claim_id = $claim->id;
-							$redemption_start_date = $claim->created_at;
+                        if ($claim) {
+                            $claim_id = $claim->id;
+                            $redemption_start_date = $claim->created_at;
 
-							if (isset($claim->merchantOffer)) {
-								$redemption_end_date = $claim->created_at->addDays($claim->merchantOffer->expiry_days)->endOfDay();
-							} else {
-								$redemption_end_date = $claim->created_at->endOfDay(); // Default to one-day expiry if not set
-							}
-						}
-					}
+                            if (isset($claim->merchantOffer)) {
+                                $redemption_end_date = $claim->created_at->addDays($claim->merchantOffer->expiry_days)->endOfDay();
+                            } else {
+                                $redemption_end_date = $claim->created_at->endOfDay(); // Default to one-day expiry if not set
+                            }
+                        }
+                    }
 
                     $params = [
                         'message' => 'Transaction Success',
                         'transaction_id' => $transaction->id,
                         'transaction_no' => $transaction->transaction_no,
-						'offer_name' => $offer_name,
-						'offer_claim_id' => $claim_id,
+                        'offer_name' => $offer_name,
+                        'offer_claim_id' => $claim_id,
                         'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
                         'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
                         'success' => true,
@@ -217,26 +219,26 @@ class PaymentController extends Controller
                 // update transaction status to success first with gateway transaction id
                 $transaction->update($transactionUpdateData);
 
-				$redemption_start_date = null;
-				$redemption_end_date = null;
+                $redemption_start_date = null;
+                $redemption_end_date = null;
 
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
-					$claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
-						->where('user_id', $transaction->user_id)
-						->latest()
-						->first();
-                        
-					if ($claim) {
-						// redemption dates is claim created_at + offer expiry_days
-						$redemption_start_date = $claim->created_at;
+                    $claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
+                        ->where('user_id', $transaction->user_id)
+                        ->latest()
+                        ->first();
 
-						if (isset($claim->merchantOffer)) {
-							$redemption_end_date = $claim->created_at->addDays($claim->merchantOffer->expiry_days)->endOfDay();
-						} else {
-							$redemption_end_date = $claim->created_at->endOfDay();// default to one day expired since offer expiry_days is not set
-						}
-					}
+                    if ($claim) {
+                        // redemption dates is claim created_at + offer expiry_days
+                        $redemption_start_date = $claim->created_at;
+
+                        if (isset($claim->merchantOffer)) {
+                            $redemption_end_date = $claim->created_at->addDays($claim->merchantOffer->expiry_days)->endOfDay();
+                        } else {
+                            $redemption_end_date = $claim->created_at->endOfDay();// default to one day expired since offer expiry_days is not set
+                        }
+                    }
 
                     try {
                         $encrypted_data = $this->processEncrypt([
@@ -271,13 +273,13 @@ class PaymentController extends Controller
                     $this->updateProductTransaction($request, $transaction);
 
                     if ($transaction->user->email) {
-						try {
-							$product = Product::where('id', $transaction->transactionable_id)->first();
-							$quantity = $transaction->amount / $product->unit_price;
-							$transaction->user->notify(new PurchasedGiftCardNotification($transaction->transaction_no, $transaction->updated_at, $product->name, $quantity, $transaction->amount));
-						} catch (\Exception $e) {
-							Log::error('Error sending PurchasedGiftCardNotification: ' . $e->getMessage());
-						}
+                        try {
+                            $product = Product::where('id', $transaction->transactionable_id)->first();
+                            $quantity = $transaction->amount / $product->unit_price;
+                            $transaction->user->notify(new PurchasedGiftCardNotification($transaction->transaction_no, $transaction->updated_at, $product->name, $quantity, $transaction->amount));
+                        } catch (\Exception $e) {
+                            Log::error('Error sending PurchasedGiftCardNotification: ' . $e->getMessage());
+                        }
                     }
                 }
 
@@ -287,13 +289,13 @@ class PaymentController extends Controller
                 ]);
 
                 // if transactionable_type is merchant_offer, get the relevant claim id
-				$offer_name = null;
-				$claim_id = null;
+                $offer_name = null;
+                $claim_id = null;
                 $redemption_start_date = null;
                 $redemption_end_date = null;
                 if ($transaction->transactionable_type == \App\Models\MerchantOffer::class) {
-					$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
-					$offer_name = $merchantOffer ? $merchantOffer->name : null;
+                    $merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
+                    $offer_name = $merchantOffer ? $merchantOffer->name : null;
 
                     $claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
                         ->where('user_id', $transaction->user_id)
@@ -319,10 +321,10 @@ class PaymentController extends Controller
                     'message' => 'Transaction Success',
                     'transaction_id' => $transaction->id,
                     'transaction_no' => $transaction->transaction_no,
-					'offer_name' => $offer_name,
+                    'offer_name' => $offer_name,
                     'offer_claim_id' => $claim_id,
-					'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
-					'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
+                    'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
+                    'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
                     'success' => true
                 ];
 
@@ -333,7 +335,7 @@ class PaymentController extends Controller
                     return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode($params)) . '&hash=' . $hash_string);
                 }
 
-            // ===================== PENDING
+                // ===================== PENDING
             } else if ($request->responseCode == 'PE') { // pending
                 Log::info('Payment return/callback pending', [
                     'transaction_id' => $transaction->id,
@@ -346,7 +348,7 @@ class PaymentController extends Controller
                     $hash_string = hash_hmac('sha256', $transaction->transaction_no, config('app.funhub_web_hash_secret'));
                     return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode(['message' => 'Transaction Still Pending', 'success' => false])) . '&hash=' . $hash_string);
                 }
-            // ===================== FAILED
+                // ===================== FAILED
             } else { // failed
                 Log::error('Payment return failed', [
                     'error' => 'Transaction Failed - Gateway Response Code Failed',
@@ -355,7 +357,7 @@ class PaymentController extends Controller
                 $gatewayId = $request->mpay_ref_no;
                 if (!$request->mpay_ref_no) {
                     // dont have mpay ref no when failed then use responseCode
-                    $gatewayId = 'RES'.$request->responseCode;
+                    $gatewayId = 'RES' . $request->responseCode;
                 }
                 $transaction->update([
                     'status' => \App\Models\Transaction::STATUS_FAILED,
@@ -519,7 +521,7 @@ class PaymentController extends Controller
 
             try {
                 $locale = $transaction->user->last_lang ?? config('app.locale');
-                
+
                 if ($transaction->channel == 'funhub_web' && $transaction->email) {
                     // Send email notification to transaction email for web transactions
                     Notification::route('mail', $transaction->email)
@@ -699,49 +701,51 @@ class PaymentController extends Controller
                     ]);
                 }
             }
-        } else if (($request->responseCode == 0 || $request->responseCode == '0')
-            && !$request->has('token')) {
-                // ===================== CARD TOKENIZATION UPDATE, SO RE-QUERY CARD TOKLEN
-                $transaction = Transaction::where('transaction_no', $request->invno)->first();
-                if (!$transaction) {
-                    Log::error('[PaymentController] Mpay Card Tokenization Failed: Transaction not found', [
-                        'request' => $request->all(),
-                    ]);
+        } else if (
+            ($request->responseCode == 0 || $request->responseCode == '0')
+            && !$request->has('token')
+        ) {
+            // ===================== CARD TOKENIZATION UPDATE, SO RE-QUERY CARD TOKLEN
+            $transaction = Transaction::where('transaction_no', $request->invno)->first();
+            if (!$transaction) {
+                Log::error('[PaymentController] Mpay Card Tokenization Failed: Transaction not found', [
+                    'request' => $request->all(),
+                ]);
 
-                    return view('payment-return', [
-                        'message' => 'Transaction Failed - Transaction not found',
-                        'transaction_id' => null,
-                        'success' => false
-                    ]);
-                }
+                return view('payment-return', [
+                    'message' => 'Transaction Failed - Transaction not found',
+                    'transaction_id' => null,
+                    'success' => false
+                ]);
+            }
 
-                $user = User::find($transaction->user_id);
-                // token not returned meaning card was tokenized before, start querying first for the token
-                $results = $this->gateway->queryCardToken($transaction->user_id, $request->invno);
+            $user = User::find($transaction->user_id);
+            // token not returned meaning card was tokenized before, start querying first for the token
+            $results = $this->gateway->queryCardToken($transaction->user_id, $request->invno);
 
-                if ($results['responseCode'] == '0') {
-                    // success, update token of card based on cardLast4Digit
-                    $user->cards()->where('card_last_four', $results['cardLast4Digit'])->update([
-                        'card_token' => $results['token'],
-                    ]);
-                    Log::info('Mpay Card Tokenization Success (Updated)', [
-                        'uuid' => $request->uuid,
-                        'mpay_returrned' => $request->all(),
-                        'user' => $user->id,
-                    ]);
+            if ($results['responseCode'] == '0') {
+                // success, update token of card based on cardLast4Digit
+                $user->cards()->where('card_last_four', $results['cardLast4Digit'])->update([
+                    'card_token' => $results['token'],
+                ]);
+                Log::info('Mpay Card Tokenization Success (Updated)', [
+                    'uuid' => $request->uuid,
+                    'mpay_returrned' => $request->all(),
+                    'user' => $user->id,
+                ]);
 
-                    return view('payment-return', [
-                        'message' => 'Card Added',
-                        'transaction_id' => $transaction->id,
-                        'success' => true
-                    ]);
-                } else {
-                    return view('payment-return', [
-                        'message' => 'Transaction Failed - Card token query failed',
-                        'transaction_id' => null,
-                        'success' => false
-                    ]);
-                }
+                return view('payment-return', [
+                    'message' => 'Card Added',
+                    'transaction_id' => $transaction->id,
+                    'success' => true
+                ]);
+            } else {
+                return view('payment-return', [
+                    'message' => 'Transaction Failed - Card token query failed',
+                    'transaction_id' => null,
+                    'success' => false
+                ]);
+            }
         } else {
             // failed
             return view('payment-return', [
@@ -820,9 +824,9 @@ class PaymentController extends Controller
             'encrypted_data' => $encrypted_data,
             'claim' => $claim
         ]);
-        
+
         $merchantOfferCover = $merchantOffer->getFirstMediaUrl(MerchantOffer::MEDIA_COLLECTION_NAME);
-        
+
         $notification = new PurchasedOfferNotification(
             $transaction->transaction_no,
             $transaction->updated_at,
@@ -836,7 +840,7 @@ class PaymentController extends Controller
             $redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
             $encrypted_data,
             $claim->merchantOffer->user->merchant->brand_name,
-            $transaction->user->name,
+            $transaction->name,
             $merchantOfferCover
         );
 
@@ -849,12 +853,13 @@ class PaymentController extends Controller
         }
     }
 
-    public function processEncrypt($data) {
+    public function processEncrypt($data)
+    {
 
         try {
             // we use the same key and IV
             $key = hex2bin($this->checkout_secret);
-            $iv =  hex2bin($this->checkout_secret);
+            $iv = hex2bin($this->checkout_secret);
 
             // we receive the encrypted string from the post
             // finally we trim to get our original string
@@ -862,7 +867,7 @@ class PaymentController extends Controller
 
             if ($encrypted_data === false) {
                 Log::error('Error encrypting data', [
-                    'error' => 'Encryption Failed - '. openssl_error_string(),
+                    'error' => 'Encryption Failed - ' . openssl_error_string(),
                     'data' => json_encode($data),
                 ]);
             }
