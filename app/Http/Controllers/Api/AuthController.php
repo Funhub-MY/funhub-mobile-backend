@@ -249,7 +249,6 @@ class AuthController extends Controller
         $request->validate([
             'country_code' => 'required|string',
             'phone_no' => 'required|string',
-            'name' => 'string'
         ]);
 
         // check if start with 0 or 60 for phone_no, remove it first
@@ -270,7 +269,6 @@ class AuthController extends Controller
             // register user account first with phone no.
             try {
                 $user = User::create([
-                    'name' => $request->input('name', null),
                     'phone_country_code' => $request->country_code,
                     'phone_no' => $request->phone_no, // unique
                     'otp' => $otp,
