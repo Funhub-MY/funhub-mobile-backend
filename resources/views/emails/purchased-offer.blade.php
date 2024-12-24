@@ -82,7 +82,7 @@
         <table cellpadding="0" cellspacing="0" width="100%">
             <tr>
                 <td style="text-align: center;">
-                    <img src="{{ config('app.url') }}/images/merchant_email/web-banner.jpg" alt="FUNHUB banner" style="max-width: 150px; height: auto;">
+                    <img src="{{ config('app.url') }}/images/merchant_email/web-banner.jpg" alt="FUNHUB banner" style="width: 100%; height: auto;">
                 </td>
             </tr>
         </table>
