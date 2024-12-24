@@ -164,6 +164,7 @@ class ProductController extends Controller
             ($walletType) ? $walletType : $request->fiat_payment_method,
             'app',
             ($request->has('email') ? $request->email : null),
+            ($request->has('name') ? $request->name : null),
         );
 
         // if gateway is mpay call mpay service generate Hash for frontend form

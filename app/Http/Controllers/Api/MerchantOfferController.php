@@ -670,7 +670,8 @@ class MerchantOfferController extends Controller
                 $user->id,
                 ($walletType) ? $walletType : $request->fiat_payment_method,
                 $request->get('channel', 'app'),
-                $request->get('email')
+                $request->get('email', null),
+                $request->get('channel') === 'funhub_web' ? $request->get('name') : $user->name,
             );
 
             // if gateway is mpay call mpay service generate Hash for frontend form
