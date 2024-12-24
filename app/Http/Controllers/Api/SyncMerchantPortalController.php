@@ -389,6 +389,11 @@ class SyncMerchantPortalController extends Controller
             if($merchant){
                 $userId = $merchant->user_id;
 
+                //  Get campaign agreement quantity
+                $campaigns = MerchantOfferCampaign::where('user_id', $userId)
+                    ->select(['id', 'agreement_quantity']) 
+                    ->get()->toArray();
+
                 //  Total Vouchers
                 $total      = MerchantOfferVoucher::whereHas('merchant_offer', function ($q) use ($userId) {
                     $q->where('user_id', $userId);//->where('status', 1);
@@ -403,6 +408,13 @@ class SyncMerchantPortalController extends Controller
                 $redeemed   = MerchantOfferVoucher::whereHas('merchant_offer', function ($q) use ($userId) {
                     $q->where('user_id', $userId);//->where('status', 1);
                 })->whereHas('redeem')->count();
+
+
+                //  Hard solve the total quantity (Get from merchant_offer_voucher) & agreement quantity
+                if($campaigns){
+                    $cTotal     = array_sum(array_column($campaigns, "agreement_quantity"));
+                    $total      = ($cTotal > 0) ? $cTotal : $total;
+                }
 
                 $data = [
                     'total'     => $total,
@@ -448,18 +460,6 @@ class SyncMerchantPortalController extends Controller
             if($merchant){
                 $userId = $merchant->user_id;
 
-                // $lists = MerchantOfferVoucher::whereHas('merchant_offer', function ($q) use ($userId) {
-                //     $q->where('user_id', $userId);
-                // })
-                // ->whereHas('claim')
-                // ->whereNotNull('owned_by_id') 
-                // ->with([
-                //     'claim',
-                //     'latestSuccessfulClaim',
-                //     'redeem'
-                // ])
-                // ->get();
-
                 $lists = DB::table('merchant_offer_vouchers')
                     ->join('merchant_offers', 'merchant_offers.id', '=', 'merchant_offer_vouchers.merchant_offer_id')
                     ->join('merchant_offer_user', function ($join) {
@@ -471,6 +471,7 @@ class SyncMerchantPortalController extends Controller
                     //  Purchases success
                     ->where('merchant_offer_user.status', '=', MerchantOfferClaim::CLAIM_SUCCESS)
                     ->whereNotNull('merchant_offer_vouchers.owned_by_id')
+                    ->whereNotNull('merchant_offers.merchant_offer_campaign_id')
                     ->select(
                         'merchant_offer_vouchers.id as id',
                         'merchant_offer_vouchers.code as code',
@@ -542,27 +543,53 @@ class SyncMerchantPortalController extends Controller
             if($merchant){
                 $userId = $merchant->user_id;
 
-                $lists = DB::table('merchant_offer_vouchers')
-                    ->join('merchant_offers', 'merchant_offers.id', '=', 'merchant_offer_vouchers.merchant_offer_id')
-                    ->leftJoin('merchant_offer_user', 'merchant_offer_user.voucher_id', '=', 'merchant_offer_vouchers.id')
-                    ->leftJoin('merchant_offer_claims_redemptions', 'merchant_offer_claims_redemptions.claim_id', '=', 'merchant_offer_user.id')
-                    ->where('merchant_offers.user_id', $userId)
-                    ->select(
-                        'merchant_offer_vouchers.id as id',
-                        'merchant_offer_vouchers.code as code',
-                        'merchant_offers.name as offer_name',
-                        DB::raw('COALESCE(merchant_offer_user.status, 0) as purchase_status'), 
-                        DB::raw('CASE WHEN merchant_offer_claims_redemptions.id IS NOT NULL THEN 1 ELSE 0 END as isRedeemed')
-                    )
-                    ->groupBy(
-                        'merchant_offer_vouchers.id',
-                        'merchant_offer_vouchers.code',
-                        'merchant_offers.name',
-                        'merchant_offer_user.status',
-                        'merchant_offer_claims_redemptions.id'
-                    )
-                    ->distinct()
-                    ->get();
+                $lists  = collect();
+
+                //  Get campaign agreement quantity
+                $campaigns  = MerchantOfferCampaign::where('user_id', $userId)
+                    ->select(['id', 'agreement_quantity']) 
+                    ->get()->toArray();
+
+                if($campaigns){
+                    foreach($campaigns as $campaign){
+                        $query = DB::table('merchant_offer_vouchers')
+                            ->join('merchant_offers', 'merchant_offers.id', '=', 'merchant_offer_vouchers.merchant_offer_id')
+                            ->leftJoin('merchant_offer_user', 'merchant_offer_user.voucher_id', '=', 'merchant_offer_vouchers.id')
+                            ->leftJoin('merchant_offer_claims_redemptions', 'merchant_offer_claims_redemptions.claim_id', '=', 'merchant_offer_user.id')
+                            ->where('merchant_offers.user_id', $userId)
+                            ->where('merchant_offers.merchant_offer_campaign_id', $campaign['id'])
+                            ->select(
+                                'merchant_offer_vouchers.id as id',
+                                'merchant_offer_vouchers.code as code',
+                                'merchant_offers.merchant_offer_campaign_id as campaign_id',
+                                'merchant_offers.name as offer_name',
+                                DB::raw('COALESCE(merchant_offer_user.status, 0) as purchase_status'), 
+                                DB::raw('CASE WHEN merchant_offer_claims_redemptions.id IS NOT NULL THEN 1 ELSE 0 END as isRedeemed')
+                            )
+                            ->groupBy(
+                                'merchant_offer_vouchers.id',
+                                'merchant_offer_vouchers.code',
+                                'merchant_offers.name',
+                                'merchant_offers.merchant_offer_campaign_id',
+                                'merchant_offer_user.status',
+                                'merchant_offer_claims_redemptions.id'
+                            )
+                            ->distinct()
+                            ->orderBy(DB::raw('CASE WHEN merchant_offer_claims_redemptions.id IS NOT NULL THEN 1 ELSE 0 END'), 'desc')
+                            ->orderBy('merchant_offer_vouchers.id', 'asc')
+                            ->orderBy('merchant_offers.id', 'asc');
+
+                        // Apply limit if agreementQuantity is greater than 0
+                        if ($campaign['agreement_quantity'] > 0) {
+                            $query->limit($campaign['agreement_quantity']);
+                        }
+
+                        // Fetch the results and merge into the final list
+                        $vouchers   = $query->get();
+                        $lists      = $lists->merge($vouchers);
+                    }
+                }
+                
 
                 return response()->json([
                     'error'     => false,

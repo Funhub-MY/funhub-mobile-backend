@@ -20,10 +20,14 @@ use App\Services\PointService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Notification;
+
 class PaymentController extends Controller
 {
     protected $gateway;
     protected $checkout_secret;
+
+    protected $smsService;
 
     public function __construct()
     {
@@ -33,6 +37,19 @@ class PaymentController extends Controller
         );
 
         $this->checkout_secret = config('app.funhub_checkout_secret');
+
+        $this->smsService = new \App\Services\Sms(
+            [
+                'url' => config('services.byteplus.sms_url'),
+                'username' => config('services.byteplus.sms_account'),
+                'password' => config('services.byteplus.sms_password'),
+            ],
+            [
+                'api_url' => config('services.movider.api_url'),
+                'key' => config('services.movider.key'),
+                'secret' => config('services.movider.secret'),
+            ]
+        );
     }
 
     /**
@@ -209,6 +226,7 @@ class PaymentController extends Controller
 						->where('user_id', $transaction->user_id)
 						->latest()
 						->first();
+                        
 					if ($claim) {
 						// redemption dates is claim created_at + offer expiry_days
 						$redemption_start_date = $claim->created_at;
@@ -219,36 +237,34 @@ class PaymentController extends Controller
 							$redemption_end_date = $claim->created_at->endOfDay();// default to one day expired since offer expiry_days is not set
 						}
 					}
-                    if ($transaction->user->email) {
-						try{
 
-                            $encrypted_data = $this->processEncrypt([
-                                'offer_id' => $claim->merchantOffer->id,
-                                'claim_id' => $claim->id,
-                                'phone_no' => $transaction->user->phone_no
-                            ]);
+                    try {
+                        $encrypted_data = $this->processEncrypt([
+                            'offer_id' => $claim->merchantOffer->id,
+                            'claim_id' => $claim->id,
+                            'phone_no' => $transaction->user->phone_no
+                        ]);
 
-                            Log::info('Encrypted Data',[
-                                'encrypted_data' => $encrypted_data,
-                            ]);
+                        $merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
 
-							$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
-							$transaction->user->notify(new PurchasedOfferNotification(
-								$transaction->transaction_no,
-								$transaction->updated_at,
-								$merchantOffer->name,
-								1, $transaction->amount,
-								'MYR',
-								$transaction->created_at->format('Y-m-d'),
-								$transaction->created_at->format('H:i:s'),
-								$redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
-								$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
-                                $encrypted_data
-							));
-						} catch (Exception $e) {
-							Log::error('Error sending PurchasedOfferNotification: ' . $e->getMessage());
-						}
+                        $this->sendPurchasedOfferNotification(
+                            $transaction,
+                            $merchantOffer,
+                            $redemption_start_date,
+                            $redemption_end_date,
+                            $encrypted_data,
+                            $claim
+                        );
+                    } catch (Exception $e) {
+                        Log::error('Error sending PurchasedOfferNotification: ' . $e->getMessage());
+                    }
 
+                    if ($transaction->user->phone_no) {
+                        try {
+                            $this->smsService->sendSms($transaction->user->full_phone_no, config('app.name') . " - Voucher purchase successful. Redemption steps are sent via email.");
+                        } catch (\Exception $e) {
+                            Log::error('Error sending PurchasedOfferNotification SMS: ' . $e->getMessage());
+                        }
                     }
 
                 } else if ($transaction->transactionable_type == Product::class) {
@@ -503,8 +519,15 @@ class PaymentController extends Controller
 
             try {
                 $locale = $transaction->user->last_lang ?? config('app.locale');
-                // notify
-                $transaction->user->notify((new OfferClaimed($merchantOffer, $transaction->user, 'fiat', $transaction->amount))->locale($locale));
+                
+                if ($transaction->channel == 'funhub_web' && $transaction->email) {
+                    // Send email notification to transaction email for web transactions
+                    Notification::route('mail', $transaction->email)
+                        ->notify((new OfferClaimed($merchantOffer, $transaction->user, 'fiat', $transaction->amount))->locale($locale));
+                } else {
+                    // Send notification to user for app transactions
+                    $transaction->user->notify((new OfferClaimed($merchantOffer, $transaction->user, 'fiat', $transaction->amount))->locale($locale));
+                }
             } catch (Exception $ex) {
                 Log::error('Failed to send notification', [
                     'error' => $ex->getMessage(),
@@ -527,9 +550,6 @@ class PaymentController extends Controller
             ]);
             if ($claim) {
                 try {
-                    $merchantOffer->quantity = $merchantOffer->quantity + $claim->pivot->quantity;
-                    $merchantOffer->save();
-
                     // release voucher
                     $voucher_id = $claim->voucher_id;
                     if ($voucher_id) {
@@ -543,7 +563,30 @@ class PaymentController extends Controller
                         }
                     }
 
-                    Log::info('Updated Merchant Offer Claim to Failed, Stock Quantity Reverted', [
+                    Log::info('Updated Merchant Offer Claim to Failed, released voucher', [
+                        'transaction_id' => $transaction->id,
+                        'merchant_offer_id' => $transaction->transactionable_id,
+                    ]);
+                } catch (Exception $ex) {
+                    Log::error('Updated Merchant Offer Claim to Failed, Release voucher failed', [
+                        'transaction_id' => $transaction->id,
+                        'merchant_offer_id' => $transaction->transactionable_id,
+                        'claim' => json_encode($claim),
+                        'error' => $ex->getMessage()
+                    ]);
+                }
+
+                // revert stock
+                try {
+                    $latestQuantity = MerchantOfferVoucher::where('merchant_offer_id', $merchantOffer->id)
+                        ->whereNull('owned_by_id')
+                        ->where('voided', false)
+                        ->count();
+
+                    $merchantOffer->quantity = $latestQuantity;
+                    $merchantOffer->save();
+
+                    Log::info('Updated Merchant Offer Claim to Failed, updated merchant offer stock count', [
                         'transaction_id' => $transaction->id,
                         'merchant_offer_id' => $transaction->transactionable_id,
                     ]);
@@ -551,6 +594,7 @@ class PaymentController extends Controller
                     Log::error('Updated Merchant Offer Claim to Failed, Stock Quantity Revert Failed', [
                         'transaction_id' => $transaction->id,
                         'merchant_offer_id' => $transaction->transactionable_id,
+                        'claim' => json_encode($claim),
                         'error' => $ex->getMessage()
                     ]);
                 }
@@ -761,6 +805,48 @@ class PaymentController extends Controller
         return response()->json([
             'funbox_ringgit_value' => config('app.funbox_ringgit_value')
         ]);
+    }
+
+    /**
+     * Send purchased offer notification based on transaction channel
+     */
+    private function sendPurchasedOfferNotification($transaction, $merchantOffer, $redemption_start_date, $redemption_end_date, $encrypted_data, $claim)
+    {
+        Log::info('[PaymentController] Send Purchased Offer Notification', [
+            'transaction' => $transaction,
+            'merchantOffer' => $merchantOffer,
+            'redemption_start_date' => $redemption_start_date,
+            'redemption_end_date' => $redemption_end_date,
+            'encrypted_data' => $encrypted_data,
+            'claim' => $claim
+        ]);
+        
+        $merchantOfferCover = $merchantOffer->getFirstMediaUrl(MerchantOffer::MEDIA_COLLECTION_NAME);
+        
+        $notification = new PurchasedOfferNotification(
+            $transaction->transaction_no,
+            $transaction->updated_at,
+            $merchantOffer->name,
+            1,
+            $transaction->amount,
+            'MYR',
+            $transaction->created_at->format('Y-m-d'),
+            $transaction->created_at->format('H:i:s'),
+            $redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
+            $redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
+            $encrypted_data,
+            $claim->merchantOffer->user->merchant->brand_name,
+            $transaction->user->name,
+            $merchantOfferCover
+        );
+
+        if ($transaction->channel == 'funhub_web' && $transaction->email) {
+            // send email notification to transaction email
+            Notification::route('mail', $transaction->email)->notify(notification: $notification);
+        } else {
+            // send notification to user for app transactions
+            $transaction->user->notify($notification);
+        }
     }
 
     public function processEncrypt($data) {

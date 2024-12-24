@@ -37,6 +37,7 @@ class LocationResource extends JsonResource
             'average_ratings' => $this->average_ratings,
             'ratings' => ($this->ratings) ? LocationRatingResource::collection($this->ratings) : [],
             'cover' => $this->getFirstMediaUrl(Location::MEDIA_COLLECTION_NAME),
+			'google_id' => ($this->google_id) ? $this->google_id : null
         ];
     }
 }

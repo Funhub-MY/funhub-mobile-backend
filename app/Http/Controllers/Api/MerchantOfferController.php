@@ -450,6 +450,7 @@ class MerchantOfferController extends Controller
      * @bodyParam card_id integer required_if:fiat_payment_method,card Card ID. Example: 1
      * @bodyParam wallet_type string optional Wallet Type. Example: TNG/FPX-CIMB
      * @bodyParam channel string optional Channel. Example: app/funhub_web
+     * @bodyParam email string optional Email for web channel to fire purchased email after successful purchase. Example: john@email.com
      * @bodyParam use_point_discount boolean optional Use Point(Funbox) Discount. Example: 1
      * @bodyParam points_to_use integer optional Points(Funbox) to Use. Example: 2
      * @response scenario=success {
@@ -569,7 +570,14 @@ class MerchantOfferController extends Controller
 			$redemption_start_date = $claim->created_at;
 			$redemption_end_date = $claim->created_at->addDays($offer->expiry_days)->endOfDay();
 
-            if ($user->email) {
+			$encrypted_data = $this->processEncrypt([
+				'offer_id' => $offer->id,
+				'claim_id' => $claim->id,
+				'phone_no' => $user->phone_no
+			]);
+			$merchantOfferCover = $offer->getFirstMediaUrl(MerchantOffer::MEDIA_COLLECTION_NAME);
+
+			if ($user->email) {
 				try {
 					$user->notify(new PurchasedOfferNotification(
 						$claim->order_no,
@@ -581,9 +589,10 @@ class MerchantOfferController extends Controller
 						$claim->created_at->format('H:i:s'),
 						$redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
 						$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
-						$offer->id,
-						$claim->id,
-						$user->phone_no
+						$encrypted_data,
+						$claim->merchantOffer->user->merchant->brand_name,
+						$claim->merchantOffer->user->name,
+						$merchantOfferCover
 					));
 				} catch (\Exception $e) {
 					Log::error('Error sending PurchasedOfferNotification: ' . $e->getMessage());
@@ -602,9 +611,10 @@ class MerchantOfferController extends Controller
             }
 
         } else if($request->payment_method == 'fiat') {
-            // ------------------------------------ CASH (FPX/CARD/WALET) CHECKOUT ------------------------------------
+			$channel = $request->has('channel') ? $request->channel : 'app';
+			// ------------------------------------ CASH (FPX/CARD/WALET) CHECKOUT ------------------------------------
             // check if user has verified email address
-            if (!$user->hasVerifiedEmail()) {
+            if ($channel === 'app' && !$user->hasVerifiedEmail()) {
                 return response()->json([
                     'message' => __('messages.error.merchant_offer_controller.Please_verify_your_email_address_first')
                 ], 422);
@@ -659,8 +669,8 @@ class MerchantOfferController extends Controller
                 config('app.default_payment_gateway'),
                 $user->id,
                 ($walletType) ? $walletType : $request->fiat_payment_method,
-                // $discount_amount,
-                $request->has('channel') ? $request->channel : 'app'
+                $request->get('channel', 'app'),
+                $request->get('email')
             );
 
             // if gateway is mpay call mpay service generate Hash for frontend form
@@ -1182,12 +1192,12 @@ class MerchantOfferController extends Controller
         if ($request->has('id')) {
             $offer = MerchantOffer::where('id', $request->id)
                 ->published()
-                ->where('available_for_web', true)
+                // ->where('available_for_web', true)
                 ->first();
         } else {
             $offer = MerchantOffer::where('sku', $request->sku)
                 ->published()
-                ->where('available_for_web', true)
+                // ->where('available_for_web', true)
                 ->first();
         }
 
@@ -1408,4 +1418,36 @@ class MerchantOfferController extends Controller
             ]);
         }
     }
+
+    public function processEncrypt($data) {
+        $checkout_secret = config('app.funhub_checkout_secret');
+
+        try {
+            // we use the same key and IV
+            $key = hex2bin($checkout_secret);
+            $iv =  hex2bin($checkout_secret);
+
+            // we receive the encrypted string from the post
+            // finally we trim to get our original string
+            $encrypted_data = openssl_encrypt(json_encode($data), 'AES-128-CBC', $key, 0, $iv);
+
+            if ($encrypted_data === false) {
+                Log::error('Error encrypting data', [
+                    'error' => 'Encryption Failed - '. openssl_error_string(),
+                    'data' => json_encode($data),
+                ]);
+            }
+
+            return $encrypted_data;
+
+        } catch (\Exception $e) {
+            Log::error('Error encrypting data', [
+                'error' => $e->getMessage(),
+                'data' => $data
+            ]);
+
+            return '';
+        }
+    }
+    
 }

@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use SebastianBergmann\Type\TrueType;
 
 class MerchantOfferCampaignResource extends Resource
 {
@@ -136,6 +137,11 @@ class MerchantOfferCampaignResource extends Resource
                                     ->label('Campaign Code (SKU)')
                                     ->helperText('Offers created will suffix number. eg. ABC122 will be ABC122-1, ABC122-2, etc.')
                                     ->required(),
+
+                                // agreement quantity
+                                Forms\Components\TextInput::make('agreement_quantity')
+                                    ->integer(true)
+                                    ->label('Agreement Quantity'),
 
                                 Forms\Components\Toggle::make('flash_deal')
                                     ->label('Flash Deal')
@@ -572,6 +578,9 @@ class MerchantOfferCampaignResource extends Resource
                     "Total: {$record->total_vouchers_count}")
                 ->color(fn ($record): string =>
                     $record->available_vouchers_count > 0 ? 'success' : 'warning'),
+
+                Tables\Columns\TextColumn::make('agreement_quantity')
+                    ->label('Agreement Quantity'),
 
                 Tables\Columns\TextColumn::make('upcoming_vouchers_count')
                     ->label('Upcoming Vouchers')
