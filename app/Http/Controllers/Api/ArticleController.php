@@ -1041,7 +1041,9 @@ class ArticleController extends Controller
     private function createOrAttachLocation($article, $locationData)
     {
         // search by google_id first if there is in locationData
-        $location = null;
+        $location   = null;
+        $locations  = null;
+        // $locations = null;
         // if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
         //     $location = Location::where('google_id', $locationData['google_id'])->first();
         // } else {
@@ -1067,20 +1069,19 @@ class ArticleController extends Controller
         //         ->first();
         // }
 
-        $article->location()->detach(); // detaches all
+        //$article->location()->detach(); // detaches all
 
         if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
             $locations = Location::where('google_id', $locationData['google_id'])->get();
-
         }
 
         // if location cant be found by google_id, then find by lat,lng
-        if(empty($locations)){
+        if ($locations->isEmpty()) {
             $locations = Location::where('lat', $locationData['lat'])
                 ->where('lng', $locationData['lng'])
                 ->get();
         }
-        
+       
         //  Grab all the same latitude and longitude to find the most matching records.
         if($locations){
             foreach($locations as $keys => $loc){
@@ -1097,7 +1098,7 @@ class ArticleController extends Controller
                 }
             }
         }
-
+        
         if ($location) {
             // just attach to article with new ratings if there is
             $article->location()->attach($location->id);
