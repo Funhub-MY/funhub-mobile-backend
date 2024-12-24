@@ -7,13 +7,21 @@ use App\Filament\Resources\PromotionCodeGroupResource\RelationManagers;
 use App\Models\PromotionCodeGroup;
 use App\Models\Reward;
 use App\Models\RewardComponent;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use pxlrbt\FilamentExcel\Columns\Column;
+use App\Exports\PromotionCodesExport;
 
 class PromotionCodeGroupResource extends Resource
 {
@@ -122,9 +130,35 @@ class PromotionCodeGroupResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                ExportAction::make()
+                    ->label('Export Codes')
+                    ->exports([
+                        PromotionCodesExport::make()->record(fn ($livewire) => $livewire->record)
+                    ]),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\BulkAction::make('updateStatus')
+                    ->label('Update Status')
+                    ->icon('heroicon-o-check-circle')
+                    ->form([
+                        Forms\Components\Toggle::make('status')
+                            ->label('Active')
+                            ->default(true)
+                            ->required(),
+                    ])
+                    ->action(function (Collection $records, array $data) {
+                        $records->each(fn ($record) => $record->update([
+                            'status' => $data['status'],
+                        ]));
+
+                        Notification::make()
+                            ->title('Status updated successfully')
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->deselectRecordsAfterCompletion(),
             ]);
     }
     
