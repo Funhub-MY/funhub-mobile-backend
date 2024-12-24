@@ -7,6 +7,7 @@ use App\Filament\Resources\PromotionCodeGroupResource\RelationManagers;
 use App\Models\PromotionCodeGroup;
 use App\Models\Reward;
 use App\Models\RewardComponent;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -14,6 +15,11 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use pxlrbt\FilamentExcel\Columns\Column;
+use App\Exports\PromotionCodesExport;
 
 class PromotionCodeGroupResource extends Resource
 {
@@ -122,6 +128,11 @@ class PromotionCodeGroupResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                ExportAction::make()
+                    ->label('Export Codes')
+                    ->exports([
+                        PromotionCodesExport::make()->record(fn ($livewire) => $livewire->record)
+                    ]),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
