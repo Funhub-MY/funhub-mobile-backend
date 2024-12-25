@@ -164,7 +164,7 @@ class EditStore extends EditRecord
                     Log::info('[Store Filament] Store ' . $this->record->id . ' attached to location: ' . $location->id);
                 }
 
-			} else {
+            }else {
 				// google reverse geoloc search via address first
 				$state = State::find($data['state_id']);
 				$country = Country::find($data['country_id']);
@@ -237,7 +237,45 @@ class EditStore extends EditRecord
 					Log::info('Failed to get location data from Google Maps API');
 				}
 			}
-        }
+
+        //  (KENNETH)
+        }else if (isset($data['location_type']) && $data['location_type'] === 'googlemap') {
+            $hasLocationAtttached = $this->record->location()->exists();
+            if ($hasLocationAtttached) {
+                $this->record->location()->detach();
+            }
+
+            $lang = isset($data['lang']) && $data['lang'] !== 0 ? $data['lang'] : null;
+            $long = isset($data['long']) && $data['long'] !== 0 ? $data['long'] : null;
+
+            if ($lang && $long) {
+                Location::updateOrInsert(
+                    [
+                        'lat' => $lang,
+                        'lng' => $long
+                    ],
+                    [
+                        'name' => $data['name'],
+                        'address' => $data['address'] ?? '',
+                        'zip_code' => $data['address_postcode'] ?? '',
+                        'city' => $data['city'] ?? '',
+                        'state_id' => $data['state_id'],
+                        'country_id' => $data['country_id'],
+                    ]);
+
+                // Fetch the location record to attach it
+                $location = Location::where('lat', $lang)
+                    ->where('lng', $long)
+                    ->first();
+
+                // Attach the location to the record
+                if ($location) {
+                    Log::info('[Store Filament] Location created: ' . $location->id);
+                    $this->record->location()->attach($location->id);
+                    Log::info('[Store Filament] Store ' . $this->record->id . ' attached to location: ' . $location->id);
+                }
+            }
+        } 
 
         // handles business hours save
         if (count($data['business_hours']) > 0) {

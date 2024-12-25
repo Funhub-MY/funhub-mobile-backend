@@ -74,12 +74,12 @@ paths:
                 id:
                   type: integer
                   description: 'This field is required when <code>slug</code> is <code>null</code>.'
-                  example: 16
+                  example: 3
                   nullable: false
                 slug:
                   type: string
                   description: 'This field is required when <code>id</code> is <code>null</code>.'
-                  example: dolores
+                  example: ut
                   nullable: false
     parameters:
       -
@@ -110,7 +110,7 @@ paths:
           present:
             summary: 'When the value is present'
             value: my-article
-  '/api/v1/public_articles_single/{id}/offers':
+  '/api/v1/public_articles_single/{article_id}/offers':
     get:
       summary: "Web - Get an Article's Offers"
       operationId: webGetAnArticlesOffers
@@ -127,6 +127,14 @@ paths:
       tags:
         - Article
     parameters:
+      -
+        in: path
+        name: article_id
+        description: 'The ID of the article.'
+        example: 34
+        required: true
+        schema:
+          type: integer
       -
         in: path
         name: id
@@ -454,7 +462,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 19
+                  example: 11
                   nullable: false
                 reason:
                   type: string
@@ -464,12 +472,12 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: id
+                  example: voluptatem
                   nullable: false
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: reprehenderit
+                  example: sunt
                   nullable: false
                 article:
                   type: integer
@@ -577,7 +585,7 @@ paths:
         in: path
         name: article_id
         description: 'The ID of the article.'
-        example: 1
+        example: 8
         required: true
         schema:
           type: integer
@@ -641,7 +649,7 @@ paths:
                   type: array
                   description: 'Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - accusantium
+                    - non
                   items:
                     type: string
               required:
@@ -673,7 +681,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - accusamus
+                    - ut
                   items:
                     type: string
                 category_ids:
@@ -763,7 +771,7 @@ paths:
                 keyword_id:
                   type: integer
                   description: 'The <code>id</code> of an existing record in the search_keywords table.'
-                  example: 14
+                  example: 18
                   nullable: false
               required:
                 - keyword_id
@@ -837,7 +845,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - officiis
+                    - rerum
                   items:
                     type: string
                 category_ids:
@@ -1604,7 +1612,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: at
+        example: soluta
         required: true
         schema:
           type: string
@@ -1695,12 +1703,12 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: explicabo
+                  example: aut
                   nullable: false
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: vel
+                  example: consequuntur
                   nullable: false
               required:
                 - comment_id
@@ -2028,7 +2036,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: vel
+        example: itaque
         required: true
         schema:
           type: string
@@ -2983,7 +2991,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: nwiza@example.org
+                  example: zoila.gerlach@example.net
                   nullable: false
                 phone:
                   type: string
@@ -3077,7 +3085,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: saepe
+                  example: blanditiis
                   nullable: false
               required:
                 - username
@@ -3958,7 +3966,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: et
+                  example: incidunt
                   nullable: false
               required:
                 - share_code
@@ -3989,7 +3997,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1712
+                      line: 1766
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -4411,7 +4419,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1712
+                        line: 1766
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -4839,7 +4847,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: ea
+                  example: expedita
                   nullable: false
               required:
                 - share_code
@@ -4870,7 +4878,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                      line: 1172
+                      line: 1230
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5292,7 +5300,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                        line: 1172
+                        line: 1230
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5720,10 +5728,175 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: aliquid
+                  example: iste
                   nullable: false
               required:
                 - share_code
+  /api/v1/external/merchants:
+    get:
+      summary: "Get Merchants Lists\nMerchant portal will call this api to sync data\nGet merchant info, logo, user, categories, stores and store categories"
+      operationId: getMerchantsListsMerchantPortalWillCallThisApiToSyncDataGetMerchantInfoLogoUserCategoriesStoresAndStoreCategories
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Invalid API token'
+                properties:
+                  message:
+                    type: string
+                    example: 'Invalid API token'
+      tags:
+        - Endpoints
+  /api/v1/external/merchant/categories:
+    get:
+      summary: "Get Merchant Categories\nMerchant portal will call this api to sync data"
+      operationId: getMerchantCategoriesMerchantPortalWillCallThisApiToSyncData
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Invalid API token'
+                properties:
+                  message:
+                    type: string
+                    example: 'Invalid API token'
+      tags:
+        - Endpoints
+  /api/v1/external/merchant/dashboard:
+    post:
+      summary: "Get Merchant's Dashboard\nMerchant portal will call this api for reporting overview"
+      operationId: getMerchantsDashboardMerchantPortalWillCallThisApiForReportingOverview
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+  /api/v1/external/merchant/offer_overview:
+    post:
+      summary: "Get Merchant's Offer Overview\nMerchant portal will call this api for reporting overview"
+      operationId: getMerchantsOfferOverviewMerchantPortalWillCallThisApiForReportingOverview
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+  /api/v1/external/merchant/offer_code_lists:
+    post:
+      summary: "Get Merchant's Offer Codes lists\nMerchant portal will call this api for reporting"
+      operationId: getMerchantsOfferCodesListsMerchantPortalWillCallThisApiForReporting
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+  /api/v1/external/merchant/offer_lists:
+    post:
+      summary: "Get Merchant's Offer lists\nMerchant portal will call this api for reporting"
+      operationId: getMerchantsOfferListsMerchantPortalWillCallThisApiForReporting
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+  /api/v1/external/merchant/register:
+    post:
+      summary: "Post Merchant Registration\nMerchant portal send data to this api to register the merchant information in base portal"
+      operationId: postMerchantRegistrationMerchantPortalSendDataToThisApiToRegisterTheMerchantInformationInBasePortal
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+  /api/v1/external/merchant/update:
+    post:
+      summary: "Post Merchant Update\nMerchant portal send data to this api to update the merchant information in base portal"
+      operationId: postMerchantUpdateMerchantPortalSendDataToThisApiToUpdateTheMerchantInformationInBasePortal
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+  /api/v1/external/merchant/logo:
+    post:
+      summary: "Post Merchant Update Logo\nMerchant portal send data to this api to update the merchant information in base portal"
+      operationId: postMerchantUpdateLogoMerchantPortalSendDataToThisApiToUpdateTheMerchantInformationInBasePortal
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+  '/api/v1/external/merchant/{merchant_id}':
+    get:
+      summary: "Get Single Merchant\nMerchant portal will call this api to sync data\nGet merchant info, logo, user, categories, stores and store categories"
+      operationId: getSingleMerchantMerchantPortalWillCallThisApiToSyncDataGetMerchantInfoLogoUserCategoriesStoresAndStoreCategories
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Invalid API token'
+                properties:
+                  message:
+                    type: string
+                    example: 'Invalid API token'
+      tags:
+        - Endpoints
+    parameters:
+      -
+        in: path
+        name: merchant_id
+        description: 'The ID of the merchant.'
+        example: aspernatur
+        required: true
+        schema:
+          type: string
+  '/api/v1/external/store/{store_id}':
+    get:
+      summary: "Get Single Store\nMerchant portal will call this api to sync data\nGet store info"
+      operationId: getSingleStoreMerchantPortalWillCallThisApiToSyncDataGetStoreInfo
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Invalid API token'
+                properties:
+                  message:
+                    type: string
+                    example: 'Invalid API token'
+      tags:
+        - Endpoints
+    parameters:
+      -
+        in: path
+        name: store_id
+        description: 'The ID of the store.'
+        example: veniam
+        required: true
+        schema:
+          type: string
   /api/v1/help/faqs:
     get:
       summary: 'Get All FAQs'
@@ -5883,7 +6056,7 @@ paths:
                 supportable_id:
                   type: integer
                   description: 'This field is required when <code>supportable</code> is present.'
-                  example: 6
+                  example: 9
                   nullable: false
                 category_id:
                   type: integer
@@ -5969,7 +6142,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 1
+        example: 10
         required: true
         schema:
           type: integer
@@ -6007,7 +6180,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 1
+        example: 10
         required: true
         schema:
           type: integer
@@ -6045,7 +6218,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 1
+        example: 10
         required: true
         schema:
           type: integer
@@ -6438,7 +6611,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - vel
+                    - tempore
                   items:
                     type: string
                 name:
@@ -6503,7 +6676,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - incidunt
+                    - rem
                   items:
                     type: string
                 name:
@@ -6694,128 +6867,7 @@ paths:
               schema:
                 type: object
                 example:
-                  data:
-                    -
-                      id: 3
-                      sku: TEST123456
-                      merchant_id: 1
-                      store:
-                        id: null
-                        name: null
-                      stores: []
-                      logo: null
-                      merchant:
-                        id: 1
-                        logo: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/20150/hAh065E03vaBwPUs0wHSdrLtCEOYXF-metaYXBwX2ljb25fYmV0YS5qcGc%3D-.jpg'
-                        brand_name: null
-                        business_name: 'Nedex Solutions'
-                        business_phone_no: '0171234567'
-                        user:
-                          id: 87
-                          name: ' Steven Test'
-                      name: 'test again'
-                      is_flash: 0
-                      description: test
-                      fine_print: null
-                      redemption_policy: null
-                      cancellation_policy: null
-                      point_cost: 1
-                      point_fiat_price: 22
-                      discounted_point_fiat_price: 10
-                      fiat_price: 22
-                      discounted_fiat_price: 6
-                      default_purchase_method: point
-                      available_at: '2024-03-20 00:00:00'
-                      available_until: '2024-10-19 00:00:00'
-                      expiry_days: 20
-                      quantity: 21
-                      media:
-                        -
-                          name: example
-                          file_name: vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png
-                          uuid: 90be8469-f320-41d6-bb88-11db160600e3
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8114/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png'
-                          order: null
-                          custom_properties:
-                            width: 1566
-                            height: 530
-                            is_cover: false
-                          extension: png
-                          size: 505397
-                        -
-                          name: example
-                          file_name: XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png
-                          uuid: da2d3022-3165-4414-9641-e53f1867500f
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8115/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png'
-                          order: null
-                          custom_properties:
-                            width: 1566
-                            height: 530
-                            is_cover: false
-                          extension: png
-                          size: 505397
-                      horizontal_banner:
-                        name: example
-                        file_name: XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png
-                        uuid: da2d3022-3165-4414-9641-e53f1867500f
-                        original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8115/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png'
-                        order: null
-                        custom_properties:
-                          width: 1566
-                          height: 530
-                          is_cover: false
-                        extension: png
-                        size: 505397
-                      vertical_banner:
-                        name: example
-                        file_name: vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png
-                        uuid: 90be8469-f320-41d6-bb88-11db160600e3
-                        original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8114/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png'
-                        order: null
-                        custom_properties:
-                          width: 1566
-                          height: 530
-                          is_cover: false
-                        extension: png
-                        size: 505397
-                      interactions:
-                        -
-                          id: 229
-                          user:
-                            id: 43
-                            name: 'Steven Yew'
-                            avatar: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/9271/image_cropper_1701231380518.jpg'
-                          type: 4
-                          created_at: '2023-08-10T07:11:02.000000Z'
-                          updated_at: '2023-08-10T07:11:02.000000Z'
-                          share_url: null
-                          created_at_diff: '1 year ago'
-                          updated_at_diff: '1 year ago'
-                      location:
-                        id: 2
-                        name: 'Damen Subang by KL Short Stay'
-                        address: 'Subang Jaya, Subang Jaya, Selangor, Malaysia'
-                        lat: 3.0585253
-                        lng: 101.5926696
-                        rated_count: 1
-                      count:
-                        likes: 0
-                        share: 0
-                        bookmarks: 1
-                        views: 0
-                      categories:
-                        -
-                          id: 2
-                          name: Leisure
-                          slug: fun
-                          parent_id: null
-                          description: null
-                          created_at: '2023-05-07T20:44:53.000000Z'
-                          updated_at: '2024-05-08T02:50:30.000000Z'
-                      created_at: '2023-10-19T07:43:16.000000Z'
-                      updated_at: '2024-11-13T04:10:01.000000Z'
-                      created_at_diff: '1 year ago'
-                      updated_at_diff: '1 week ago'
+                  data: []
                   links:
                     first: 'https://funhub-mobile-backend.test/api/v1/public_offers?page=1'
                     last: 'https://funhub-mobile-backend.test/api/v1/public_offers?page=1'
@@ -6823,7 +6875,7 @@ paths:
                     next: null
                   meta:
                     current_page: 1
-                    from: 1
+                    from: null
                     last_page: 1
                     links:
                       -
@@ -6840,504 +6892,12 @@ paths:
                         active: false
                     path: 'https://funhub-mobile-backend.test/api/v1/public_offers'
                     per_page: 10
-                    to: 1
-                    total: 1
+                    to: null
+                    total: 0
                 properties:
                   data:
                     type: array
-                    example:
-                      -
-                        id: 3
-                        sku: TEST123456
-                        merchant_id: 1
-                        store:
-                          id: null
-                          name: null
-                        stores: []
-                        logo: null
-                        merchant:
-                          id: 1
-                          logo: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/20150/hAh065E03vaBwPUs0wHSdrLtCEOYXF-metaYXBwX2ljb25fYmV0YS5qcGc%3D-.jpg'
-                          brand_name: null
-                          business_name: 'Nedex Solutions'
-                          business_phone_no: '0171234567'
-                          user:
-                            id: 87
-                            name: ' Steven Test'
-                        name: 'test again'
-                        is_flash: 0
-                        description: test
-                        fine_print: null
-                        redemption_policy: null
-                        cancellation_policy: null
-                        point_cost: 1
-                        point_fiat_price: 22
-                        discounted_point_fiat_price: 10
-                        fiat_price: 22
-                        discounted_fiat_price: 6
-                        default_purchase_method: point
-                        available_at: '2024-03-20 00:00:00'
-                        available_until: '2024-10-19 00:00:00'
-                        expiry_days: 20
-                        quantity: 21
-                        media:
-                          -
-                            name: example
-                            file_name: vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png
-                            uuid: 90be8469-f320-41d6-bb88-11db160600e3
-                            original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8114/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png'
-                            order: null
-                            custom_properties:
-                              width: 1566
-                              height: 530
-                              is_cover: false
-                            extension: png
-                            size: 505397
-                          -
-                            name: example
-                            file_name: XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png
-                            uuid: da2d3022-3165-4414-9641-e53f1867500f
-                            original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8115/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png'
-                            order: null
-                            custom_properties:
-                              width: 1566
-                              height: 530
-                              is_cover: false
-                            extension: png
-                            size: 505397
-                        horizontal_banner:
-                          name: example
-                          file_name: XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png
-                          uuid: da2d3022-3165-4414-9641-e53f1867500f
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8115/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png'
-                          order: null
-                          custom_properties:
-                            width: 1566
-                            height: 530
-                            is_cover: false
-                          extension: png
-                          size: 505397
-                        vertical_banner:
-                          name: example
-                          file_name: vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png
-                          uuid: 90be8469-f320-41d6-bb88-11db160600e3
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8114/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png'
-                          order: null
-                          custom_properties:
-                            width: 1566
-                            height: 530
-                            is_cover: false
-                          extension: png
-                          size: 505397
-                        interactions:
-                          -
-                            id: 229
-                            user:
-                              id: 43
-                              name: 'Steven Yew'
-                              avatar: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/9271/image_cropper_1701231380518.jpg'
-                            type: 4
-                            created_at: '2023-08-10T07:11:02.000000Z'
-                            updated_at: '2023-08-10T07:11:02.000000Z'
-                            share_url: null
-                            created_at_diff: '1 year ago'
-                            updated_at_diff: '1 year ago'
-                        location:
-                          id: 2
-                          name: 'Damen Subang by KL Short Stay'
-                          address: 'Subang Jaya, Subang Jaya, Selangor, Malaysia'
-                          lat: 3.0585253
-                          lng: 101.5926696
-                          rated_count: 1
-                        count:
-                          likes: 0
-                          share: 0
-                          bookmarks: 1
-                          views: 0
-                        categories:
-                          -
-                            id: 2
-                            name: Leisure
-                            slug: fun
-                            parent_id: null
-                            description: null
-                            created_at: '2023-05-07T20:44:53.000000Z'
-                            updated_at: '2024-05-08T02:50:30.000000Z'
-                        created_at: '2023-10-19T07:43:16.000000Z'
-                        updated_at: '2024-11-13T04:10:01.000000Z'
-                        created_at_diff: '1 year ago'
-                        updated_at_diff: '1 week ago'
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                          example: 3
-                        sku:
-                          type: string
-                          example: TEST123456
-                        merchant_id:
-                          type: integer
-                          example: 1
-                        store:
-                          type: object
-                          properties:
-                            id:
-                              type: string
-                              example: null
-                            name:
-                              type: string
-                              example: null
-                        stores:
-                          type: array
-                          example: []
-                        logo:
-                          type: string
-                          example: null
-                        merchant:
-                          type: object
-                          properties:
-                            id:
-                              type: integer
-                              example: 1
-                            logo:
-                              type: string
-                              example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/20150/hAh065E03vaBwPUs0wHSdrLtCEOYXF-metaYXBwX2ljb25fYmV0YS5qcGc%3D-.jpg'
-                            brand_name:
-                              type: string
-                              example: null
-                            business_name:
-                              type: string
-                              example: 'Nedex Solutions'
-                            business_phone_no:
-                              type: string
-                              example: '0171234567'
-                            user:
-                              type: object
-                              properties:
-                                id:
-                                  type: integer
-                                  example: 87
-                                name:
-                                  type: string
-                                  example: ' Steven Test'
-                        name:
-                          type: string
-                          example: 'test again'
-                        is_flash:
-                          type: integer
-                          example: 0
-                        description:
-                          type: string
-                          example: test
-                        fine_print:
-                          type: string
-                          example: null
-                        redemption_policy:
-                          type: string
-                          example: null
-                        cancellation_policy:
-                          type: string
-                          example: null
-                        point_cost:
-                          type: integer
-                          example: 1
-                        point_fiat_price:
-                          type: integer
-                          example: 22
-                        discounted_point_fiat_price:
-                          type: integer
-                          example: 10
-                        fiat_price:
-                          type: integer
-                          example: 22
-                        discounted_fiat_price:
-                          type: integer
-                          example: 6
-                        default_purchase_method:
-                          type: string
-                          example: point
-                        available_at:
-                          type: string
-                          example: '2024-03-20 00:00:00'
-                        available_until:
-                          type: string
-                          example: '2024-10-19 00:00:00'
-                        expiry_days:
-                          type: integer
-                          example: 20
-                        quantity:
-                          type: integer
-                          example: 21
-                        media:
-                          type: array
-                          example:
-                            -
-                              name: example
-                              file_name: vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png
-                              uuid: 90be8469-f320-41d6-bb88-11db160600e3
-                              original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8114/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png'
-                              order: null
-                              custom_properties:
-                                width: 1566
-                                height: 530
-                                is_cover: false
-                              extension: png
-                              size: 505397
-                            -
-                              name: example
-                              file_name: XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png
-                              uuid: da2d3022-3165-4414-9641-e53f1867500f
-                              original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8115/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png'
-                              order: null
-                              custom_properties:
-                                width: 1566
-                                height: 530
-                                is_cover: false
-                              extension: png
-                              size: 505397
-                          items:
-                            type: object
-                            properties:
-                              name:
-                                type: string
-                                example: example
-                              file_name:
-                                type: string
-                                example: vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png
-                              uuid:
-                                type: string
-                                example: 90be8469-f320-41d6-bb88-11db160600e3
-                              original_url:
-                                type: string
-                                example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8114/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png'
-                              order:
-                                type: string
-                                example: null
-                              custom_properties:
-                                type: object
-                                properties:
-                                  width:
-                                    type: integer
-                                    example: 1566
-                                  height:
-                                    type: integer
-                                    example: 530
-                                  is_cover:
-                                    type: boolean
-                                    example: false
-                              extension:
-                                type: string
-                                example: png
-                              size:
-                                type: integer
-                                example: 505397
-                        horizontal_banner:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                              example: example
-                            file_name:
-                              type: string
-                              example: XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png
-                            uuid:
-                              type: string
-                              example: da2d3022-3165-4414-9641-e53f1867500f
-                            original_url:
-                              type: string
-                              example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8115/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png'
-                            order:
-                              type: string
-                              example: null
-                            custom_properties:
-                              type: object
-                              properties:
-                                width:
-                                  type: integer
-                                  example: 1566
-                                height:
-                                  type: integer
-                                  example: 530
-                                is_cover:
-                                  type: boolean
-                                  example: false
-                            extension:
-                              type: string
-                              example: png
-                            size:
-                              type: integer
-                              example: 505397
-                        vertical_banner:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                              example: example
-                            file_name:
-                              type: string
-                              example: vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png
-                            uuid:
-                              type: string
-                              example: 90be8469-f320-41d6-bb88-11db160600e3
-                            original_url:
-                              type: string
-                              example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8114/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png'
-                            order:
-                              type: string
-                              example: null
-                            custom_properties:
-                              type: object
-                              properties:
-                                width:
-                                  type: integer
-                                  example: 1566
-                                height:
-                                  type: integer
-                                  example: 530
-                                is_cover:
-                                  type: boolean
-                                  example: false
-                            extension:
-                              type: string
-                              example: png
-                            size:
-                              type: integer
-                              example: 505397
-                        interactions:
-                          type: array
-                          example:
-                            -
-                              id: 229
-                              user:
-                                id: 43
-                                name: 'Steven Yew'
-                                avatar: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/9271/image_cropper_1701231380518.jpg'
-                              type: 4
-                              created_at: '2023-08-10T07:11:02.000000Z'
-                              updated_at: '2023-08-10T07:11:02.000000Z'
-                              share_url: null
-                              created_at_diff: '1 year ago'
-                              updated_at_diff: '1 year ago'
-                          items:
-                            type: object
-                            properties:
-                              id:
-                                type: integer
-                                example: 229
-                              user:
-                                type: object
-                                properties:
-                                  id:
-                                    type: integer
-                                    example: 43
-                                  name:
-                                    type: string
-                                    example: 'Steven Yew'
-                                  avatar:
-                                    type: string
-                                    example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/9271/image_cropper_1701231380518.jpg'
-                              type:
-                                type: integer
-                                example: 4
-                              created_at:
-                                type: string
-                                example: '2023-08-10T07:11:02.000000Z'
-                              updated_at:
-                                type: string
-                                example: '2023-08-10T07:11:02.000000Z'
-                              share_url:
-                                type: string
-                                example: null
-                              created_at_diff:
-                                type: string
-                                example: '1 year ago'
-                              updated_at_diff:
-                                type: string
-                                example: '1 year ago'
-                        location:
-                          type: object
-                          properties:
-                            id:
-                              type: integer
-                              example: 2
-                            name:
-                              type: string
-                              example: 'Damen Subang by KL Short Stay'
-                            address:
-                              type: string
-                              example: 'Subang Jaya, Subang Jaya, Selangor, Malaysia'
-                            lat:
-                              type: number
-                              example: 3.0585253
-                            lng:
-                              type: number
-                              example: 101.5926696
-                            rated_count:
-                              type: integer
-                              example: 1
-                        count:
-                          type: object
-                          properties:
-                            likes:
-                              type: integer
-                              example: 0
-                            share:
-                              type: integer
-                              example: 0
-                            bookmarks:
-                              type: integer
-                              example: 1
-                            views:
-                              type: integer
-                              example: 0
-                        categories:
-                          type: array
-                          example:
-                            -
-                              id: 2
-                              name: Leisure
-                              slug: fun
-                              parent_id: null
-                              description: null
-                              created_at: '2023-05-07T20:44:53.000000Z'
-                              updated_at: '2024-05-08T02:50:30.000000Z'
-                          items:
-                            type: object
-                            properties:
-                              id:
-                                type: integer
-                                example: 2
-                              name:
-                                type: string
-                                example: Leisure
-                              slug:
-                                type: string
-                                example: fun
-                              parent_id:
-                                type: string
-                                example: null
-                              description:
-                                type: string
-                                example: null
-                              created_at:
-                                type: string
-                                example: '2023-05-07T20:44:53.000000Z'
-                              updated_at:
-                                type: string
-                                example: '2024-05-08T02:50:30.000000Z'
-                        created_at:
-                          type: string
-                          example: '2023-10-19T07:43:16.000000Z'
-                        updated_at:
-                          type: string
-                          example: '2024-11-13T04:10:01.000000Z'
-                        created_at_diff:
-                          type: string
-                          example: '1 year ago'
-                        updated_at_diff:
-                          type: string
-                          example: '1 week ago'
+                    example: []
                   links:
                     type: object
                     properties:
@@ -7360,8 +6920,8 @@ paths:
                         type: integer
                         example: 1
                       from:
-                        type: integer
-                        example: 1
+                        type: string
+                        example: null
                       last_page:
                         type: integer
                         example: 1
@@ -7399,11 +6959,11 @@ paths:
                         type: integer
                         example: 10
                       to:
-                        type: integer
-                        example: 1
+                        type: string
+                        example: null
                       total:
                         type: integer
-                        example: 1
+                        example: 0
       tags:
         - Merchant
     parameters:
@@ -7615,13 +7175,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - impedit
+            - sint
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - impedit
+              - sint
             items:
               type: string
         -
@@ -7822,7 +7382,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - consequatur
+                    - optio
                   items:
                     type: string
                 city:
@@ -8008,6 +7568,11 @@ paths:
                   type: string
                   description: 'optional Channel.'
                   example: app/funhub_web
+                  nullable: false
+                email:
+                  type: string
+                  description: 'optional Email for web channel to fire purchased email after successful purchase.'
+                  example: john@email.com
                   nullable: false
               required:
                 - offer_id
@@ -8257,7 +7822,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: ut
+        example: fugit
         required: true
         schema:
           type: string
@@ -9143,6 +8708,37 @@ paths:
           present:
             summary: 'When the value is present'
             value: 'one-off,daily,monthly,accumulated'
+  /api/v1/missions/frequency:
+    get:
+      summary: 'Get enabled mission frequencies'
+      operationId: getEnabledMissionFrequencies
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    - one-off
+                    - daily
+                    - monthly
+                    - accumulated
+                properties:
+                  data:
+                    type: array
+                    example:
+                      - one-off
+                      - daily
+                      - monthly
+                      - accumulated
+                    items:
+                      type: string
+      tags:
+        - Mission
   /api/v1/missions/complete:
     post:
       summary: 'Complete all missions or single mission'
@@ -9717,6 +9313,36 @@ paths:
                   nullable: false
               required:
                 - transaction_no
+  /api/v1/promotion-codes/redeem:
+    post:
+      summary: 'Redeem a promotion code'
+      operationId: redeemAPromotionCode
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Code redeemed successfully\",\n\"rewards\": [\n  {\n    \"id\": 1,\n    \"name\": \"Funhub\",\n    \"description\": \"Funhub\",\n    \"components\": [],\n  }\n],\n\"reward_components\": [\n  {\n    \"id\": 1,\n    \"name\": \"Funhub\",\n    \"description\": \"Funhub\",\n    \"components\": [],\n  }\n]\n}"
+      tags:
+        - 'Promotion Code'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: 'The code to redeem.'
+                  example: ABCD123ABCDD
+                  nullable: false
+              required:
+                - code
   /api/v1/external/stores:
     get:
       summary: 'Get Stores'
@@ -9989,7 +9615,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: earum
+                  example: minus
                   nullable: false
               required:
                 - store_ids
@@ -10053,7 +9679,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: nisi
+                  example: perspiciatis
                   nullable: false
               required:
                 - store_ids
@@ -10101,7 +9727,7 @@ paths:
                 location_id:
                   type: string
                   description: ''
-                  example: officia
+                  example: eaque
                   nullable: false
               required:
                 - location_id
@@ -10183,7 +9809,7 @@ paths:
         in: path
         name: store_id
         description: 'The ID of the store.'
-        example: 1
+        example: 3
         required: true
         schema:
           type: integer
@@ -10300,7 +9926,7 @@ paths:
         in: path
         name: store_id
         description: 'The ID of the store.'
-        example: 1
+        example: 3
         required: true
         schema:
           type: integer
@@ -10333,7 +9959,7 @@ paths:
         in: path
         name: store_id
         description: 'The ID of the store.'
-        example: 1
+        example: 3
         required: true
         schema:
           type: integer
@@ -10452,7 +10078,7 @@ paths:
         in: path
         name: transaction_id
         description: 'The ID of the transaction.'
-        example: 1
+        example: 7
         required: true
         schema:
           type: integer
@@ -10703,7 +10329,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 10
+                  example: 16
                   nullable: false
               required:
                 - user_id
@@ -10750,7 +10376,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 1
+                  example: 6
                   nullable: false
               required:
                 - user_id
@@ -10797,7 +10423,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 10
+                  example: 2
                   nullable: false
               required:
                 - user_id
@@ -10832,7 +10458,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 10
+                  example: 4
                   nullable: false
               required:
                 - user_id
@@ -10902,17 +10528,17 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: laboriosam
+                  example: est
                   nullable: false
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: commodi
+                  example: vel
                   nullable: false
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: voluptas
+                  example: sint
                   nullable: false
                 also_block_user:
                   type: boolean
@@ -11186,7 +10812,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: aut
+                  example: deserunt
                   nullable: false
               required:
                 - user_ids
@@ -12187,7 +11813,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: male
+                  example: female
                   nullable: false
                   enum:
                     - male
@@ -12324,7 +11950,7 @@ paths:
                 last_lang:
                   type: string
                   description: ''
-                  example: zh
+                  example: en
                   nullable: false
                   enum:
                     - en
@@ -12831,6 +12457,9 @@ tags:
     description: ''
   -
     name: Product
+    description: ''
+  -
+    name: 'Promotion Code'
     description: ''
   -
     name: Stores

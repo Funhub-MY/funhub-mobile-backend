@@ -225,6 +225,7 @@ class MerchantResource extends Resource
                     ->schema([
                         SpatieMediaLibraryFileUpload::make('company_logo')
                             ->label('Company Logo')
+							->required()
                             ->maxFiles(1)
                             ->collection(Merchant::MEDIA_COLLECTION_NAME)
                             // ->required()
@@ -374,7 +375,44 @@ class MerchantResource extends Resource
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),
+                BulkAction::make('sendLoginEmail')
+                    ->label('Send Merchant User Login Email')
+                    ->action(function (Collection $records) {
+                        $merchantIds = $records->pluck('id')->toArray();
 
+                        if(!empty($merchantIds)){
+                            //  As this action will link use the email server, try to limit the email sent per time.
+                            if(count($merchantIds) > 10){
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Email Sending Limit Reached')
+                                    ->body('A maximum of 10 accounts can be processed at a time to prevent excessive email sending and cause the email server been block.')
+                                    ->send();
+
+                            }else{
+                                //  Send this to merchant portal api to send email.
+                                $syncMerchantPortal = app(SyncMerchantPortal::class);
+                                $response = $syncMerchantPortal->sendLoginEmail($merchantIds);
+                                if($response['error'] == true){
+                                    Notification::make()
+                                    ->danger()
+                                    ->title('Send email error')
+                                    ->body($response['message'])
+                                    ->send();
+                                }else{
+                                    Notification::make()
+                                    ->success()
+                                    ->title('Send email success')
+                                    ->body($response['message'])
+                                    ->send();
+                              
+                                }
+                            }   
+                            
+                        }
+                    })
+                    ->requiresConfirmation()
+                    ->deselectRecordsAfterCompletion(),
 
                 BulkAction::make('sendEmail')
                     ->label('Send Merchant Onboard Email')

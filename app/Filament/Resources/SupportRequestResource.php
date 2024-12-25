@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Models\Article;
+use App\Models\Merchant;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
@@ -33,6 +34,11 @@ class SupportRequestResource extends Resource
     protected static ?int $navigationSort = 1;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
+
+	protected static function getNavigationBadge(): ?string
+	{
+		return (string) SupportRequest::where('status', '!=', SupportRequest::STATUS_CLOSED)->count();
+	}
 
     public static function form(Form $form): Form
     {

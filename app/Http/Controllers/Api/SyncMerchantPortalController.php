@@ -7,7 +7,7 @@ use App\Models\Merchant;
 use App\Models\MerchantCategory;
 use App\Models\RatingCategory;
 use App\Models\Store;
-
+use App\Models\MerchantUserAutolink;
 use App\Models\User;
 use App\Models\MerchantOfferCampaign;
 use App\Models\MerchantOfferVoucher;
@@ -25,6 +25,7 @@ use App\Http\Resources\SyncStoreResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class SyncMerchantPortalController extends Controller
 {
@@ -104,8 +105,40 @@ class SyncMerchantPortalController extends Controller
                 'authorised_personnel_ic_no' => 'required'
             ]);
 
+            //  Create or Link the User Data due to the User is required
+            $user = null;
+            $hasAutoLinkedUser = false;
+            // create a default password
+            $password       = Str::random(8);
+            $countryCode    = substr($request->pic_phone_no, 0, 2);
+            $phoneNo        = substr($request->pic_phone_no, 2);
+
+            //  Find the user based on country code and phone no
+            $user = User::where('phone_no', $phoneNo)
+                ->where('phone_country_code', $countryCode)
+                ->first();
+
+            //  If found the user, do auto link
+            if ($user) {
+                $hasAutoLinkedUser = true;
+            }
+
+            //  If can't find the user, create the new user
+            if (!$user) {
+                $user = User::create([
+                    'name' => $request->brand_name,
+                    'phone_no' => $phoneNo,
+                    'phone_country_code' => $countryCode,
+                    'password' => bcrypt($password),
+                ]);
+            }
+
+            //  Assign the user to merchant role (Is this still need?)
+            $user->assignRole('merchant');
+
             //  Merchant data
             $merchant_data = [
+                'user_id' => $user->id,
                 'name' => $request->business_name,
                 'email' => $request->pic_email,
                 'business_name' => $request->business_name, 
@@ -130,6 +163,17 @@ class SyncMerchantPortalController extends Controller
             ];
 
             $merchant = Merchant::create($merchant_data); 
+
+            //  Add log for Auto Linked User and create Auto Link
+            if ($hasAutoLinkedUser) {
+                Log::info('[SyncMerchantPortalController] Auto linked user with phone_no: ' . $request->pic_phone_no);
+                MerchantUserAutolink::create([
+                    'merchant_id' => $merchant->id,
+                    'user_id' => $user->id,
+                    'phone_no' => $phoneNo,
+                    'phone_country_code' => $countryCode
+                ]);
+            }   
 
             return response()->json([
                 'error'     => false,
@@ -389,6 +433,11 @@ class SyncMerchantPortalController extends Controller
             if($merchant){
                 $userId = $merchant->user_id;
 
+                //  Get campaign agreement quantity
+                $campaigns = MerchantOfferCampaign::where('user_id', $userId)
+                    ->select(['id', 'agreement_quantity']) 
+                    ->get()->toArray();
+
                 //  Total Vouchers
                 $total      = MerchantOfferVoucher::whereHas('merchant_offer', function ($q) use ($userId) {
                     $q->where('user_id', $userId);//->where('status', 1);
@@ -403,6 +452,13 @@ class SyncMerchantPortalController extends Controller
                 $redeemed   = MerchantOfferVoucher::whereHas('merchant_offer', function ($q) use ($userId) {
                     $q->where('user_id', $userId);//->where('status', 1);
                 })->whereHas('redeem')->count();
+
+
+                //  Hard solve the total quantity (Get from merchant_offer_voucher) & agreement quantity
+                if($campaigns){
+                    $cTotal     = array_sum(array_column($campaigns, "agreement_quantity"));
+                    $total      = ($cTotal > 0) ? $cTotal : $total;
+                }
 
                 $data = [
                     'total'     => $total,
@@ -448,18 +504,6 @@ class SyncMerchantPortalController extends Controller
             if($merchant){
                 $userId = $merchant->user_id;
 
-                // $lists = MerchantOfferVoucher::whereHas('merchant_offer', function ($q) use ($userId) {
-                //     $q->where('user_id', $userId);
-                // })
-                // ->whereHas('claim')
-                // ->whereNotNull('owned_by_id') 
-                // ->with([
-                //     'claim',
-                //     'latestSuccessfulClaim',
-                //     'redeem'
-                // ])
-                // ->get();
-
                 $lists = DB::table('merchant_offer_vouchers')
                     ->join('merchant_offers', 'merchant_offers.id', '=', 'merchant_offer_vouchers.merchant_offer_id')
                     ->join('merchant_offer_user', function ($join) {
@@ -471,6 +515,7 @@ class SyncMerchantPortalController extends Controller
                     //  Purchases success
                     ->where('merchant_offer_user.status', '=', MerchantOfferClaim::CLAIM_SUCCESS)
                     ->whereNotNull('merchant_offer_vouchers.owned_by_id')
+                    ->whereNotNull('merchant_offers.merchant_offer_campaign_id')
                     ->select(
                         'merchant_offer_vouchers.id as id',
                         'merchant_offer_vouchers.code as code',
@@ -542,27 +587,53 @@ class SyncMerchantPortalController extends Controller
             if($merchant){
                 $userId = $merchant->user_id;
 
-                $lists = DB::table('merchant_offer_vouchers')
-                    ->join('merchant_offers', 'merchant_offers.id', '=', 'merchant_offer_vouchers.merchant_offer_id')
-                    ->leftJoin('merchant_offer_user', 'merchant_offer_user.voucher_id', '=', 'merchant_offer_vouchers.id')
-                    ->leftJoin('merchant_offer_claims_redemptions', 'merchant_offer_claims_redemptions.claim_id', '=', 'merchant_offer_user.id')
-                    ->where('merchant_offers.user_id', $userId)
-                    ->select(
-                        'merchant_offer_vouchers.id as id',
-                        'merchant_offer_vouchers.code as code',
-                        'merchant_offers.name as offer_name',
-                        DB::raw('COALESCE(merchant_offer_user.status, 0) as purchase_status'), 
-                        DB::raw('CASE WHEN merchant_offer_claims_redemptions.id IS NOT NULL THEN 1 ELSE 0 END as isRedeemed')
-                    )
-                    ->groupBy(
-                        'merchant_offer_vouchers.id',
-                        'merchant_offer_vouchers.code',
-                        'merchant_offers.name',
-                        'merchant_offer_user.status',
-                        'merchant_offer_claims_redemptions.id'
-                    )
-                    ->distinct()
-                    ->get();
+                $lists  = collect();
+
+                //  Get campaign agreement quantity
+                $campaigns  = MerchantOfferCampaign::where('user_id', $userId)
+                    ->select(['id', 'agreement_quantity']) 
+                    ->get()->toArray();
+
+                if($campaigns){
+                    foreach($campaigns as $campaign){
+                        $query = DB::table('merchant_offer_vouchers')
+                            ->join('merchant_offers', 'merchant_offers.id', '=', 'merchant_offer_vouchers.merchant_offer_id')
+                            ->leftJoin('merchant_offer_user', 'merchant_offer_user.voucher_id', '=', 'merchant_offer_vouchers.id')
+                            ->leftJoin('merchant_offer_claims_redemptions', 'merchant_offer_claims_redemptions.claim_id', '=', 'merchant_offer_user.id')
+                            ->where('merchant_offers.user_id', $userId)
+                            ->where('merchant_offers.merchant_offer_campaign_id', $campaign['id'])
+                            ->select(
+                                'merchant_offer_vouchers.id as id',
+                                'merchant_offer_vouchers.code as code',
+                                'merchant_offers.merchant_offer_campaign_id as campaign_id',
+                                'merchant_offers.name as offer_name',
+                                DB::raw('COALESCE(merchant_offer_user.status, 0) as purchase_status'), 
+                                DB::raw('CASE WHEN merchant_offer_claims_redemptions.id IS NOT NULL THEN 1 ELSE 0 END as isRedeemed')
+                            )
+                            ->groupBy(
+                                'merchant_offer_vouchers.id',
+                                'merchant_offer_vouchers.code',
+                                'merchant_offers.name',
+                                'merchant_offers.merchant_offer_campaign_id',
+                                'merchant_offer_user.status',
+                                'merchant_offer_claims_redemptions.id'
+                            )
+                            ->distinct()
+                            ->orderBy(DB::raw('CASE WHEN merchant_offer_claims_redemptions.id IS NOT NULL THEN 1 ELSE 0 END'), 'desc')
+                            ->orderBy('merchant_offer_vouchers.id', 'asc')
+                            ->orderBy('merchant_offers.id', 'asc');
+
+                        // Apply limit if agreementQuantity is greater than 0
+                        if ($campaign['agreement_quantity'] > 0) {
+                            $query->limit($campaign['agreement_quantity']);
+                        }
+
+                        // Fetch the results and merge into the final list
+                        $vouchers   = $query->get();
+                        $lists      = $lists->merge($vouchers);
+                    }
+                }
+                
 
                 return response()->json([
                     'error'     => false,

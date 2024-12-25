@@ -296,6 +296,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         // Missions
         Route::prefix('/missions')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\MissionController::class, 'index']);
+            Route::get('/frequency', [\App\Http\Controllers\Api\MissionController::class, 'getEnabledMissionFrequency']);
             Route::post('/complete', [\App\Http\Controllers\Api\MissionController::class, 'postCompleteMission']);
             Route::get('/claimables', [\App\Http\Controllers\Api\MissionController::class, 'getClaimableMissions']);
         });
@@ -350,5 +351,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         // Payments
         Route::get('/payment/available_payment_types', [PaymentController::class, 'getAvailablePaymentTypes']);
         Route::get('/payment/funbox_ringgit_value', [PaymentController::class, 'getFunboxRinggitValue']);
+
+        // Promotion Codes
+        Route::post('/promotion-codes/redeem', [\App\Http\Controllers\Api\PromotionCodeController::class, 'redeem']);
     });
 });

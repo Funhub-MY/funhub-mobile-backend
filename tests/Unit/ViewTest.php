@@ -343,35 +343,6 @@ class ViewTest extends TestCase
         //dd($totalOriginalScheduledViews, $totalUpdatedScheduledViews);
     }
 
-    //test scheduled_at cannot be between 1am and 6am
-    public function testScheduledAtNotBetween1amAnd6am()
-    {
-        // TODO: temporary commented out due to error
-
-        // $this->user = User::factory()->create();
-        // Sanctum::actingAs($this->user,['*']);
-
-        // $article = Article::factory()->create();
-
-        // $this->generateViewsForArticle($article->id);
-
-        // // Collect the generated views for the article
-        // $generatedViews = ViewQueue::where('article_id', $article->id)->get();
-
-        // //get the scheduled_at for each generated views
-        // $scheduledAtArray = [];
-        // foreach ($generatedViews as $view) {
-        //     $scheduledAtArray[] = $view->scheduled_at;
-        // }
-        // //dd($scheduledAtArray);
-
-        // // Check if the scheduled_at is not between 1am and 6am
-        // foreach ($generatedViews as $view) {
-        //     $scheduled_at = Carbon::parse($view->scheduled_at);
-        //     $this->assertTrue($scheduled_at >= $scheduled_at->copy()->startOfDay()->addHours(6));
-        // }
-    }
-
     // Simulate the view generation for a specific article
     protected function generateViewsForArticle($article_id)
     {

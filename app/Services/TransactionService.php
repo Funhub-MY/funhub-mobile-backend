@@ -15,15 +15,17 @@ class TransactionService {
      * @param string $gateway
      * @param int $user_id
      * @param string $payment_method
-     * @param string $transaction_no
      * @param string $channel
+     * @param string $name
+     * @param string $email
+     * @param string $transaction_no
      * @param float $discount
-     * @param int $discount_point_ledger_id
+     * @param int $points_to_use
      *
      * @return Transaction
      */
-    public function create($transactionable, $amount, $gateway, $user_id, $payment_method = 'fpx', $channel = 'app', $transaction_no = null, $discount = 0, $points_to_use = 0)
-    {
+    public function create($transactionable, $amount, $gateway, $user_id, $payment_method = 'fpx', $channel = 'app', $email = null, $name = null, $transaction_no = null, $discount = 0, $points_to_use = 0) {
+    
         if ($transaction_no == null) {
             $transaction_no = $this->generateTransactionNo();
         }
@@ -49,13 +51,15 @@ class TransactionService {
 
             $data = [
                 'transaction_no' => $transaction_no,
-                'user_id' => $user_id,
                 'amount' => $amount,
                 'gateway' => $gateway,
-                'status' => Transaction::STATUS_PENDING,
-                'gateway_transaction_id' => 'N/A',
+                'user_id' => $user_id,
                 'payment_method' => $payment_method,
                 'channel' => $channel,
+                'email' => $email,
+                'name' => $name ? substr($name, 0, 255) : null,
+                'status' => Transaction::STATUS_PENDING,
+                'gateway_transaction_id' => 'N/A',
             ];
 
             if ($discount > 0 && $points_to_use > 0) {

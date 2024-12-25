@@ -13,6 +13,7 @@ use Filament\Tables;
 use App\Models\Article;
 use App\Models\Location;
 use App\Models\ArticleTag;
+use Filament\Tables\Columns\TagsColumn;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -440,7 +441,15 @@ class ArticleResource extends Resource
                         'secondary' => 'multimedia',
                     ])
                     ->sortable(),
+				TagsColumn::make('categories.name')
+					->label('Parent Categories')
+					->sortable()
+					->searchable(),
 
+				TagsColumn::make('subCategories.name')
+					->label('Sub Categories')
+					->sortable()
+					->searchable(),
                 Tables\Columns\BadgeColumn::make('hidden_from_home')
                     ->label('Hidden (Home)')
                     ->enum([

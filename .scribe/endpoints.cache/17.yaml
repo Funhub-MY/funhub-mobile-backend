@@ -63,7 +63,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kgdea8b45fhP6Z1vD3EacV6'
+      - 'Bearer d84chDgaeP66Z35fVEvk1ab'
     controller: null
     method: null
     route: null
@@ -106,7 +106,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1Z3ebDPcVdgav4hk86Eaf65'
+      - 'Bearer a5bhf1PZ8g66aVeE4vD3dck'
     controller: null
     method: null
     route: null
@@ -199,7 +199,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1g8bP5vd3kcaDf66hVeZaE4'
+      - 'Bearer ehv16aPV54cZa6k83DfgbEd'
     controller: null
     method: null
     route: null
@@ -240,7 +240,7 @@ endpoints:
         name: supportable_id
         description: 'This field is required when <code>supportable</code> is present.'
         required: false
-        example: 6
+        example: 9
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -291,7 +291,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       supportable: article
-      supportable_id: 6
+      supportable_id: 9
       category_id: 1
       title: 'My support request'
       message: 'This is my message'
@@ -314,7 +314,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4Pa8d5chDE3vefa66bZ1Vkg'
+      - 'Bearer Pbfhe86Z4dvaaVE361Dk5gc'
     controller: null
     method: null
     route: null
@@ -341,7 +341,7 @@ endpoints:
         name: support_request_id
         description: 'The ID of the support request.'
         required: true
-        example: 1
+        example: 10
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -358,7 +358,7 @@ endpoints:
         nullable: false
         custom: []
     cleanUrlParameters:
-      support_request_id: 1
+      support_request_id: 10
       id: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -408,7 +408,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fDghP6b6c54vEaZ83Ve1dka'
+      - 'Bearer 31dhgkfc664ba58aeVPEvZD'
     controller: null
     method: null
     route: null
@@ -435,7 +435,7 @@ endpoints:
         name: support_request_id
         description: 'The ID of the support request.'
         required: true
-        example: 1
+        example: 10
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -452,7 +452,7 @@ endpoints:
         nullable: false
         custom: []
     cleanUrlParameters:
-      support_request_id: 1
+      support_request_id: 10
       id: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -473,7 +473,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer avdZPEk4gbe1c6Dfh3a6V85'
+      - 'Bearer d1g8keZP6EabVDh5caf4v36'
     controller: null
     method: null
     route: null
@@ -500,7 +500,7 @@ endpoints:
         name: support_request_id
         description: 'The ID of the support request.'
         required: true
-        example: 1
+        example: 10
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -517,7 +517,7 @@ endpoints:
         nullable: false
         custom: []
     cleanUrlParameters:
-      support_request_id: 1
+      support_request_id: 10
       id: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -538,7 +538,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bv6eD56Zah3Pa1c4VgE8dfk'
+      - 'Bearer 5d8bkhaD6vEeacfg6V3ZP41'
     controller: null
     method: null
     route: null
@@ -592,7 +592,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3DgE8fa61eVdbk5Ph4cv6Za'
+      - 'Bearer Vvb3E6edagDf86Zc5hP14ka'
     controller: null
     method: null
     route: null
@@ -660,7 +660,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vVeEcb6ZD1gP64aahd358kf'
+      - 'Bearer edaZ3Vfa8cPDvh6E5gb641k'
     controller: null
     method: null
     route: null

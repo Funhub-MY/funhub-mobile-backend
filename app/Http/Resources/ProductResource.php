@@ -23,7 +23,8 @@ class ProductResource extends JsonResource
                     'name' => $reward->name,
                     'description' => $reward->description,
                     'thumbnail' => $reward->thumbnail_url,
-                ];
+					'quantity' => $reward->pivot->quantity,
+				];
             });
         }
 
