@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\ServiceProvider;
 
+use Cheesegrits\FilamentGoogleMaps\Helpers\MapsHelper as OriginalMapsHelper;
+use App\MapsHelper;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -28,6 +31,8 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
         }
+
+        $this->app->bind(OriginalMapsHelper::class, MapsHelper::class);
     }
 
     /**

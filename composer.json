@@ -43,8 +43,7 @@
         "stefangabos/zebra_image": "^2.8",
         "symfony/http-client": "^6.3",
         "symfony/mailgun-mailer": "^6.3",
-        "tapp/filament-auditing": "^2.0",
-        "ext-openssl": "*"
+        "tapp/filament-auditing": "^2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -65,7 +64,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/CloudflareHelper.php"
+            "app/CloudflareHelper.php",
+            "app/MapsHelper.php"
         ]
     },
     "autoload-dev": {
