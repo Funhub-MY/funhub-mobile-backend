@@ -1076,7 +1076,7 @@ class ArticleController extends Controller
         }
 
         // if location cant be found by google_id, then find by lat,lng
-        if ($locations->isEmpty()) {
+        if (empty($locations) || $locations->isEmpty()) {
             $locations = Location::where('lat', $locationData['lat'])
                 ->where('lng', $locationData['lng'])
                 ->get();
