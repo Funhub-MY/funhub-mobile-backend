@@ -151,7 +151,7 @@ class PromotionCodeController extends Controller
             });
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'message' => 'Invalid or already redeemed code',
+                'message' => 'Invalid code',
             ], 404);
         }
     }
