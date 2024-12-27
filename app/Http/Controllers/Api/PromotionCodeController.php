@@ -51,7 +51,7 @@ class PromotionCodeController extends Controller
         $request->validate([
             'code' => 'required|string',
         ]);
-        try {
+        // try {
             return DB::transaction(function () use ($request) {
                 $code = $request->input('code');
 
@@ -149,10 +149,10 @@ class PromotionCodeController extends Controller
                     'reward_components' => $rewardComponents,
                 ]);
             });
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'message' => __('messages.success.promotion_code_controller.Invalid_code'),
-            ], 404);
-        }
+        // } catch (ModelNotFoundException $e) {
+        //     return response()->json([
+        //         'message' => __('messages.success.promotion_code_controller.Invalid_code'),
+        //     ], 404);
+        // }
     }
 }
