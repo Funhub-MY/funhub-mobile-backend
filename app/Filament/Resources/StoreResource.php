@@ -101,6 +101,7 @@ class StoreResource extends Resource
                                     return User::query()
                                         ->where('name', 'LIKE', "%{$search}%")
                                         ->orWhere('email', 'LIKE', "%{$search}%")
+                                        ->orWhere('phone_no', 'LIKE', "%{$search}%")
                                         ->orWhere('username', 'LIKE', "%{$search}%")
                                         ->limit(50)
                                         ->get()
