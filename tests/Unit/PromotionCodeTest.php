@@ -64,7 +64,7 @@ class PromotionCodeTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Code redeemed successfully'
+                'message' => __('messages.success.promotion_code_controller.Code_redeemed_successfully')
             ]);
 
         // Assert the code is marked as redeemed
@@ -132,7 +132,7 @@ class PromotionCodeTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Code redeemed successfully'
+                'message' => __('messages.success.promotion_code_controller.Code_redeemed_successfully')
             ]);
 
         // Assert the code is marked as redeemed
@@ -164,7 +164,7 @@ class PromotionCodeTest extends TestCase
 
         $response->assertStatus(404)
             ->assertJson([
-                'message' => 'Invalid or already redeemed code'
+                'message' => __('messages.success.promotion_code_controller.Invalid_code')
             ]);
     }
 
@@ -184,7 +184,7 @@ class PromotionCodeTest extends TestCase
 
         $response->assertStatus(404)
             ->assertJson([
-                'message' => 'Invalid or already redeemed code'
+                'message' => __('messages.success.promotion_code_controller.Invalid_code')
             ]);
     }
 
@@ -214,7 +214,7 @@ class PromotionCodeTest extends TestCase
         ]);
 
         $response->assertStatus(400)
-            ->assertJson(['message' => 'This code is not active or has expired']);
+            ->assertJson(['message' => __('messages.success.promotion_code_controller.Campaign_disabled')]);
     }
 
     public function testCannotRedeemWhenCampaignNotStarted()
@@ -243,7 +243,7 @@ class PromotionCodeTest extends TestCase
         ]);
 
         $response->assertStatus(400)
-            ->assertJson(['message' => 'This code is not active or has expired']);
+            ->assertJson(['message' => __('messages.success.promotion_code_controller.Campaign_not_started')]);
     }
 
     public function testCannotRedeemWhenCampaignEnded()
@@ -272,7 +272,7 @@ class PromotionCodeTest extends TestCase
         ]);
 
         $response->assertStatus(400)
-            ->assertJson(['message' => 'This code is not active or has expired']);
+            ->assertJson(['message' => __('messages.success.promotion_code_controller.Campaign_ended')]);
     }
 
     public function testCanRedeemWithValidCampaign()
@@ -312,7 +312,7 @@ class PromotionCodeTest extends TestCase
         ]);
 
         $response->assertStatus(200)
-            ->assertJson(['message' => 'Code redeemed successfully']);
+            ->assertJson(['message' => __('messages.success.promotion_code_controller.Code_redeemed_successfully')]);
 
         // Check that points were credited
         $this->assertDatabaseHas('point_ledgers', [
