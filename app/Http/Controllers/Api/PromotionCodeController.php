@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PromotionCode;
 use App\Services\PointService;
 use App\Services\PointComponentService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -56,8 +57,18 @@ class PromotionCodeController extends Controller
                 $code = $request->input('code');
 
                 $promotionCode = PromotionCode::where('code', $code)
-                    // ->where(column: 'is_redeemed', false)
-                    ->firstOrFail();
+                    ->first();
+
+                Log::info('[PromotionCodeController] Found promotion code', [
+                    'promotion_code_id' => $promotionCode->id,
+                    'claimed_by_id' => $promotionCode->claimed_by_id
+                ]);
+
+                if (!$promotionCode) {
+                    return response()->json([
+                        'message' => __('messages.success.promotion_code_controller.Invalid_code'),
+                    ], 404);
+                }
 
                 // check if it's already claimed
                 if ($promotionCode->claimed_by_id) {
@@ -65,11 +76,6 @@ class PromotionCodeController extends Controller
                         'message' => __('messages.success.promotion_code_controller.Code_already_claimed'),
                     ], 400);
                 }
-
-                Log::info('[PromotionCodeController] Found promotion code', [
-                    'promotion_code_id' => $promotionCode->id,
-                    'claimed_by_id' => $promotionCode->claimed_by_id
-                ]);
 
                 // check if promotion code group campaign is still active
                 if ($promotionCode->promotionCodeGroup) {
@@ -149,7 +155,7 @@ class PromotionCodeController extends Controller
                     'reward_components' => $rewardComponents,
                 ]);
             });
-        } catch (ModelNotFoundException $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'message' => __('messages.success.promotion_code_controller.Invalid_code'),
             ], 404);
