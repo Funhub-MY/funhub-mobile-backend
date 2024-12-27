@@ -51,13 +51,20 @@ class PromotionCodeController extends Controller
         $request->validate([
             'code' => 'required|string',
         ]);
-        // try {
+        try {
             return DB::transaction(function () use ($request) {
                 $code = $request->input('code');
 
                 $promotionCode = PromotionCode::where('code', $code)
-                    ->where('is_redeemed', false)
+                    // ->where(column: 'is_redeemed', false)
                     ->firstOrFail();
+
+                // check if it's already claimed
+                if ($promotionCode->claimed_by_id) {
+                    return response()->json([
+                        'message' => __('messages.success.promotion_code_controller.Code_already_claimed'),
+                    ], 400);
+                }
 
                 Log::info('[PromotionCodeController] Found promotion code', [
                     'promotion_code_id' => $promotionCode->id,
@@ -90,13 +97,6 @@ class PromotionCodeController extends Controller
                 if (!$promotionCode->isActive()) {
                     return response()->json([
                         'message' => __('messages.success.promotion_code_controller.Code_not_active_or_expired'),
-                    ], 400);
-                }
-
-                // check if it's already claimed
-                if ($promotionCode->claimed_by_id) {
-                    return response()->json([
-                        'message' => __('messages.success.promotion_code_controller.Code_already_claimed'),
                     ], 400);
                 }
 
@@ -149,10 +149,10 @@ class PromotionCodeController extends Controller
                     'reward_components' => $rewardComponents,
                 ]);
             });
-        // } catch (ModelNotFoundException $e) {
-        //     return response()->json([
-        //         'message' => __('messages.success.promotion_code_controller.Invalid_code'),
-        //     ], 404);
-        // }
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'message' => __('messages.success.promotion_code_controller.Invalid_code'),
+            ], 404);
+        }
     }
 }
