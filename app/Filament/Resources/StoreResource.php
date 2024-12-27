@@ -85,18 +85,37 @@ class StoreResource extends Resource
                                 ->helperText('Will be also used as Location name, if new location is added. eg. KFC Midvalley')
                                 ->required()
                                 ->rules('required', 'max:255'),
+
 							TextInput::make('slug')
 								->maxLength(255)
 								->required()
 								->default(Str::random(10))
 //								->disabled()
 								->unique(Store::class, 'slug', ignoreRecord: true),
-							Forms\Components\Select::make('user_id')
+
+                            Forms\Components\Select::make('user_id')
                                 ->label('Linked User Account')
+                                ->relationship('user', 'name')
                                 ->searchable()
-                                ->getOptionLabelFromRecordUsing(fn($record) => $record->name . ($record->username ? ' (username: ' . $record->username  . ')' : ''))
-                                ->helperText('User account that has merchant attached to it. A store must share same linked user account as merchant to appear under Merchant > Stores')
-                                ->relationship('user', 'name'),
+                                ->getSearchResultsUsing(function (string $search): array {
+                                    return User::query()
+                                        ->where('name', 'LIKE', "%{$search}%")
+                                        ->orWhere('email', 'LIKE', "%{$search}%")
+                                        ->orWhere('username', 'LIKE', "%{$search}%")
+                                        ->limit(50)
+                                        ->get()
+                                        ->mapWithKeys(function ($user) {
+                                            return [
+                                                $user->id => $user->name . ($user->username ? " (username: {$user->username}, ID: {$user->id})" : '')
+                                            ];
+                                        })
+                                        ->toArray();
+                                })
+                                ->getOptionLabelUsing(function ($value): string {
+                                    $user = User::find($value);
+                                    return $user ? $user->name . ($user->username ? " (username: {$user->username}, ID: {$user->id})" : '') : '';
+                                })
+                                ->helperText('User account that has merchant attached to it. A store must share same linked user account as merchant to appear under Merchant > Stores'),
 
                             Forms\Components\Select::make('merchant_id')
                                 ->label('Linked Merchant')
