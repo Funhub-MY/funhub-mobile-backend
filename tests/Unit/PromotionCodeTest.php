@@ -173,7 +173,7 @@ class PromotionCodeTest extends TestCase
         // Create a redeemed promotion code
         $promotionCode = PromotionCode::create([
             'code' => PromotionCode::generateUniqueCode(),
-            'is_redeemed' => true,
+            'is_redeemed' => false,
             'claimed_by_id' => $this->user->id,
             'redeemed_at' => now(),
         ]);
@@ -182,9 +182,9 @@ class PromotionCodeTest extends TestCase
             'code' => $promotionCode->code
         ]);
 
-        $response->assertStatus(404)
+        $response->assertStatus(400)
             ->assertJson([
-                'message' => __('messages.success.promotion_code_controller.Invalid_code')
+                'message' => __('messages.success.promotion_code_controller.Code_already_claimed')
             ]);
     }
 
