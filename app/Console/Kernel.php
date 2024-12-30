@@ -49,6 +49,14 @@ class Kernel extends ConsoleKernel
         $schedule->command('stores:auto-hide-unonboarded')->hourly();
 		$schedule->command('redeem:send-review-reminder')->hourly();
 
+        // Daily at Specific Times
+        $schedule->command('merchant-offers:publish')->dailyAt('00:00')->withoutOverlapping(10);
+        $schedule->command('merchant-offers:auto-archieve')->dailyAt('00:01');
+        $schedule->command('article:auto-archive')->dailyAt('00:05');
+        $schedule->command('merchant-offers:send-expiring-notification')->dailyAt('00:10');
+        $schedule->command('merchant-offers:auto-move-vouchers-unsold')->dailyAt('00:15');
+        $schedule->command('campaign:redistribute-quantities')->dailyAt('00:30');
+
         // Every Two Hours
         $schedule->command('generate:article-views')->everyTwoHours();
         $schedule->command('update:scheduled-views')->everyTwoHours();
@@ -56,12 +64,6 @@ class Kernel extends ConsoleKernel
         // Daily
         $schedule->command('telescope:prune')->daily();
 
-        // Daily at Specific Times
-        $schedule->command('merchant-offers:publish')->dailyAt('00:00')->withoutOverlapping(10);
-        $schedule->command('merchant-offers:auto-archieve')->dailyAt('00:01');
-        $schedule->command('article:auto-archive')->dailyAt('00:05');
-        $schedule->command('merchant-offers:send-expiring-notification')->dailyAt('00:10');
-        $schedule->command('merchant-offers:auto-move-vouchers-unsold')->dailyAt('00:15');
     }
 
     /**
