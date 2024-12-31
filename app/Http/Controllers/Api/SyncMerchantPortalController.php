@@ -546,7 +546,6 @@ class SyncMerchantPortalController extends Controller
                         'merchant_offer_claims_redemptions.id',
                         'merchant_offer_claims_redemptions.created_at'
                     )
-                    ->distinct()
                     ->get();
 
                 return response()->json([
@@ -618,7 +617,6 @@ class SyncMerchantPortalController extends Controller
                                 'merchant_offer_user.status',
                                 'merchant_offer_claims_redemptions.id'
                             )
-                            ->distinct()
                             ->orderBy(DB::raw('CASE WHEN merchant_offer_claims_redemptions.id IS NOT NULL THEN 1 ELSE 0 END'), 'desc')
                             ->orderBy('merchant_offer_vouchers.id', 'asc')
                             ->orderBy('merchant_offers.id', 'asc');
@@ -634,7 +632,6 @@ class SyncMerchantPortalController extends Controller
                     }
                 }
                 
-
                 return response()->json([
                     'error'     => false,
                     'message'   => "Success",
