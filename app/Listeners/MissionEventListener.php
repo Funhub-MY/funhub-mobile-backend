@@ -12,12 +12,27 @@ use App\Events\CommentCreated;
 use App\Events\CommentLiked;
 use App\Services\MissionService;
 use App\Events\InteractionCreated;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class MissionEventListener
 {
     protected MissionService $missionService;
     protected array $eventMatrix;
+
+    // spam detection thresholds
+    const INTERACTION_SPAM_LIMIT = 3;
+    const INTERACTION_SPAM_WINDOW = 5; // minutes
+    
+    const FOLLOW_SPAM_LIMIT = 2;
+    const FOLLOW_SPAM_WINDOW = 10; // minutes
+    
+    const COMMENT_SPAM_LIMIT = 5;
+    const COMMENT_SPAM_WINDOW = 5; // minutes
+    
+    const COMMENT_COOLDOWN = 30; // seconds
 
     public function __construct(MissionService $missionService)
     {
@@ -63,7 +78,10 @@ class MissionEventListener
         if ($this->isSpamInteraction($user, $interaction)) {
             Log::warning('Spam interaction detected', [
                 'user_id' => $user->id,
-                'interaction_id' => $interaction->id
+                'interaction_id' => $interaction->id,
+                'type' => $interaction->type,
+                'interactable_type' => $interaction->interactable_type,
+                'interactable_id' => $interaction->interactable_id
             ]);
             return;
         }
@@ -90,6 +108,14 @@ class MissionEventListener
 
     protected function handleCommentCreated(CommentCreated $event): void
     {
+        if ($this->isSpamComment($event->comment->user, $event->comment)) {
+            Log::warning('Spam comment detected', [
+                'user_id' => $event->comment->user->id,
+                'comment_id' => $event->comment->id
+            ]);
+            return;
+        }
+
         $this->missionService->handleEvent('comment_created', $event->comment->user);
     }
 
@@ -174,29 +200,70 @@ class MissionEventListener
     }
 
     /**
-     * Check for spam interactions
+     * Check for spam interactions (e.g., repeated likes/unlikes on the same content)
      */
-    protected function isSpamInteraction($user, $interaction): bool
+    protected function isSpamInteraction(User $user, Interaction $interaction): bool
     {
-        $spamThreshold = now()->subMinutes(config('app.missions_spam_threshold', 1));
+        $cacheKey = "spam_interaction:{$user->id}:{$interaction->interactable_type}:{$interaction->interactable_id}:{$interaction->type}";
+        
+        // check if user has recently interacted with this content
+        if (Cache::has($cacheKey)) {
+            return true;
+        }
 
+        // set a cooldown period for this interaction
+        Cache::put($cacheKey, true, now()->addMinutes(config('app.missions_spam_threshold', 1)));
+
+        // also check database for historical spam patterns
+        $spamThreshold = now()->subMinutes(self::INTERACTION_SPAM_WINDOW);
+        
         return Interaction::where('user_id', $user->id)
             ->where('interactable_type', $interaction->interactable_type)
             ->where('interactable_id', $interaction->interactable_id)
+            ->where('type', $interaction->type)
             ->where('created_at', '>=', $spamThreshold)
-            ->count() > 1;
+            ->count() > self::INTERACTION_SPAM_LIMIT;
     }
 
     /**
-     * Check for spam following
+     * Check for spam follow/unfollow actions
      */
-    protected function isSpamFollowing($user, $followedUser): bool
+    protected function isSpamFollowing(User $user, User $followedUser): bool
     {
-        $spamThreshold = now()->subMinutes(config('app.missions_spam_threshold', 1));
+        $cacheKey = "spam_following:{$user->id}:{$followedUser->id}";
+        
+        if (Cache::has($cacheKey)) {
+            return true;
+        }
 
-        return $user->followings()
+        Cache::put($cacheKey, true, now()->addMinutes(config('app.missions_spam_threshold', 1)));
+
+        $spamThreshold = now()->subMinutes(self::FOLLOW_SPAM_WINDOW);
+        
+        return DB::table('users_followings')
+            ->where('user_id', $user->id)
             ->where('following_id', $followedUser->id)
-            ->where('users_followings.created_at', '>=', $spamThreshold)
-            ->count() > 1;
+            ->where('created_at', '>=', $spamThreshold)
+            ->count() > self::FOLLOW_SPAM_LIMIT;
+    }
+
+    /**
+     * Check for spam comments
+     */
+    protected function isSpamComment(User $user, Comment $comment): bool
+    {
+        $cacheKey = "spam_comment:{$user->id}:{$comment->commentable_type}:{$comment->commentable_id}";
+        
+        if (Cache::has($cacheKey)) {
+            return true;
+        }
+
+        Cache::put($cacheKey, true, now()->addSeconds(self::COMMENT_COOLDOWN));
+
+        $spamThreshold = now()->subMinutes(self::COMMENT_SPAM_WINDOW);
+        
+        return Comment::where('user_id', $user->id)
+            ->where('created_at', '>=', $spamThreshold)
+            ->count() > self::COMMENT_SPAM_LIMIT;
     }
 }

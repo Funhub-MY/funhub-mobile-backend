@@ -35,6 +35,7 @@ class MissionService
         try {
             DB::beginTransaction();
 
+            // Spam checks are now handled in the event listener
             $missions = $this->getEligibleMissions($eventType, $user);
 
             foreach ($missions as $mission) {

@@ -8,12 +8,18 @@ use App\Models\Reward;
 use App\Models\RewardComponent;
 use App\Models\User;
 use App\Events\CommentCreated;
+use App\Events\InteractionCreated;
+use App\Events\FollowedUser;
+use App\Models\Interaction;
+use App\Models\Comment;
 use App\Services\MissionService;
+use App\Listeners\MissionEventListener;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
 
 uses(RefreshDatabase::class);
@@ -460,7 +466,6 @@ test('missions with incomplete predecessors are not able start', function () {
     expect($participation)->toBeNull();
 });
 
-
 // 1. Different mission frequencies track progress independently
 // 2. Shared events contribute to all applicable missions
 // 3. Auto-disbursement works for each mission type
@@ -772,9 +777,10 @@ test('accumulated mission with follow events can be repeated', function () {
         
         if ($index < 4) {
             // Not completed yet
-            expect($missionData['current_values']['user_followed'])->toBe($index + 1);
-            expect($missionData['is_completed'])->toBeFalse();
-            expect($missionData['claimed_at'])->toBeNull();
+            expect($missionData)->toBeTruthy()
+                ->and($missionData['current_values']['user_followed'])->toBe($index + 1)
+                ->and($missionData['is_completed'])->toBeFalse()
+                ->and($missionData['claimed_at'])->toBeNull();
         }
     }
 
@@ -823,4 +829,217 @@ test('accumulated mission with follow events can be repeated', function () {
         \App\Notifications\RewardReceivedNotification::class,
         2
     );
+});
+
+test('spam protection blocks rapid interactions', function () {
+    // Prepare
+    Event::fake([InteractionCreated::class]);
+    Log::spy();
+    $article = Article::factory()->create();
+    $missionListener = app(MissionEventListener::class);
+
+    // Create first like interaction
+    $response1 = $this->postJson('/api/v1/interactions', [
+        'id' => $article->id,
+        'interactable' => 'article',
+        'type' => 'like',
+    ]);
+    $response1->assertStatus(200);
+
+    $interaction1 = Interaction::where([
+        'interactable_id' => $article->id,
+        'interactable_type' => Article::class,
+        'type' => Interaction::TYPE_LIKE,
+        'user_id' => $this->user->id,
+    ])->first();
+
+    // Trigger first interaction event
+    $event1 = new InteractionCreated($interaction1);
+    $missionListener->handle($event1);
+
+    // Try to create another like interaction immediately
+    $response2 = $this->postJson('/api/v1/interactions', [
+        'id' => $article->id,
+        'interactable' => 'article',
+        'type' => 'like',
+    ]);
+    $response2->assertStatus(200);
+
+    $interaction2 = Interaction::where([
+        'interactable_id' => $article->id,
+        'interactable_type' => Article::class,
+        'type' => Interaction::TYPE_LIKE,
+        'user_id' => $this->user->id,
+    ])->latest()->first();
+
+    // Trigger second interaction event
+    $event2 = new InteractionCreated($interaction2);
+    $missionListener->handle($event2);
+
+    // // Assert that the second interaction was logged as spam
+    // Log::shouldHaveReceived('warning')
+    //     ->with('Spam interaction detected', 
+    //         expect()->arrayHasKey('user_id')
+    //                ->arrayHasKey('interaction_id')
+    //                ->arrayHasKey('type')
+    //                ->arrayHasKey('interactable_type')
+    //                ->arrayHasKey('interactable_id')
+    //     );
+
+    // Verify the interaction was created in database but blocked from mission
+    $this->assertDatabaseHas('interactions', [
+        'interactable_id' => $article->id,
+        'interactable_type' => Article::class,
+        'type' => Interaction::TYPE_LIKE,
+        'user_id' => $this->user->id,
+    ]);
+
+    // Verify that events were dispatched but handled as spam
+    Event::assertDispatched(InteractionCreated::class, 2);
+});
+
+test('spam protection blocks rapid article like interactions', function () {
+    // Prepare
+    $article = Article::factory()->create();
+    $missionListener = app(MissionEventListener::class);
+
+    // Create initial interactions to reach spam limit
+    for ($i = 0; $i < MissionEventListener::INTERACTION_SPAM_LIMIT; $i++) {
+        $interaction = new Interaction([
+            'user_id' => $this->user->id,
+            'interactable_id' => $article->id,
+            'interactable_type' => Article::class,
+            'type' => Interaction::TYPE_LIKE,
+            'created_at' => now()->subMinutes(MissionEventListener::INTERACTION_SPAM_WINDOW - 1)
+        ]);
+        $interaction->save();
+
+        // Dispatch event for each interaction
+        event(new InteractionCreated($interaction));
+    }
+
+    // Create one more interaction that should trigger spam detection
+    $spamInteraction = new Interaction([
+        'user_id' => $this->user->id,
+        'interactable_id' => $article->id,
+        'interactable_type' => Article::class,
+        'type' => Interaction::TYPE_LIKE,
+    ]);
+    $spamInteraction->save();
+
+    // Mock the logger before dispatching the spam event
+    Log::spy();
+    
+    // Dispatch event for the spam interaction
+    event(new InteractionCreated($spamInteraction));
+
+    // Assert that the interaction was logged as spam
+    Log::shouldHaveReceived('warning')
+        ->with('Spam interaction detected', \Mockery::on(function ($data) use ($spamInteraction) {
+            return isset($data['user_id']) &&
+                   isset($data['interaction_id']) &&
+                   isset($data['type']) &&
+                   isset($data['interactable_type']) &&
+                   isset($data['interactable_id']) &&
+                   $data['interaction_id'] === $spamInteraction->id;
+        }));
+
+    // Verify all interactions exist in database
+    expect(Interaction::count())->toBe(MissionEventListener::INTERACTION_SPAM_LIMIT + 1);
+});
+
+test('spam protection blocks rapid comments', function () {
+    Event::fake([CommentCreated::class]);
+    Log::spy();
+    $article = Article::factory()->create();
+    $missionListener = app(MissionEventListener::class);
+
+    // Create comments rapidly
+    $comments = [];
+    for ($i = 0; $i < MissionEventListener::COMMENT_SPAM_LIMIT + 1; $i++) {
+        $comment = new Comment([
+            'user_id' => $this->user->id,
+            'commentable_id' => $article->id,
+            'commentable_type' => Article::class,
+            'body' => 'Test comment ' . $i,
+        ]);
+        $comment->save();
+        $comments[] = $comment;
+
+        $event = new CommentCreated($comment);
+        $missionListener->handle($event);
+    }
+
+    // Assert that spam was detected for the last comment
+    Log::shouldHaveReceived('warning')
+        ->with('Spam comment detected', \Mockery::on(function ($data) use ($comments) {
+            return isset($data['user_id']) &&
+                   isset($data['comment_id']) &&
+                   $data['comment_id'] === end($comments)->id;
+        }));
+
+    // Verify comments were created
+    expect(Comment::count())->toBe(MissionEventListener::COMMENT_SPAM_LIMIT + 1);
+});
+
+test('spam protection blocks rapid follow actions', function () {
+    Event::fake([FollowedUser::class]);
+    Log::spy();
+    $targetUser = User::factory()->create();
+    $missionListener = app(MissionEventListener::class);
+
+    // Simulate rapid follow actions
+    for ($i = 0; $i < MissionEventListener::FOLLOW_SPAM_LIMIT + 1; $i++) {
+        $event = new FollowedUser($this->user, $targetUser);
+        $missionListener->handle($event);
+    }
+
+    // Assert that spam was detected
+    Log::shouldHaveReceived('warning')
+        ->with('Spam following detected', \Mockery::on(function ($data) use ($targetUser) {
+            return isset($data['user_id']) &&
+                   isset($data['followed_user_id']) &&
+                   $data['followed_user_id'] === $targetUser->id;
+        }));
+});
+
+test('spam protection uses cache for rate limiting', function () {
+    Cache::spy();
+    $article = Article::factory()->create();
+    $missionListener = app(MissionEventListener::class);
+
+    // Create interaction through API
+    $response = $this->postJson('/api/v1/interactions', [
+        'id' => $article->id,
+        'interactable' => 'article',
+        'type' => 'like',
+    ]);
+    $response->assertStatus(200);
+
+    $interaction = Interaction::where([
+        'interactable_id' => $article->id,
+        'interactable_type' => Article::class,
+        'type' => Interaction::TYPE_LIKE,
+        'user_id' => $this->user->id,
+    ])->first();
+
+    $event = new InteractionCreated($interaction);
+    $missionListener->handle($event);
+
+    // Assert that cache was used for rate limiting
+    Cache::shouldHaveReceived('has')
+        ->with(sprintf(
+            'spam_interaction:%d:%s:%d:%s',
+            $this->user->id,
+            Article::class,
+            $article->id,
+            Interaction::TYPE_LIKE
+        ));
+
+    Cache::shouldHaveReceived('put')
+        ->withArgs(function ($key, $value, $duration) {
+            return str_contains($key, 'spam_interaction:') && 
+                   $value === true && 
+                   $duration instanceof \Carbon\CarbonInterface;
+        });
 });
