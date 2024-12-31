@@ -44,7 +44,7 @@ class RedistributeCampaignQuantities extends Command
     private function processCampaign(MerchantOfferCampaign $campaign)
     {
         // get total sold vouchers
-        $soldCount = MerchantOfferVoucher::whereHas('merchantOffer', function ($query) use ($campaign) {
+        $soldCount = MerchantOfferVoucher::whereHas('merchant_offer', function ($query) use ($campaign) {
             $query->where('merchant_offer_campaign_id', $campaign->id);
         })->whereNotNull('owned_by_id')->count();
 
@@ -67,14 +67,12 @@ class RedistributeCampaignQuantities extends Command
         }
 
         // get unsold vouchers from ended schedules
-        $unsoldVouchers = MerchantOfferVoucher::whereHas('merchantOffer', function ($query) use ($campaign) {
-            $query->where('merchant_offer_campaign_id', $campaign->id)
-                ->whereHas('schedule', function ($q) {
-                    $q->where('available_until', '<', now());
-                });
-        })
-        ->whereNull('owned_by_id')
-        ->get();
+        $unsoldVouchers = MerchantOfferVoucher::whereHas('merchant_offer', function ($query) use ($campaign) {
+            $query->where('merchant_offer_campaign_id', $campaign->id);
+        })->whereDoesntHave('owner')
+          ->whereHas('merchant_offer.campaign.schedules', function ($q) {
+                $q->where('available_until', '<', now());
+          })->get();
 
         if ($unsoldVouchers->isEmpty()) {
             $this->info("No unsold vouchers found for campaign {$campaign->id}");
@@ -125,7 +123,7 @@ class RedistributeCampaignQuantities extends Command
                         continue;
                     }
 
-                    $oldOffer = $voucher->merchantOffer;
+                    $oldOffer = $voucher->merchant_offer;
 
                     // update voucher's offer
                     $voucher->update(['merchant_offer_id' => $newOffer->id]);
