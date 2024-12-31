@@ -91,8 +91,8 @@ class RedistributeCampaignQuantities extends Command
             $voucherIndex = 0;
 
             for ($i = 0; $i < $numberOfSchedules; $i++) {
-                $availableAt = $startDate->copy()->addDays($i * (self::DEFAULT_SCHEDULE_DAYS + self::DEFAULT_INTERVAL_DAYS));
-                $availableUntil = $availableAt->copy()->addDays(self::DEFAULT_SCHEDULE_DAYS)->endOfDay();
+                $availableAt = $startDate->copy()->addDays($i * (self::DEFAULT_SCHEDULE_DAYS + self::DEFAULT_INTERVAL_DAYS))->addDay()->startOfDay();
+                $availableUntil = $availableAt->copy()->addDays(self::DEFAULT_SCHEDULE_DAYS)->subDay()->endOfDay();
 
                 // calculate quantity for this schedule
                 $remainingVouchers = $unsoldVouchers->count() - $voucherIndex;
