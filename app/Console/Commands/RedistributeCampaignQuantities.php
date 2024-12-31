@@ -30,9 +30,19 @@ class RedistributeCampaignQuantities extends Command
         // get campaigns with agreement_quantity set and have schedules that ended
         $campaigns = MerchantOfferCampaign::whereNotNull('agreement_quantity')
             ->whereHas('schedules', function ($query) {
-                $query->where('available_until', '<', now());
+                $query->where('available_until', '<', now())
+                    ->whereNotExists(function ($q) {
+                        $q->from('merchant_offer_campaigns_schedules as s2')
+                            ->whereRaw('s2.merchant_offer_campaign_id = merchant_offer_campaigns_schedules.merchant_offer_campaign_id')
+                            ->where('s2.available_until', '>', now());
+                    });
             })
             ->get();
+
+        if ($campaigns->isEmpty()) {
+            $this->info('No campaigns found with ended schedules that has agreement_quantity set.');
+            return;
+        }
 
         foreach ($campaigns as $campaign) {
             $this->processCampaign($campaign);
@@ -53,16 +63,6 @@ class RedistributeCampaignQuantities extends Command
 
         if ($remainingQuantity <= 0) {
             $this->info("Campaign {$campaign->id} has no remaining quantity to redistribute.");
-            return;
-        }
-
-        // check if all current schedules have ended
-        $hasActiveSchedules = $campaign->schedules()
-            ->where('available_until', '>', now())
-            ->exists();
-
-        if ($hasActiveSchedules) {
-            $this->info("Campaign {$campaign->id} still has active schedules.");
             return;
         }
 
@@ -91,6 +91,7 @@ class RedistributeCampaignQuantities extends Command
             $voucherIndex = 0;
 
             for ($i = 0; $i < $numberOfSchedules; $i++) {
+                
                 $availableAt = $startDate->copy()->addDays($i * (self::DEFAULT_SCHEDULE_DAYS + self::DEFAULT_INTERVAL_DAYS))->addDay()->startOfDay();
                 $availableUntil = $availableAt->copy()->addDays(self::DEFAULT_SCHEDULE_DAYS)->subDay()->endOfDay();
 
@@ -108,6 +109,11 @@ class RedistributeCampaignQuantities extends Command
                     'user_id' => $campaign->user_id,
                     'publish_at' => $availableAt,
                     'status' => MerchantOfferCampaignSchedule::STATUS_DRAFT
+                ]);
+
+                Log::info("[RedistributeCampaignQuantities] Creating schedule for campaign ID: {$campaign->id}", [
+                    "available_at" => $schedule->available_at,
+                    "available_until" => $schedule->available_until
                 ]);
 
                 // create merchant offer for the schedule
@@ -138,6 +144,8 @@ class RedistributeCampaignQuantities extends Command
 
                     $voucherIndex++;
                 }
+
+                Log::info('[RedistributeCampaignQuantities] Created new offer: ' . $newOffer->id);
             }
         });
 
