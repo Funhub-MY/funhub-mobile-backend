@@ -69,7 +69,7 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" style="background-color: #ffffff; border-radius: 8px;">
         <div style="background: linear-gradient(to bottom, #FFF6B7, #FFFCE9); padding: 20px; border-radius: 8px 8px 0 0;">
             <table cellpadding="0" cellspacing="0" width="100%">
                 <tr>
