@@ -74,12 +74,12 @@ paths:
                 id:
                   type: integer
                   description: 'This field is required when <code>slug</code> is <code>null</code>.'
-                  example: 3
+                  example: 15
                   nullable: false
                 slug:
                   type: string
                   description: 'This field is required when <code>id</code> is <code>null</code>.'
-                  example: ut
+                  example: maiores
                   nullable: false
     parameters:
       -
@@ -462,7 +462,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 11
+                  example: 10
                   nullable: false
                 reason:
                   type: string
@@ -472,12 +472,12 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: voluptatem
+                  example: doloremque
                   nullable: false
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: sunt
+                  example: distinctio
                   nullable: false
                 article:
                   type: integer
@@ -649,7 +649,7 @@ paths:
                   type: array
                   description: 'Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - non
+                    - voluptatem
                   items:
                     type: string
               required:
@@ -681,7 +681,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - ut
+                    - non
                   items:
                     type: string
                 category_ids:
@@ -771,7 +771,7 @@ paths:
                 keyword_id:
                   type: integer
                   description: 'The <code>id</code> of an existing record in the search_keywords table.'
-                  example: 18
+                  example: 4
                   nullable: false
               required:
                 - keyword_id
@@ -845,7 +845,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - rerum
+                    - sed
                   items:
                     type: string
                 category_ids:
@@ -1612,7 +1612,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: soluta
+        example: quos
         required: true
         schema:
           type: string
@@ -1703,12 +1703,12 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: aut
+                  example: ut
                   nullable: false
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: consequuntur
+                  example: est
                   nullable: false
               required:
                 - comment_id
@@ -2036,7 +2036,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: itaque
+        example: soluta
         required: true
         schema:
           type: string
@@ -2991,7 +2991,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: zoila.gerlach@example.net
+                  example: christiansen.lincoln@example.org
                   nullable: false
                 phone:
                   type: string
@@ -3085,7 +3085,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: blanditiis
+                  example: libero
                   nullable: false
               required:
                 - username
@@ -3966,7 +3966,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: incidunt
+                  example: ut
                   nullable: false
               required:
                 - share_code
@@ -3997,7 +3997,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1766
+                      line: 1775
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -4419,7 +4419,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1766
+                        line: 1775
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -4847,7 +4847,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: expedita
+                  example: sapiente
                   nullable: false
               required:
                 - share_code
@@ -4878,7 +4878,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                      line: 1230
+                      line: 1251
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5300,7 +5300,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                        line: 1230
+                        line: 1251
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5728,7 +5728,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: iste
+                  example: dolorem
                   nullable: false
               required:
                 - share_code
@@ -5863,7 +5863,7 @@ paths:
         in: path
         name: merchant_id
         description: 'The ID of the merchant.'
-        example: aspernatur
+        example: earum
         required: true
         schema:
           type: string
@@ -5893,7 +5893,7 @@ paths:
         in: path
         name: store_id
         description: 'The ID of the store.'
-        example: veniam
+        example: est
         required: true
         schema:
           type: string
@@ -6056,7 +6056,7 @@ paths:
                 supportable_id:
                   type: integer
                   description: 'This field is required when <code>supportable</code> is present.'
-                  example: 9
+                  example: 6
                   nullable: false
                 category_id:
                   type: integer
@@ -6611,7 +6611,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - tempore
+                    - ipsam
                   items:
                     type: string
                 name:
@@ -6676,7 +6676,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - rem
+                    - tempore
                   items:
                     type: string
                 name:
@@ -7011,6 +7011,20 @@ paths:
             value: 'Subang Jaya'
       -
         in: path
+        name: state
+        description: 'Optional parameter. optional Filter by State.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: Selangor
+      -
+        in: path
         name: lat
         description: 'Optional parameter. optional Filter by Lat of User (must provide lng).'
         required: true
@@ -7110,7 +7124,7 @@ paths:
                 id:
                   type: integer
                   description: 'This field is required when <code>sku</code> is <code>null</code>.'
-                  example: 7
+                  example: 1
                   nullable: false
                 sku:
                   type: string
@@ -7175,13 +7189,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - sint
+            - beatae
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - sint
+              - beatae
             items:
               type: string
         -
@@ -7194,6 +7208,17 @@ paths:
             type: string
             description: 'optional Filter by City Name.'
             example: 'Subang Jaya'
+            nullable: false
+        -
+          in: query
+          name: state
+          description: 'optional Filter by State.'
+          example: Selangor
+          required: false
+          schema:
+            type: string
+            description: 'optional Filter by State.'
+            example: Selangor
             nullable: false
         -
           in: query
@@ -7382,13 +7407,18 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - optio
+                    - quo
                   items:
                     type: string
                 city:
                   type: string
                   description: 'optional Filter by City.'
                   example: 'Subang Jaya'
+                  nullable: false
+                state:
+                  type: string
+                  description: 'optional Filter by State.'
+                  example: Selangor
                   nullable: false
                 lat:
                   type: number
@@ -7822,7 +7852,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: fugit
+        example: debitis
         required: true
         schema:
           type: string
@@ -8961,6 +8991,107 @@ paths:
                 example: "{\n[\"id\" => 1, \"name\" => \"Abia\", \"code\" => \"AB\", \"country_id\" => 1],\n}"
       tags:
         - Other
+  /api/v1/states/by-location:
+    get:
+      summary: 'Get State by User Location'
+      operationId: getStateByUserLocation
+      description: "Get state information based on user's latitude and longitude coordinates"
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: false
+                  message: Success
+                  data:
+                    id: 1
+                    name: Selangor
+                    code: SGR
+                    country_id: 1
+                    name_translation: Selangor
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Success
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Selangor
+                      code:
+                        type: string
+                        example: SGR
+                      country_id:
+                        type: integer
+                        example: 1
+                      name_translation:
+                        type: string
+                        example: Selangor
+        422:
+          description: 'validation error'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'The lat field is required. The lng field is required.'
+                  errors:
+                    lat:
+                      - 'The lat field is required.'
+                    lng:
+                      - 'The lng field is required.'
+                properties:
+                  message:
+                    type: string
+                    example: 'The lat field is required. The lng field is required.'
+                  errors:
+                    type: object
+                    properties:
+                      lat:
+                        type: array
+                        example:
+                          - 'The lat field is required.'
+                        items:
+                          type: string
+                      lng:
+                        type: array
+                        example:
+                          - 'The lng field is required.'
+                        items:
+                          type: string
+      tags:
+        - Other
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lat:
+                  type: numeric
+                  description: 'The latitude coordinate.'
+                  example: '3.140853'
+                  nullable: false
+                lng:
+                  type: numeric
+                  description: 'The longitude coordinate.'
+                  example: '101.693207'
+                  nullable: false
+              required:
+                - lat
+                - lng
   /api/v1/payment/available_payment_types:
     get:
       summary: 'Get available payment types'
@@ -9615,7 +9746,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: minus
+                  example: dolorem
                   nullable: false
               required:
                 - store_ids
@@ -9679,7 +9810,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: perspiciatis
+                  example: eveniet
                   nullable: false
               required:
                 - store_ids
@@ -9727,7 +9858,7 @@ paths:
                 location_id:
                   type: string
                   description: ''
-                  example: eaque
+                  example: aliquam
                   nullable: false
               required:
                 - location_id
@@ -10329,7 +10460,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 16
+                  example: 2
                   nullable: false
               required:
                 - user_id
@@ -10376,7 +10507,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 6
+                  example: 19
                   nullable: false
               required:
                 - user_id
@@ -10423,7 +10554,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 2
+                  example: 6
                   nullable: false
               required:
                 - user_id
@@ -10458,7 +10589,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 4
+                  example: 10
                   nullable: false
               required:
                 - user_id
@@ -10528,17 +10659,17 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: est
+                  example: ipsum
                   nullable: false
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: vel
+                  example: odio
                   nullable: false
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: sint
+                  example: quasi
                   nullable: false
                 also_block_user:
                   type: boolean
@@ -10812,7 +10943,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: deserunt
+                  example: deleniti
                   nullable: false
               required:
                 - user_ids
@@ -11813,7 +11944,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: female
+                  example: male
                   nullable: false
                   enum:
                     - male

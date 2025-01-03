@@ -93,6 +93,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         // Country & State
         Route::get('countries', [\App\Http\Controllers\Api\CountryController::class, 'getCountries']);
         Route::get('states', [\App\Http\Controllers\Api\StateController::class, 'getStates']);
+        Route::get('states/by-location', [\App\Http\Controllers\Api\StateController::class, 'getStateByUserLocation']);
 
         // Articles
         Route::get('article_cities', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleCities']);

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\StateResource;
 use App\Models\State;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class StateController extends Controller
 {
@@ -43,5 +45,149 @@ class StateController extends Controller
             });
             
         return response()->json(StateResource::collection($states));
+    }
+
+    /**
+     * Get State by User Location
+     * 
+     * Get state information based on user's latitude and longitude coordinates
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group Other
+     * @subgroup State
+     * 
+     * @bodyParam lat numeric required The latitude coordinate. Example: 3.140853
+     * @bodyParam lng numeric required The longitude coordinate. Example: 101.693207
+     * 
+     * @response scenario="success" {
+     *     "error": false,
+     *     "message": "Success",
+     *     "data": {
+     *         "id": 1,
+     *         "name": "Selangor",
+     *         "code": "SGR",
+     *         "country_id": 1,
+     *         "name_translation": "Selangor"
+     *     }
+     * }
+     * @response status=422 scenario="validation error" {
+     *     "message": "The lat field is required. The lng field is required.",
+     *     "errors": {
+     *         "lat": ["The lat field is required."],
+     *         "lng": ["The lng field is required."]
+     *     }
+     * }
+     */
+    public function getStateByUserLocation(Request $request)
+    {
+        // validate request
+        $request->validate([
+            'lat' => 'required|numeric',
+            'lng' => 'required|numeric',
+        ]);
+
+        try {
+            // get user's preferred language
+            $user = auth()->user();
+            $locale = $user->last_lang ?? config('app.locale');
+
+            // round coordinates to 2 decimal places (roughly 1.1km precision)
+            $roundedLat = round($request->lat, 2);
+            $roundedLng = round($request->lng, 2);
+
+            // create cache key based on rounded coordinates
+            $cacheKey = "geocode_state_{$roundedLat}_{$roundedLng}";
+
+            // try to get cached state data
+            $cachedState = Cache::get($cacheKey);
+            if ($cachedState) {
+                $stateModel = State::find($cachedState['state_id']);
+                if ($stateModel) {
+                    $stateModel->name_translation = json_decode($stateModel->name_translation, true)[$locale] ?? $stateModel->name;
+                    return response()->json([
+                        'error' => false,
+                        'message' => 'Success',
+                        'data' => new StateResource($stateModel)
+                    ]);
+                }
+            }
+
+            // if not in cache, call Google Maps API
+            $client = new \GuzzleHttp\Client();
+            $response = $client->get('https://maps.googleapis.com/maps/api/geocode/json', [
+                'query' => [
+                    'latlng' => $request->lat . ',' . $request->lng,
+                    'key' => config('filament-google-maps.key'),
+                ]
+            ]);
+
+            if ($response->getStatusCode() !== 200) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Failed to get location data'
+                ], 500);
+            }
+
+            $locationData = json_decode($response->getBody(), true);
+
+            // check if we got results
+            if (!isset($locationData['results']) || empty($locationData['results'])) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'No location data found'
+                ], 404);
+            }
+
+            // extract state from address components
+            $state = null;
+            foreach ($locationData['results'][0]['address_components'] as $component) {
+                if (in_array('administrative_area_level_1', $component['types'])) {
+                    $state = $component['long_name'];
+                    break;
+                }
+            }
+
+            if (!$state) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'State not found in location data'
+                ], 404);
+            }
+
+            // find the state in our database
+            $stateModel = State::where('name', 'LIKE', '%' . $state . '%')->first();
+            
+            if (!$stateModel) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'State not found in our database'
+                ], 404);
+            }
+
+            // cache the state data for 24 hours
+            Cache::put($cacheKey, [
+                'state_id' => $stateModel->id,
+                'lat' => $roundedLat,
+                'lng' => $roundedLng
+            ], now()->addHours(24));
+
+            // add translation
+            $stateModel->name_translation = json_decode($stateModel->name_translation, true)[$locale] ?? $stateModel->name;
+
+            return response()->json([
+                'error' => false,
+                'message' => 'Success',
+                'data' => new StateResource($stateModel)
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error in getStateByUserLocation: ' . $e->getMessage());
+            return response()->json([
+                'error' => true,
+                'message' => 'Failed to process location data'
+            ], 500);
+        }
     }
 }
