@@ -41,7 +41,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a8416bP5chavkDgVe36dEfZ'
+      - 'Bearer adgv4PhD6Vbkea3cZ1f8E65'
     controller: null
     method: null
     route: null
@@ -84,7 +84,93 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cakEhePVgZ1aD365bvd64f8'
+      - 'Bearer fDgbdP46c3kheEZ81aa65Vv'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/states/by-location
+    metadata:
+      groupName: Other
+      groupDescription: ''
+      subgroup: State
+      subgroupDescription: ''
+      title: 'Get State by User Location'
+      description: "Get state information based on user's latitude and longitude coordinates"
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      lat:
+        name: lat
+        description: 'The latitude coordinate.'
+        required: true
+        example: '3.140853'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lng:
+        name: lng
+        description: 'The longitude coordinate.'
+        required: true
+        example: '101.693207'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      lat: '3.140853'
+      lng: '101.693207'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "error": false,
+              "message": "Success",
+              "data": {
+                  "id": 1,
+                  "name": "Selangor",
+                  "code": "SGR",
+                  "country_id": 1,
+                  "name_translation": "Selangor"
+              }
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+              "message": "The lat field is required. The lng field is required.",
+              "errors": {
+                  "lat": ["The lat field is required."],
+                  "lng": ["The lng field is required."]
+              }
+          }
+        headers: []
+        description: 'validation error'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer bak6fVDPEdha4vZ3g8c1e56'
     controller: null
     method: null
     route: null
