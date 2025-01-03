@@ -20,6 +20,7 @@ use App\Models\MerchantCategory;
 use Awcodes\FilamentTableRepeater\Components\TableRepeater;
 use Cheesegrits\FilamentGoogleMaps\Fields\Geocomplete;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
@@ -147,6 +148,14 @@ class StoreResource extends Resource
                                 ->getOptionLabelFromRecordUsing(fn($record) => $record->name . ($record->parent ? ' - ' . $record->parent->name : ''))
                                 ->searchable()
                                 ->preload()
+                                ->suffixAction(function (Select $component) {
+                                    return Action::make('remove_all')
+                                        ->icon('heroicon-s-x-circle')
+                                        ->tooltip('Clear')
+                                        ->action(function () use ($component) {
+                                            $component->state([]);
+                                        });
+                                })
                                 ->multiple(),
 
                         ]),
