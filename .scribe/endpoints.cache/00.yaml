@@ -29,14 +29,14 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: voluptatem
+        example: libero
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      username: voluptatem
+      username: libero
     fileParameters: []
     responses:
       -
@@ -54,7 +54,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer veVaZfPE35ck6agD48b61hd'
+      - 'Bearer ZP45E36DdeaV6vhafgc1bk8'
     controller: null
     method: null
     route: null
@@ -85,14 +85,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: ipsum
+        example: ut
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: ipsum
+      share_code: ut
     fileParameters: []
     responses:
       -
@@ -592,7 +592,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gVPcab1v54fe6k6a3dEDZ8h'
+      - 'Bearer vdfg1ehkEVabD6c8Pa364Z5'
     controller: null
     method: null
     route: null
@@ -623,14 +623,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: labore
+        example: sapiente
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: labore
+      share_code: sapiente
     fileParameters: []
     responses:
       -
@@ -1130,7 +1130,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f5Vvdac4eED8Zhk66bgP31a'
+      - 'Bearer VD6b156d4ZfcEgahPk3ea8v'
     controller: null
     method: null
     route: null
@@ -1161,14 +1161,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: repellat
+        example: dolorem
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: repellat
+      share_code: dolorem
     fileParameters: []
     responses:
       -
@@ -1189,7 +1189,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php",
-                      "line": 1231,
+                      "line": 1251,
                       "function": "abort"
                   },
                   {
@@ -1668,7 +1668,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d651834hDZkVaae6EbPfcgv'
+      - 'Bearer 3fbDdhgZ45Pae6cEva8k6V1'
     controller: null
     method: null
     route: null
@@ -1716,7 +1716,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e3a6bEadvfDPcV5kZ816h4g'
+      - 'Bearer EV4akeabgv6dcZ5Df38hP61'
     controller: null
     method: null
     route: null
@@ -1763,7 +1763,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b38gaaDehEP6Zdf6k5cV4v1'
+      - 'Bearer h6b184PkV3g6Z5fadcaDevE'
     controller: null
     method: null
     route: null
@@ -1799,7 +1799,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4ac6PdZ3bVh6ga85eDfkEv1'
+      - 'Bearer 1Vf8daPa3Zvh65E4g6bDekc'
     controller: null
     method: null
     route: null
@@ -1835,7 +1835,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6cDakbfhZedPg1E6Vv8534a'
+      - 'Bearer ha8ecVP516b46Zfv3kgEdDa'
     controller: null
     method: null
     route: null
@@ -1871,7 +1871,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PDf1VZkgahv56ea6dEb48c3'
+      - 'Bearer 4eh8VPDaab65Ec6f13vkgZd'
     controller: null
     method: null
     route: null
@@ -1907,7 +1907,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k5DZd1ae4E6b6PgVcafhv83'
+      - 'Bearer P1fgca86h5ZaekDv3EV46db'
     controller: null
     method: null
     route: null
@@ -1943,7 +1943,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ahE4ZVv8dkb566c1ea3DfgP'
+      - 'Bearer 86edkc1b4hDVv6P3aEZag5f'
     controller: null
     method: null
     route: null
@@ -1979,7 +1979,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g46veEDaf3hVc6b5d8a1ZkP'
+      - 'Bearer 6P5dbehcEZ61vVDka83f4ga'
     controller: null
     method: null
     route: null
@@ -2015,7 +2015,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a61gVb5Eh6f3Dcd84PkveZa'
+      - 'Bearer ZPaf638dcagkV6h4e1vED5b'
     controller: null
     method: null
     route: null
@@ -2045,14 +2045,14 @@ endpoints:
         name: merchant_id
         description: 'The ID of the merchant.'
         required: true
-        example: assumenda
+        example: earum
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      merchant_id: assumenda
+      merchant_id: earum
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -2074,7 +2074,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer acgbPZkfhV3e6a86d5vE14D'
+      - 'Bearer 81PgaEfk56Zb3dvD4eVach6'
     controller: null
     method: null
     route: null
@@ -2104,14 +2104,14 @@ endpoints:
         name: store_id
         description: 'The ID of the store.'
         required: true
-        example: quia
+        example: est
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      store_id: quia
+      store_id: est
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -2133,7 +2133,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer agdf5D1ck866P4a3vEhbVZe'
+      - 'Bearer kE56Dbeda3vhVPgf41c86aZ'
     controller: null
     method: null
     route: null

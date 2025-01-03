@@ -55,6 +55,7 @@ class MerchantOfferController extends Controller
      * @bodyParam category_ids array optional Merchant Category Ids to Filter. Example: [1, 2, 3]
      * @bodyParam merchant_offer_ids array optional Merchant Offer Ids to Filter. Example [1,2,3]
      * @bodyParam city string optional Filter by City. Example: Subang Jaya
+     * @bodyParam state string optional Filter by State. Example: Selangor
      * @bodyParam lat float optional Filter by Lat of User (must provide lng). Example: 3.123456
      * @bodyParam lng float optional Filter by Lng of User (must provide lat). Example: 101.123456
      * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
@@ -153,6 +154,15 @@ class MerchantOfferController extends Controller
         if ($request->has('city')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->where('city', 'like', '%' . $request->city . '%');
+            });
+        }
+
+        // get articles by state
+        if ($request->has('state')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->whereHas('state', function($q) use ($request) {
+                    $q->where('name', 'like', '%' . $request->state . '%');
+                });
             });
         }
 
@@ -1036,6 +1046,7 @@ class MerchantOfferController extends Controller
      * @urlParam category_ids array optional Category Ids to Filter. Example: 1,2,3
      * @urlParam merchant_offer_ids array optional Merchant Offer Ids to Filter. Example: 1,2,3
      * @urlParam city string optional Filter by City. Example: Subang Jaya
+     * @urlParam state string optional Filter by State. Example: Selangor
      * @urlParam lat float optional Filter by Lat of User (must provide lng). Example: 3.123456
      * @urlParam lng float optional Filter by Lng of User (must provide lat). Example: 101.123456
      * @urlParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
@@ -1114,6 +1125,15 @@ class MerchantOfferController extends Controller
         if ($request->has('city')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->where('city', 'like', '%' . $request->city . '%');
+            });
+        }
+
+        // get articles by state
+        if ($request->has('state')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->whereHas('state', function($q) use ($request) {
+                    $q->where('name', 'like', '%' . $request->state . '%');
+                });
             });
         }
 
@@ -1258,6 +1278,7 @@ class MerchantOfferController extends Controller
      * @queryParam  category_ids array optional Merchant Category Ids to Filter. Example: [1, 2, 3]
      * @queryParam  merchant_offer_ids array optional Merchant Offer Ids to Filter. Example [1,2,3]
      * @queryParam  city string optional Filter by City Name. Example: Subang Jaya
+     * @queryParam  state string optional Filter by State. Example: Selangor
      * @queryParam  lat float required Filter by Lat of User (must provide lng). Example: 3.123456
      * @queryParam  lng float required Filter by Lng of User (must provide lat). Example: 101.123456
      * @queryParam  radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
@@ -1344,6 +1365,43 @@ class MerchantOfferController extends Controller
 
         if ($request->has('flash_only') && $request->flash_only == 0) {
             $query->where('flash_deal', false);
+        }
+
+        // get articles by city
+        if ($request->has('city')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('city', 'like', '%' . $request->city . '%');
+            });
+        }
+
+        // get articles by state
+        if ($request->has('state')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->whereHas('state', function($q) use ($request) {
+                    $q->where('name', 'like', '%' . $request->state . '%');
+                });
+            });
+        }
+
+        if ($request->has('merchant_id')) {
+            $query->whereHas('merchant', function ($query) use ($request) {
+                $query->where('id', $request->merchant_id);
+            });
+        }
+
+        // get articles by lat, lng
+        if ($request->has('lat') && $request->has('lng')) {
+            $radius = $request->has('radius') ? $request->radius : 10000; // 10km default
+            // get article where article->location lat,lng is within the radius
+            $query->whereHas('location', function ($query) use ($request, $radius) {
+                $query->selectRaw('( 6371 * acos( cos( radians(?) ) *
+                    cos( radians( lat ) )
+                    * cos( radians( lng ) - radians(?)
+                    ) + sin( radians(?) ) *
+                    sin( radians( lat ) ) )
+                    ) AS distance', [$request->lat, $request->lng, $request->lat])
+                    ->havingRaw("distance < ?", [$radius]);
+            });
         }
 
         $query ->with([
