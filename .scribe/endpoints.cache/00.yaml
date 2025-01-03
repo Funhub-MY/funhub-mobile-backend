@@ -29,14 +29,14 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: blanditiis
+        example: libero
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      username: blanditiis
+      username: libero
     fileParameters: []
     responses:
       -
@@ -54,7 +54,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kvdcg8h6EPa4DaVb1f6e5Z3'
+      - 'Bearer ZP45E36DdeaV6vhafgc1bk8'
     controller: null
     method: null
     route: null
@@ -85,14 +85,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: incidunt
+        example: ut
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: incidunt
+      share_code: ut
     fileParameters: []
     responses:
       -
@@ -592,7 +592,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eVk4g5h3Dbaf8aEcPd6Zv61'
+      - 'Bearer vdfg1ehkEVabD6c8Pa364Z5'
     controller: null
     method: null
     route: null
@@ -623,14 +623,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: expedita
+        example: sapiente
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: expedita
+      share_code: sapiente
     fileParameters: []
     responses:
       -
@@ -651,7 +651,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1766,
+                      "line": 1775,
                       "function": "abort"
                   },
                   {
@@ -1130,7 +1130,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZaDgcPaVb43d1e8h6kvf6E5'
+      - 'Bearer VD6b156d4ZfcEgahPk3ea8v'
     controller: null
     method: null
     route: null
@@ -1161,14 +1161,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: iste
+        example: dolorem
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: iste
+      share_code: dolorem
     fileParameters: []
     responses:
       -
@@ -1189,7 +1189,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php",
-                      "line": 1230,
+                      "line": 1251,
                       "function": "abort"
                   },
                   {
@@ -1668,7 +1668,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b5h36fekZ8cPD1a4vdaVg6E'
+      - 'Bearer 3fbDdhgZ45Pae6cEva8k6V1'
     controller: null
     method: null
     route: null
@@ -1716,7 +1716,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eVDaP86d1ckf35abZh4gv6E'
+      - 'Bearer EV4akeabgv6dcZ5Df38hP61'
     controller: null
     method: null
     route: null
@@ -1763,7 +1763,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h4dg3e66cbEVfv5Z1PakDa8'
+      - 'Bearer h6b184PkV3g6Z5fadcaDevE'
     controller: null
     method: null
     route: null
@@ -1799,7 +1799,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Zagah1PEfb46Vv83c6eDd5k'
+      - 'Bearer 1Vf8daPa3Zvh65E4g6bDekc'
     controller: null
     method: null
     route: null
@@ -1835,7 +1835,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fcbg6aEkDZvP5614Vhd3e8a'
+      - 'Bearer ha8ecVP516b46Zfv3kgEdDa'
     controller: null
     method: null
     route: null
@@ -1871,7 +1871,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gZ65Da6VEb34dkf18hvcaeP'
+      - 'Bearer 4eh8VPDaab65Ec6f13vkgZd'
     controller: null
     method: null
     route: null
@@ -1907,7 +1907,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 86vP5a6cke1g4aE3hbfZDdV'
+      - 'Bearer P1fgca86h5ZaekDv3EV46db'
     controller: null
     method: null
     route: null
@@ -1943,7 +1943,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1V3c6bkdE8eDZhPga654vfa'
+      - 'Bearer 86edkc1b4hDVv6P3aEZag5f'
     controller: null
     method: null
     route: null
@@ -1979,7 +1979,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g6k831EavaZhcV4fbDePd65'
+      - 'Bearer 6P5dbehcEZ61vVDka83f4ga'
     controller: null
     method: null
     route: null
@@ -2015,7 +2015,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3f6PcdeVbE65ah8kZD4ga1v'
+      - 'Bearer ZPaf638dcagkV6h4e1vED5b'
     controller: null
     method: null
     route: null
@@ -2045,14 +2045,14 @@ endpoints:
         name: merchant_id
         description: 'The ID of the merchant.'
         required: true
-        example: aspernatur
+        example: earum
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      merchant_id: aspernatur
+      merchant_id: earum
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -2074,7 +2074,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4ZPfegV6vd53kD618aEbcha'
+      - 'Bearer 81PgaEfk56Zb3dvD4eVach6'
     controller: null
     method: null
     route: null
@@ -2104,14 +2104,14 @@ endpoints:
         name: store_id
         description: 'The ID of the store.'
         required: true
-        example: veniam
+        example: est
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      store_id: veniam
+      store_id: est
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -2133,7 +2133,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1EfaghV6b6ke3DP58caZd4v'
+      - 'Bearer kE56Dbeda3vhVPgf41c86aZ'
     controller: null
     method: null
     route: null
