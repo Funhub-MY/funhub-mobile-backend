@@ -18,13 +18,14 @@ class TransactionService {
      * @param string $channel
      * @param string $name
      * @param string $email
-     * @param string $transaction_no
+	 * @param string $referral_code
+	 * @param string $transaction_no
      * @param float $discount
      * @param int $points_to_use
      *
      * @return Transaction
      */
-    public function create($transactionable, $amount, $gateway, $user_id, $payment_method = 'fpx', $channel = 'app', $email = null, $name = null, $transaction_no = null, $discount = 0, $points_to_use = 0) {
+    public function create($transactionable, $amount, $gateway, $user_id, $payment_method = 'fpx', $channel = 'app', $email = null, $name = null, $referral_code = null, $transaction_no = null, $discount = 0, $points_to_use = 0) {
     
         if ($transaction_no == null) {
             $transaction_no = $this->generateTransactionNo();
@@ -58,7 +59,8 @@ class TransactionService {
                 'channel' => $channel,
                 'email' => $email,
                 'name' => $name ? substr($name, 0, 255) : null,
-                'status' => Transaction::STATUS_PENDING,
+				'referral_code' => $referral_code,
+				'status' => Transaction::STATUS_PENDING,
                 'gateway_transaction_id' => 'N/A',
             ];
 

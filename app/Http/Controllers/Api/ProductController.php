@@ -105,7 +105,8 @@ class ProductController extends Controller
             'payment_method' => 'required',
             'fiat_payment_method' => 'required_if:payment_method,fiat,in:fpx,card',
             'card_id' => 'exists:user_cards,id',
-            'quantity' => 'required|integer|min:1'
+            'quantity' => 'required|integer|min:1',
+			'referral_code' => 'nullable|string'
         ]);
 
        // check if user has verified email address
@@ -165,6 +166,7 @@ class ProductController extends Controller
             'app',
             ($request->has('email') ? $request->email : null),
             ($request->has('name') ? $request->name : null),
+            ($request->has('referral_code') ? $request->referral_code : null),
         );
 
         // if gateway is mpay call mpay service generate Hash for frontend form
