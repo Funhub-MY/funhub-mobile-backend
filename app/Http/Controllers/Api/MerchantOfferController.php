@@ -1193,11 +1193,13 @@ class MerchantOfferController extends Controller
         if ($request->has('id')) {
             $offer = MerchantOffer::where('id', $request->id)
                 ->published()
+                ->withCount(relations: 'unclaimedVouchers')
                 // ->where('available_for_web', true)
                 ->first();
         } else {
             $offer = MerchantOffer::where('sku', $request->sku)
                 ->published()
+                ->withCount(relations: 'unclaimedVouchers')
                 // ->where('available_for_web', true)
                 ->first();
         }
@@ -1234,6 +1236,7 @@ class MerchantOfferController extends Controller
         // find offer by model_id
         $offer = MerchantOffer::where('id', $share->model_id)
             ->published()
+            ->withCount(relations: 'unclaimedVouchers')
             ->first();
 
         if (!$offer) {
