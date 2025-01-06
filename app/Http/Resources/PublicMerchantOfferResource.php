@@ -90,7 +90,7 @@ class PublicMerchantOfferResource extends JsonResource
             'available_at' => $this->available_at,
             'available_until' => $this->available_until,
             'expiry_days' => $this->expiry_days,
-            'quantity' => $this->quantity,
+            'quantity' => $this->unclaimed_vouchers_count,
             // 'claimed_quantity' => $this->claimed_quantity,
             'media' => MediaResource::collection($this->media),
             'horizontal_banner' => ($horizontalMedia) ? new MediaResource($horizontalMedia) : null,
