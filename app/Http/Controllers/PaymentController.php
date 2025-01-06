@@ -214,7 +214,8 @@ class PaymentController extends Controller
                 $transactionUpdateData = [
                     'status' => \App\Models\Transaction::STATUS_SUCCESS,
                     'gateway_transaction_id' => ($request->has('mpay_ref_no')) ? $request->mpay_ref_no : $request->authCode,
-                ];
+					'referral_code' => $request->has('referral_code') ? $request->referral_code : null,
+				];
 
                 // update transaction status to success first with gateway transaction id
                 $transaction->update($transactionUpdateData);
@@ -342,6 +343,11 @@ class PaymentController extends Controller
                     'transaction_no' => $transaction->transaction_no,
                     'request' => request()->all()
                 ]);
+				if ($request->has('referral_code')) {
+					$transaction->update([
+						'referral_code' => $request->referral_code
+					]);
+				}
                 if ($transaction->channel === 'app') {
                     return 'Transaction Still Pending';
                 } else if ($transaction->channel === 'funhub_web') {
@@ -362,7 +368,8 @@ class PaymentController extends Controller
                 $transaction->update([
                     'status' => \App\Models\Transaction::STATUS_FAILED,
                     'gateway_transaction_id' => $gatewayId,
-                ]);
+					'referral_code' => $request->has('referral_code') ? $request->referral_code : null,
+				]);
 
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
