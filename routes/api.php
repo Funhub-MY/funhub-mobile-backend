@@ -280,6 +280,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::get('/limited', [\App\Http\Controllers\Api\ProductController::class, 'limited']);
             Route::post('/checkout', [\App\Http\Controllers\Api\ProductController::class, 'postCheckout']);
             Route::post('/checkout/cancel', [\App\Http\Controllers\Api\ProductController::class, 'postCancelCheckout']);
+            Route::get('/{product_id}', [\App\Http\Controllers\Api\ProductController::class, 'show']);
         });
 
         // Points & Rewards
