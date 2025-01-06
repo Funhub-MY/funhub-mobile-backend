@@ -56,10 +56,31 @@ Route::get('/get/google-access-token', function () {
 // redirect to google login.
 Route::get('/login/google_provider', [\App\Http\Controllers\Api\AuthController::class, 'redirectToGoogle']);
 // this call back is use for socialite callback only for unit test. not using at any place.
-Route::get('/auth/facebook/callback',function () {
+Route::get('/auth/facebook/callback', function () {
     return redirect()->to('/admin/login');
 });
 // this call back is use for socialite callback only for unit test. not using at any place.
 Route::get('/auth/google/callback', [\App\Http\Controllers\Api\AuthController::class, 'googleCallBack']);
 
 Route::get('/merchants/register', MerchantRegister::class)->name('merchant.register');
+
+/*
+Route::get('/test-email', function () {
+    return view('emails.purchased-offer', [
+        'transactionNo' => '123TEST',
+        'dateTime' => '1/1/2022',
+        'itemTitle' => 'Voucher',
+        'quantity' => 1,
+        'subtotal' => '100',
+        'currencyType' => 'MYR',
+        'purchaseDate' => '1/1/2022',
+        'purchaseTime' => '1/1/2022',
+        'redemptionStartDate' => '1/1/2022',
+        'redemptionEndDate' => '1/1/2022',
+        'encryptedData' => 'test',
+        'merchantName' => 'Merchant',
+        'userName' => 'User',
+        'merchantOfferCover' => 'https://via.placeholder.com/150'
+    ]);
+});
+*/
