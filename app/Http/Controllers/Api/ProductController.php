@@ -86,6 +86,28 @@ class ProductController extends Controller
     }
 
     /**
+     * Get Product By ID
+     *
+     * @param Product $product
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Product
+     * @queryParam product_id integer required Product ID. Example: 1
+     * @response scenario=success {
+     * "data": {}
+     * }
+     *
+     */
+    public function show($id)
+    {
+        $product = Product::find($id)
+            ->published()
+            ->get()->first();
+
+        return new ProductResource($product);
+    }
+
+    /**
      * Post Checkout
      *
      * @param Request $request
