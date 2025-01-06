@@ -55,7 +55,31 @@ class ProductController extends Controller
     {
         $products = Product::with('rewards')
             ->published()
+            ->normal()
 			->orderBy('order')
+            ->get();
+
+        return ProductResource::collection($products);
+    }
+
+    /**
+     * Get Products for Sale (Limited Gift Cards)
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Product
+     * @response scenario=success {
+     * "current_page": 1,
+     * "data": []
+     * }
+     */
+    public function limited(Request $request)
+    {
+        $products = Product::with('rewards')
+            ->published()
+            ->limited()
+            ->orderBy('order')
             ->get();
 
         return ProductResource::collection($products);
