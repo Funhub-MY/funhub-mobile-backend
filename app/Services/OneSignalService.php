@@ -21,59 +21,141 @@ class OneSignalService
         ]);
     }
 
+    /*
+        Free plan only allow 2 tags 
+        Growth plan support 10 tags
+        Professional plan 100 tags
+    */
     public function syncUser(User $user)
     {
-        $user->loadCount(['followings', 'followers', 'articles']);
+        // $user->loadCount(['followings', 'followers', 'articles']);
 
         $data = [
             'identity' => [
                 'external_id' => (string) $user->id,
+                'mixpanel_id' => (string) 'funhub-mobile-users-'.$user->id
             ],
             'properties' => [
                 'language' => $user->last_lang ?? 'en',
+                'country' => $user->country->name ?? '',
+                'lat' => $user->last_lat ?? (float) 0.00,
+                'long' => $user->last_lng ?? (float) 0.00,
+                'timezone_id' => 'Asia/Kuala_Lumpur',
                 'tags' => [
                     'name' => $user->name,
-                    'username' => $user->username,
-                    'verified_email' => $user->verified_email,
-                    'phone_country_code' => $user->phone_country_code,
-                    'phone_no' => $user->phone_no,
-                    'articles_count' => (string) $user->articles_count,
-                    'following_count' => (string) $user->following_count,
-                    'followers_count' => (string) $user->followers_count,
-                    'has_completed_profile' => (string) $user->has_completed_profile,
-                    'has_avatar' => (string) $user->has_avatar,
-                    'point_balance' => (string) $user->point_balance,
-                    'is_profile_private' => $user->is_profile_private,
-                    'dob' => $user->dob,
-                    'gender' => $user->gender,
-                    'job_title' => $user->job_title,
-                    'country' => $user->country->name,
-                    'state' => $user->state->name,
-                    'interested_categories' => implode(',', $user->articleCategoriesInterests->pluck('name')->toArray()),
-                    'created_at' => $user->created_at->toDateTimeString(),
+                    // 'username' => $user->username,
+                    // 'verified_email' => $user->verified_email,
+                    // 'phone_country_code' => $user->phone_country_code,
+                    // 'phone_no' => $user->phone_no,
+                    // 'articles_count' => (string) $user->articles_count,
+                    // 'following_count' => (string) $user->following_count,
+                    // 'followers_count' => (string) $user->followers_count,
+                    // 'has_completed_profile' => (string) $user->has_completed_profile,
+                    // 'has_avatar' => (string) $user->has_avatar,
+                    // 'point_balance' => (string) $user->point_balance,
+                    // 'is_profile_private' => $user->is_profile_private,
+                    // 'dob' => $user->dob,
+                    // 'gender' => $user->gender,
+                    // 'job_title' => $user->job_title,
+                    // 'country' => $user->country->name ?? '',
+                    // 'state' => $user->state->name ?? '',
+                    // 'interested_categories' => implode(',', $user->articleCategoriesInterests->pluck('name')->toArray()),
+                    // 'created_at' => $user->created_at->toDateTimeString(),
                 ],
             ],
         ];
 
-        if ($user->onesignal_subscription_id) {
-            $data['subscriptions'] = [
-                [
-                    'id' => $user->subscription_id,
-                ],
+        //  subscribe the email and phone no 
+        $data['subscriptions'] = [];
+        if(!empty($user->email)){
+            $data['subscriptions'][] = [
+                "type" => "Email",
+                "token" => $user->email,
+                "enabled" => true
             ];
         }
+
+        if(!empty($user->full_phone_no)){
+            $data['subscriptions'][] = [
+                "type" => "SMS",
+                "token" => "+".$user->full_phone_no,
+                "enabled" => true
+            ];
+        }
+
+        // if ($user->onesignal_subscription_id) {
+        //     $data['subscriptions'] = [
+        //         [
+        //             'id' => $user->subscription_id,
+        //         ],
+        //     ];
+        // }
 
         $response = $this->client->post('users', [
             'json' => $data,
         ]);
 
         $responseData = json_decode($response->getBody(), true);
-
-        if ($response->getStatusCode() === 200 && isset($responseData['id'])) {
-            $user->onesignal_subscription_id = $responseData['id'];
+        if ($response->getStatusCode() === 200 && isset($responseData['identity'])) {
+            $user->onesignal_user_id = $responseData['identity']['onesignal_id'];
+            // $user->onesignal_subscription_id = $responseData['id'] ?? '';
             $user->save();
         }
     }
+
+    // public function syncUser(User $user)
+    // {
+    //     $user->loadCount(['followings', 'followers', 'articles']);
+
+    //     $data = [
+    //         'identity' => [
+    //             'external_id' => (string) $user->id,
+    //         ],
+    //         'properties' => [
+    //             'language' => $user->last_lang ?? 'en',
+    //             'tags' => [
+    //                 'name' => $user->name,
+    //                 'username' => $user->username,
+    //                 'verified_email' => $user->verified_email,
+    //                 'phone_country_code' => $user->phone_country_code,
+    //                 'phone_no' => $user->phone_no,
+    //                 'articles_count' => (string) $user->articles_count,
+    //                 'following_count' => (string) $user->following_count,
+    //                 'followers_count' => (string) $user->followers_count,
+    //                 'has_completed_profile' => (string) $user->has_completed_profile,
+    //                 'has_avatar' => (string) $user->has_avatar,
+    //                 'point_balance' => (string) $user->point_balance,
+    //                 'is_profile_private' => $user->is_profile_private,
+    //                 'dob' => $user->dob,
+    //                 'gender' => $user->gender,
+    //                 'job_title' => $user->job_title,
+    //                 'country' => $user->country->name ?? '',
+    //                 'state' => $user->state->name ?? '',
+    //                 'interested_categories' => implode(',', $user->articleCategoriesInterests->pluck('name')->toArray()),
+    //                 'created_at' => $user->created_at->toDateTimeString(),
+    //             ],
+    //         ],
+    //     ];
+
+    //     if ($user->onesignal_subscription_id) {
+    //         $data['subscriptions'] = [
+    //             [
+    //                 'id' => $user->subscription_id,
+    //             ],
+    //         ];
+    //     }
+
+    //     $response = $this->client->post('users', [
+    //         'json' => $data,
+    //     ]);
+
+    //     $responseData = json_decode($response->getBody(), true);
+
+    //     if ($response->getStatusCode() === 200 && isset($responseData['id'])) {
+    //         $user->onesignal_subscription_id = $responseData['id'];
+    //         $user->save();
+    //     }
+    // }
 
     public function bulkSyncUsers($users)
     {

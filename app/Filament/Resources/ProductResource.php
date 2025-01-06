@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Repeater;
 use Filament\Tables\Columns\TextColumn;
@@ -58,6 +59,12 @@ class ProductResource extends Resource
                                     ->rules('image'),
 
                                 TextInput::make('name')
+                                    ->required(),
+
+                                Radio::make('type')
+                                    ->options(Product::TYPES)
+                                    ->default('normal')
+                                    ->reactive()
                                     ->required(),
 
                                 Select::make('status')
@@ -134,9 +141,14 @@ class ProductResource extends Resource
 				TextColumn::make('order')
 					->sortable()
 					->label('Order'),
+                TextColumn::make('type')
+                    ->enum(Product::TYPES)
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
+
                 TextColumn::make('sku')
                     ->searchable()
                     ->label('SKU'),

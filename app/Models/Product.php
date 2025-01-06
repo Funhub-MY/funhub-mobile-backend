@@ -22,6 +22,12 @@ class Product extends BaseModel implements HasMedia, Auditable
         1 => 'Published',
         2 => 'Archived'
     ];
+
+    const TYPES = [
+        'normal' => 'Gift Card',
+        'limited' => 'Limited Card with Campaign',
+    ];
+
     const MEDIA_COLLECTION_NAME = 'product_images';
 
     protected $guarded = ['id'];
@@ -62,4 +68,19 @@ class Product extends BaseModel implements HasMedia, Auditable
         $query->where('status', 1);
     }
 
+    /**
+     * Scope a query to only include normal offers.
+     */
+    public function scopeNormal(Builder $query): void
+    {
+        $query->where('type', 'normal');
+    }
+
+    /**
+     * Scope a query to only include limited offers.
+     */
+    public function scopeLimited(Builder $query): void
+    {
+        $query->where('type', 'limited');
+    }
 }
