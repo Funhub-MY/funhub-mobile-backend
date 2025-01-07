@@ -323,6 +323,8 @@ return [
 
     'auto_article_categories' => env('AUTO_ARTICLE_CATEGORIES', false),
 
+    'auto_redistribute_vouchers' => env('AUTO_REDISTRIBUTE_VOUCHERS', false),
+
     'tutorial_steps' => [
         "first_time_visit_recommend_screen",
         "first_time_visit_nearby_stores_screen",

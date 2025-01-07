@@ -271,6 +271,7 @@ class AuthController extends Controller
                 $user = User::create([
                     'phone_country_code' => $request->country_code,
                     'phone_no' => $request->phone_no, // unique
+                    'name' => $request->input('name', null), // if pass in name will skip onboarding
                     'otp' => $otp,
                     'otp_expiry' => now()->addMinutes(1),
                     'otp_verified_at' => null,
