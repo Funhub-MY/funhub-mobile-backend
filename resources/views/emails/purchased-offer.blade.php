@@ -69,7 +69,7 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" style="background-color: #ffffff; border-radius: 8px;">
         <div style="background: linear-gradient(to bottom, #FFF6B7, #FFFCE9); padding: 20px; border-radius: 8px 8px 0 0;">
             <table cellpadding="0" cellspacing="0" width="100%">
                 <tr>
@@ -167,26 +167,26 @@
             <a href="{{ config('app.frontend_app') }}/download/app" style="font-size:18px; margin-top: 20px; background-color: #ffe200; padding: 10px 25px; border: none; border-radius: 8px">Download FUNHUB Now</a>
         </div>
         <div class="underline"></div>
-        <h1 style="font-size: 28px">To Redeem Now</h1>
+        <h1 style="font-size: 28px">To Redeem By Email</h1>
         <table>
             <tr>
                 <td><div class="numbering">1</div></td>
-                <td style="font-size: 18px">Clicking on the “Redeem Voucher Now” Button</td>
+                <td style="font-size: 18px">Click on the "Visit Branches" button and Select Your Preferred Branch</td>
             </tr>
             <tr style="height: 30px"></tr>
             <tr>
                 <td><div class="numbering">2</div></td>
-                <td style="font-size: 18px">Enter the 6-digit Master Code provided by the cashier or select Your location that can be redeemed </td>
+                <td style="font-size: 18px">Click Redeem Now and Verify Your Identity</td>
             </tr>
             <tr style="height: 30px"></tr>
             <tr>
                 <td><div class="numbering">3</div></td>
-                <td style="font-size: 18px">Show The Master Code To The Cashier</td>
+                <td style="font-size: 18px">Enter Master Code Provided By the Cashier</td>
             </tr>
             <tr style="height: 30px"></tr>
         </table>
         <div style="margin: 15px auto; text-align: center">
-            <a href="{{ config('app.frontend_app').'/redeem/voucher?data='.urlencode($encryptedData) }}" style="font-size:18px; margin-top: 20px; background-color: #ffe200; padding: 10px 25px; border: none; border-radius: 8px">Redeem Voucher Now</a>
+            <a href="{{ config('app.frontend_app').'/redeem/voucher?data='.urlencode($encryptedData) }}" style="font-size:18px; margin-top: 20px; background-color: #ffe200; padding: 10px 25px; border: none; border-radius: 8px">Visit Branches</a>
         </div>
         <div style="background: linear-gradient(to bottom, #FFF6B7, #FFFCE9); padding: 20px; border-radius: 0 0 8px 8px;">
             <table cellpadding="0" cellspacing="0" width="100%">

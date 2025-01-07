@@ -8,19 +8,20 @@ use Illuminate\Console\Command;
 
 class SyncUsersWithOneSignal extends Command
 {
-    protected $signature = 'onesignal:sync-users {--limit=} {--user-id=}';
+    protected $signature = 'onesignal:sync-users {--offset=} {--limit=} {--user-id=}';
 
     protected $description = 'Sync users with OneSignal';
 
     public function handle()
     {
+        $offset = $this->option('offset') ?: 0;
         $limit = $this->option('limit') ?: 100;
         $userId = $this->option('user-id');
 
         $oneSignalService = new OneSignalService();
 
         if ($userId) {
-            $user = User::find($userId);
+            $user =  User::where('id', $userId)->where('status', 1)->first();
             if ($user) {
                 $this->info("Syncing user with ID: {$userId}");
                 $oneSignalService->syncUser($user);
@@ -29,7 +30,7 @@ class SyncUsersWithOneSignal extends Command
                 $this->error("User with ID: {$userId} not found.");
             }
         } else {
-            $users = User::limit($limit)->get();
+            $users = User::where('status', 1)->skip($offset)->limit($limit)->get();
             $this->info("Syncing {$users->count()} users with OneSignal...");
             $oneSignalService->bulkSyncUsers($users);
             $this->info('Users synced successfully.');

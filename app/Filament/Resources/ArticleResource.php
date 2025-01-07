@@ -409,8 +409,7 @@ class ArticleResource extends Resource
                 // date created at
                 Tables\Columns\TextColumn::make('created_at')->dateTime('d/m/Y H:ia')
                     ->sortable()
-                    ->label('Created At')
-                    ->searchable(),
+                    ->label('Created At'),
                 Tables\Columns\TextColumn::make('user.name')->label('Created By')
                     ->limit(30)
                     ->url(fn ($record) => route('filament.resources.users.view', $record->user))
@@ -442,14 +441,11 @@ class ArticleResource extends Resource
                     ])
                     ->sortable(),
 				TagsColumn::make('categories.name')
-					->label('Parent Categories')
-					->sortable()
-					->searchable(),
+					->label('Parent Categories'),
 
 				TagsColumn::make('subCategories.name')
-					->label('Sub Categories')
-					->sortable()
-					->searchable(),
+					->label('Sub Categories'),
+
                 Tables\Columns\BadgeColumn::make('hidden_from_home')
                     ->label('Hidden (Home)')
                     ->enum([
@@ -460,8 +456,8 @@ class ArticleResource extends Resource
                         'secondary' => 0,
                         'success' => 1,
                     ])
-                    ->sortable()
-                    ->searchable(),
+                    ->sortable(),
+
                 Tables\Columns\BadgeColumn::make('pinned_recommended')
                     ->label('Pinned (Recommended)')
                     ->enum([
@@ -472,8 +468,7 @@ class ArticleResource extends Resource
                         'secondary' => 0,
                         'success' => 1,
                     ])
-                    ->sortable()
-                    ->searchable(),
+                    ->sortable(),
 
                 Tables\Columns\BadgeColumn::make('available_for_web')
                     ->label('Available for Web')
@@ -497,8 +492,7 @@ class ArticleResource extends Resource
                         'secondary' => Article::VISIBILITY_PRIVATE,
                         'success' => Article::VISIBILITY_PUBLIC,
                     ])
-                    ->sortable()
-                    ->searchable(),
+                    ->sortable(),
 
                 // Tables\Columns\TextColumn::make('excerpt')
                 //     ->sortable()
@@ -556,8 +550,7 @@ class ArticleResource extends Resource
 
                 Tables\Columns\TextColumn::make('published_at')->dateTime('d/m/Y')
                     ->sortable()
-                    ->label('Publish At')
-                    ->searchable(),
+                    ->label('Publish At'),
             ])
             ->filters([
                 // filter by user

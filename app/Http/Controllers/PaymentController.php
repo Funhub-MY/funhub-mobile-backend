@@ -139,12 +139,14 @@ class PaymentController extends Controller
                 if ($transaction->status == \App\Models\Transaction::STATUS_SUCCESS) {
                     // SUCCESS
                     $offer_name = null;
+                    $offer_id = null;
                     $claim_id = null;
                     $redemption_start_date = null;
                     $redemption_end_date = null;
                     if ($transaction->transactionable_type == \App\Models\MerchantOffer::class) {
                         $merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
                         $offer_name = $merchantOffer ? $merchantOffer->name : null;
+                        $offer_id = $merchantOffer ? $merchantOffer->id : null;
 
                         $claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
                             ->where('user_id', $transaction->user_id)
@@ -168,6 +170,7 @@ class PaymentController extends Controller
                         'transaction_id' => $transaction->id,
                         'transaction_no' => $transaction->transaction_no,
                         'offer_name' => $offer_name,
+                        'offer_id' => $offer_id,
                         'offer_claim_id' => $claim_id,
                         'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
                         'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
@@ -296,6 +299,7 @@ class PaymentController extends Controller
                 if ($transaction->transactionable_type == \App\Models\MerchantOffer::class) {
                     $merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
                     $offer_name = $merchantOffer ? $merchantOffer->name : null;
+                    $offer_id = $merchantOffer ? $merchantOffer->id : null;
 
                     $claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
                         ->where('user_id', $transaction->user_id)
@@ -322,6 +326,7 @@ class PaymentController extends Controller
                     'transaction_id' => $transaction->id,
                     'transaction_no' => $transaction->transaction_no,
                     'offer_name' => $offer_name,
+                    'offer_id' => $offer_id,
                     'offer_claim_id' => $claim_id,
                     'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
                     'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,

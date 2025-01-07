@@ -106,6 +106,9 @@ class MerchantRegister extends Component implements HasForms
             // ensure no leading zero
             $data['business_phone_no'] = ltrim($data['business_phone_no'], '0');
 
+            // ensure no leading +60
+            $data['business_phone_no'] = ltrim($data['business_phone_no'], '+60');
+
             $user = User::where('phone_no', $data['business_phone_no'])
                 ->where('phone_country_code', $data['phone_country_code'])
                 ->first();
