@@ -176,7 +176,7 @@
             <tr style="height: 30px"></tr>
             <tr>
                 <td><div class="numbering">2</div></td>
-                <td style="font-size: 18px">Click Redeem Now and Verify Your Identity</td>            
+                <td style="font-size: 18px">Click Redeem Now and Verify Your Identity</td>
             </tr>
             <tr style="height: 30px"></tr>
             <tr>

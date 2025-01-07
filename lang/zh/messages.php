@@ -63,6 +63,15 @@ return [
             'Redirect_to_Gateway' => '重定向到网关',
             'Transaction_cancelled' => '交易已取消',
         ],
+        'promotion_code_controller' => [
+            'Code_not_active_or_expired' => '此优惠码已失效或已过期',
+            'Campaign_disabled' => '此促销活动已被禁用',
+            'Campaign_ended' => '此促销活动已结束',
+            'Campaign_not_started' => '此促销活动尚未开始',
+            'Code_already_claimed' => '此优惠码已被使用',
+            'Code_redeemed_successfully' => '优惠码兑换成功',
+            'Invalid_code' => '无效的优惠码'
+        ],
         'support_request_controller' => [
             'Support_request_resolved_and_closed' => '支持请求已解决并关闭',
         ],

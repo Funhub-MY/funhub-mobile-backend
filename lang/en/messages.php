@@ -63,6 +63,15 @@ return [
             'Redirect_to_Gateway' => 'Redirect to Gateway',
             'Transaction_cancelled' => 'Transaction cancelled',
         ],
+        'promotion_code_controller' => [
+            'Code_not_active_or_expired' => 'This code is not active or has expired',
+            'Campaign_disabled' => 'This promotion campaign is disabled',
+            'Campaign_ended' => 'This promotion campaign has ended',
+            'Campaign_not_started' => 'This promotion campaign has not started yet',
+            'Code_already_claimed' => 'This code has already been claimed',
+            'Code_redeemed_successfully' => 'Code redeemed successfully',
+            'Invalid_code' => 'Invalid code'
+        ],
         'support_request_controller' => [
             'Support_request_resolved_and_closed' => 'Support request resolved and closed',
         ],
@@ -188,6 +197,15 @@ return [
             'Product_is_no_longer_valid' => 'Product is no longer valid',
             'Product_is_sold_out' => 'Product is sold out',
             'Transaction_not_found' => 'Transaction not found',
+        ],
+        'promotion_code_controller' => [
+            'Code_not_active_or_expired' => 'This code is not active or has expired',
+            'Campaign_disabled' => 'This promotion campaign is disabled',
+            'Campaign_ended' => 'This promotion campaign has ended',
+            'Campaign_not_started' => 'This promotion campaign has not started yet',
+            'Code_already_claimed' => 'Promo code has already been claimed',
+            'Code_redeemed_successfully' => 'Promo code redeemed successfully',
+            'Invalid_code' => 'Invalid code'
         ],
         'support_request_controller' => [
             'Invalid_status' => 'Invalid status',

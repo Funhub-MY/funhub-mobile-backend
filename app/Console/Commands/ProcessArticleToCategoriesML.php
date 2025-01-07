@@ -73,7 +73,7 @@ class ProcessArticleToCategoriesML extends Command
                 $result = $client->chat()->create([
                     'model' => 'gpt-4o-mini',
                     'messages' => [
-                        ['role' => 'user', 'content' => 'Categorise content into provided (must use) category list: '. $subCategories->pluck('name')->implode(', '). ' must use and return categories names only separated by comma without space,content: '. $this->generateContent($article)],
+                        ['role' => 'user', 'content' => 'Categorise content into provided (must use) category list: '. $subCategories->pluck('name')->implode(', '). ' must use and return categories names only separated by comma without spac, do not generate any other categories if you are unsure,content: '. $this->generateContent($article)],
                     ],
                 ]);
 

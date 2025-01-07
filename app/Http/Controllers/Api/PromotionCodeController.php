@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PromotionCode;
 use App\Services\PointService;
 use App\Services\PointComponentService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -51,23 +52,28 @@ class PromotionCodeController extends Controller
         $request->validate([
             'code' => 'required|string',
         ]);
-
         try {
             return DB::transaction(function () use ($request) {
                 $code = $request->input('code');
+
                 $promotionCode = PromotionCode::where('code', $code)
-                    ->where('is_redeemed', false)
-                    ->firstOrFail();
+                    ->first();
 
                 Log::info('[PromotionCodeController] Found promotion code', [
                     'promotion_code_id' => $promotionCode->id,
                     'claimed_by_id' => $promotionCode->claimed_by_id
                 ]);
 
-                // check if promotion code is active
-                if (!$promotionCode->isActive()) {
+                if (!$promotionCode) {
                     return response()->json([
-                        'message' => 'This code is not active or has expired',
+                        'message' => __('messages.success.promotion_code_controller.Invalid_code'),
+                    ], 404);
+                }
+
+                // check if it's already claimed
+                if ($promotionCode->claimed_by_id) {
+                    return response()->json([
+                        'message' => __('messages.success.promotion_code_controller.Code_already_claimed'),
                     ], 400);
                 }
 
@@ -75,28 +81,28 @@ class PromotionCodeController extends Controller
                 if ($promotionCode->promotionCodeGroup) {
                     if (!$promotionCode->promotionCodeGroup->status) {
                         return response()->json([
-                            'message' => 'This promotion campaign is disabled',
+                            'message' => __('messages.success.promotion_code_controller.Campaign_disabled'),
                         ], 400);
                     }
 
                     $now = now();
                     if ($promotionCode->promotionCodeGroup->campaign_until && $now->gt($promotionCode->promotionCodeGroup->campaign_until)) {
                         return response()->json([
-                            'message' => 'This promotion campaign has ended',
+                            'message' => __('messages.success.promotion_code_controller.Campaign_ended'),
                         ], 400);
                     }
 
                     if ($promotionCode->promotionCodeGroup->campaign_from && $now->lt($promotionCode->promotionCodeGroup->campaign_from)) {
                         return response()->json([
-                            'message' => 'This promotion campaign has not started yet',
+                            'message' => __('messages.success.promotion_code_controller.Campaign_not_started'),
                         ], 400);
                     }
                 }
 
-                // check if it's already claimed
-                if ($promotionCode->claimed_by_id) {
+                // check if promotion code is active
+                if (!$promotionCode->isActive()) {
                     return response()->json([
-                        'message' => 'This code has already been claimed',
+                        'message' => __('messages.success.promotion_code_controller.Code_not_active_or_expired'),
                     ], 400);
                 }
 
@@ -144,14 +150,14 @@ class PromotionCodeController extends Controller
                 }
 
                 return response()->json([
-                    'message' => 'Code redeemed successfully',
+                    'message' => __('messages.success.promotion_code_controller.Code_redeemed_successfully'),
                     'rewards' => $rewards,
                     'reward_components' => $rewardComponents,
                 ]);
             });
-        } catch (ModelNotFoundException $e) {
+        } catch (Exception $e) {
             return response()->json([
-                'message' => 'Invalid or already redeemed code',
+                'message' => __('messages.success.promotion_code_controller.Invalid_code'),
             ], 404);
         }
     }
