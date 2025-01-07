@@ -107,62 +107,32 @@ class ArticleController extends Controller
             $query->whereHas('categories', fn ($q) => $q->whereIn('article_categories.id', explode(',', $request->category_ids)));
         }
 
-        // ========= build recommendation with article_recommendations (seeded by algolia)
+        // Handle build_recommendations alongside article_ids
         if ($request->has('build_recommendations') && $request->build_recommendations == 1 && auth()->user()->has_article_personalization) {
+            // seed random with current timestamp for different results each time
             $timestamp = now()->timestamp;
-            
-            // get recommended IDs first
             $recommendedArticleIds = auth()->user()->articleRecommendations()
                 ->select('article_id')
-                ->orderByRaw("
-                    CASE 
-                        WHEN last_viewed_at IS NULL THEN RAND($timestamp) * 0.8
-                        WHEN last_viewed_at < DATE_SUB(NOW(), INTERVAL 7 DAY) THEN RAND($timestamp)
-                        ELSE -TIMESTAMPDIFF(SECOND, last_viewed_at, NOW())
-                    END DESC
-                ")
-                ->when($request->has('video_only') && $request->video_only == 1, function($query) {
-                    $query->whereExists(function($subquery) {
-                        $subquery->select(DB::raw(1))
-                            ->from('media')
-                            ->whereRaw('media.model_id = article_recommendations.article_id')
-                            ->where('media.model_type', Article::class)
-                            ->whereRaw("media.mime_type LIKE 'video/%'");
-                    });
-                })
-                ->limit(100)
+                ->orderByRaw('CASE WHEN last_viewed_at IS NULL THEN 0 ELSE 1 END')
+                ->orderByRaw("RAND($timestamp)")
+                ->limit(150)
                 ->pluck('article_id')
                 ->toArray();
-        
+
             if (!empty($recommendedArticleIds)) {
-                $targetTotal = ($request->has('video_only') && $request->video_only == 1) ? 500 : 50;
-                $remainingNeeded = $targetTotal - count($recommendedArticleIds);
-                
-                if ($remainingNeeded > 0) {
-                    // Get additional non-recommended IDs to fill up to target total
-                    $nonRecommendedIds = Article::published()
-                        ->when($request->has('video_only') && $request->video_only == 1, function($query) {
-                            $query->where('type', 'video');
-                        })
-                        ->whereNotIn('id', $recommendedArticleIds)
-                        ->orderBy('created_at', 'desc')
-                        ->limit($remainingNeeded)
-                        ->pluck('id')
-                        ->toArray();
-                    
-                    // Combine all IDs maintaining priority
-                    $allArticleIds = array_merge($recommendedArticleIds, $nonRecommendedIds);
-                    
-                    // Single query with all IDs
-                    $query->whereIn('articles.id', $allArticleIds)
-                            ->orderByRaw("FIELD(articles.id," . implode(',', $allArticleIds) . ")");
-                } else {
-                    // Just use recommended IDs if we already have enough
-                    $query->whereIn('articles.id', $recommendedArticleIds)
-                            ->orderByRaw("FIELD(articles.id," . implode(',', $recommendedArticleIds) . ")");
-                }
+                // use recommendations if available
+                $query->whereIn('id', $recommendedArticleIds);
+                // maintain the order of recommendations
+                $orderString = 'FIELD(id,' . implode(',', $recommendedArticleIds) . ')';
+                $query->orderByRaw($orderString);
+            } elseif ($request->has('article_ids')) {
+                // fall back to article_ids only if no recommendations
+                $query->whereIn('id', explode(',', $request->article_ids));
             }
-        } // ========= end of Build recommendation with article_recommendations (seeded by algolia)
+        } elseif ($request->has('article_ids')) {
+            // normal article_ids handling if no recommendations enabled
+            $query->whereIn('id', explode(',', $request->article_ids));
+        }
 
         if ($request->has('tag_ids')) {
             $tagIds = explode(',', $request->tag_ids);
