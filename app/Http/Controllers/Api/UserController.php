@@ -1078,64 +1078,60 @@ class UserController extends Controller
      */
     public function postUpdateLastKnownLocation(Request $request)
     {
+        // Validate the request
         $this->validate($request, [
             'lat' => 'required|string',
             'lng' => 'required|string',
         ]);
-
+    
         $user = auth()->user();
-
-        // current lat lng
-        $currentLat = $user->last_lat ?? null;
-        $currentLng = $user->last_lng ?? null;
-
+        $currentLat = $user->last_lat;
+        $currentLng = $user->last_lng;
+    
         // calculate distance if both current and new coordinates are available
         $distance = 0;
         if ($currentLat !== null && $currentLng !== null) {
             $distance = $this->calculateDistance($currentLat, $currentLng, $request->lat, $request->lng);
         }
-
-        // update location and create historical record if distance > 300 meters
+    
+        // update location and create historical record if distance > 300 meters or no previous location
         if ($distance > 300 || $currentLat === null || $currentLng === null) {
-            $user->update([
-                'last_lat' => $request->lat,
-                'last_lng' => $request->lng,
-            ]);
-
-            // create new historical location
+            // update the user's last known location
+            $user->last_lat = $request->lat;
+            $user->last_lng = $request->lng;
+            $user->save();
+    
+            // create a new historical location record
             $loc = $user->historicalLocations()->create([
                 'lat' => $request->lat,
                 'lng' => $request->lng,
             ]);
-
-            // dispatch job to populate location address for user(allow google )
-            $this->dispatch(new PopulateLocationAddressForUser($loc));
-
+    
+            // dispatch the job to populate the location address asynchronously
+            dispatch(new PopulateLocationAddressForUser($loc));
+    
             return response()->json([
                 'message' => 'Location updated'
-            ]);
+            ], 200);
         }
-
+    
         return response()->json([
             'message' => 'Location not updated'
-        ]);
+        ], 200);
     }
 
     private function calculateDistance($lat1, $lon1, $lat2, $lon2)
     {
         $earthRadius = 6371000; // in meters
-
+    
         $lat1 = deg2rad($lat1);
         $lon1 = deg2rad($lon1);
         $lat2 = deg2rad($lat2);
         $lon2 = deg2rad($lon2);
-
-        $latDelta = $lat2 - $lat1;
-        $lonDelta = $lon2 - $lon1;
-
-        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
-            cos($lat1) * cos($lat2) * pow(sin($lonDelta / 2), 2)));
-
-        return $angle * $earthRadius;
+    
+        $x = ($lon2 - $lon1) * cos(($lat1 + $lat2) / 2);
+        $y = ($lat2 - $lat1);
+    
+        return sqrt($x * $x + $y * $y) * $earthRadius;
     }
 }
