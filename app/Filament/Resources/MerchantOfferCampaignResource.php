@@ -419,18 +419,50 @@ class MerchantOfferCampaignResource extends Resource
                     ->schema([
                         Forms\Components\Section::make('Merchant')
                             ->schema([
+                                // Forms\Components\Select::make('user_id')
+                                //     ->label('Merchant User')
+                                //     ->searchable()
+                                //     ->getSearchResultsUsing(fn (string $search) => User::whereHas(['merchant' => fn ($q) => $q->where('merchants.status', Merchant::STATUS_APPROVED)])
+                                //         ->where('name', 'like', "%{$search}%")
+                                //         ->limit(25)
+                                //     )
+                                //     ->getOptionLabelFromRecordUsing(fn ($record) => $record->name.' ('.$record->email.')')
+                                //     ->required()
+                                //     ->reactive()
+                                //     ->helperText('Users who has merchant profile created.')
+                                //     ->relationship('user', 'name'),
+
                                 Forms\Components\Select::make('user_id')
                                     ->label('Merchant User')
+                                    ->relationship('user', 'name')
                                     ->searchable()
-                                    ->getSearchResultsUsing(fn (string $search) => User::whereHas(['merchant' => fn ($q) => $q->where('merchants.status', Merchant::STATUS_APPROVED)])
-                                        ->where('name', 'like', "%{$search}%")
-                                        ->limit(25)
-                                    )
-                                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->name.' ('.$record->email.')')
-                                    ->required()
-                                    ->reactive()
+                                    ->getSearchResultsUsing(function (string $search): array {
+                                        return User::query()
+                                            ->where(function ($q) use ($search) {
+                                                $q->where('name', 'LIKE', "%{$search}%")
+                                                    ->orWhere('email', 'LIKE', "%{$search}%")
+                                                    ->orWhere('phone_no', 'LIKE', "%{$search}%")
+                                                    ->orWhere('username', 'LIKE', "%{$search}%");
+                                            })
+                                            ->whereHas('merchant', function ($q) {
+                                                $q->where('merchants.status', Merchant::STATUS_APPROVED);
+                                            })
+                                            ->limit(50)
+                                            ->get()
+                                            ->mapWithKeys(function ($user) {
+                                                return [
+                                                    $user->id => $user->name . ($user->username ? " (username: {$user->username}, ID: {$user->id})" : '')
+                                                ];
+                                            })
+                                            ->toArray();
+                                    })
+                                    ->getOptionLabelUsing(function ($value): string {
+                                        $user = User::find($value);
+                                        return $user ? $user->name . ($user->username ? " (username: {$user->username}, ID: {$user->id})" : '') : '';
+                                    })
                                     ->helperText('Users who has merchant profile created.')
-                                    ->relationship('user', 'name'),
+                                    ->required()
+                                    ->reactive(),
                                 Forms\Components\Select::make('stores')
                                     ->label('Stores')
                                     ->multiple()
