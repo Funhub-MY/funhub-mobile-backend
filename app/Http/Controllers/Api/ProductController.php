@@ -100,9 +100,13 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = Product::find($id)
+        $product = Product::where('id', $id)
             ->published()
-            ->get()->first();
+            ->first();
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 422);
+        }
 
         return new ProductResource($product);
     }
