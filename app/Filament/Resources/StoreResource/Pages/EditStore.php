@@ -249,12 +249,14 @@ class EditStore extends EditRecord
             $long = isset($data['long']) && $data['long'] !== 0 ? $data['long'] : null;
 
             if ($lang && $long) {
-                Location::updateOrInsert(
-                    [
-                        'lat' => $lang,
-                        'lng' => $long
-                    ],
-                    [
+                $existingLocation = Location::where('lat', $lang)
+                    ->where('lng', $long)
+                    ->where('is_mall', 0)
+                    ->first();
+
+                if ($existingLocation) {
+                    // Update the record
+                    $existingLocation->update([
                         'name' => $data['name'],
                         'address' => $data['address'] ?? '',
                         'zip_code' => $data['address_postcode'] ?? '',
@@ -262,6 +264,20 @@ class EditStore extends EditRecord
                         'state_id' => $data['state_id'],
                         'country_id' => $data['country_id'],
                     ]);
+                } else {
+                    // Insert a new record
+                    Location::create([
+                        'lat' => $lang,
+                        'lng' => $long,
+                        'name' => $data['name'],
+                        'address' => $data['address'] ?? '',
+                        'zip_code' => $data['address_postcode'] ?? '',
+                        'city' => $data['city'] ?? '',
+                        'state_id' => $data['state_id'],
+                        'country_id' => $data['country_id'],
+                        'is_mall' => 0, // Add the default value
+                    ]);
+                }
 
                 // Fetch the location record to attach it
                 $location = Location::where('lat', $lang)
