@@ -499,6 +499,7 @@ class MerchantOfferController extends Controller
             'quantity' => 'required|integer|min:1',
             'use_point_discount' => 'nullable|boolean',
             'points_to_use' => 'nullable|required_if:use_point_discount,true|integer|exists:point_ledgers,id',
+			'referral_code' => 'nullable|string',
         ]);
 
         // check offer is still valid by checking available_at and available_until, available quantity check is at next statement
@@ -693,7 +694,8 @@ class MerchantOfferController extends Controller
                 $request->get('channel', 'app'),
                 $request->get('email', null),
                 $request->get('channel') === 'funhub_web' ? $request->get('name') : $user->name,
-            );
+				$request->get('referral_code'),
+			);
 
             // if gateway is mpay call mpay service generate Hash for frontend form
             if ($transaction->gateway == 'mpay') {

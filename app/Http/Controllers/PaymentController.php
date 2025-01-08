@@ -217,7 +217,7 @@ class PaymentController extends Controller
                 $transactionUpdateData = [
                     'status' => \App\Models\Transaction::STATUS_SUCCESS,
                     'gateway_transaction_id' => ($request->has('mpay_ref_no')) ? $request->mpay_ref_no : $request->authCode,
-                ];
+				];
 
                 // update transaction status to success first with gateway transaction id
                 $transaction->update($transactionUpdateData);
@@ -367,7 +367,7 @@ class PaymentController extends Controller
                 $transaction->update([
                     'status' => \App\Models\Transaction::STATUS_FAILED,
                     'gateway_transaction_id' => $gatewayId,
-                ]);
+				]);
 
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
