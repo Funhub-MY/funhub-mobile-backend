@@ -534,7 +534,18 @@ class MerchantOfferController extends Controller
             // ------------------------------------ POINTS CHECKOUT ------------------------------------
 
             $net_amount = $offer->unit_price * $request->quantity;
-            $voucher = $offer->unclaimedVouchers()->orderBy('id', 'asc')->first();
+            $voucher = $offer->unclaimedVouchers()
+            ->whereDoesntHave('claim', function($query) {
+                $query->where('status', MerchantOfferClaim::CLAIM_SUCCESS);
+            })
+            ->orderBy('id', 'asc')
+            ->first();
+
+            if (!$voucher) {
+                return response()->json([
+                    'message' => __('messages.error.merchant_offer_controller.Offer_is_sold_out'),
+                ], 422);
+            }
 
             // check if enough points
             $userPointBalance = $this->pointService->getBalanceOfUser($user);
@@ -686,8 +697,19 @@ class MerchantOfferController extends Controller
 
             // if gateway is mpay call mpay service generate Hash for frontend form
             if ($transaction->gateway == 'mpay') {
-                $voucher = $offer->unclaimedVouchers()->orderBy('id', 'asc')->first();
-
+                $voucher = $offer->unclaimedVouchers()
+                    ->whereDoesntHave('claim', function($query) {
+                        $query->where('status', MerchantOfferClaim::CLAIM_SUCCESS);
+                    })
+                    ->orderBy('id', 'asc')
+                ->first();
+    
+                if (!$voucher) {
+                    return response()->json([
+                        'message' => __('messages.error.merchant_offer_controller.Offer_is_sold_out'),
+                    ], 422);
+                }
+                
                 $mpayService = new \App\Services\Mpay(
                     config('services.mpay.mid'),
                     config('services.mpay.hash_key'),
