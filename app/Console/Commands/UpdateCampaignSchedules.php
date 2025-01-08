@@ -80,8 +80,15 @@ class UpdateCampaignSchedules extends Command
 
         for ($i = 0; $i < $numberOfSchedules; $i++) {
             // calculate dates for this schedule
-            $availableAt = $startDate->copy();
-            $availableUntil = $availableAt->copy()->addDays($scheduleDays)->endOfDay();
+            if ($i > 0) {
+                $availableAt = $startDate->copy()->addDay()->startOfDay(); // always start at the next day if $i > 0, since its second schedule onwards
+            } else {
+                // first schedule
+                $availableAt = $startDate->copy()->startOfDay();
+            }
+            
+            // always minus one day for last schedule as we use endOfDay
+            $availableUntil = $availableAt->copy()->addDays($scheduleDays - 1)->endOfDay();
 
             // calculate quantity for this schedule
             $remainingTotal = $totalQuantity - ($i * $quantityPerSchedule);
@@ -134,7 +141,7 @@ class UpdateCampaignSchedules extends Command
             if ($newQuantity > 0) {
                 // create vouchers
                 $voucherData = [];
-                for ($i = 0; $i < $newQuantity; $i++) {
+                for ($j = 0; $j < $newQuantity; $j++) {
                     $voucherData[] = [
                         'merchant_offer_id' => $newOffer->id,
                         'code' => MerchantOfferVoucher::generateCode(),

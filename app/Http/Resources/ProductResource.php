@@ -35,6 +35,7 @@ class ProductResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description,
+            'campaign_url' => $this->campaign_url ?? null,
             'unit_price' => $this->unit_price,
             'discount_price' => $this->discount_price,
             'unlimited_supply' => $this->unlimited_supply,

@@ -67,6 +67,11 @@ class ProductResource extends Resource
                                     ->reactive()
                                     ->required(),
 
+                                TextInput::make('campaign_url')
+                                    ->label('Campaign URL')
+                                    ->helperText('**Leave it blank if don\'t have extenal URL')
+                                    ->hidden(fn($get) => $get('type') == 'normal'),
+
                                 Select::make('status')
                                     ->options(Product::STATUS)
                                     ->default(0)

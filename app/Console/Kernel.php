@@ -55,7 +55,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('article:auto-archive')->dailyAt('00:05');
         $schedule->command('merchant-offers:send-expiring-notification')->dailyAt('00:10');
         $schedule->command('merchant-offers:auto-move-vouchers-unsold')->dailyAt('00:15');
-        $schedule->command('campaign:redistribute-quantities')->dailyAt('00:30');
+        if (config('app.auto_redistribute_vouchers') == true) {
+            $schedule->command('campaign:redistribute-quantities')->dailyAt('00:30');
+        }
 
         // Every Two Hours
         $schedule->command('generate:article-views')->everyTwoHours();

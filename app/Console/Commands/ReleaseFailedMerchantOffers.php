@@ -104,25 +104,42 @@ class ReleaseFailedMerchantOffers extends Command
                         }
 
                         if ($claim->voucher_id) {
-                            $voucher = MerchantOfferVoucher::where('id', $claim->voucher_id)
-                                ->where('owned_by_id', $claim->user_id)
+                            // first check if this voucher is successfully claimed by anyone
+                            $successfulClaim = MerchantOfferClaim::where('voucher_id', $claim->voucher_id)
+                                ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
                                 ->first();
-                            if ($voucher) { // maker sure is owned_by_user is not null is by the claim user
-                                $voucher->owned_by_id = null;
-                                $voucher->save();
-
-                                $releaseQuantity = $claim->pivot->quantity;
-
-                                $offer->quantity = $offer->quantity + $releaseQuantity;
-                                $offer->save();
-
-                                Log::info('[ReleaseFailedMerchantOffers] Stock Quantity Reverted, Voucher Released', [
+                        
+                            if (!$successfulClaim) {
+                                // only proceed with release if no successful claims exist
+                                $voucher = MerchantOfferVoucher::where('id', $claim->voucher_id)
+                                    ->where('owned_by_id', $claim->user_id)
+                                    ->first();
+                                    
+                                if ($voucher) {
+                                    $voucher->owned_by_id = null;
+                                    $voucher->save();
+                        
+                                    $releaseQuantity = $claim->pivot->quantity;
+                        
+                                    $offer->quantity = $offer->quantity + $releaseQuantity;
+                                    $offer->save();
+                        
+                                    Log::info('[ReleaseFailedMerchantOffers] Stock Quantity Reverted, Voucher Released', [
+                                        'transaction_id' => $transaction->id,
+                                        'merchant_offer_id' => $offer->id,
+                                        'voucher_id' => $voucher->id,
+                                        'quantity' => $releaseQuantity,
+                                    ]);
+                                    $this->info('[ReleaseFailedMerchantOffers] Stock Quantity Reverted, Voucher Released, Transaction ID ' . $transaction->id . ' - Offer ID: ' . $offer->id);
+                                }
+                            } else {
+                                Log::info('[ReleaseFailedMerchantOffers] Voucher has successful claim, skipping release', [
                                     'transaction_id' => $transaction->id,
                                     'merchant_offer_id' => $offer->id,
-                                    'voucher_id' => $voucher->id,
-                                    'quantity' => $releaseQuantity,
+                                    'voucher_id' => $claim->voucher_id,
+                                    'successful_claim_id' => $successfulClaim->id
                                 ]);
-                                $this->info('[ReleaseFailedMerchantOffers] Stock Quantity Reverted, Voucher Released, Transaction ID ' . $transaction->id . ' - Offer ID: ' . $offer->id);
+                                $this->info('[ReleaseFailedMerchantOffers] Voucher has successful claim, skipping release. Transaction ID ' . $transaction->id);
                             }
                         } else {
                             // dont have voucher id to release

@@ -217,7 +217,7 @@ class PaymentController extends Controller
                 $transactionUpdateData = [
                     'status' => \App\Models\Transaction::STATUS_SUCCESS,
                     'gateway_transaction_id' => ($request->has('mpay_ref_no')) ? $request->mpay_ref_no : $request->authCode,
-                ];
+				];
 
                 // update transaction status to success first with gateway transaction id
                 $transaction->update($transactionUpdateData);
@@ -367,7 +367,7 @@ class PaymentController extends Controller
                 $transaction->update([
                     'status' => \App\Models\Transaction::STATUS_FAILED,
                     'gateway_transaction_id' => $gatewayId,
-                ]);
+				]);
 
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
@@ -519,7 +519,7 @@ class PaymentController extends Controller
                 'status' => \App\Models\MerchantOffer::CLAIM_SUCCESS
             ]);
 
-            Log::info('Updated Merchant Offer Claim to Success', [
+            Log::info('[PaymentController] Updated Merchant Offer Claim to Success', [
                 'transaction_id' => $transaction->id,
                 'merchant_offer_id' => $transaction->transactionable_id,
             ]);
@@ -558,15 +558,28 @@ class PaymentController extends Controller
             if ($claim) {
                 try {
                     // release voucher
-                    $voucher_id = $claim->voucher_id;
-                    if ($voucher_id) {
-                        $voucher = MerchantOfferVoucher::where('id', $voucher_id)
-                            ->where('owned_by_id', $claim->user_id)
+                    if ($claim->voucher_id) {
+                        // First check if this voucher is successfully claimed by anyone 
+                        $successfulClaim = MerchantOfferClaim::where('voucher_id', $claim->voucher_id)
+                            ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
                             ->first();
-                        if ($voucher) {
-                            $voucher->owned_by_id = null;
-                            $voucher->save();
-                            Log::info('[MerchantOfferController] Voucher released', [$voucher->toArray()]);
+                    
+                        if (!$successfulClaim) {
+                            // only proceed with release if no successful claims exist
+                            $voucher = MerchantOfferVoucher::where('id', $claim->voucher_id)
+                                ->where('owned_by_id', $claim->user_id)
+                                ->first();
+                                
+                            if ($voucher) {
+                                $voucher->owned_by_id = null;
+                                $voucher->save();
+                            }
+                        } else {
+                            Log::info('Voucher has successful claim, skipping release', [
+                                'transaction_id' => $transaction->id,
+                                'voucher_id' => $claim->voucher_id,
+                                'successful_claim_id' => $successfulClaim->id
+                            ]);
                         }
                     }
 

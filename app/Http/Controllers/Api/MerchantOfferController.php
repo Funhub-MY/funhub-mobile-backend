@@ -499,6 +499,7 @@ class MerchantOfferController extends Controller
             'quantity' => 'required|integer|min:1',
             'use_point_discount' => 'nullable|boolean',
             'points_to_use' => 'nullable|required_if:use_point_discount,true|integer|exists:point_ledgers,id',
+			'referral_code' => 'nullable|string',
         ]);
 
         // check offer is still valid by checking available_at and available_until, available quantity check is at next statement
@@ -534,7 +535,18 @@ class MerchantOfferController extends Controller
             // ------------------------------------ POINTS CHECKOUT ------------------------------------
 
             $net_amount = $offer->unit_price * $request->quantity;
-            $voucher = $offer->unclaimedVouchers()->orderBy('id', 'asc')->first();
+            $voucher = $offer->unclaimedVouchers()
+            ->whereDoesntHave('claim', function($query) {
+                $query->where('status', MerchantOfferClaim::CLAIM_SUCCESS);
+            })
+            ->orderBy('id', 'asc')
+            ->first();
+
+            if (!$voucher) {
+                return response()->json([
+                    'message' => __('messages.error.merchant_offer_controller.Offer_is_sold_out'),
+                ], 422);
+            }
 
             // check if enough points
             $userPointBalance = $this->pointService->getBalanceOfUser($user);
@@ -682,12 +694,24 @@ class MerchantOfferController extends Controller
                 $request->get('channel', 'app'),
                 $request->get('email', null),
                 $request->get('channel') === 'funhub_web' ? $request->get('name') : $user->name,
-            );
+				$request->get('referral_code'),
+			);
 
             // if gateway is mpay call mpay service generate Hash for frontend form
             if ($transaction->gateway == 'mpay') {
-                $voucher = $offer->unclaimedVouchers()->orderBy('id', 'asc')->first();
-
+                $voucher = $offer->unclaimedVouchers()
+                    ->whereDoesntHave('claim', function($query) {
+                        $query->where('status', MerchantOfferClaim::CLAIM_SUCCESS);
+                    })
+                    ->orderBy('id', 'asc')
+                ->first();
+    
+                if (!$voucher) {
+                    return response()->json([
+                        'message' => __('messages.error.merchant_offer_controller.Offer_is_sold_out'),
+                    ], 422);
+                }
+                
                 $mpayService = new \App\Services\Mpay(
                     config('services.mpay.mid'),
                     config('services.mpay.hash_key'),
@@ -1213,11 +1237,13 @@ class MerchantOfferController extends Controller
         if ($request->has('id')) {
             $offer = MerchantOffer::where('id', $request->id)
                 ->published()
+                ->withCount(relations: 'unclaimedVouchers')
                 // ->where('available_for_web', true)
                 ->first();
         } else {
             $offer = MerchantOffer::where('sku', $request->sku)
                 ->published()
+                ->withCount(relations: 'unclaimedVouchers')
                 // ->where('available_for_web', true)
                 ->first();
         }
@@ -1254,6 +1280,7 @@ class MerchantOfferController extends Controller
         // find offer by model_id
         $offer = MerchantOffer::where('id', $share->model_id)
             ->published()
+            ->withCount(relations: 'unclaimedVouchers')
             ->first();
 
         if (!$offer) {

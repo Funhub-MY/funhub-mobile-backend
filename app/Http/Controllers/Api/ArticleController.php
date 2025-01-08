@@ -43,6 +43,7 @@ use App\Models\Setting;
 use App\Models\ShareableLink;
 use App\Models\Store;
 use App\Models\UserBlock;
+use App\Models\VideoJob;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -114,7 +115,7 @@ class ArticleController extends Controller
                 ->select('article_id')
                 ->orderByRaw('CASE WHEN last_viewed_at IS NULL THEN 0 ELSE 1 END')
                 ->orderByRaw("RAND($timestamp)")
-                ->limit(50)
+                ->limit(150)
                 ->pluck('article_id')
                 ->toArray();
 
@@ -299,7 +300,7 @@ class ArticleController extends Controller
                 ->articleRecommendations()
                 ->whereIn('article_id', $articleIds)
                 ->pluck('article_id')
-                ->toArray();
+                ->toArray();            
 
             // find new article IDs that don't exist yet
             $newArticleIds = array_diff($articleIds, $existingRecommendations);
