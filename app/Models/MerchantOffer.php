@@ -131,7 +131,7 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             'available_until' => $this->available_until,
             'quantity' => $this->quantity,
             'claimed_quantity' => $this->claimed_quantity,
-            'categories' => $this->allOfferCategories,
+            'categories' => $this->allOfferCategories->pluck('name')->toArray(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_at_diff' => $this->created_at->diffForHumans(),
