@@ -1086,10 +1086,11 @@ class ArticleController extends Controller
         //  Grab all the same latitude and longitude to find the most matching records.
         if($locations){
             foreach($locations as $keys => $loc){
-                //  Default set the 1st location
-                if($keys == 0){
+                //  By default, the first location is not set to a mall (Mainly for landscape location). If it is a mall, it will be skipped, and the location will be assigned based on the name.
+                if($keys == 0 && $loc->is_mall == 0){
                     $location = $loc;
                 }
+                
                 //  Calculate the percentage of similar both text
                 similar_text(strtolower($locationData['name']), strtolower($loc->name), $percentage);
 
