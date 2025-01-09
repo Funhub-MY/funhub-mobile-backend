@@ -127,7 +127,9 @@ class MerchantOfferController extends Controller
         }
 
         if ($request->has('merchant_offer_ids')) {
-            $query->whereIn('id', explode(',', $request->merchant_offer_ids));
+            $ids = explode(',', $request->merchant_offer_ids);
+            $query->whereIn('id', $ids)
+                ->orderByRaw("FIELD(id," . implode(',', $ids) . ")");
         }
 
         if ($request->has('available_only')) {
@@ -1122,7 +1124,9 @@ class MerchantOfferController extends Controller
         }
 
         if ($request->has('merchant_offer_ids')) {
-            $query->whereIn('id', explode(',', $request->merchant_offer_ids));
+            $ids = explode(',', $request->merchant_offer_ids);
+            $query->whereIn('id', $ids)
+                ->orderByRaw("FIELD(id," . implode(',', $ids) . ")");
         }
 
         if ($request->has('available_only')) {
@@ -1371,7 +1375,9 @@ class MerchantOfferController extends Controller
         }
 
         if ($request->has('merchant_offer_ids')) {
-            $query->whereIn('id', explode(',', $request->merchant_offer_ids));
+            $ids = explode(',', $request->merchant_offer_ids);
+            $query->whereIn('id', $ids)
+                ->orderByRaw("FIELD(id," . implode(',', $ids) . ")");
         }
 
         if ($request->has('available_only')) {
