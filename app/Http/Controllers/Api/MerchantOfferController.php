@@ -127,7 +127,9 @@ class MerchantOfferController extends Controller
         }
 
         if ($request->has('merchant_offer_ids')) {
-            $ids = explode(',', $request->merchant_offer_ids);
+            // remove square brackets and spaces before exploding
+            $merchant_offer_ids = str_replace(['[', ']', ' '], '', $request->merchant_offer_ids);
+            $ids = explode(',', $merchant_offer_ids);
             $query->whereIn('id', $ids)
                 ->orderByRaw("FIELD(id," . implode(',', $ids) . ")");
         }
@@ -1124,7 +1126,9 @@ class MerchantOfferController extends Controller
         }
 
         if ($request->has('merchant_offer_ids')) {
-            $ids = explode(',', $request->merchant_offer_ids);
+            // Remove square brackets and spaces before exploding
+            $merchant_offer_ids = str_replace(['[', ']', ' '], '', $request->merchant_offer_ids);
+            $ids = explode(',', $merchant_offer_ids);
             $query->whereIn('id', $ids)
                 ->orderByRaw("FIELD(id," . implode(',', $ids) . ")");
         }
@@ -1375,7 +1379,9 @@ class MerchantOfferController extends Controller
         }
 
         if ($request->has('merchant_offer_ids')) {
-            $ids = explode(',', $request->merchant_offer_ids);
+            // Remove square brackets and spaces before exploding
+            $merchant_offer_ids = str_replace(['[', ']', ' '], '', $request->merchant_offer_ids);
+            $ids = explode(',', $merchant_offer_ids);
             $query->whereIn('id', $ids)
                 ->orderByRaw("FIELD(id," . implode(',', $ids) . ")");
         }
