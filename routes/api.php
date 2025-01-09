@@ -23,6 +23,7 @@ use App\Http\Controllers\PaymentController;
 Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
     Route::get('public_user', [\App\Http\Controllers\Api\UserController::class, 'getProfileForPublicView']);
     Route::get('public_store', [\App\Http\Controllers\Api\StoreController::class, 'getPublicStorePublicView']);
+    Route::get('merchant_banners', [\App\Http\Controllers\Api\MerchantBannerController::class, 'getBanners']);
 
     // public routes for articles
     Route::get('public_articles', [\App\Http\Controllers\Api\ArticleController::class, 'getPublicArticles']);

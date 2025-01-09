@@ -462,7 +462,15 @@ Must only call one per file. If multiple files, call multiple times. URL generat
                     <a href="#merchant">Merchant</a>
                 </li>
                                     <ul id="tocify-subheader-merchant" class="tocify-subheader">
-                                                    <li class="tocify-item level-2" data-unique="merchant-GETapi-v1-public_offers">
+                                                    <li class="tocify-item level-2" data-unique="merchant-banners">
+                                <a href="#merchant-banners">Banners</a>
+                            </li>
+                                                            <ul id="tocify-subheader-merchant-banners" class="tocify-subheader">
+                                                                            <li class="tocify-item level-3" data-unique="merchant-GETapi-v1-merchant_banners">
+                                            <a href="#merchant-GETapi-v1-merchant_banners">Get Banners</a>
+                                        </li>
+                                                                    </ul>
+                                                                                <li class="tocify-item level-2" data-unique="merchant-GETapi-v1-public_offers">
                                 <a href="#merchant-GETapi-v1-public_offers">Web - Get Public Offers</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="merchant-GETapi-v1-public_offers_single">
@@ -669,8 +677,14 @@ Ordered by latest one</a>
                                                     <li class="tocify-item level-2" data-unique="product-GETapi-v1-products">
                                 <a href="#product-GETapi-v1-products">Get Products for Sale (Gift Cards)</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="product-GETapi-v1-products-limited">
+                                <a href="#product-GETapi-v1-products-limited">Get Products for Sale (Limited Gift Cards)</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="product-POSTapi-v1-products-checkout-cancel">
                                 <a href="#product-POSTapi-v1-products-checkout-cancel">Cancel Product Checkout</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="product-GETapi-v1-products--product_id-">
+                                <a href="#product-GETapi-v1-products--product_id-">Get Product By ID</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="product-product-rewards">
                                 <a href="#product-product-rewards">Product Rewards</a>
@@ -974,7 +988,7 @@ This is used for getting views for articles, comments, merchant offers, and user
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: January 3, 2025</li>
+        <li>Last updated: January 9, 2025</li>
     </ul>
 </div>
 
@@ -1161,7 +1175,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"id\": 15,
-    \"slug\": \"maiores\"
+    \"slug\": \"officia\"
 }"
 </code></pre></div>
 
@@ -1179,7 +1193,7 @@ const headers = {
 
 let body = {
     "id": 15,
-    "slug": "maiores"
+    "slug": "officia"
 };
 
 fetch(url, {
@@ -1322,10 +1336,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="slug"                data-endpoint="GETapi-v1-public_articles_single"
-               value="maiores"
+               value="officia"
                data-component="body">
     <br>
-<p>This field is required when <code>id</code> is <code>null</code>. Example: <code>maiores</code></p>
+<p>This field is required when <code>id</code> is <code>null</code>. Example: <code>officia</code></p>
         </div>
         </form>
 
@@ -1645,7 +1659,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "is_cover=1" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpe4tkt4" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpw60mpt" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -1787,7 +1801,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpe4tkt4</code></p>
+<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpw60mpt</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>is_cover</code></b>&nbsp;&nbsp;
@@ -1831,7 +1845,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpPl6gLk" </code></pre></div>
+    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpeoMOtw" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -1957,7 +1971,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The video to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpPl6gLk</code></p>
+<p>The video to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpeoMOtw</code></p>
         </div>
         </form>
 
@@ -2962,7 +2976,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"article_ids\": [
-        \"voluptatem\"
+        \"quos\"
     ]
 }"
 </code></pre></div>
@@ -2981,7 +2995,7 @@ const headers = {
 
 let body = {
     "article_ids": [
-        "voluptatem"
+        "quos"
     ]
 };
 
@@ -3131,7 +3145,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"article_ids\": [
-        \"non\"
+        \"mollitia\"
     ],
     \"category_ids\": [
         1,
@@ -3167,7 +3181,7 @@ const headers = {
 
 let body = {
     "article_ids": [
-        "non"
+        "mollitia"
     ],
     "category_ids": [
         1,
@@ -3747,7 +3761,7 @@ Note: user&#039;s own posts will not show up on home page</h2>
     --header "Accept: application/json" \
     --data "{
     \"article_ids\": [
-        \"sed\"
+        \"id\"
     ],
     \"category_ids\": [
         1,
@@ -3790,7 +3804,7 @@ const headers = {
 
 let body = {
     "article_ids": [
-        "sed"
+        "id"
     ],
     "category_ids": [
         1,
@@ -4681,8 +4695,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "tagged_user_ids[]=1" \
     --form "location={"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}" \
     --form "visibility=public,private" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phppmHuj0" \
-    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpXAzB9C" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phppDQlEg" \
+    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpJUTJjO" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -4908,7 +4922,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phppmHuj0</code></p>
+<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phppDQlEg</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>video</code></b>&nbsp;&nbsp;
@@ -4919,7 +4933,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The video ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpXAzB9C</code></p>
+<p>The video ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpJUTJjO</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>tagged_user_ids</code></b>&nbsp;&nbsp;
@@ -5130,10 +5144,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"article_id\": 10,
+    \"article_id\": 7,
     \"reason\": \"Spam     * @bodyParam violation_type required The violation type of this report\",
-    \"violation_type\": \"doloremque\",
-    \"violation_level\": \"distinctio\",
+    \"violation_type\": \"amet\",
+    \"violation_level\": \"molestiae\",
     \"article\": 1
 }"
 </code></pre></div>
@@ -5151,10 +5165,10 @@ const headers = {
 };
 
 let body = {
-    "article_id": 10,
+    "article_id": 7,
     "reason": "Spam     * @bodyParam violation_type required The violation type of this report",
-    "violation_type": "doloremque",
-    "violation_level": "distinctio",
+    "violation_type": "amet",
+    "violation_level": "molestiae",
     "article": 1
 };
 
@@ -5278,10 +5292,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="article_id"                data-endpoint="POSTapi-v1-articles-report"
-               value="10"
+               value="7"
                data-component="body">
     <br>
-<p>Example: <code>10</code></p>
+<p>Example: <code>7</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>reason</code></b>&nbsp;&nbsp;
@@ -5300,10 +5314,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="violation_type"                data-endpoint="POSTapi-v1-articles-report"
-               value="doloremque"
+               value="amet"
                data-component="body">
     <br>
-<p>Example: <code>doloremque</code></p>
+<p>Example: <code>amet</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_level</code></b>&nbsp;&nbsp;
@@ -5311,10 +5325,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_level"                data-endpoint="POSTapi-v1-articles-report"
-               value="distinctio"
+               value="molestiae"
                data-component="body">
     <br>
-<p>The violation level of this report Example: <code>distinctio</code></p>
+<p>The violation level of this report Example: <code>molestiae</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>article</code></b>&nbsp;&nbsp;
@@ -6462,7 +6476,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/comments/replies/quos" \
+    --get "https://funhub-mobile-backend.test/api/v1/comments/replies/ea" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -6480,7 +6494,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/comments/replies/quos"
+    "https://funhub-mobile-backend.test/api/v1/comments/replies/ea"
 );
 
 const headers = {
@@ -6614,10 +6628,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="comment_id"                data-endpoint="GETapi-v1-comments-replies--comment_id-"
-               value="quos"
+               value="ea"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>quos</code></p>
+<p>The ID of the comment. Example: <code>ea</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -6879,8 +6893,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"comment_id\": 1,
     \"reason\": \"Spam\",
-    \"violation_level\": \"ut\",
-    \"violation_type\": \"est\"
+    \"violation_level\": \"alias\",
+    \"violation_type\": \"et\"
 }"
 </code></pre></div>
 
@@ -6899,8 +6913,8 @@ const headers = {
 let body = {
     "comment_id": 1,
     "reason": "Spam",
-    "violation_level": "ut",
-    "violation_type": "est"
+    "violation_level": "alias",
+    "violation_type": "et"
 };
 
 fetch(url, {
@@ -7045,10 +7059,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_level"                data-endpoint="POSTapi-v1-comments-report"
-               value="ut"
+               value="alias"
                data-component="body">
     <br>
-<p>The violation level of this report Example: <code>ut</code></p>
+<p>The violation level of this report Example: <code>alias</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_type</code></b>&nbsp;&nbsp;
@@ -7056,10 +7070,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_type"                data-endpoint="POSTapi-v1-comments-report"
-               value="est"
+               value="et"
                data-component="body">
     <br>
-<p>The violation type of this report Example: <code>est</code></p>
+<p>The violation type of this report Example: <code>et</code></p>
         </div>
         </form>
 
@@ -7755,7 +7769,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/comments/soluta" \
+    --get "https://funhub-mobile-backend.test/api/v1/comments/et" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -7770,7 +7784,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/comments/soluta"
+    "https://funhub-mobile-backend.test/api/v1/comments/et"
 );
 
 const headers = {
@@ -7906,10 +7920,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="id"                data-endpoint="GETapi-v1-comments--id-"
-               value="soluta"
+               value="et"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>soluta</code></p>
+<p>The ID of the comment. Example: <code>et</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -11539,7 +11553,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"campaign_id\": 1,
     \"name\": \"John Doe\",
-    \"email\": \"christiansen.lincoln@example.org\",
+    \"email\": \"nova55@example.net\",
     \"phone\": \"0123456789\",
     \"ic\": \"123456789012\",
     \"address\": \"123, Jalan ABC, 12345, Kuala Lumpur\"
@@ -11561,7 +11575,7 @@ const headers = {
 let body = {
     "campaign_id": 1,
     "name": "John Doe",
-    "email": "christiansen.lincoln@example.org",
+    "email": "nova55@example.net",
     "phone": "0123456789",
     "ic": "123456789012",
     "address": "123, Jalan ABC, 12345, Kuala Lumpur"
@@ -11695,10 +11709,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="email"                data-endpoint="POSTapi-v1-campaigns-save-respondant_details"
-               value="christiansen.lincoln@example.org"
+               value="nova55@example.net"
                data-component="body">
     <br>
-<p>The email of the respondant. Example: Example: <code>christiansen.lincoln@example.org</code></p>
+<p>The email of the respondant. Example: Example: <code>nova55@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
@@ -11911,7 +11925,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"username\": \"libero\"
+    \"username\": \"alias\"
 }"
 </code></pre></div>
 
@@ -11928,7 +11942,7 @@ const headers = {
 };
 
 let body = {
-    "username": "libero"
+    "username": "alias"
 };
 
 fetch(url, {
@@ -11941,7 +11955,7 @@ fetch(url, {
 
 <span id="example-responses-GETapi-v1-public_user">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200):</p>
         </blockquote>
                 <details class="annotation">
             <summary style="cursor: pointer;">
@@ -11950,12 +11964,26 @@ fetch(url, {
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-ratelimit-limit: 120
-x-ratelimit-remaining: 119
+x-ratelimit-remaining: 109
 access-control-allow-origin: *
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;User not found&quot;
+    &quot;user&quot;: {
+        &quot;id&quot;: 6965,
+        &quot;name&quot;: &quot;alias&quot;,
+        &quot;username&quot;: &quot;alias&quot;,
+        &quot;avatar&quot;: null,
+        &quot;avatar_thumb&quot;: &quot;https://ui-avatars.com/api/?name=alias&quot;,
+        &quot;bio&quot;: null,
+        &quot;cover&quot;: null,
+        &quot;articles_published_count&quot;: 0,
+        &quot;following_count&quot;: 0,
+        &quot;followers_count&quot;: 0,
+        &quot;has_avatar&quot;: false,
+        &quot;is_profile_private&quot;: false
+    },
+    &quot;articles&quot;: []
 }</code>
  </pre>
     </span>
@@ -12046,10 +12074,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="username"                data-endpoint="GETapi-v1-public_user"
-               value="libero"
+               value="alias"
                data-component="body">
     <br>
-<p>Example: <code>libero</code></p>
+<p>Example: <code>alias</code></p>
         </div>
         </form>
 
@@ -12072,7 +12100,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"share_code\": \"ut\"
+    \"share_code\": \"natus\"
 }"
 </code></pre></div>
 
@@ -12089,7 +12117,7 @@ const headers = {
 };
 
 let body = {
-    "share_code": "ut"
+    "share_code": "natus"
 };
 
 fetch(url, {
@@ -12111,7 +12139,7 @@ fetch(url, {
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-ratelimit-limit: 120
-x-ratelimit-remaining: 118
+x-ratelimit-remaining: 108
 access-control-allow-origin: *
  </code></pre></details>         <pre>
 
@@ -12686,10 +12714,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="share_code"                data-endpoint="GETapi-v1-public_store"
-               value="ut"
+               value="natus"
                data-component="body">
     <br>
-<p>Example: <code>ut</code></p>
+<p>Example: <code>natus</code></p>
         </div>
         </form>
 
@@ -12712,7 +12740,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"share_code\": \"sapiente\"
+    \"share_code\": \"cum\"
 }"
 </code></pre></div>
 
@@ -12729,7 +12757,7 @@ const headers = {
 };
 
 let body = {
-    "share_code": "sapiente"
+    "share_code": "cum"
 };
 
 fetch(url, {
@@ -12751,7 +12779,7 @@ fetch(url, {
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-ratelimit-limit: 120
-x-ratelimit-remaining: 117
+x-ratelimit-remaining: 107
 access-control-allow-origin: *
  </code></pre></details>         <pre>
 
@@ -12770,7 +12798,7 @@ access-control-allow-origin: *
         },
         {
             &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php&quot;,
-            &quot;line&quot;: 1775,
+            &quot;line&quot;: 1777,
             &quot;function&quot;: &quot;abort&quot;
         },
         {
@@ -13326,10 +13354,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="share_code"                data-endpoint="GETapi-v1-public_article"
-               value="sapiente"
+               value="cum"
                data-component="body">
     <br>
-<p>Example: <code>sapiente</code></p>
+<p>Example: <code>cum</code></p>
         </div>
         </form>
 
@@ -13352,7 +13380,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"share_code\": \"dolorem\"
+    \"share_code\": \"ea\"
 }"
 </code></pre></div>
 
@@ -13369,7 +13397,7 @@ const headers = {
 };
 
 let body = {
-    "share_code": "dolorem"
+    "share_code": "ea"
 };
 
 fetch(url, {
@@ -13391,7 +13419,7 @@ fetch(url, {
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-ratelimit-limit: 120
-x-ratelimit-remaining: 115
+x-ratelimit-remaining: 105
 access-control-allow-origin: *
  </code></pre></details>         <pre>
 
@@ -13410,7 +13438,7 @@ access-control-allow-origin: *
         },
         {
             &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php&quot;,
-            &quot;line&quot;: 1251,
+            &quot;line&quot;: 1277,
             &quot;function&quot;: &quot;abort&quot;
         },
         {
@@ -13966,10 +13994,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="share_code"                data-endpoint="GETapi-v1-public_offer"
-               value="dolorem"
+               value="ea"
                data-component="body">
     <br>
-<p>Example: <code>dolorem</code></p>
+<p>Example: <code>ea</code></p>
         </div>
         </form>
 
@@ -14024,7 +14052,7 @@ fetch(url, {
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-ratelimit-limit: 120
-x-ratelimit-remaining: 114
+x-ratelimit-remaining: 104
 access-control-allow-origin: *
  </code></pre></details>         <pre>
 
@@ -14165,7 +14193,7 @@ fetch(url, {
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-ratelimit-limit: 120
-x-ratelimit-remaining: 113
+x-ratelimit-remaining: 103
 access-control-allow-origin: *
  </code></pre></details>         <pre>
 
@@ -15133,7 +15161,7 @@ Get merchant info, logo, user, categories, stores and store categories</h2>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/external/merchant/earum" \
+    --get "https://funhub-mobile-backend.test/api/v1/external/merchant/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -15141,7 +15169,7 @@ Get merchant info, logo, user, categories, stores and store categories</h2>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/external/merchant/earum"
+    "https://funhub-mobile-backend.test/api/v1/external/merchant/1"
 );
 
 const headers = {
@@ -15168,7 +15196,7 @@ fetch(url, {
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-ratelimit-limit: 120
-x-ratelimit-remaining: 112
+x-ratelimit-remaining: 102
 access-control-allow-origin: *
  </code></pre></details>         <pre>
 
@@ -15260,14 +15288,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>merchant_id</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
+<small>integer</small>&nbsp;
  &nbsp;
-                <input type="text" style="display: none"
+                <input type="number" style="display: none"
                name="merchant_id"                data-endpoint="GETapi-v1-external-merchant--merchant_id-"
-               value="earum"
+               value="1"
                data-component="url">
     <br>
-<p>The ID of the merchant. Example: <code>earum</code></p>
+<p>The ID of the merchant. Example: <code>1</code></p>
             </div>
                     </form>
 
@@ -15287,7 +15315,7 @@ Get store info</h2>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/external/store/est" \
+    --get "https://funhub-mobile-backend.test/api/v1/external/store/3" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -15295,7 +15323,7 @@ Get store info</h2>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/external/store/est"
+    "https://funhub-mobile-backend.test/api/v1/external/store/3"
 );
 
 const headers = {
@@ -15322,7 +15350,7 @@ fetch(url, {
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-ratelimit-limit: 120
-x-ratelimit-remaining: 111
+x-ratelimit-remaining: 101
 access-control-allow-origin: *
  </code></pre></details>         <pre>
 
@@ -15414,14 +15442,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>store_id</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
+<small>integer</small>&nbsp;
  &nbsp;
-                <input type="text" style="display: none"
+                <input type="number" style="display: none"
                name="store_id"                data-endpoint="GETapi-v1-external-store--store_id-"
-               value="est"
+               value="3"
                data-component="url">
     <br>
-<p>The ID of the store. Example: <code>est</code></p>
+<p>The ID of the store. Example: <code>3</code></p>
             </div>
                     </form>
 
@@ -15937,7 +15965,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"supportable\": \"article\",
-    \"supportable_id\": 6,
+    \"supportable_id\": 10,
     \"category_id\": 1,
     \"title\": \"My support request\",
     \"message\": \"This is my message\",
@@ -15963,7 +15991,7 @@ const headers = {
 
 let body = {
     "supportable": "article",
-    "supportable_id": 6,
+    "supportable_id": 10,
     "category_id": 1,
     "title": "My support request",
     "message": "This is my message",
@@ -16091,10 +16119,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="supportable_id"                data-endpoint="POSTapi-v1-help-support_requests-raise"
-               value="6"
+               value="10"
                data-component="body">
     <br>
-<p>This field is required when <code>supportable</code> is present. Example: <code>6</code></p>
+<p>This field is required when <code>supportable</code> is present. Example: <code>10</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>category_id</code></b>&nbsp;&nbsp;
@@ -16828,7 +16856,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpHRE4jt" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phptmM3TI" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -16969,7 +16997,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpHRE4jt</code></p>
+<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phptmM3TI</code></p>
         </div>
         </form>
 
@@ -17980,7 +18008,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"location_ids\": [
-        \"ipsam\"
+        \"enim\"
     ],
     \"name\": \"\\\"KFC SS15\\\"\",
     \"state_id\": 1,
@@ -18006,7 +18034,7 @@ const headers = {
 
 let body = {
     "location_ids": [
-        "ipsam"
+        "enim"
     ],
     "name": "\"KFC SS15\"",
     "state_id": 1,
@@ -18233,7 +18261,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"location_ids\": [
-        \"tempore\"
+        \"ut\"
     ],
     \"name\": \"\\\"KFC SS15\\\"\",
     \"state_id\": 1,
@@ -18259,7 +18287,7 @@ const headers = {
 
 let body = {
     "location_ids": [
-        "tempore"
+        "ut"
     ],
     "name": "\"KFC SS15\"",
     "state_id": 1,
@@ -19102,7 +19130,147 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
     
 
-                                <h2 id="merchant-GETapi-v1-public_offers">Web - Get Public Offers</h2>
+                        <h2 id="merchant-banners">Banners</h2>
+                                                    <h2 id="merchant-GETapi-v1-merchant_banners">Get Banners</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Get a list of published merchant banners ordered by ascending order.</p>
+
+<span id="example-requests-GETapi-v1-merchant_banners">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant_banners" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/merchant_banners"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-merchant_banners">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;data&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;title&quot;: &quot;New Year Sale&quot;,
+            &quot;link_to&quot;: &quot;https://example.com/sale&quot;,
+            &quot;banner_url&quot;: &quot;https://example.com/images/banner.jpg&quot;,
+            &quot;created_at&quot;: &quot;2025-01-09T04:25:36.000000Z&quot;
+        }
+    ]
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-merchant_banners" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-merchant_banners"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-merchant_banners"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-merchant_banners" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-merchant_banners">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-merchant_banners" data-method="GET"
+      data-path="api/v1/merchant_banners"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-merchant_banners', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-merchant_banners"
+                    onclick="tryItOut('GETapi-v1-merchant_banners');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-merchant_banners"
+                    onclick="cancelTryOut('GETapi-v1-merchant_banners');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-merchant_banners"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/merchant_banners</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-merchant_banners"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-merchant_banners"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-merchant_banners"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                                        <h2 id="merchant-GETapi-v1-public_offers">Web - Get Public Offers</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -19151,12 +19319,598 @@ fetch(url, {
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-ratelimit-limit: 120
-x-ratelimit-remaining: 116
+x-ratelimit-remaining: 106
 access-control-allow-origin: *
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;data&quot;: [],
+    &quot;data&quot;: [
+        {
+            &quot;id&quot;: 5490,
+            &quot;sku&quot;: &quot;ItoJapanese002-50-C001-2726&quot;,
+            &quot;merchant_id&quot;: 137,
+            &quot;store&quot;: {
+                &quot;id&quot;: null,
+                &quot;name&quot;: null
+            },
+            &quot;stores&quot;: [
+                {
+                    &quot;id&quot;: 793,
+                    &quot;name&quot;: &quot;Ito Japanese Restaurant&quot;,
+                    &quot;address&quot;: &quot;33, Jalan Puteri 4/8, Puchong, 雪兰莪州, Malaysia&quot;,
+                    &quot;ratings&quot;: &quot;4.7&quot;,
+                    &quot;total_ratings&quot;: 3,
+                    &quot;address_postcode&quot;: &quot;47100&quot;,
+                    &quot;lat&quot;: &quot;3.01609720&quot;,
+                    &quot;lng&quot;: &quot;101.61295420&quot;,
+                    &quot;is_hq&quot;: 0,
+                    &quot;state&quot;: {
+                        &quot;id&quot;: 26,
+                        &quot;country_id&quot;: 131,
+                        &quot;code&quot;: &quot;CUSTOMIYz&quot;,
+                        &quot;name&quot;: &quot;雪兰莪州&quot;,
+                        &quot;name_translation&quot;: &quot;{\&quot;en\&quot;: \&quot;雪兰莪州\&quot;, \&quot;zh\&quot;: \&quot;\&quot;}&quot;,
+                        &quot;created_at&quot;: &quot;2023-10-10T06:53:55.000000Z&quot;,
+                        &quot;updated_at&quot;: &quot;2023-10-10T06:53:55.000000Z&quot;
+                    },
+                    &quot;country&quot;: {
+                        &quot;id&quot;: 131,
+                        &quot;code&quot;: &quot;MY&quot;,
+                        &quot;name&quot;: &quot;Malaysia&quot;,
+                        &quot;phone_code&quot;: &quot;60&quot;
+                    }
+                }
+            ],
+            &quot;logo&quot;: null,
+            &quot;merchant&quot;: {
+                &quot;id&quot;: 137,
+                &quot;logo&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/142295/NHODBz3pgu217g1QQ8kMBK1sNBMpUX-metaTWVyY2hhbnQgTG9nbyBwbGFjZW1lbnRfMjAyNDEwMThfMTYyNzE1XzAwMDAucG5n-.png&quot;,
+                &quot;brand_name&quot;: &quot;Ito Japanese Restaurant&quot;,
+                &quot;business_name&quot;: &quot;Ito Japanese Restaurant Sdn Bhd&quot;,
+                &quot;business_phone_no&quot;: &quot;0123567996&quot;,
+                &quot;user&quot;: {
+                    &quot;id&quot;: 21499,
+                    &quot;name&quot;: &quot;Ito Japanese Restaurant&quot;
+                }
+            },
+            &quot;name&quot;: &quot;ITO Japanese Restaurant - RM10 现金优惠券&quot;,
+            &quot;is_flash&quot;: 0,
+            &quot;description&quot;: &quot;✨Puchong 区的日式料理屋 ✨\n平价｜服务好｜食物精致美味\n\n必吃 🤤 \n✅ Avocado Salad \n✅ Uni Tofu Nabe \n✅ Salmon Volcano\n✅ Ika Geso Spicy Age\n✅ Avocado Truffle Miso Gratin\n\n🙋 这里食物的选择非常多 \n而且环境舒适卫生 🥹 \n超级适合和家人或朋友一起聚餐哦 👍 \n\n居住在Puchong 或在这里的上班族 \n真的很值得推荐一试！😍 \n\n\n\n🎎【ITO Japanese Restaurant】🎎\n\n📍 G-35, Jalan Puteri 4/8, Bandar Puteri, 47100 Puchong, Selangor\n☎️  03-8052 7996\n⏰Monday to Sunday 11:30am -2:30pm, 5:30pm &ndash; 10:30pm\n\n&quot;,
+            &quot;fine_print&quot;: &quot;1. 优惠券只限用于堂食(Dine In Only)\n2. 兑换此优惠券的最低消费要求为 RM20\n3. 每张优惠券1天只能兑换1次，如需兑换第二张须改日使用\n4. 此优惠券不可与其他优惠券、促销活动、折扣或特别优惠同时使用，且严禁分单\n&quot;,
+            &quot;redemption_policy&quot;: &quot;1. 该优惠券自预订确认之日起 30 天内有效。最后一天23:59到期\n2. 优惠券不可与任何其他折扣同时使用，包括会员折扣\n3. 优惠券不可兑换现金\n4. 优惠券只能通过 FUNHUB App 兑换/使用\n5. 优惠券只能兑换一次\n6. 每张账单限用 1 张优惠券\n&quot;,
+            &quot;cancellation_policy&quot;: &quot;1. 已兑换的优惠券不可随意取消、更改或退款。\n2. 已兑换的优惠券一经使用后，不可更改或取消。\n3. 已兑换的优惠券仅限有效期内使用，逾期则作废且不可进行退款。\n4. 若您发现他人盗用您的账号并使用此优惠券，请联系客服申请退还饭盒。\n5. 若您去消费时，因技术情况无法使用此优惠券，请联系客服申请退还饭盒。\n&quot;,
+            &quot;point_cost&quot;: 1,
+            &quot;point_fiat_price&quot;: 10,
+            &quot;discounted_point_fiat_price&quot;: 5,
+            &quot;fiat_price&quot;: 10,
+            &quot;discounted_fiat_price&quot;: 8,
+            &quot;default_purchase_method&quot;: &quot;point&quot;,
+            &quot;available_at&quot;: &quot;2025-01-04 00:00:00&quot;,
+            &quot;available_until&quot;: &quot;2025-01-07 23:59:59&quot;,
+            &quot;expiry_days&quot;: 30,
+            &quot;quantity&quot;: 5,
+            &quot;media&quot;: [
+                {
+                    &quot;name&quot;: &quot;ITO-SD1&quot;,
+                    &quot;file_name&quot;: &quot;wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc=-.png&quot;,
+                    &quot;uuid&quot;: &quot;d6675a50-d9a3-4767-90c4-3df171a16615&quot;,
+                    &quot;original_url&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152259/wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc%3D-.png&quot;,
+                    &quot;order&quot;: null,
+                    &quot;custom_properties&quot;: {
+                        &quot;width&quot;: 1080,
+                        &quot;height&quot;: 1440,
+                        &quot;is_cover&quot;: false
+                    },
+                    &quot;extension&quot;: &quot;png&quot;,
+                    &quot;size&quot;: 2170208
+                },
+                {
+                    &quot;name&quot;: &quot;ITO-SD1-banner&quot;,
+                    &quot;file_name&quot;: &quot;B4SjW0vT77ZDAF9g52anCpP6vTz2CV-metaSVRPLVNEMS1iYW5uZXIucG5n-.png&quot;,
+                    &quot;uuid&quot;: &quot;4949a680-0c85-41e0-92c4-0ac064dfcb5e&quot;,
+                    &quot;original_url&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152260/B4SjW0vT77ZDAF9g52anCpP6vTz2CV-metaSVRPLVNEMS1iYW5uZXIucG5n-.png&quot;,
+                    &quot;order&quot;: null,
+                    &quot;custom_properties&quot;: {
+                        &quot;width&quot;: 1035,
+                        &quot;height&quot;: 339,
+                        &quot;is_cover&quot;: false
+                    },
+                    &quot;extension&quot;: &quot;png&quot;,
+                    &quot;size&quot;: 300718
+                }
+            ],
+            &quot;horizontal_banner&quot;: {
+                &quot;name&quot;: &quot;ITO-SD1-banner&quot;,
+                &quot;file_name&quot;: &quot;B4SjW0vT77ZDAF9g52anCpP6vTz2CV-metaSVRPLVNEMS1iYW5uZXIucG5n-.png&quot;,
+                &quot;uuid&quot;: &quot;4949a680-0c85-41e0-92c4-0ac064dfcb5e&quot;,
+                &quot;original_url&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152260/B4SjW0vT77ZDAF9g52anCpP6vTz2CV-metaSVRPLVNEMS1iYW5uZXIucG5n-.png&quot;,
+                &quot;order&quot;: null,
+                &quot;custom_properties&quot;: {
+                    &quot;width&quot;: 1035,
+                    &quot;height&quot;: 339,
+                    &quot;is_cover&quot;: false
+                },
+                &quot;extension&quot;: &quot;png&quot;,
+                &quot;size&quot;: 300718
+            },
+            &quot;vertical_banner&quot;: {
+                &quot;name&quot;: &quot;ITO-SD1&quot;,
+                &quot;file_name&quot;: &quot;wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc=-.png&quot;,
+                &quot;uuid&quot;: &quot;d6675a50-d9a3-4767-90c4-3df171a16615&quot;,
+                &quot;original_url&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152259/wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc%3D-.png&quot;,
+                &quot;order&quot;: null,
+                &quot;custom_properties&quot;: {
+                    &quot;width&quot;: 1080,
+                    &quot;height&quot;: 1440,
+                    &quot;is_cover&quot;: false
+                },
+                &quot;extension&quot;: &quot;png&quot;,
+                &quot;size&quot;: 2170208
+            },
+            &quot;interactions&quot;: [
+                {
+                    &quot;id&quot;: 42954,
+                    &quot;user&quot;: {
+                        &quot;id&quot;: 6696,
+                        &quot;name&quot;: &quot;Elise 🌸&quot;,
+                        &quot;avatar&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/105466/image_cropper_0A4C9DC4-A57D-4D51-B8A2-963DB67B09A4-10796-00000291432E54A1.jpg&quot;
+                    },
+                    &quot;type&quot;: 3,
+                    &quot;created_at&quot;: &quot;2025-01-06T07:50:49.000000Z&quot;,
+                    &quot;updated_at&quot;: &quot;2025-01-06T07:50:49.000000Z&quot;,
+                    &quot;share_url&quot;: null,
+                    &quot;created_at_diff&quot;: &quot;2 days ago&quot;,
+                    &quot;updated_at_diff&quot;: &quot;2 days ago&quot;
+                }
+            ],
+            &quot;location&quot;: null,
+            &quot;count&quot;: {
+                &quot;likes&quot;: 0,
+                &quot;share&quot;: 1,
+                &quot;bookmarks&quot;: 0,
+                &quot;views&quot;: 29
+            },
+            &quot;categories&quot;: [],
+            &quot;created_at&quot;: &quot;2024-11-21T03:26:28.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2025-01-03T16:02:49.000000Z&quot;,
+            &quot;created_at_diff&quot;: &quot;1 month ago&quot;,
+            &quot;updated_at_diff&quot;: &quot;5 days ago&quot;
+        },
+        {
+            &quot;id&quot;: 8488,
+            &quot;sku&quot;: &quot;FujiyamaJapanese003-54-C001-5668&quot;,
+            &quot;merchant_id&quot;: 130,
+            &quot;store&quot;: {
+                &quot;id&quot;: null,
+                &quot;name&quot;: null
+            },
+            &quot;stores&quot;: [
+                {
+                    &quot;id&quot;: 3571,
+                    &quot;name&quot;: &quot;Fujiyama 101 Japanese Restaurant&quot;,
+                    &quot;address&quot;: &quot;26, JALAN RUGBI 13/30, SEKSYEN 13 TADISMA BUSINESS PARK Shah Alam, 40100 Petaling Jaya, Selangor&quot;,
+                    &quot;ratings&quot;: &quot;0.0&quot;,
+                    &quot;total_ratings&quot;: 0,
+                    &quot;address_postcode&quot;: &quot;40100&quot;,
+                    &quot;lat&quot;: &quot;3.0884927&quot;,
+                    &quot;lng&quot;: &quot;101.5439374&quot;,
+                    &quot;is_hq&quot;: 0,
+                    &quot;state&quot;: {
+                        &quot;id&quot;: 12,
+                        &quot;country_id&quot;: 131,
+                        &quot;code&quot;: &quot;SGR&quot;,
+                        &quot;name&quot;: &quot;Selangor&quot;,
+                        &quot;name_translation&quot;: &quot;{\&quot;en\&quot;: \&quot;Selangor\&quot;, \&quot;zh\&quot;: \&quot;雪兰莪\&quot;}&quot;,
+                        &quot;created_at&quot;: &quot;2023-04-09T23:44:27.000000Z&quot;,
+                        &quot;updated_at&quot;: &quot;2023-04-09T23:44:27.000000Z&quot;
+                    },
+                    &quot;country&quot;: {
+                        &quot;id&quot;: 131,
+                        &quot;code&quot;: &quot;MY&quot;,
+                        &quot;name&quot;: &quot;Malaysia&quot;,
+                        &quot;phone_code&quot;: &quot;60&quot;
+                    }
+                }
+            ],
+            &quot;logo&quot;: null,
+            &quot;merchant&quot;: {
+                &quot;id&quot;: 130,
+                &quot;logo&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/141931/JMGJibDf7EsKVmB3BMYVcgC3FYYaKL-metaTG9nbyAoMSkuanBn-.jpg&quot;,
+                &quot;brand_name&quot;: &quot; FujiYama 101 Japanese Restaurant &quot;,
+                &quot;business_name&quot;: &quot;Fujiyama Japanese Restaurant&quot;,
+                &quot;business_phone_no&quot;: &quot;0168991900&quot;,
+                &quot;user&quot;: {
+                    &quot;id&quot;: 21453,
+                    &quot;name&quot;: &quot; FujiYama 101&quot;
+                }
+            },
+            &quot;name&quot;: &quot;Salmon Belly Osaka Rolls&quot;,
+            &quot;is_flash&quot;: 0,
+            &quot;description&quot;: &quot;Chef Yama 是一位拥有超过35年经验的寿司大师 👏\n\n🙋 哪里可以见到Chef Yama？\n👉 Fujiyama Japanese Restaurant 101 \n\n👉 店里必吃的招牌 \n🍣Salmon Belly Osaka Rolls 🍣\n\n内层： \n🍣 辣味三文鱼 \n🥑 牛油果 \n🥒 黄瓜和墨西哥辣椒\n\n外层： \n🍣 三文鱼肚 \n🧄 蒜 \n🧅 洋葱鱼子酱\n\n最后的点缀： \n✨ 轻轻炙烤后，再配上Chef Yama 的招牌辣味蒜蓉酱\n\n\n每一片厚度均匀的三文鱼 \n都是老板经过三十五年的厨艺，精心打磨而成 🔪 \n一口入嘴， 让人按耐不住想再来一片的念头 😋 \n\n\n⛰️【Fujiyama Japanese Restaurant 101】⛰️\n\n📍26, JALAN RUGBI 13/30, SEKSYEN 13 TADISMA BUSINESS PARK Shah Alam, 40100 Petaling Jaya, Selangor\n☎️ 03-5524 3634\n⏰Monday to Sunday 11am -11pm\n⚠️ 星期五，六和日需预约\n\n&quot;,
+            &quot;fine_print&quot;: &quot;1. 优惠券只限用于堂食(Dine In Only)\n2. 需消费最低 RM100 才能使用此优惠券\n3. 星期五，六和日需提前预约\n4. 每张优惠券1天只能兑换1次，如需兑换第二张须改日使用\n5. 此优惠券不可与其他优惠券、促销活动、折扣或特别优惠同时使用，且严禁分单\n&quot;,
+            &quot;redemption_policy&quot;: &quot;1. 该优惠券自预订确认之日起 30 天内有效。最后一天23:59到期\n2. 优惠券不可与任何其他折扣同时使用，包括会员折扣\n3. 优惠券不可兑换现金\n4. 优惠券只能通过 FUNHUB App 兑换/使用\n5. 优惠券只能兑换一次\n6. 每张账单限用 1 张优惠券\n&quot;,
+            &quot;cancellation_policy&quot;: &quot;1. 已兑换的优惠券不可随意取消、更改或退款。\n2. 已兑换的优惠券一经使用后，不可更改或取消。\n3. 已兑换的优惠券仅限有效期内使用，逾期则作废且不可进行退款。\n4. 若您发现他人盗用您的账号并使用此优惠券，请联系客服申请退还饭盒。\n5. 若您去消费时，因技术情况无法使用此优惠券，请联系客服申请退还饭盒。\n&quot;,
+            &quot;point_cost&quot;: 4,
+            &quot;point_fiat_price&quot;: 43.8,
+            &quot;discounted_point_fiat_price&quot;: 20,
+            &quot;fiat_price&quot;: 43.8,
+            &quot;discounted_fiat_price&quot;: 35,
+            &quot;default_purchase_method&quot;: &quot;point&quot;,
+            &quot;available_at&quot;: &quot;2025-01-06 00:00:00&quot;,
+            &quot;available_until&quot;: &quot;2025-01-08 23:59:59&quot;,
+            &quot;expiry_days&quot;: 30,
+            &quot;quantity&quot;: 5,
+            &quot;media&quot;: [
+                {
+                    &quot;name&quot;: &quot;Fujiyama-SD1&quot;,
+                    &quot;file_name&quot;: &quot;gQaUy2udVCp1MgDfOnfV1BUhglBWiT-metaRnVqaXlhbWEtU0QxLnBuZw==-.png&quot;,
+                    &quot;uuid&quot;: &quot;b78c7a04-a0b5-4da8-9c30-57baaa7805e1&quot;,
+                    &quot;original_url&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/165509/gQaUy2udVCp1MgDfOnfV1BUhglBWiT-metaRnVqaXlhbWEtU0QxLnBuZw%3D%3D-.png&quot;,
+                    &quot;order&quot;: null,
+                    &quot;custom_properties&quot;: {
+                        &quot;width&quot;: 1080,
+                        &quot;height&quot;: 1440,
+                        &quot;is_cover&quot;: false
+                    },
+                    &quot;extension&quot;: &quot;png&quot;,
+                    &quot;size&quot;: 1609609
+                },
+                {
+                    &quot;name&quot;: &quot;Fujiyama-SD1-voucher&quot;,
+                    &quot;file_name&quot;: &quot;gC2VLTdw6NtD8xW19UlQJY719AZCYK-metaRnVqaXlhbWEtU0QxLXZvdWNoZXIucG5n-.png&quot;,
+                    &quot;uuid&quot;: &quot;05c5b576-b6ee-4fdd-b4b8-bf4137b58b43&quot;,
+                    &quot;original_url&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/165510/gC2VLTdw6NtD8xW19UlQJY719AZCYK-metaRnVqaXlhbWEtU0QxLXZvdWNoZXIucG5n-.png&quot;,
+                    &quot;order&quot;: null,
+                    &quot;custom_properties&quot;: {
+                        &quot;width&quot;: 1035,
+                        &quot;height&quot;: 339,
+                        &quot;is_cover&quot;: false
+                    },
+                    &quot;extension&quot;: &quot;png&quot;,
+                    &quot;size&quot;: 273337
+                }
+            ],
+            &quot;horizontal_banner&quot;: {
+                &quot;name&quot;: &quot;Fujiyama-SD1-voucher&quot;,
+                &quot;file_name&quot;: &quot;gC2VLTdw6NtD8xW19UlQJY719AZCYK-metaRnVqaXlhbWEtU0QxLXZvdWNoZXIucG5n-.png&quot;,
+                &quot;uuid&quot;: &quot;05c5b576-b6ee-4fdd-b4b8-bf4137b58b43&quot;,
+                &quot;original_url&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/165510/gC2VLTdw6NtD8xW19UlQJY719AZCYK-metaRnVqaXlhbWEtU0QxLXZvdWNoZXIucG5n-.png&quot;,
+                &quot;order&quot;: null,
+                &quot;custom_properties&quot;: {
+                    &quot;width&quot;: 1035,
+                    &quot;height&quot;: 339,
+                    &quot;is_cover&quot;: false
+                },
+                &quot;extension&quot;: &quot;png&quot;,
+                &quot;size&quot;: 273337
+            },
+            &quot;vertical_banner&quot;: {
+                &quot;name&quot;: &quot;Fujiyama-SD1&quot;,
+                &quot;file_name&quot;: &quot;gQaUy2udVCp1MgDfOnfV1BUhglBWiT-metaRnVqaXlhbWEtU0QxLnBuZw==-.png&quot;,
+                &quot;uuid&quot;: &quot;b78c7a04-a0b5-4da8-9c30-57baaa7805e1&quot;,
+                &quot;original_url&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/165509/gQaUy2udVCp1MgDfOnfV1BUhglBWiT-metaRnVqaXlhbWEtU0QxLnBuZw%3D%3D-.png&quot;,
+                &quot;order&quot;: null,
+                &quot;custom_properties&quot;: {
+                    &quot;width&quot;: 1080,
+                    &quot;height&quot;: 1440,
+                    &quot;is_cover&quot;: false
+                },
+                &quot;extension&quot;: &quot;png&quot;,
+                &quot;size&quot;: 1609609
+            },
+            &quot;interactions&quot;: [],
+            &quot;location&quot;: null,
+            &quot;count&quot;: {
+                &quot;likes&quot;: 0,
+                &quot;share&quot;: 0,
+                &quot;bookmarks&quot;: 0,
+                &quot;views&quot;: 8
+            },
+            &quot;categories&quot;: [],
+            &quot;created_at&quot;: &quot;2024-12-26T06:03:26.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2025-01-05T16:04:19.000000Z&quot;,
+            &quot;created_at_diff&quot;: &quot;1 week ago&quot;,
+            &quot;updated_at_diff&quot;: &quot;3 days ago&quot;
+        },
+        {
+            &quot;id&quot;: 7684,
+            &quot;sku&quot;: &quot;Scoopsy001-68-C001-4920&quot;,
+            &quot;merchant_id&quot;: 55,
+            &quot;store&quot;: {
+                &quot;id&quot;: null,
+                &quot;name&quot;: null
+            },
+            &quot;stores&quot;: [
+                {
+                    &quot;id&quot;: 8,
+                    &quot;name&quot;: &quot;Scoopsy&quot;,
+                    &quot;address&quot;: &quot;6A, Jalan SS14/1, SS14, Subang Jaya&quot;,
+                    &quot;ratings&quot;: &quot;4.6&quot;,
+                    &quot;total_ratings&quot;: 10,
+                    &quot;address_postcode&quot;: &quot;47500&quot;,
+                    &quot;lat&quot;: &quot;3.0727664&quot;,
+                    &quot;lng&quot;: &quot;101.5889151&quot;,
+                    &quot;is_hq&quot;: 1,
+                    &quot;state&quot;: {
+                        &quot;id&quot;: 12,
+                        &quot;country_id&quot;: 131,
+                        &quot;code&quot;: &quot;SGR&quot;,
+                        &quot;name&quot;: &quot;Selangor&quot;,
+                        &quot;name_translation&quot;: &quot;{\&quot;en\&quot;: \&quot;Selangor\&quot;, \&quot;zh\&quot;: \&quot;雪兰莪\&quot;}&quot;,
+                        &quot;created_at&quot;: &quot;2023-04-09T23:44:27.000000Z&quot;,
+                        &quot;updated_at&quot;: &quot;2023-04-09T23:44:27.000000Z&quot;
+                    },
+                    &quot;country&quot;: {
+                        &quot;id&quot;: 131,
+                        &quot;code&quot;: &quot;MY&quot;,
+                        &quot;name&quot;: &quot;Malaysia&quot;,
+                        &quot;phone_code&quot;: &quot;60&quot;
+                    }
+                }
+            ],
+            &quot;logo&quot;: null,
+            &quot;merchant&quot;: {
+                &quot;id&quot;: 55,
+                &quot;logo&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/116401/XGaPMS05MpJ1ULpy9IdFNQ3gFboic1-metaTWVyY2hhbnQgTG9nbyBwbGFjZW1lbnQgKDMpLnBuZw%3D%3D-.png&quot;,
+                &quot;brand_name&quot;: &quot;Scoopsy&quot;,
+                &quot;business_name&quot;: &quot;Leading Ovis Sdn Bhd&quot;,
+                &quot;business_phone_no&quot;: &quot;600356131290&quot;,
+                &quot;user&quot;: {
+                    &quot;id&quot;: 8048,
+                    &quot;name&quot;: &quot;Scoopsy&quot;
+                }
+            },
+            &quot;name&quot;: &quot;Classic Single Scoop Waffle&quot;,
+            &quot;is_flash&quot;: 0,
+            &quot;description&quot;: &quot;甜品控们看过来！\n\n🧇单勺冰淇淋华夫饼\n一片华夫饼，再来一勺冰淇淋\n酥脆的外壳搭配爽口的甜度\n有谁不爱呢😋\n\nScoopsy\n☎️03-5613 1290\n📍6A, Jalan SS 14/1, Ss 14, 47500 Subang Jaya, Selangor\n🕒1pm - 10pm\n&quot;,
+            &quot;fine_print&quot;: &quot; 此优惠券仅限堂食（Dine-in）。&quot;,
+            &quot;redemption_policy&quot;: &quot;1. 此优惠券仅限堂食（Dine-in）。\n2. 此优惠券自成功购买当天起的 30天内有效，有效期的最后一天截止时间为23:59。\n3. 此优惠不可与其他促销和折扣叠加使用，包括会员折扣。\n4. 此优惠券不可兑换成现金。\n5. 此优惠券仅通过 FUNHUB App 兑换和使用。\n6. 此优惠券仅限一次交易。\n7. 此优惠券仅限用于一个账单。\n8. 如发现任何违规获取优惠券的情况，经核实后将予以作废处理\n&quot;,
+            &quot;cancellation_policy&quot;: &quot;1. 已兑换的优惠券不可随意取消、更改或退款。\n2. 已兑换的优惠券一经使用后，不可更改或取消。\n3. 已兑换的优惠券仅限有效期内使用，逾期则作废且不可进行退款。\n4. 若您发现他人盗用您的账号并使用此优惠券，请联系客服申请退还饭盒。\n5. 若您去消费时，因技术情况无法使用此优惠券，请联系客服申请退还饭盒。\n&quot;,
+            &quot;point_cost&quot;: 1,
+            &quot;point_fiat_price&quot;: 15.7,
+            &quot;discounted_point_fiat_price&quot;: 5,
+            &quot;fiat_price&quot;: 15.7,
+            &quot;discounted_fiat_price&quot;: 10,
+            &quot;default_purchase_method&quot;: &quot;point&quot;,
+            &quot;available_at&quot;: &quot;2025-01-06 00:00:00&quot;,
+            &quot;available_until&quot;: &quot;2025-01-08 23:59:00&quot;,
+            &quot;expiry_days&quot;: 30,
+            &quot;quantity&quot;: 5,
+            &quot;media&quot;: [
+                {
+                    &quot;name&quot;: &quot;scoopsy-SD-chi&quot;,
+                    &quot;file_name&quot;: &quot;IQMCsFJ6Ykz5OBBFZWdJ7Qfdx965Uu-metac2Nvb3BzeS1TRC1jaGkucG5n-.png&quot;,
+                    &quot;uuid&quot;: &quot;51bc066e-6277-4195-a8c8-78d91917d9f7&quot;,
+                    &quot;original_url&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161490/IQMCsFJ6Ykz5OBBFZWdJ7Qfdx965Uu-metac2Nvb3BzeS1TRC1jaGkucG5n-.png&quot;,
+                    &quot;order&quot;: null,
+                    &quot;custom_properties&quot;: {
+                        &quot;width&quot;: 1080,
+                        &quot;height&quot;: 1441,
+                        &quot;is_cover&quot;: false
+                    },
+                    &quot;extension&quot;: &quot;png&quot;,
+                    &quot;size&quot;: 1769027
+                },
+                {
+                    &quot;name&quot;: &quot;scoopsy-SD_voucher&quot;,
+                    &quot;file_name&quot;: &quot;xjlI6DHMTyqnPg6dAa60bF7oMK6AX6-metac2Nvb3BzeS1TRF92b3VjaGVyLnBuZw==-.png&quot;,
+                    &quot;uuid&quot;: &quot;0039ec24-8b05-4331-b241-cf9a5ec5160a&quot;,
+                    &quot;original_url&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161491/xjlI6DHMTyqnPg6dAa60bF7oMK6AX6-metac2Nvb3BzeS1TRF92b3VjaGVyLnBuZw%3D%3D-.png&quot;,
+                    &quot;order&quot;: null,
+                    &quot;custom_properties&quot;: {
+                        &quot;width&quot;: 1042,
+                        &quot;height&quot;: 338,
+                        &quot;is_cover&quot;: false
+                    },
+                    &quot;extension&quot;: &quot;png&quot;,
+                    &quot;size&quot;: 297570
+                }
+            ],
+            &quot;horizontal_banner&quot;: {
+                &quot;name&quot;: &quot;scoopsy-SD_voucher&quot;,
+                &quot;file_name&quot;: &quot;xjlI6DHMTyqnPg6dAa60bF7oMK6AX6-metac2Nvb3BzeS1TRF92b3VjaGVyLnBuZw==-.png&quot;,
+                &quot;uuid&quot;: &quot;0039ec24-8b05-4331-b241-cf9a5ec5160a&quot;,
+                &quot;original_url&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161491/xjlI6DHMTyqnPg6dAa60bF7oMK6AX6-metac2Nvb3BzeS1TRF92b3VjaGVyLnBuZw%3D%3D-.png&quot;,
+                &quot;order&quot;: null,
+                &quot;custom_properties&quot;: {
+                    &quot;width&quot;: 1042,
+                    &quot;height&quot;: 338,
+                    &quot;is_cover&quot;: false
+                },
+                &quot;extension&quot;: &quot;png&quot;,
+                &quot;size&quot;: 297570
+            },
+            &quot;vertical_banner&quot;: {
+                &quot;name&quot;: &quot;scoopsy-SD-chi&quot;,
+                &quot;file_name&quot;: &quot;IQMCsFJ6Ykz5OBBFZWdJ7Qfdx965Uu-metac2Nvb3BzeS1TRC1jaGkucG5n-.png&quot;,
+                &quot;uuid&quot;: &quot;51bc066e-6277-4195-a8c8-78d91917d9f7&quot;,
+                &quot;original_url&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161490/IQMCsFJ6Ykz5OBBFZWdJ7Qfdx965Uu-metac2Nvb3BzeS1TRC1jaGkucG5n-.png&quot;,
+                &quot;order&quot;: null,
+                &quot;custom_properties&quot;: {
+                    &quot;width&quot;: 1080,
+                    &quot;height&quot;: 1441,
+                    &quot;is_cover&quot;: false
+                },
+                &quot;extension&quot;: &quot;png&quot;,
+                &quot;size&quot;: 1769027
+            },
+            &quot;interactions&quot;: [],
+            &quot;location&quot;: null,
+            &quot;count&quot;: {
+                &quot;likes&quot;: 0,
+                &quot;share&quot;: 0,
+                &quot;bookmarks&quot;: 0,
+                &quot;views&quot;: 3
+            },
+            &quot;categories&quot;: [],
+            &quot;created_at&quot;: &quot;2024-12-14T08:19:28.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2025-01-07T04:20:11.000000Z&quot;,
+            &quot;created_at_diff&quot;: &quot;3 weeks ago&quot;,
+            &quot;updated_at_diff&quot;: &quot;2 days ago&quot;
+        },
+        {
+            &quot;id&quot;: 7629,
+            &quot;sku&quot;: &quot;SoYoung001-49-C001-4865&quot;,
+            &quot;merchant_id&quot;: 264,
+            &quot;store&quot;: {
+                &quot;id&quot;: null,
+                &quot;name&quot;: null
+            },
+            &quot;stores&quot;: [
+                {
+                    &quot;id&quot;: 3958,
+                    &quot;name&quot;: &quot;SoYoung Malaysia 濃い豆乳 @ Seri Kembangan&quot;,
+                    &quot;address&quot;: &quot;Jalan Simfoni 1&quot;,
+                    &quot;ratings&quot;: &quot;0.0&quot;,
+                    &quot;total_ratings&quot;: 0,
+                    &quot;address_postcode&quot;: &quot;43300&quot;,
+                    &quot;lat&quot;: &quot;3.02655830&quot;,
+                    &quot;lng&quot;: &quot;101.75286160&quot;,
+                    &quot;is_hq&quot;: 0,
+                    &quot;state&quot;: {
+                        &quot;id&quot;: 12,
+                        &quot;country_id&quot;: 131,
+                        &quot;code&quot;: &quot;SGR&quot;,
+                        &quot;name&quot;: &quot;Selangor&quot;,
+                        &quot;name_translation&quot;: &quot;{\&quot;en\&quot;: \&quot;Selangor\&quot;, \&quot;zh\&quot;: \&quot;雪兰莪\&quot;}&quot;,
+                        &quot;created_at&quot;: &quot;2023-04-09T23:44:27.000000Z&quot;,
+                        &quot;updated_at&quot;: &quot;2023-04-09T23:44:27.000000Z&quot;
+                    },
+                    &quot;country&quot;: {
+                        &quot;id&quot;: 131,
+                        &quot;code&quot;: &quot;MY&quot;,
+                        &quot;name&quot;: &quot;Malaysia&quot;,
+                        &quot;phone_code&quot;: &quot;60&quot;
+                    }
+                },
+                {
+                    &quot;id&quot;: 3957,
+                    &quot;name&quot;: &quot;SoYoung Malaysia 濃い豆乳 @ TRX&quot;,
+                    &quot;address&quot;: &quot;Grand Staircase&quot;,
+                    &quot;ratings&quot;: &quot;5.0&quot;,
+                    &quot;total_ratings&quot;: 1,
+                    &quot;address_postcode&quot;: &quot;55100&quot;,
+                    &quot;lat&quot;: &quot;3.14257190&quot;,
+                    &quot;lng&quot;: &quot;101.71802400&quot;,
+                    &quot;is_hq&quot;: 0,
+                    &quot;state&quot;: {
+                        &quot;id&quot;: 14,
+                        &quot;country_id&quot;: 131,
+                        &quot;code&quot;: &quot;KUL&quot;,
+                        &quot;name&quot;: &quot;W.P. Kuala Lumpur&quot;,
+                        &quot;name_translation&quot;: &quot;{\&quot;en\&quot;: \&quot;W.P. Kuala Lumpur\&quot;, \&quot;zh\&quot;: \&quot;吉隆坡\&quot;}&quot;,
+                        &quot;created_at&quot;: &quot;2023-04-09T23:44:27.000000Z&quot;,
+                        &quot;updated_at&quot;: &quot;2023-04-09T23:44:27.000000Z&quot;
+                    },
+                    &quot;country&quot;: {
+                        &quot;id&quot;: 131,
+                        &quot;code&quot;: &quot;MY&quot;,
+                        &quot;name&quot;: &quot;Malaysia&quot;,
+                        &quot;phone_code&quot;: &quot;60&quot;
+                    }
+                }
+            ],
+            &quot;logo&quot;: null,
+            &quot;merchant&quot;: {
+                &quot;id&quot;: 264,
+                &quot;logo&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/160736/ph0wWwvzoiioVs2u0NpNPgEX9TipZ0-metaTWVyY2hhbnQgTG9nbyBwbGFjZW1lbnQgKDc2KS5wbmc%3D-.png&quot;,
+                &quot;brand_name&quot;: &quot;SoYoung 濃い豆乳&quot;,
+                &quot;business_name&quot;: &quot;MOS F&amp;B MARKETING SDN BHD &quot;,
+                &quot;business_phone_no&quot;: &quot;012-2216809&quot;,
+                &quot;user&quot;: {
+                    &quot;id&quot;: 27919,
+                    &quot;name&quot;: &quot;SoYoung 濃い豆乳&quot;
+                }
+            },
+            &quot;name&quot;: &quot;SoYoung - 冬季の初雪&middot;濃豆乳雪花冰&quot;,
+            &quot;is_flash&quot;: 0,
+            &quot;description&quot;: &quot;❄️ SoYoung | 冬季の初雪&middot;濃豆乳雪花冰 ❄️\n Snowy Shirayuki (Japanese Soymilk Bingsu)\n✨  以豆浆为基底的纯净雪花，焕发活力，令人心旷神怡。\n 精选日本豆乳，打造成如雪花般细腻轻盈的刨冰，清凉的口感与浓郁的豆香在舌尖完美融合，像冬季的第一场雪，轻柔和沁人心脾。\n🍧 自选三种互补的奇特配料。\n选择您最喜欢的三种配料，创造属于您自己的独特风味雪花冰：\n\n 🌟 夜明珠：Q弹爽滑，嚼出丝丝甘甜\n 🌿 嫩仙草：萦绕着淡淡的清香和清新，并带有烟熏的味道。\n 💎 水晶珍珠：晶莹剔透，淀粉魔芋耀眼夺目\n 🌰 焙烤黑芝麻：豆浆的浓郁香气与纯黑芝麻的坚果风味完美融合 \n 🍬黑糖麻薯 &amp; 软熟赤小豆： 经典的甜味一定会俘获你的心。\n 🍠 紫芋丸子 &amp; 冲绳紫薯丸子：软糯香甜，质地诱人\n 🍵 抹茶丸子 &amp; 美国杏仁果：独特的茶香和坚果味，丰富了味觉感受。\n💫 每一口，都是一场冬日的甜蜜旅行。\n 冬季の初雪&middot;濃豆乳雪花冰在马来西亚为你带来不一样的冰雪奇缘。\n🌨️Snowy Shirayuki 将您带入梦幻般的白雪仙境，这是一次让您终生难忘的甜蜜冬日之旅，只在 SoYoung Malaysia！\n\n【SoYoung】\n\n🌱SoYoung (HQ)\n📍2, Jalan Simfoni 1, Balakong, 43300 Seri Kembangan, Selangor\n🕒11am-10pm (Mon-Thurs)\n🕒11am-10:30pm (Fri-Sun)\n☎️012-518 5355\n\n🌱 SoYoung (The Exchange TRX)\n📍C.OS.05, Level Concourse, Persiaran TRX, Tun Razak Exchange, 55188 Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur. \n🕒10am-10pm (Mon to Sun)\n☎️012-252 6845\n&quot;,
+            &quot;fine_print&quot;: &quot;1. 只限店内用餐可使用\n2. 一张桌子只能兑换一份\n3. 每张优惠券1天只能兑换1次，如需兑换第二张须改日使用\n4. 此优惠券不可与其他优惠券、促销活动、折扣或特别优惠同时使用，且严禁分单\n&quot;,
+            &quot;redemption_policy&quot;: &quot;1. 该优惠券自预订确认之日起 30 天内有效。最后一天23:59到期\n2. 优惠券不可与任何其他折扣同时使用，包括会员折扣\n3. 优惠券不可兑换现金\n4. 优惠券只能通过 FUNHUB App 兑换/使用\n5. 优惠券只能兑换一次\n6. 每张账单限用 1 张优惠券\n&quot;,
+            &quot;cancellation_policy&quot;: &quot;1. 已兑换的优惠券不可随意取消、更改或退款。\n2. 已兑换的优惠券一经使用后，不可更改或取消。\n3. 已兑换的优惠券仅限有效期内使用，逾期则作废且不可进行退款。\n4. 若您发现他人盗用您的账号并使用此优惠券，请联系客服申请退还饭盒。\n5. 若您去消费时，因技术情况无法使用此优惠券，请联系客服申请退还饭盒。\n\n&quot;,
+            &quot;point_cost&quot;: 2,
+            &quot;point_fiat_price&quot;: 19.9,
+            &quot;discounted_point_fiat_price&quot;: 10,
+            &quot;fiat_price&quot;: 19.9,
+            &quot;discounted_fiat_price&quot;: 15,
+            &quot;default_purchase_method&quot;: &quot;point&quot;,
+            &quot;available_at&quot;: &quot;2025-01-06 00:00:00&quot;,
+            &quot;available_until&quot;: &quot;2025-01-09 23:59:59&quot;,
+            &quot;expiry_days&quot;: 30,
+            &quot;quantity&quot;: 5,
+            &quot;media&quot;: [
+                {
+                    &quot;name&quot;: &quot;SoYoung-SD1&quot;,
+                    &quot;file_name&quot;: &quot;5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png&quot;,
+                    &quot;uuid&quot;: &quot;930a8eaa-cdb9-48ec-a71c-29b572ff3e18&quot;,
+                    &quot;original_url&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161195/5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png&quot;,
+                    &quot;order&quot;: null,
+                    &quot;custom_properties&quot;: {
+                        &quot;width&quot;: 1080,
+                        &quot;height&quot;: 1440,
+                        &quot;is_cover&quot;: false
+                    },
+                    &quot;extension&quot;: &quot;png&quot;,
+                    &quot;size&quot;: 1746762
+                },
+                {
+                    &quot;name&quot;: &quot;SoYoung-SD1-VOUCHER&quot;,
+                    &quot;file_name&quot;: &quot;s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc=-.png&quot;,
+                    &quot;uuid&quot;: &quot;59944e2b-2915-4453-be56-e6a4b3f88e63&quot;,
+                    &quot;original_url&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161197/s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc%3D-.png&quot;,
+                    &quot;order&quot;: null,
+                    &quot;custom_properties&quot;: {
+                        &quot;width&quot;: 1034,
+                        &quot;height&quot;: 331,
+                        &quot;is_cover&quot;: false
+                    },
+                    &quot;extension&quot;: &quot;png&quot;,
+                    &quot;size&quot;: 257340
+                }
+            ],
+            &quot;horizontal_banner&quot;: {
+                &quot;name&quot;: &quot;SoYoung-SD1-VOUCHER&quot;,
+                &quot;file_name&quot;: &quot;s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc=-.png&quot;,
+                &quot;uuid&quot;: &quot;59944e2b-2915-4453-be56-e6a4b3f88e63&quot;,
+                &quot;original_url&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161197/s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc%3D-.png&quot;,
+                &quot;order&quot;: null,
+                &quot;custom_properties&quot;: {
+                    &quot;width&quot;: 1034,
+                    &quot;height&quot;: 331,
+                    &quot;is_cover&quot;: false
+                },
+                &quot;extension&quot;: &quot;png&quot;,
+                &quot;size&quot;: 257340
+            },
+            &quot;vertical_banner&quot;: {
+                &quot;name&quot;: &quot;SoYoung-SD1&quot;,
+                &quot;file_name&quot;: &quot;5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png&quot;,
+                &quot;uuid&quot;: &quot;930a8eaa-cdb9-48ec-a71c-29b572ff3e18&quot;,
+                &quot;original_url&quot;: &quot;https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161195/5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png&quot;,
+                &quot;order&quot;: null,
+                &quot;custom_properties&quot;: {
+                    &quot;width&quot;: 1080,
+                    &quot;height&quot;: 1440,
+                    &quot;is_cover&quot;: false
+                },
+                &quot;extension&quot;: &quot;png&quot;,
+                &quot;size&quot;: 1746762
+            },
+            &quot;interactions&quot;: [],
+            &quot;location&quot;: null,
+            &quot;count&quot;: {
+                &quot;likes&quot;: 0,
+                &quot;share&quot;: 0,
+                &quot;bookmarks&quot;: 0,
+                &quot;views&quot;: 3
+            },
+            &quot;categories&quot;: [],
+            &quot;created_at&quot;: &quot;2024-12-13T03:53:55.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2025-01-05T16:04:02.000000Z&quot;,
+            &quot;created_at_diff&quot;: &quot;3 weeks ago&quot;,
+            &quot;updated_at_diff&quot;: &quot;3 days ago&quot;
+        }
+    ],
     &quot;links&quot;: {
         &quot;first&quot;: &quot;https://funhub-mobile-backend.test/api/v1/public_offers?page=1&quot;,
         &quot;last&quot;: &quot;https://funhub-mobile-backend.test/api/v1/public_offers?page=1&quot;,
@@ -19165,7 +19919,7 @@ access-control-allow-origin: *
     },
     &quot;meta&quot;: {
         &quot;current_page&quot;: 1,
-        &quot;from&quot;: null,
+        &quot;from&quot;: 1,
         &quot;last_page&quot;: 1,
         &quot;links&quot;: [
             {
@@ -19186,8 +19940,8 @@ access-control-allow-origin: *
         ],
         &quot;path&quot;: &quot;https://funhub-mobile-backend.test/api/v1/public_offers&quot;,
         &quot;per_page&quot;: 10,
-        &quot;to&quot;: null,
-        &quot;total&quot;: 0
+        &quot;to&quot;: 4,
+        &quot;total&quot;: 4
     }
 }</code>
  </pre>
@@ -19393,7 +20147,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"id\": 1
+    \"id\": 6
 }"
 </code></pre></div>
 
@@ -19410,7 +20164,7 @@ const headers = {
 };
 
 let body = {
-    "id": 1
+    "id": 6
 };
 
 fetch(url, {
@@ -19542,10 +20296,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-v1-public_offers_single"
-               value="1"
+               value="6"
                data-component="body">
     <br>
-<p>This field is required when <code>sku</code> is <code>null</code>. Example: <code>1</code></p>
+<p>This field is required when <code>sku</code> is <code>null</code>. Example: <code>6</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>sku</code></b>&nbsp;&nbsp;
@@ -21001,7 +21755,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers/nearby?category_ids[]=1&amp;category_ids[]=2&amp;category_ids[]=3&amp;merchant_offer_ids[]=beatae&amp;city=Subang+Jaya&amp;state=Selangor&amp;lat=3.123456&amp;lng=101.123456&amp;radius=10000&amp;available_only=1&amp;coming_soon_only=1&amp;except_expired=1&amp;flash_only=1&amp;limit=10" \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers/nearby?category_ids[]=1&amp;category_ids[]=2&amp;category_ids[]=3&amp;merchant_offer_ids[]=eligendi&amp;city=Subang+Jaya&amp;state=Selangor&amp;lat=3.123456&amp;lng=101.123456&amp;radius=10000&amp;available_only=1&amp;coming_soon_only=1&amp;except_expired=1&amp;flash_only=1&amp;limit=10" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -21016,7 +21770,7 @@ const params = {
     "category_ids[0]": "1",
     "category_ids[1]": "2",
     "category_ids[2]": "3",
-    "merchant_offer_ids[0]": "beatae",
+    "merchant_offer_ids[0]": "eligendi",
     "city": "Subang Jaya",
     "state": "Selangor",
     "lat": "3.123456",
@@ -21560,7 +22314,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
         3
     ],
     \"merchant_offer_ids\": [
-        \"quo\"
+        \"atque\"
     ],
     \"city\": \"Subang Jaya\",
     \"state\": \"Selangor\",
@@ -21603,7 +22357,7 @@ let body = {
         3
     ],
     "merchant_offer_ids": [
-        "quo"
+        "atque"
     ],
     "city": "Subang Jaya",
     "state": "Selangor",
@@ -22043,6 +22797,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"quantity\": 1,
     \"use_point_discount\": true,
     \"points_to_use\": 2,
+    \"referral_code\": \"hic\",
     \"wallet_type\": \"TNG\\/FPX-CIMB\",
     \"channel\": \"app\\/funhub_web\",
     \"email\": \"john@email.com\"
@@ -22069,6 +22824,7 @@ let body = {
     "quantity": 1,
     "use_point_discount": true,
     "points_to_use": 2,
+    "referral_code": "hic",
     "wallet_type": "TNG\/FPX-CIMB",
     "channel": "app\/funhub_web",
     "email": "john@email.com"
@@ -22300,6 +23056,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="body">
     <br>
 <p>optional Points(Funbox) to Use. Example: <code>2</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>referral_code</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="referral_code"                data-endpoint="POSTapi-v1-merchant-offers-claim"
+               value="hic"
+               data-component="body">
+    <br>
+<p>Example: <code>hic</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>wallet_type</code></b>&nbsp;&nbsp;
@@ -23022,7 +23789,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers/debitis?offer_id=1" \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers/nostrum?offer_id=1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -23030,7 +23797,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/merchant/offers/debitis"
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/nostrum"
 );
 
 const params = {
@@ -23150,10 +23917,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="offer_id"                data-endpoint="GETapi-v1-merchant-offers--offer_id-"
-               value="debitis"
+               value="nostrum"
                data-component="url">
     <br>
-<p>The ID of the offer. Example: <code>debitis</code></p>
+<p>The ID of the offer. Example: <code>nostrum</code></p>
             </div>
                         <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
                                     <div style="padding-left: 28px; clear: unset;">
@@ -27181,6 +27948,138 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
+                    <h2 id="product-GETapi-v1-products-limited">Get Products for Sale (Limited Gift Cards)</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-products-limited">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://funhub-mobile-backend.test/api/v1/products/limited" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/products/limited"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-products-limited">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;current_page&quot;: 1,
+    &quot;data&quot;: []
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-products-limited" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-products-limited"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-products-limited"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-products-limited" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-products-limited">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-products-limited" data-method="GET"
+      data-path="api/v1/products/limited"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-products-limited', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-products-limited"
+                    onclick="tryItOut('GETapi-v1-products-limited');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-products-limited"
+                    onclick="cancelTryOut('GETapi-v1-products-limited');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-products-limited"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/products/limited</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-products-limited"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-products-limited"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-products-limited"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
                     <h2 id="product-POSTapi-v1-products-checkout-cancel">Cancel Product Checkout</h2>
 
 <p>
@@ -27333,6 +28232,167 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </div>
         </form>
 
+                    <h2 id="product-GETapi-v1-products--product_id-">Get Product By ID</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-products--product_id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://funhub-mobile-backend.test/api/v1/products/quis?product_id=1" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/products/quis"
+);
+
+const params = {
+    "product_id": "1",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-products--product_id-">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;data&quot;: {}
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-products--product_id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-products--product_id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-products--product_id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-products--product_id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-products--product_id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-products--product_id-" data-method="GET"
+      data-path="api/v1/products/{product_id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-products--product_id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-products--product_id-"
+                    onclick="tryItOut('GETapi-v1-products--product_id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-products--product_id-"
+                    onclick="cancelTryOut('GETapi-v1-products--product_id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-products--product_id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/products/{product_id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-products--product_id-"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-products--product_id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-products--product_id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>product_id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="product_id"                data-endpoint="GETapi-v1-products--product_id-"
+               value="quis"
+               data-component="url">
+    <br>
+<p>The ID of the product. Example: <code>quis</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>product_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="product_id"                data-endpoint="GETapi-v1-products--product_id-"
+               value="1"
+               data-component="query">
+    <br>
+<p>Product ID. Example: <code>1</code></p>
+            </div>
+                </form>
+
                                 <h2 id="product-product-rewards">Product Rewards</h2>
                                                     <h2 id="product-POSTapi-v1-products-checkout">Post Checkout</h2>
 
@@ -27358,6 +28418,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"fiat_payment_method\": \"fpx\\/card\",
     \"card_id\": 1,
     \"quantity\": 1,
+    \"referral_code\": \"vero\",
     \"wallet_type\": \"TNG\\/FPX-CIMB\"
 }"
 </code></pre></div>
@@ -27380,6 +28441,7 @@ let body = {
     "fiat_payment_method": "fpx\/card",
     "card_id": 1,
     "quantity": 1,
+    "referral_code": "vero",
     "wallet_type": "TNG\/FPX-CIMB"
 };
 
@@ -27568,6 +28630,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="body">
     <br>
 <p>Quantity. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>referral_code</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="referral_code"                data-endpoint="POSTapi-v1-products-checkout"
+               value="vero"
+               data-component="body">
+    <br>
+<p>Example: <code>vero</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>wallet_type</code></b>&nbsp;&nbsp;
@@ -28175,7 +29248,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"store_ids\": \"dolorem\"
+    \"store_ids\": \"incidunt\"
 }"
 </code></pre></div>
 
@@ -28192,7 +29265,7 @@ const headers = {
 };
 
 let body = {
-    "store_ids": "dolorem"
+    "store_ids": "incidunt"
 };
 
 fetch(url, {
@@ -28322,10 +29395,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="store_ids"                data-endpoint="GETapi-v1-stores-followings_been_here"
-               value="dolorem"
+               value="incidunt"
                data-component="body">
     <br>
-<p>Example: <code>dolorem</code></p>
+<p>Example: <code>incidunt</code></p>
         </div>
         </form>
 
@@ -28479,7 +29552,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"store_ids\": \"eveniet\"
+    \"store_ids\": \"delectus\"
 }"
 </code></pre></div>
 
@@ -28496,7 +29569,7 @@ const headers = {
 };
 
 let body = {
-    "store_ids": "eveniet"
+    "store_ids": "delectus"
 };
 
 fetch(url, {
@@ -28618,10 +29691,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="store_ids"                data-endpoint="GETapi-v1-stores-locations"
-               value="eveniet"
+               value="delectus"
                data-component="body">
     <br>
-<p>Example: <code>eveniet</code></p>
+<p>Example: <code>delectus</code></p>
         </div>
         </form>
 
@@ -28644,7 +29717,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"location_id\": \"aliquam\"
+    \"location_id\": \"provident\"
 }"
 </code></pre></div>
 
@@ -28661,7 +29734,7 @@ const headers = {
 };
 
 let body = {
-    "location_id": "aliquam"
+    "location_id": "provident"
 };
 
 fetch(url, {
@@ -28783,10 +29856,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="location_id"                data-endpoint="GETapi-v1-stores-stores_by_location"
-               value="aliquam"
+               value="provident"
                data-component="body">
     <br>
-<p>Example: <code>aliquam</code></p>
+<p>Example: <code>provident</code></p>
         </div>
         </form>
 
@@ -30169,10 +31242,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="contacts.0.country_code"                data-endpoint="POSTapi-v1-user-import-contacts"
-               value="ab"
+               value="earum"
                data-component="body">
     <br>
-<p>Example: <code>ab</code></p>
+<p>Example: <code>earum</code></p>
                     </div>
                                                                 <div style="margin-left: 14px; clear: unset;">
                         <b style="line-height: 2;"><code>phone_no</code></b>&nbsp;&nbsp;
@@ -30180,10 +31253,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="contacts.0.phone_no"                data-endpoint="POSTapi-v1-user-import-contacts"
-               value="corrupti"
+               value="qui"
                data-component="body">
     <br>
-<p>Example: <code>corrupti</code></p>
+<p>Example: <code>qui</code></p>
                     </div>
                                     </details>
         </div>
@@ -30519,7 +31592,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 2
+    \"user_id\": 20
 }"
 </code></pre></div>
 
@@ -30536,7 +31609,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 2
+    "user_id": 20
 };
 
 fetch(url, {
@@ -30663,10 +31736,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-follow"
-               value="2"
+               value="20"
                data-component="body">
     <br>
-<p>The id of the user to follow Example: <code>2</code></p>
+<p>The id of the user to follow Example: <code>20</code></p>
         </div>
         </form>
 
@@ -30689,7 +31762,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 19
+    \"user_id\": 20
 }"
 </code></pre></div>
 
@@ -30706,7 +31779,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 19
+    "user_id": 20
 };
 
 fetch(url, {
@@ -30824,10 +31897,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-unfollow"
-               value="19"
+               value="20"
                data-component="body">
     <br>
-<p>The id of the user to unfollow Example: <code>19</code></p>
+<p>The id of the user to unfollow Example: <code>20</code></p>
         </div>
         </form>
 
@@ -30850,7 +31923,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 6
+    \"user_id\": 20
 }"
 </code></pre></div>
 
@@ -30867,7 +31940,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 6
+    "user_id": 20
 };
 
 fetch(url, {
@@ -30985,10 +32058,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-request_follow-accept"
-               value="6"
+               value="20"
                data-component="body">
     <br>
-<p>The id of the user to accept follow request Example: <code>6</code></p>
+<p>The id of the user to accept follow request Example: <code>20</code></p>
         </div>
         </form>
 
@@ -31011,7 +32084,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 10
+    \"user_id\": 16
 }"
 </code></pre></div>
 
@@ -31028,7 +32101,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 10
+    "user_id": 16
 };
 
 fetch(url, {
@@ -31137,10 +32210,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-request_follow-reject"
-               value="10"
+               value="16"
                data-component="body">
     <br>
-<p>The id of the user to reject follow request Example: <code>10</code></p>
+<p>The id of the user to reject follow request Example: <code>16</code></p>
         </div>
         </form>
 
@@ -31467,9 +32540,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"user_id\": 1,
-    \"reason\": \"ipsum\",
-    \"violation_level\": \"odio\",
-    \"violation_type\": \"quasi\",
+    \"reason\": \"consequuntur\",
+    \"violation_level\": \"suscipit\",
+    \"violation_type\": \"distinctio\",
     \"also_block_user\": true
 }"
 </code></pre></div>
@@ -31488,9 +32561,9 @@ const headers = {
 
 let body = {
     "user_id": 1,
-    "reason": "ipsum",
-    "violation_level": "odio",
-    "violation_type": "quasi",
+    "reason": "consequuntur",
+    "violation_level": "suscipit",
+    "violation_type": "distinctio",
     "also_block_user": true
 };
 
@@ -31625,10 +32698,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="reason"                data-endpoint="POSTapi-v1-user-report"
-               value="ipsum"
+               value="consequuntur"
                data-component="body">
     <br>
-<p>Example: <code>ipsum</code></p>
+<p>Example: <code>consequuntur</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_level</code></b>&nbsp;&nbsp;
@@ -31636,10 +32709,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_level"                data-endpoint="POSTapi-v1-user-report"
-               value="odio"
+               value="suscipit"
                data-component="body">
     <br>
-<p>The violation level of this report Example: <code>odio</code></p>
+<p>The violation level of this report Example: <code>suscipit</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_type</code></b>&nbsp;&nbsp;
@@ -31647,10 +32720,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_type"                data-endpoint="POSTapi-v1-user-report"
-               value="quasi"
+               value="distinctio"
                data-component="body">
     <br>
-<p>The violation type of this report Example: <code>quasi</code></p>
+<p>The violation type of this report Example: <code>distinctio</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>also_block_user</code></b>&nbsp;&nbsp;
@@ -32604,7 +33677,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_ids\": \"deleniti\"
+    \"user_ids\": \"et\"
 }"
 </code></pre></div>
 
@@ -32621,7 +33694,7 @@ const headers = {
 };
 
 let body = {
-    "user_ids": "deleniti"
+    "user_ids": "et"
 };
 
 fetch(url, {
@@ -32742,10 +33815,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="user_ids"                data-endpoint="GETapi-v1-users_by_id"
-               value="deleniti"
+               value="et"
                data-component="body">
     <br>
-<p>Example: <code>deleniti</code></p>
+<p>Example: <code>et</code></p>
         </div>
         </form>
 
@@ -33218,8 +34291,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "country_id=1" \
     --form "state_id=1" \
     --form "category_ids[]=1" \
-    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phphGeGEt" \
-    --form "cover=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpaqvg5L" </code></pre></div>
+    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpXiRbrZ" \
+    --form "cover=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpZH9OfZ" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -33514,7 +34587,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>One image file to upload,Avatar of the user (Required if update_type is 'avatar'). Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phphGeGEt</code></p>
+<p>One image file to upload,Avatar of the user (Required if update_type is 'avatar'). Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpXiRbrZ</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>cover</code></b>&nbsp;&nbsp;
@@ -33525,7 +34598,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>One image file to upload,Cover of the user (Required if update_type is 'cover'). Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpaqvg5L</code></p>
+<p>One image file to upload,Cover of the user (Required if update_type is 'cover'). Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpZH9OfZ</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>category_ids</code></b>&nbsp;&nbsp;
@@ -35309,7 +36382,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpOmGrWM" </code></pre></div>
+    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php7rdddk" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -35446,7 +36519,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpOmGrWM</code></p>
+<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php7rdddk</code></p>
         </div>
         </form>
 
@@ -35468,7 +36541,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "cover=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php5VajwV" </code></pre></div>
+    --form "cover=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpBhqAYl" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -35605,7 +36678,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php5VajwV</code></p>
+<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpBhqAYl</code></p>
         </div>
         </form>
 
