@@ -217,24 +217,45 @@ class CreateStore extends CreateRecord
             $long = isset($data['long']) && $data['long'] !== 0 ? $data['long'] : null;
 
             if ($lang && $long) {
+                $existingLoc = null;
                 $existingLocation = Location::where('lat', $lang)
                     ->where('lng', $long)
-                    ->where('is_mall', 0)
-                    ->first();
+                    ->get();
+                    // ->where('is_mall', 0)
+                    // ->first();
 
                 if ($existingLocation) {
-                    // Update the record
-                    $existingLocation->update([
+                    foreach($existingLocation as $keys => $loc){
+                        //  By default, the first location is not set to a mall (Mainly for landscape location). If it is a mall, it will be skipped, and the location will be assigned based on the name.
+                        if($keys == 0 && $loc->is_mall == 0){
+                            $existingLoc = $loc;
+                        }
+
+                        //  Calculate the percentage of similar both text
+                        similar_text(strtolower($data['name']), strtolower($loc->name), $percentage);
+
+                        if ($loc && (strtolower($data['name']) == strtolower($loc->name) || $percentage > 90)) {
+                            $existingLoc = $loc;
+                            break;
+                        }
+                    }
+                }
+
+                if(!empty($existingLoc)) {
+                    $existingLoc->update([
                         'name' => $data['name'],
                         'address' => $data['address'] ?? '',
                         'zip_code' => $data['address_postcode'] ?? '',
                         'city' => $data['city'] ?? '',
                         'state_id' => $data['state_id'],
                         'country_id' => $data['country_id'],
+                        'is_mall' => $data['is_mall']
                     ]);
+
+                    $location = $existingLoc; // Assign updated location to $location
                 } else {
                     // Insert a new record
-                    Location::create([
+                    $location = Location::create([
                         'lat' => $lang,
                         'lng' => $long,
                         'name' => $data['name'],
@@ -243,14 +264,9 @@ class CreateStore extends CreateRecord
                         'city' => $data['city'] ?? '',
                         'state_id' => $data['state_id'],
                         'country_id' => $data['country_id'],
-                        'is_mall' => 0, // Add the default value
+                        'is_mall' => $data['is_mall'], // Add the default value
                     ]);
                 }
-
-                // Fetch the location record to attach it
-                $location = Location::where('lat', $lang)
-                    ->where('lng', $long)
-                    ->first();
 
                 // Attach the location to the record
                 if ($location) {
