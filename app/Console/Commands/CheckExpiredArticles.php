@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\ArticleExpired;
+use App\Models\ExpiredKeyword;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use App\Models\Article;
@@ -12,24 +14,31 @@ class CheckExpiredArticles extends Command
 	protected $signature = 'articles:check-expired';
 	protected $description = 'Check articles for expiry dates and update status';
 
-	private $keywords = [
-		'演唱会', 'Concert', '音乐会', 'Fiesta', '电影', 'Movie',
-		'新闻', 'News', '娱乐', 'Entertainment', '八卦', 'Gossip',
-		'节', 'Festive', 'Festival'
-	];
-
 	public function handle()
 	{
 		$this->info("Starting article expiry check...");
-		Log::info("Starting article expiry check...");
+		Log::info("[Check Expired Articles] Starting article expiry check...");
+
+		// Get active keywords from the database
+		$keywords = ExpiredKeyword::pluck('keyword')->toArray();
+
+		if (empty($keywords)) {
+			$this->warn("[Check Expired Articles] No active keywords found!");
+			Log::warning("[Check Expired Articles] No active keywords found!");
+			return;
+		}
 
 		$totalProcessed = 0;
 		$totalUpdated = 0;
 
+		// Get IDs of already processed articles
+		$processedArticleIds = ArticleExpired::pluck('article_id')->toArray();
+
 		Article::where('is_expired', false)
-			->where(function ($query) {
+			->whereNotIn('id', $processedArticleIds)
+			->where(function ($query) use ($keywords) {
 				$firstKeyword = true;
-				foreach ($this->keywords as $keyword) {
+				foreach ($keywords as $keyword) {
 					if ($firstKeyword) {
 						$query->where(function ($q) use ($keyword) {
 							$q->where('title', 'like', '%' . $keyword . '%')
@@ -44,28 +53,33 @@ class CheckExpiredArticles extends Command
 					}
 				}
 			})
-			->orderBy('created_at', 'desc')  // Order by latest first
 			->chunk(100, function ($articles) use (&$totalProcessed, &$totalUpdated) {
 				$this->info("Processing chunk of articles...");
 
 				foreach ($articles as $article) {
 					$totalProcessed++;
+					$isExpired = $this->checkForExpiry($article);
 
-					if ($this->checkForExpiry($article)) {
+					// Record the check in articles_expired table
+					ArticleExpired::create([
+						'article_id' => $article->id,
+						'processed_time' => Carbon::now(),
+						'is_expired' => $isExpired
+					]);
+
+					if ($isExpired) {
 						$article->update(['is_expired' => true]);
 						$totalUpdated++;
 					}
 				}
-
-				$this->info("Processed {$totalProcessed} articles so far...");
 			});
 
 		$this->info("Completed processing!");
 		$this->info("Total articles processed: {$totalProcessed}");
 		$this->info("Total articles updated: {$totalUpdated}");
-		Log::info("Completed processing!");
-		Log::info("Total articles processed: {$totalProcessed}");
-		Log::info("Total articles updated: {$totalUpdated}");
+		Log::info("[Check Expired Articles] Completed processing!");
+		Log::info("[Check Expired Articles] Total articles processed: {$totalProcessed}");
+		Log::info("[Check Expired Articles] Total articles updated: {$totalUpdated}");
 	}
 
 	private function checkForExpiry($article)
@@ -80,15 +94,10 @@ class CheckExpiredArticles extends Command
 
 		$currentDate = Carbon::now();
 
-		Log::info("Extracted dates for article ID {$article->id}:");
-		foreach ($dates as $date) {
-			Log::info($date->toDateString());
-		}
-
 		// Check if any extracted date is in the past
 		foreach ($dates as $date) {
 			if ($date->startOfDay()->lt($currentDate->startOfDay())) {
-				Log::info("Article ID {$article->id} marked as expired due to date: " . $date->toDateString());
+				Log::info("[Check Expired Articles] Article ID {$article->id} marked as expired due to date: " . $date->toDateString());
 				return true;
 			}
 		}
@@ -100,7 +109,7 @@ class CheckExpiredArticles extends Command
 	{
 		$dates = [];
 
-		// Match Chinese format with year FIRST (e.g., 2024年1月1日)
+		// Match Chinese format with year (e.g., 2024年1月1日)
 		preg_match_all('/(\d{4})年(\d{1,2})月(\d{1,2})日/', $content, $matches);
 		for ($i = 0; $i < count($matches[0]); $i++) {
 			try {
@@ -110,17 +119,6 @@ class CheckExpiredArticles extends Command
 				continue;
 			}
 		}
-
-		// Match Chinese format without year (e.g., 12月10日)
-//		preg_match_all('/(?<!\d{4}年)(\d{1,2})月(\d{1,2})日/', $content, $matches);
-//		for ($i = 0; $i < count($matches[0]); $i++) {
-//			try {
-//				$date = Carbon::create(date('Y'), $matches[1][$i], $matches[2][$i]);
-//				$dates[] = $date;
-//			} catch (\Exception $e) {
-//				continue;
-//			}
-//		}
 
 		// Match dd/mm/yyyy format (e.g. 12/10/2024)
 		preg_match_all('/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/', $content, $matches);
@@ -133,17 +131,6 @@ class CheckExpiredArticles extends Command
 			}
 		}
 
-		// Match dd/mm format (e.g., 12/10, assume current year)
-//		preg_match_all('/\b(\d{1,2})\/(\d{1,2})\b(?!\/\d{4})/', $content, $matches);
-//		for ($i = 0; $i < count($matches[0]); $i++) {
-//			try {
-//				$date = Carbon::createFromFormat('d/m/Y', $matches[1][$i] . '/' . $matches[2][$i] . '/' . date('Y'));
-//				$dates[] = $date;
-//			} catch (\Exception $e) {
-//				continue;
-//			}
-//		}
-
 		// Match dd-mm-yyyy format (e.g. 12-10-2024)
 		preg_match_all('/\b(\d{1,2})-(\d{1,2})-(\d{4})\b/', $content, $matches);
 		for ($i = 0; $i < count($matches[0]); $i++) {
@@ -154,17 +141,6 @@ class CheckExpiredArticles extends Command
 				continue;
 			}
 		}
-
-		// Match dd-mm format (e.g., 12-10, assume current year)
-//		preg_match_all('/\b(\d{1,2})-(\d{1,2})\b(?!-\d{4})/', $content, $matches);
-//		for ($i = 0; $i < count($matches[0]); $i++) {
-//			try {
-//				$date = Carbon::createFromFormat('d-m-Y', $matches[1][$i] . '-' . $matches[2][$i] . '-' . date('Y'));
-//				$dates[] = $date;
-//			} catch (\Exception $e) {
-//				continue;
-//			}
-//		}
 
 		return $dates;
 	}
