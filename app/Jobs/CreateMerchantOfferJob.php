@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class CreateMerchantOfferJob implements ShouldQueue
 {
@@ -82,5 +83,15 @@ class CreateMerchantOfferJob implements ShouldQueue
             ];
         }
         MerchantOfferVoucher::insert($voucherData);
+
+        // sync algolia
+        try {
+            $offer->refresh();
+            $offer->searchable();
+        } catch (\Exception $e) {
+            Log::error('[CreateMerchantOfferJob] Error syncing algolia', [
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 }
