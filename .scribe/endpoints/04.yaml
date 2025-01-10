@@ -106,7 +106,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer afkV4vDbEc68dZhg3156aeP'
+      - 'Bearer cPdvaVZkf5E436ge6h81bDa'
     controller: null
     method: null
     route: null
@@ -216,7 +216,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1fh84EPgab65dvecVD3k6Za'
+      - 'Bearer fca5aPZhVbek3vEg41D668d'
     controller: null
     method: null
     route: null
@@ -258,14 +258,14 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: dolorem
+        example: voluptate
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      store_ids: dolorem
+      store_ids: voluptate
     fileParameters: []
     responses:
       -
@@ -278,7 +278,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5bdE86agcDevVa6PZ1hk43f'
+      - 'Bearer 86hEek6Pd3vDa1gfcVZ4b5a'
     controller: null
     method: null
     route: null
@@ -321,7 +321,97 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e3Vvd4aEDa66khfZ8cbg15P'
+      - 'Bearer VPdb3fveDcaE856k14g6Zha'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/stores/find_by_location
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Check if store exists at given location'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      lat:
+        name: lat
+        description: 'optional Latitude coordinate.'
+        required: false
+        example: 3.139
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lng:
+        name: lng
+        description: 'optional Longitude coordinate.'
+        required: false
+        example: 101.6869
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      location_name:
+        name: location_name
+        description: 'optional Location name to search.'
+        required: false
+        example: '"KLCC"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      lat: 3.139
+      lng: 101.6869
+      location_name: '"KLCC"'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "exists": true,
+            "store": {
+              "id": 1,
+              "name": "Store Name",
+              ...
+            }
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Either coordinates (lat, lng) or location_name must be provided"
+          }
+        headers: []
+        description: error
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer afhd8b3e1gk6cDP4vEV65Za'
     controller: null
     method: null
     route: null
@@ -363,14 +453,14 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: eveniet
+        example: reiciendis
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      store_ids: eveniet
+      store_ids: reiciendis
     fileParameters: []
     responses:
       -
@@ -387,7 +477,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v4Ea3aDbV15c8hgde6Pk6fZ'
+      - 'Bearer 36P6e14b5EZfdkgV8Dcvaha'
     controller: null
     method: null
     route: null
@@ -429,14 +519,14 @@ endpoints:
         name: location_id
         description: ''
         required: true
-        example: aliquam
+        example: alias
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      location_id: aliquam
+      location_id: alias
     fileParameters: []
     responses:
       -
@@ -453,7 +543,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ea6aVgvc6Z53k84hbPEf1Dd'
+      - 'Bearer hEe5V61dkbc8PZ63a4gDfva'
     controller: null
     method: null
     route: null
@@ -585,7 +675,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vg8PdD6v43h1b6cekfaZa5E'
+      - 'Bearer b3VDZ6ahaE1vdfgeP6c5k84'
     controller: null
     method: null
     route: null
@@ -683,7 +773,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vgZd8k64V3ef1Da5bhPaEc6'
+      - 'Bearer Zfa8435a6EgDkd61PhcbVev'
     controller: null
     method: null
     route: null
@@ -749,7 +839,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pve5gZf6kEacb8364dha1DV'
+      - 'Bearer d6cPvha8bEV1Z65agkfD43e'
     controller: null
     method: null
     route: null
@@ -836,7 +926,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c8VgbEvh6afk63dZaDeP145'
+      - 'Bearer gbP8Zakcd6veafhED465V31'
     controller: null
     method: null
     route: null

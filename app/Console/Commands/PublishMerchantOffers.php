@@ -59,6 +59,17 @@ class PublishMerchantOffers extends Command
             Log::info('[PublishMerchantOffers] Merchant offer published', ['offer_id' => $offer->id]);
             $this->info('Merchant offer published: '.$offer->id);
         }
+
+        try {
+            // ensure all published merchant offers are searchable
+            MerchantOffer::where('status', MerchantOffer::STATUS_PUBLISHED)
+                ->chunk(100, function ($offers) {
+                    $offers->searchable();
+                });
+        } catch (\Exception $e) {
+            Log::error('[PublishMerchantOffers] Error sync merchant offers published scout', ['error'=> $e->getMessage()]);
+        }
+        
         return Command::SUCCESS;
     }
 }
