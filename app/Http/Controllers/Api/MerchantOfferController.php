@@ -1241,25 +1241,26 @@ class MerchantOfferController extends Controller
             'id' => 'required_if:sku,null|integer',
             'sku' => 'required_if:id,null',
         ]);
-
+    
         if ($request->has('id')) {
             $offer = MerchantOffer::where('id', $request->id)
                 ->published()
-                ->withCount(relations: 'unclaimedVouchers')
-                // ->where('available_for_web', true)
+                ->withCount('unclaimedVouchers') // ensure the count is loaded
                 ->first();
         } else {
             $offer = MerchantOffer::where('sku', $request->sku)
                 ->published()
-                ->withCount(relations: 'unclaimedVouchers')
-                // ->where('available_for_web', true)
+                ->withCount('unclaimedVouchers') // ensure the count is loaded
                 ->first();
         }
-
+    
         if (!$offer) {
             return response()->json(['message' => __('messages.error.merchant_offer_controller.Deal_not_found')], 404);
         }
-
+    
+        // override the unclaimed_vouchers_count with a live query so always get most up to date
+        $offer->unclaimed_vouchers_count = $offer->unclaimedVouchers()->count();
+    
         return response()->json([
             'offer' => new PublicMerchantOfferResource($offer)
         ]);
