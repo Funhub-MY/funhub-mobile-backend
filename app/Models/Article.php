@@ -178,7 +178,7 @@ class Article extends BaseModel implements HasMedia, Auditable
     public function shouldBeSearchable(): bool
     {
         // only if published and is public is searcheable
-        return $this->status === self::STATUS_PUBLISHED && $this->visibility === self::VISIBILITY_PUBLIC;
+        return $this->status === self::STATUS_PUBLISHED && $this->visibility === self::VISIBILITY_PUBLIC && $this->is_expired == false;
     }
 
     public function calculateInteractionScore()
