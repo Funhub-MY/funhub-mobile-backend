@@ -132,6 +132,21 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
 
         // load categories relationship
         $this->load('categories');
+
+        // get state from store->location
+        $states = [];
+        foreach ($this->stores as $store) {
+            $firstLocation = $store->location->first();
+            if ($firstLocation && isset($firstLocation->state)) {
+                $states[] = $firstLocation->state->name;
+            }
+        }
+
+        if (in_array('Selangor', $states) 
+        || in_array('Kuala Lumpur', $states)
+        || in_array('Wilayah Persekutuan Kuala Lumpur', $states)) {
+            $states[] = 'Klang Valley';
+        }
         
         return [
             'id' => $this->id,
@@ -146,6 +161,7 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
                     'name' => $this->user->name,
                 ] : null,
             ],
+            'states' => $states,
             'status' => $this->status,
             'name' => $this->name,
             'unit_price' => $this->unit_price,
