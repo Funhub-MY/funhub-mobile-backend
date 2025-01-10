@@ -136,7 +136,7 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
         return [
             'id' => $this->id,
             'sku' => $this->sku,
-            'merchant_id' => ($this->user) ? $this->user->merchant->id : null,
+            'merchant_id' => ($this->user && !empty($this->user->merchant)) ? $this->user->merchant->id : null,
             'stores' => $stores,
             'merchant' => [
                 'id' => ($this->user) ? $this->user->merchant->id : null,
