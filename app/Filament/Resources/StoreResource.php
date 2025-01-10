@@ -257,6 +257,11 @@ class StoreResource extends Resource
                             ->label('Is headquarter ?')
                             ->onIcon('heroicon-s-check-circle')
                             ->offIcon('heroicon-s-x-circle'),
+                        Forms\Components\Toggle::make('is_mall')
+                            ->label('Is Mall ?')
+                            ->onIcon('heroicon-s-check-circle')
+                            ->offIcon('heroicon-s-x-circle')
+                            ->hidden(fn($get) => $get('location_type') != 'googlemap'),
                         Forms\Components\Textarea::make('address')
                             ->disabled(fn($get) => $get('location_type') === 'existing')
                             ->required(),
