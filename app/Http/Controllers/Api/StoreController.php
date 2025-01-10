@@ -463,6 +463,65 @@ class StoreController extends Controller
     }
 
     /**
+     * Check if store exists at given location
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Stores
+     * @bodyParam lat float optional Latitude coordinate. Example: 3.1390
+     * @bodyParam lng float optional Longitude coordinate. Example: 101.6869
+     * @bodyParam location_name string optional Location name to search. Example: "KLCC"
+     * 
+     * @response scenario=success {
+     *   "exists": true,
+     *   "store": {
+     *     "id": 1,
+     *     "name": "Store Name",
+     *     ...
+     *   }
+     * }
+     * @response scenario=error {
+     *   "message": "Either coordinates (lat, lng) or location_name must be provided"
+     * }
+     */
+    public function getCheckLocationIsExistingStore(Request $request)
+    {
+        $query = Store::query()
+            ->with(['location']);
+
+        if ($request->has(['lat', 'lng'])) {
+            // search by coordinates
+            $lat = $request->input('lat');
+            $lng = $request->input('lng');
+            
+            $query->whereHas('location', function ($q) use ($lat, $lng) {
+                // Using exact match for coordinates
+                $q->where('lat', $lat)
+                    ->where('lng', $lng);
+            });
+        } elseif ($request->has('location_name')) {
+            // search by location name
+            $locationName = $request->input('location_name');
+            
+            $query->whereHas('location', function ($q) use ($locationName) {
+                $q->where('name', 'LIKE', '%' . $locationName . '%');
+            });
+        } else {
+            return response()->json([
+                'message' => 'Either coordinates (lat, lng) or location_name must be provided',
+            ], 422);
+        }
+
+        $store = $query->first();
+
+        return response()->json([
+            'exists' => !is_null($store),
+            'store' => $store ? new StoreResource($store) : null,
+        ]);
+    }
+
+    /**
      * Get Stores by Location ID
      *
      * @param Request $request

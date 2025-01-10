@@ -193,6 +193,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::get('/', [\App\Http\Controllers\Api\StoreController::class, 'index']);
             Route::get('/followings_been_here', [\App\Http\Controllers\Api\StoreController::class, 'getStoresFollowingBeenHere']);
             Route::get('/rating_categories', [\App\Http\Controllers\Api\StoreController::class, 'getRatingCategories']);
+            Route::get('/find_by_location', [\App\Http\Controllers\Api\StoreController::class, 'getCheckLocationIsExistingStore']);
             Route::get('/locations', [\App\Http\Controllers\Api\StoreController::class, 'getStoresLocationsByStoreId']);
             Route::get('/stores_by_location', [\App\Http\Controllers\Api\StoreController::class, 'getStoreByLocationId']);
             Route::get('/{store}/ratings', [\App\Http\Controllers\Api\StoreController::class, 'getRatings']);
