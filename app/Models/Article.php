@@ -351,6 +351,11 @@ class Article extends BaseModel implements HasMedia, Auditable
             ->withTimestamps();
     }
 
+	public function articleExpired()
+	{
+		return $this->hasOne(ArticleExpired::class, 'article_id');
+	}
+
     /**
      * Scope a query to only include published articles.
      */

@@ -31,11 +31,8 @@ class CheckExpiredArticles extends Command
 		$totalProcessed = 0;
 		$totalUpdated = 0;
 
-		// Get IDs of already processed articles
-		$processedArticleIds = ArticleExpired::pluck('article_id')->toArray();
-
 		Article::where('is_expired', false)
-			->whereNotIn('id', $processedArticleIds)
+			->doesntHave('articleExpired')
 			->where(function ($query) use ($keywords) {
 				$firstKeyword = true;
 				foreach ($keywords as $keyword) {
