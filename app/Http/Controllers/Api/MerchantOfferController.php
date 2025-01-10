@@ -150,14 +150,14 @@ class MerchantOfferController extends Controller
             $query->where('flash_deal', false);
         }
 
-        // get articles by city
+        // get offers by city
         if ($request->has('city')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->where('city', 'like', '%' . $request->city . '%');
             });
         }
 
-        // get articles by state
+        // get offers by state
         if ($request->has('state')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->whereHas('state', function($q) use ($request) {
@@ -172,7 +172,7 @@ class MerchantOfferController extends Controller
             });
         }
 
-        // get articles by lat, lng
+        // get offers by lat, lng
         if ($request->has('lat') && $request->has('lng')) {
             $radius = $request->has('radius') ? $request->radius : 10000; // 10km default
             // get article where article->location lat,lng is within the radius
@@ -1392,14 +1392,14 @@ class MerchantOfferController extends Controller
             $query->where('flash_deal', false);
         }
 
-        // get articles by city
+        // get offers by city
         if ($request->has('city')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->where('city', 'like', '%' . $request->city . '%');
             });
         }
 
-        // get articles by state
+        // get offers by state
         if ($request->has('state')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->whereHas('state', function($q) use ($request) {
@@ -1411,21 +1411,6 @@ class MerchantOfferController extends Controller
         if ($request->has('merchant_id')) {
             $query->whereHas('merchant', function ($query) use ($request) {
                 $query->where('id', $request->merchant_id);
-            });
-        }
-
-        // get articles by lat, lng
-        if ($request->has('lat') && $request->has('lng')) {
-            $radius = $request->has('radius') ? $request->radius : 10000; // 10km default
-            // get article where article->location lat,lng is within the radius
-            $query->whereHas('location', function ($query) use ($request, $radius) {
-                $query->selectRaw('( 6371 * acos( cos( radians(?) ) *
-                    cos( radians( lat ) )
-                    * cos( radians( lng ) - radians(?)
-                    ) + sin( radians(?) ) *
-                    sin( radians( lat ) ) )
-                    ) AS distance', [$request->lat, $request->lng, $request->lat])
-                    ->havingRaw("distance < ?", [$radius]);
             });
         }
 
