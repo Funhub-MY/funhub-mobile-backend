@@ -83,12 +83,23 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
     {
         $geolocs = null;
         $stores = null;
+        $ratings = 0;
+        $score = 0;
+        
         if ($this->stores()->count() > 0) {
             $geolocs = [];
             $stores = [];
-            // load store location
-            $this->stores->load('location');
+            // load store location and ratings
+            $this->stores->load(['location', 'storeRatings']);
+            $totalRating = 0;
+            $storeCount = 0;
+            
             foreach ($this->stores as $store) {
+                // calculate average rating for this store
+                $storeRating = $store->storeRatings()->avg('rating') ?? 0;
+                $totalRating += $storeRating;
+                $storeCount++;
+                
                 // dont repeat if $stores already have same id
                 if (!in_array($store->id, array_column($stores, 'id'))) {
                     $stores[] = [
@@ -105,6 +116,18 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
                     ];
                 }
             }
+            
+            // calculate average rating across all stores
+            $ratings = $storeCount > 0 ? round($totalRating / $storeCount, 1) : 0;
+            
+            // calculate discount rate
+            $discountRate = 0;
+            if ($this->fiat_price > 0 && $this->discounted_fiat_price > 0) {
+                $discountRate = round((($this->fiat_price - $this->discounted_fiat_price) / $this->fiat_price) * 100, 1);
+            }
+            
+            // calculate final score (ratings + discount rate)
+            $score = $ratings + $discountRate;
         }
 
         // load categories relationship
@@ -125,7 +148,6 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             ],
             'status' => $this->status,
             'name' => $this->name,
-            // 'description' => $this->description,
             'unit_price' => $this->unit_price,
             'available_at' => $this->available_at,
             'available_until' => $this->available_until,
@@ -138,6 +160,8 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             'updated_at_diff' => $this->updated_at->diffForHumans(),
             'category_ids' => $this->categories->pluck('id')->toArray(),
             '_geoloc' => $geolocs,
+            'score' => $score,
+            'ratings' => $ratings,
         ];
     }
 
