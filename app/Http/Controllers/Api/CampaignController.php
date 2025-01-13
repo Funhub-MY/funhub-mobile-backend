@@ -26,7 +26,7 @@ class CampaignController extends Controller
      */
     public function getActiveCampaigns()
     {
-        $campaigns = Campaign::where('is_active', true)->get();
+        $campaigns = Campaign::where('is_active', true)->orderBy('order', 'asc')->get();
 
         return response()->json([
             'has_active_campaign' => ($campaigns->count() > 0) ? true : false,
