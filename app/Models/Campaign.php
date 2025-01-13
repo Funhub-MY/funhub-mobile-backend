@@ -18,6 +18,7 @@ class Campaign extends BaseModel implements HasMedia, Auditable
     const MEDIA_COLLECTION_NAME = 'campaign_gallery';
     const BANNER_COLLECTION = 'campaign_banners';
     const ICON_COLLECTION = 'campaign_icons';
+    const EVENT_COLLECTION = 'campaign_event_banners';
 
     public function questions()
     {
