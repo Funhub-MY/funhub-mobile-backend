@@ -85,7 +85,8 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
         $stores = null;
         $ratings = 0;
         $score = 0;
-        
+        $discountRate = 0;
+
         if ($this->stores()->count() > 0) {
             $geolocs = [];
             $stores = [];
@@ -121,7 +122,6 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             $ratings = $storeCount > 0 ? round($totalRating / $storeCount, 1) : 0;
             
             // calculate discount rate
-            $discountRate = 0;
             if ($this->fiat_price > 0 && $this->discounted_fiat_price > 0) {
                 $discountRate = round((($this->fiat_price - $this->discounted_fiat_price) / $this->fiat_price) * 100, 1);
             }
@@ -176,6 +176,7 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             'updated_at_diff' => $this->updated_at->diffForHumans(),
             'category_ids' => $this->categories->pluck('id')->toArray(),
             '_geoloc' => $geolocs,
+            'discount_rate' => $discountRate,
             'score' => $score,
             'ratings' => $ratings,
         ];
