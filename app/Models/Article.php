@@ -178,7 +178,7 @@ class Article extends BaseModel implements HasMedia, Auditable
     public function shouldBeSearchable(): bool
     {
         // only if published and is public is searcheable
-        return $this->status === self::STATUS_PUBLISHED && $this->visibility === self::VISIBILITY_PUBLIC;
+        return $this->status === self::STATUS_PUBLISHED && $this->visibility === self::VISIBILITY_PUBLIC && $this->is_expired == false;
     }
 
     public function calculateInteractionScore()
@@ -350,6 +350,11 @@ class Article extends BaseModel implements HasMedia, Auditable
         return $this->belongsToMany(SearchKeyword::class, 'search_keywords_articles', 'article_id', 'search_keyword_id')
             ->withTimestamps();
     }
+
+	public function articleExpired()
+	{
+		return $this->hasOne(ArticleExpired::class, 'article_id');
+	}
 
     /**
      * Scope a query to only include published articles.
