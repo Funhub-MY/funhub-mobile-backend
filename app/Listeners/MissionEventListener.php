@@ -24,13 +24,13 @@ class MissionEventListener
 
     // spam detection thresholds
     const INTERACTION_SPAM_LIMIT = 3;
-    const INTERACTION_SPAM_WINDOW = 5; // minutes
+    const INTERACTION_SPAM_WINDOW = 10; // minutes
     
     const FOLLOW_SPAM_LIMIT = 2;
     const FOLLOW_SPAM_WINDOW = 10; // minutes
     
     const COMMENT_SPAM_LIMIT = 5;
-    const COMMENT_SPAM_WINDOW = 5; // minutes
+    const COMMENT_SPAM_WINDOW = 10; // minutes
     
     const COMMENT_COOLDOWN = 30; // seconds
 
@@ -86,6 +86,10 @@ class MissionEventListener
             return;
         }
 
+        if ($this->isOwnArticleInteraction($event)) {
+            return;
+        }
+
         $eventType = $this->mapInteractionToEventType($interaction);
         if ($eventType) {
             $this->missionService->handleEvent($eventType, $user, ['interaction' => $interaction]);
@@ -116,12 +120,16 @@ class MissionEventListener
             return;
         }
 
+        if ($this->isOwnArticleInteraction($event)) {
+            return;
+        }
+
         $this->missionService->handleEvent('comment_created', $event->comment->user);
     }
 
     protected function handleCommentLiked(CommentLiked $event): void
     {
-        if ($event->liked) {
+        if ($event->liked && !$this->isOwnArticleInteraction($event)) {
             $this->missionService->handleEvent('like_comment', $event->user);
         }
     }
@@ -265,5 +273,26 @@ class MissionEventListener
         return Comment::where('user_id', $user->id)
             ->where('created_at', '>=', $spamThreshold)
             ->count() > self::COMMENT_SPAM_LIMIT;
+    }
+
+    /**
+     * Check if interaction/comment is on user's own article or own comment
+     */
+    protected function isOwnArticleInteraction($event): bool
+    {
+        if ($event instanceof InteractionCreated) {
+            $interactable = $event->interaction->interactable;
+            if ($interactable instanceof Article) {
+                return $interactable->user_id === $event->interaction->user_id;
+            }
+        } elseif ($event instanceof CommentCreated) {
+            $commentable = $event->comment->commentable;
+            if ($commentable instanceof Article) {
+                return $commentable->user_id === $event->comment->user_id;
+            }
+        } elseif ($event instanceof CommentLiked && $event->liked) {
+            return $event->comment->user_id === $event->user->id;
+        }
+        return false;
     }
 }
