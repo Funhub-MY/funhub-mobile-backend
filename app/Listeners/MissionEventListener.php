@@ -212,7 +212,7 @@ class MissionEventListener
         }
 
         // set a cooldown period for this interaction
-        Cache::put($cacheKey, true, now()->addMinutes(config('app.missions_spam_threshold', 1)));
+        Cache::put($cacheKey, true, now()->addMinutes(config('app.missions_spam_threshold', 10)));
 
         // also check database for historical spam patterns
         $spamThreshold = now()->subMinutes(self::INTERACTION_SPAM_WINDOW);
@@ -236,7 +236,7 @@ class MissionEventListener
             return true;
         }
 
-        Cache::put($cacheKey, true, now()->addMinutes(config('app.missions_spam_threshold', 1)));
+        Cache::put($cacheKey, true, now()->addMinutes(config('app.missions_spam_threshold', 10)));
 
         $spamThreshold = now()->subMinutes(self::FOLLOW_SPAM_WINDOW);
         
