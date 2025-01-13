@@ -92,26 +92,106 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Article::published();
+        $query = Article::query()
+            ->select([
+                'articles.id',
+                'articles.title',
+                'articles.type',
+                'articles.slug',
+                'articles.excerpt',
+                'articles.body',
+                'articles.status',
+                'articles.published_at',
+                'articles.user_id',
+                'articles.visibility',
+                'articles.created_at',
+                'articles.updated_at',
+                'articles.lang',
+                'articles.source'
+            ])
+            ->with([
+                'user:id,name,username',
+                'user.media' => function($q) {
+                    $q->where('collection_name', 'avatar');
+                },
+                'categories' => function($q) {
+                    $q->select([
+                        'article_categories.id',
+                        'article_categories.name',
+                        'article_categories.name_translation',
+                        'article_categories.slug',
+                        'article_categories.cover_media_id',
+                        'article_categories.parent_id',
+                        'article_categories.is_featured',
+                        'article_categories.created_at',
+                        'article_categories.updated_at'
+                    ]);
+                },
+                'categories.media',
+                'subCategories' => function($q) {
+                    $q->select([
+                        'article_categories.id',
+                        'article_categories.name',
+                        'article_categories.name_translation',
+                        'article_categories.slug',
+                        'article_categories.cover_media_id',
+                        'article_categories.parent_id',
+                        'article_categories.is_featured',
+                        'article_categories.created_at',
+                        'article_categories.updated_at'
+                    ]);
+                },
+                'subCategories.media',
+                'media',
+                'tags:id,name',
+                'location' => function($q) {
+                    $q->select([
+                        'locations.id',
+                        'locations.name',
+                        'locations.city',
+                        'locations.city_id',
+                        'locations.lat',
+                        'locations.lng',
+                        'locations.address',
+                        'locations.address_2',
+                        'locations.zip_code',
+                        'locations.state_id',
+                        'locations.country_id'
+                    ])
+                    ->with(['ratings' => function($q) {
+                        $q->select([
+                            'location_ratings.id',
+                            'location_ratings.location_id',
+                            'location_ratings.user_id',
+                            'location_ratings.rating'
+                        ])
+                        ->from('location_ratings');
+                    }]);
+                }
+            ])
+            ->where('status', Article::STATUS_PUBLISHED);
 
+        // exclude own articles unless specified
         if (!$request->has('include_own_article') || $request->include_own_article == 0) {
-            $query->where('user_id', '!=', auth()->user()->id);
+            $query->where('user_id', '!=', auth()->id());
         }
 
-        // video only
-        if ($request->has('video_only') && $request->video_only == 1) {
+        // video only filter
+        if ($request->filled('video_only')) {
             $query->where('type', 'video');
         }
 
-        if ($request->has('category_ids')) {
-            $query->whereHas('categories', fn ($q) => $q->whereIn('article_categories.id', explode(',', $request->category_ids)));
+        // category filter using join instead of whereHas
+        if ($request->filled('category_ids')) {
+            $categoryIds = explode(',', $request->category_ids);
+            $query->join('articles_article_categories', 'articles.id', '=', 'articles_article_categories.article_id')
+                  ->whereIn('articles_article_categories.article_category_id', $categoryIds);
         }
 
-        // Handle build_recommendations alongside article_ids
-        if ($request->has('build_recommendations') && $request->build_recommendations == 1 && auth()->user()->has_article_personalization) {
-            // seed random with current timestamp for different results each time
+        // handle recommendations and article_ids
+        if ($request->filled('build_recommendations') && $request->build_recommendations == 1 && auth()->user()->has_article_personalization) {
             $timestamp = now()->timestamp;
-            $recommendedArticleIds = auth()->user()->articleRecommendations()
+            $recommendedIds = auth()->user()->articleRecommendations()
                 ->select('article_id')
                 ->orderByRaw('CASE WHEN last_viewed_at IS NULL THEN 0 ELSE 1 END')
                 ->orderByRaw("RAND($timestamp)")
@@ -119,153 +199,130 @@ class ArticleController extends Controller
                 ->pluck('article_id')
                 ->toArray();
 
-            if (!empty($recommendedArticleIds)) {
-                // use recommendations if available
-                $query->whereIn('id', $recommendedArticleIds);
-                // maintain the order of recommendations
-                $orderString = 'FIELD(id,' . implode(',', $recommendedArticleIds) . ')';
-                $query->orderByRaw($orderString);
-            } elseif ($request->has('article_ids')) {
-                // fall back to article_ids only if no recommendations
-                $query->whereIn('id', explode(',', $request->article_ids));
+            if (!empty($recommendedIds)) {
+                $query->whereIn('articles.id', $recommendedIds)
+                      ->orderByRaw('FIELD(articles.id,' . implode(',', $recommendedIds) . ')');
+            } elseif ($request->filled('article_ids')) {
+                $query->whereIn('articles.id', explode(',', $request->article_ids));
             }
-        } elseif ($request->has('article_ids')) {
-            // normal article_ids handling if no recommendations enabled
-            $query->whereIn('id', explode(',', $request->article_ids));
+        } elseif ($request->filled('article_ids')) {
+            $query->whereIn('articles.id', explode(',', $request->article_ids));
         }
 
-        if ($request->has('tag_ids')) {
+        // tag filter using join
+        if ($request->filled('tag_ids')) {
             $tagIds = explode(',', $request->tag_ids);
-            $articlesTags = ArticleTag::whereIn('id', $tagIds)->get();
-            $articlesTagsNames = $articlesTags->pluck('name')->unique()->toArray();
+            $tagNames = ArticleTag::whereIn('id', $tagIds)
+                ->pluck('name')
+                ->unique()
+                ->toArray();
 
-            $articlesTags = ArticleTag::whereIn('name', $articlesTagsNames)
-                ->with('articles')
-                ->get();
-
-            $articleIds = $articlesTags->pluck('articles')->flatten()->pluck('id')->toArray();
-            $query->whereIn('id', $articleIds);
+            $query->join('articles_article_tags', 'articles.id', '=', 'articles_article_tags.article_id')
+                  ->join('article_tags', 'articles_article_tags.article_tag_id', '=', 'article_tags.id')
+                  ->whereIn('article_tags.name', $tagNames);
         }
 
-        if ($request->has('following_only') && $request->following_only == 1) {
-            $myFollowings = auth()->user()->followings;
-
-            $query->whereHas('user', function ($query) use ($myFollowings) {
-                $query->whereIn('users.id', $myFollowings->pluck('id')->toArray());
-            });
+        // following filter using join
+        if ($request->filled('following_only') && $request->following_only == 1) {
+            $followingIds = auth()->user()->followings()->pluck('users.id')->toArray();
+            $query->whereIn('articles.user_id', $followingIds);
         }
 
+        // visibility filter
         if (!$request->has('following_only')) {
             $query->where('visibility', 'public');
         }
 
-        if ($request->has('city')) {
-            $query->whereHas('location', function ($query) use ($request) {
-                $query->where('city', 'like', '%' . $request->city . '%');
-            });
+        // city filter using join
+        if ($request->filled('city')) {
+            $query->join('article_locations', 'articles.id', '=', 'article_locations.article_id')
+                  ->join('locations', 'article_locations.location_id', '=', 'locations.id')
+                  ->where('locations.city', 'like', '%' . $request->city . '%');
         }
 
-        if ($request->has('city_id')) {
-            $query->whereHas('location', function ($query) use ($request) {
-                $query->where('city_id', $request->city_id);
-            });
+        // location and store filters
+        if ($request->filled('location_id')) {
+            $query->join('article_locations', 'articles.id', '=', 'article_locations.article_id')
+                  ->where('article_locations.location_id', $request->location_id);
         }
 
-        if ($request->has('location_id')) {
-            $query->whereHas('location', function ($query) use ($request) {
-                $query->where('locations.id', $request->location_id);
-            });
+        if ($request->filled('store_id')) {
+            $query->join('article_locations', 'articles.id', '=', 'article_locations.article_id')
+                  ->join('store_locations', function($join) use ($request) {
+                      $join->on('article_locations.location_id', '=', 'store_locations.location_id')
+                           ->where('store_locations.store_id', $request->store_id);
+                  });
         }
 
-        if ($request->has('store_id')) {
-            $locationIds = DB::table('locatables as article_locatables')
-                ->join('locatables as store_locatables', function ($join) use ($request) {
-                    $join->on('article_locatables.location_id', '=', 'store_locatables.location_id')
-                        ->where('store_locatables.locatable_type', Store::class)
-                        ->where('store_locatables.locatable_id', $request->store_id);
-                })
-                ->where('article_locatables.locatable_type', Article::class)
-                ->pluck('article_locatables.locatable_id');
-
-            $query->whereIn('articles.id', $locationIds)
-                ->public();
-        }
-
-        $this->filterArticlesBlockedOrHidden($query);
-
-        if (!$request->has('following_only')
-            && !$request->has('disable_home_conditions')
-            && !$request->has('tag_ids')
-            && !$request->has('location_id')) {
+        // home conditions
+        if (!$request->has('following_only') && !$request->has('disable_home_conditions') && 
+            !$request->has('tag_ids') && !$request->has('location_id')) {
             $query->where(function ($query) {
-                $query
-                ->has('user.articleFeedWhitelist')
-                ->orWhere('hidden_from_home', false);
+                $query->has('user.articleFeedWhitelist')
+                      ->orWhere('hidden_from_home', false);
             });
         }
 
-        if ($request->has('pinned_only') && $request->pinned_only == 1) {
-            $query->where('pinned_recommended', true);
-        } else {
-            $query->where('pinned_recommended', false);
+        // pinned articles
+        if ($request->filled('pinned_only')) {
+            $query->where('pinned_recommended', (bool)$request->pinned_only);
         }
 
-        if (!$request->has('lat') && !$request->has('lng')) {
-            // Only apply latest() if we're not using recommendations ordering
-            if (!($request->has('build_recommendations') && $request->build_recommendations == 1)) {
-                $query->latest();
-            }
-        }
+        // set chunk size based on limit
+        $limit = $request->input('limit', config('app.paginate_per_page', 10));
+        $chunkSize = min($limit, 50);
 
-        $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
+        // get paginated results with proper ordering
+        $data = $query->distinct()
+                      ->latest('articles.published_at')
+                      ->paginate($chunkSize);
 
-        $data = $query->with(
-                'media', 'imports', 'media.videoJob',
-                'categories', 'subCategories', 'tags',
-                'user', 'user.media',
-                'comments', 'interactions.user', 'interactions.user.media',
-                'location','location.state', 'location.country', 'location.ratings')
-            ->withCount('media', 'tags', 'views', 'userFollowings')
-            ->withCount(['userFollowers' => function ($query) {
-                $query->where('status', User::STATUS_ACTIVE);
-            }])
-            ->withCount(['comments' => function ($query) {
-                $query->whereNull('parent_id')
-                    ->whereHas('user' , function ($query) {
-                        $query->where('status', User::STATUS_ACTIVE);
-                    });
-            }])
-            ->with(['interactions' => function ($query) {
-                $query->whereHas('user', function ($query) {
-                    $query->where('status', User::STATUS_ACTIVE);
-                });
-            }])
-            ->paginate($paginatePerPage);
-
-        // Handle merchant offers
+        // handle merchant offers - optimized version with caching
         $locationIds = $data->pluck('location.0.id')->filter()->unique()->toArray();
 
-        $storesWithOffers = DB::table('locatables as store_locatables')
-            ->whereIn('store_locatables.location_id', $locationIds)
-            ->where('store_locatables.locatable_type', Store::class)
-            ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
-            ->join('merchant_offers', function ($join) {
-                $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
-                    ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
-                    ->where('merchant_offers.available_at', '<=', now())
-                    ->where('merchant_offers.available_until', '>=', now());
-            })
-            ->pluck('store_locatables.location_id')
-            ->unique();
+        if (!empty($locationIds)) {
+            // sort location ids to ensure consistent cache key
+            sort($locationIds);
+            $cacheKey = 'store_offers_locations_' . implode('_', $locationIds);
+            
+            // calculate seconds until midnight
+            $now = now();
+            $tomorrow = $now->copy()->addDay()->startOfDay();
+            $secondsUntilMidnight = $tomorrow->diffInSeconds($now);
 
-        $data->each(function ($article) use ($storesWithOffers) {
-            if ($article->location->isNotEmpty()) {
-                $articleLocationId = $article->location->first()->id;
-                $article->has_merchant_offer = $storesWithOffers->contains($articleLocationId);
-            } else {
+            // get locations with active merchant offers using cache
+            $storesWithOffers = cache()->remember($cacheKey, $secondsUntilMidnight, function() use ($locationIds) {
+                return DB::table('locatables as store_locatables')
+                    ->select('store_locatables.location_id')
+                    ->whereIn('store_locatables.location_id', $locationIds)
+                    ->where('store_locatables.locatable_type', Store::class)
+                    ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+                    ->join('merchant_offers', function ($join) {
+                        $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
+                            ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                            ->where('merchant_offers.available_at', '<=', now())
+                            ->where('merchant_offers.available_until', '>=', now());
+                    })
+                    ->distinct()
+                    ->pluck('store_locatables.location_id')
+                    ->unique();
+            });
+
+            // set has_merchant_offer flag
+            $data->each(function ($article) use ($storesWithOffers) {
+                if ($article->location->isNotEmpty()) {
+                    $articleLocationId = $article->location->first()->id;
+                    $article->has_merchant_offer = $storesWithOffers->contains($articleLocationId);
+                } else {
+                    $article->has_merchant_offer = false;
+                }
+            });
+        } else {
+            // if no locations, set all has_merchant_offer to false
+            $data->each(function ($article) {
                 $article->has_merchant_offer = false;
-            }
-        });
+            });
+        }
 
         return ArticleResource::collection($data);
     }
@@ -362,6 +419,8 @@ class ArticleController extends Controller
      * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @bodyParam include_own_article integer optional Include own article. Example: 1 or 0
      * @bodyParam limit integer optional Per Page Limit Override. Example: 10
+     * @bodyParam offset integer Offset Override. Example: 0
+     * @bodyParam video_only integer optional Filter by Videos. Example: 1 or 0
      *
      * @response scenario=success {
      * "data": [],
@@ -541,12 +600,61 @@ class ArticleController extends Controller
             'user.media' => function ($query) {
                 $query->lazy();
             },
-            'categories',
-            'subCategories',
+            'categories' => function($q) {
+                $q->select([
+                    'article_categories.id',
+                    'article_categories.name',
+                    'article_categories.name_translation',
+                    'article_categories.slug',
+                    'article_categories.cover_media_id',
+                    'article_categories.parent_id',
+                    'article_categories.is_featured',
+                    'article_categories.created_at',
+                    'article_categories.updated_at'
+                ]);
+            },
+            'categories.media',
+            'subCategories' => function($q) {
+                $q->select([
+                    'article_categories.id',
+                    'article_categories.name',
+                    'article_categories.name_translation',
+                    'article_categories.slug',
+                    'article_categories.cover_media_id',
+                    'article_categories.parent_id',
+                    'article_categories.is_featured',
+                    'article_categories.created_at',
+                    'article_categories.updated_at'
+                ]);
+            },
+            'subCategories.media',
             'media',
             'media.videoJob',
-            'tags',
-            'location',
+            'tags:id,name',
+            'location' => function($q) {
+                $q->select([
+                    'locations.id',
+                    'locations.name',
+                    'locations.city',
+                    'locations.city_id',
+                    'locations.lat',
+                    'locations.lng',
+                    'locations.address',
+                    'locations.address_2',
+                    'locations.zip_code',
+                    'locations.state_id',
+                    'locations.country_id'
+                ])
+                ->with(['ratings' => function($q) {
+                    $q->select([
+                        'location_ratings.id',
+                        'location_ratings.location_id',
+                        'location_ratings.user_id',
+                        'location_ratings.rating'
+                    ])
+                    ->from('location_ratings');
+                }]);
+            },
             'interactions' => function ($query) {
                 $query->whereHas('user', function ($query) {
                     $query->where('status', User::STATUS_ACTIVE);
@@ -610,6 +718,8 @@ class ArticleController extends Controller
      *     "current_page": 1,
      *   }
      * }
+     *
+     * @return \Illuminate\Http\Response
      */
     public function getTaggedUsersOfArticle(Request $request)
     {
@@ -1740,6 +1850,7 @@ class ArticleController extends Controller
             ->join('merchant_offers', function ($join) {
                 $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
                     ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                    ->where('available_for_web', true)
                     ->where('merchant_offers.available_at', '<=', now())
                     ->where('merchant_offers.available_until', '>=', now());
             })
@@ -1994,7 +2105,7 @@ class ArticleController extends Controller
         ->whereDoesntHave('hiddenUsers', function ($query) {
             $query->where('user_id', auth()->user()->id);
         })
-        ->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+        ->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
         ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowings')
         ->withCount(['userFollowers' => function ($query) {
             $query->where('status', User::STATUS_ACTIVE);
