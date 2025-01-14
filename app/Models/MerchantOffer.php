@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\BaseModel;
+use Carbon\Carbon;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -165,6 +166,8 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             'status' => $this->status,
             'name' => $this->name,
             'unit_price' => $this->unit_price,
+            'available_at_unix' => Carbon::parse($this->available_at)->unix(),
+            'available_until_unix' => Carbon::parse($this->available_until)->unix(),
             'available_at' => $this->available_at,
             'available_until' => $this->available_until,
             'quantity' => $this->quantity,
