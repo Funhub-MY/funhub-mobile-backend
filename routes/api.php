@@ -18,8 +18,6 @@ use App\Http\Controllers\PaymentController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-
 Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
     Route::get('public_user', [\App\Http\Controllers\Api\UserController::class, 'getProfileForPublicView']);
     Route::get('public_store', [\App\Http\Controllers\Api\StoreController::class, 'getPublicStorePublicView']);
@@ -41,6 +39,12 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::group(['prefix' => 'external'], function () {
             Route::get('locations', [\App\Http\Controllers\Api\LocationController::class, 'index']);
             Route::get('stores', [\App\Http\Controllers\Api\StoreController::class, 'index']);
+            Route::get('current_time', function (){
+                return response()->json([
+                    'unix_timestamp' => time(),
+                    'date_time' => date('Y-m-d H:i:s')
+                ]);
+            });
 
             //  Kenneth
             Route::get('merchants', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchants']);
