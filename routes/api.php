@@ -36,13 +36,6 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
     // app to app
     Route::middleware(['application.token'])->group(function() {
-        Route::get('current_time', function (){
-            return response()->json([
-                'unix_timestamp' => time(),
-                'date_time' => date('Y-m-d H:i:s')
-            ]);
-        });
-        
         Route::group(['prefix' => 'external'], function () {
             Route::get('locations', [\App\Http\Controllers\Api\LocationController::class, 'index']);
             Route::get('stores', [\App\Http\Controllers\Api\StoreController::class, 'index']);
@@ -85,6 +78,13 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
      * Authenticated routes
      */
     Route::group(['middleware' => ['auth:sanctum', 'checkStatus']],  function() {
+        Route::get('current_time', function (){
+            return response()->json([
+                'unix_timestamp' => time(),
+                'date_time' => date('Y-m-d H:i:s')
+            ]);
+        });
+        
         Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
         Route::post('user/complete-profile', [\App\Http\Controllers\Api\AuthController::class, 'postCompleteProfile']);
 
