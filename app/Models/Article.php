@@ -172,6 +172,11 @@ class Article extends BaseModel implements HasMedia, Auditable
                 'lat' => floatval($this->location->first()->lat),
                 'lng' => floatval($this->location->first()->lng)
             ] : null,
+            'has_abr' => $this->getMedia(self::MEDIA_COLLECTION_NAME)->filter(function($media) {
+                return $media->videoJob && 
+                       $media->videoJob->status === VideoJob::STATUS_COMPLETED && 
+                       isset($media->videoJob->results['playback_links']['abr']);
+            })->count() > 0 ? 1 : 0,
         ];
     }
 
