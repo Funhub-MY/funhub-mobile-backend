@@ -36,15 +36,16 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
     // app to app
     Route::middleware(['application.token'])->group(function() {
+        Route::get('current_time', function (){
+            return response()->json([
+                'unix_timestamp' => time(),
+                'date_time' => date('Y-m-d H:i:s')
+            ]);
+        });
+        
         Route::group(['prefix' => 'external'], function () {
             Route::get('locations', [\App\Http\Controllers\Api\LocationController::class, 'index']);
             Route::get('stores', [\App\Http\Controllers\Api\StoreController::class, 'index']);
-            Route::get('current_time', function (){
-                return response()->json([
-                    'unix_timestamp' => time(),
-                    'date_time' => date('Y-m-d H:i:s')
-                ]);
-            });
 
             //  Kenneth
             Route::get('merchants', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchants']);
