@@ -74,12 +74,12 @@ paths:
                 id:
                   type: integer
                   description: 'This field is required when <code>slug</code> is <code>null</code>.'
-                  example: 12
+                  example: 20
                   nullable: false
                 slug:
                   type: string
                   description: 'This field is required when <code>id</code> is <code>null</code>.'
-                  example: aspernatur
+                  example: est
                   nullable: false
     parameters:
       -
@@ -462,7 +462,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 1
+                  example: 16
                   nullable: false
                 reason:
                   type: string
@@ -472,12 +472,12 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: dolorem
+                  example: ipsam
                   nullable: false
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quidem
+                  example: magnam
                   nullable: false
                 article:
                   type: integer
@@ -649,7 +649,7 @@ paths:
                   type: array
                   description: 'Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - voluptas
+                    - inventore
                   items:
                     type: string
               required:
@@ -681,7 +681,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - qui
+                    - expedita
                   items:
                     type: string
                 category_ids:
@@ -771,7 +771,7 @@ paths:
                 keyword_id:
                   type: integer
                   description: 'The <code>id</code> of an existing record in the search_keywords table.'
-                  example: 19
+                  example: 14
                   nullable: false
               required:
                 - keyword_id
@@ -845,7 +845,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - voluptatum
+                    - qui
                   items:
                     type: string
                 category_ids:
@@ -1612,7 +1612,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: qui
+        example: harum
         required: true
         schema:
           type: string
@@ -1703,12 +1703,12 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: molestiae
+                  example: et
                   nullable: false
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: officiis
+                  example: est
                   nullable: false
               required:
                 - comment_id
@@ -2036,7 +2036,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: suscipit
+        example: repellendus
         required: true
         schema:
           type: string
@@ -2991,7 +2991,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: xryan@example.org
+                  example: nannie69@example.net
                   nullable: false
                 phone:
                   type: string
@@ -3085,7 +3085,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: omnis
+                  example: ullam
                   nullable: false
               required:
                 - username
@@ -3966,7 +3966,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: mollitia
+                  example: et
                   nullable: false
               required:
                 - share_code
@@ -3997,7 +3997,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1777
+                      line: 1796
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -4419,7 +4419,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1777
+                        line: 1796
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -4847,7 +4847,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: quidem
+                  example: doloribus
                   nullable: false
               required:
                 - share_code
@@ -4878,7 +4878,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                      line: 1285
+                      line: 1286
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5300,7 +5300,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                        line: 1285
+                        line: 1286
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5728,7 +5728,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: et
+                  example: veritatis
                   nullable: false
               required:
                 - share_code
@@ -5897,6 +5897,27 @@ paths:
         required: true
         schema:
           type: integer
+  /api/v1/current_time:
+    get:
+      summary: ''
+      operationId: getApiV1Current_time
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
   /api/v1/help/faqs:
     get:
       summary: 'Get All FAQs'
@@ -6056,7 +6077,7 @@ paths:
                 supportable_id:
                   type: integer
                   description: 'This field is required when <code>supportable</code> is present.'
-                  example: 18
+                  example: 9
                   nullable: false
                 category_id:
                   type: integer
@@ -6611,7 +6632,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - dicta
+                    - voluptates
                   items:
                     type: string
                 name:
@@ -6676,7 +6697,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - blanditiis
+                    - minus
                   items:
                     type: string
                 name:
@@ -7036,8 +7057,8 @@ paths:
                           created_at: '2025-01-06T07:50:49.000000Z'
                           updated_at: '2025-01-06T07:50:49.000000Z'
                           share_url: null
-                          created_at_diff: '3 days ago'
-                          updated_at_diff: '3 days ago'
+                          created_at_diff: '1 week ago'
+                          updated_at_diff: '1 week ago'
                       location: null
                       count:
                         likes: 0
@@ -7048,7 +7069,7 @@ paths:
                       created_at: '2024-11-21T03:26:28.000000Z'
                       updated_at: '2025-01-03T16:02:49.000000Z'
                       created_at_diff: '1 month ago'
-                      updated_at_diff: '6 days ago'
+                      updated_at_diff: '1 week ago'
                     -
                       id: 8488
                       sku: FujiyamaJapanese003-54-C001-5668
@@ -7166,7 +7187,7 @@ paths:
                       created_at: '2024-12-26T06:03:26.000000Z'
                       updated_at: '2025-01-05T16:04:19.000000Z'
                       created_at_diff: '2 weeks ago'
-                      updated_at_diff: '4 days ago'
+                      updated_at_diff: '1 week ago'
                     -
                       id: 7684
                       sku: Scoopsy001-68-C001-4920
@@ -7283,8 +7304,8 @@ paths:
                       categories: []
                       created_at: '2024-12-14T08:19:28.000000Z'
                       updated_at: '2025-01-07T04:20:11.000000Z'
-                      created_at_diff: '3 weeks ago'
-                      updated_at_diff: '2 days ago'
+                      created_at_diff: '1 month ago'
+                      updated_at_diff: '1 week ago'
                     -
                       id: 7629
                       sku: SoYoung001-49-C001-4865
@@ -7424,8 +7445,8 @@ paths:
                       categories: []
                       created_at: '2024-12-13T03:53:55.000000Z'
                       updated_at: '2025-01-05T16:04:02.000000Z'
-                      created_at_diff: '3 weeks ago'
-                      updated_at_diff: '4 days ago'
+                      created_at_diff: '1 month ago'
+                      updated_at_diff: '1 week ago'
                   links:
                     first: 'https://funhub-mobile-backend.test/api/v1/public_offers?page=1'
                     last: 'https://funhub-mobile-backend.test/api/v1/public_offers?page=1'
@@ -7573,8 +7594,8 @@ paths:
                             created_at: '2025-01-06T07:50:49.000000Z'
                             updated_at: '2025-01-06T07:50:49.000000Z'
                             share_url: null
-                            created_at_diff: '3 days ago'
-                            updated_at_diff: '3 days ago'
+                            created_at_diff: '1 week ago'
+                            updated_at_diff: '1 week ago'
                         location: null
                         count:
                           likes: 0
@@ -7585,7 +7606,7 @@ paths:
                         created_at: '2024-11-21T03:26:28.000000Z'
                         updated_at: '2025-01-03T16:02:49.000000Z'
                         created_at_diff: '1 month ago'
-                        updated_at_diff: '6 days ago'
+                        updated_at_diff: '1 week ago'
                       -
                         id: 8488
                         sku: FujiyamaJapanese003-54-C001-5668
@@ -7703,7 +7724,7 @@ paths:
                         created_at: '2024-12-26T06:03:26.000000Z'
                         updated_at: '2025-01-05T16:04:19.000000Z'
                         created_at_diff: '2 weeks ago'
-                        updated_at_diff: '4 days ago'
+                        updated_at_diff: '1 week ago'
                       -
                         id: 7684
                         sku: Scoopsy001-68-C001-4920
@@ -7820,8 +7841,8 @@ paths:
                         categories: []
                         created_at: '2024-12-14T08:19:28.000000Z'
                         updated_at: '2025-01-07T04:20:11.000000Z'
-                        created_at_diff: '3 weeks ago'
-                        updated_at_diff: '2 days ago'
+                        created_at_diff: '1 month ago'
+                        updated_at_diff: '1 week ago'
                       -
                         id: 7629
                         sku: SoYoung001-49-C001-4865
@@ -7961,8 +7982,8 @@ paths:
                         categories: []
                         created_at: '2024-12-13T03:53:55.000000Z'
                         updated_at: '2025-01-05T16:04:02.000000Z'
-                        created_at_diff: '3 weeks ago'
-                        updated_at_diff: '4 days ago'
+                        created_at_diff: '1 month ago'
+                        updated_at_diff: '1 week ago'
                     items:
                       type: object
                       properties:
@@ -8305,8 +8326,8 @@ paths:
                               created_at: '2025-01-06T07:50:49.000000Z'
                               updated_at: '2025-01-06T07:50:49.000000Z'
                               share_url: null
-                              created_at_diff: '3 days ago'
-                              updated_at_diff: '3 days ago'
+                              created_at_diff: '1 week ago'
+                              updated_at_diff: '1 week ago'
                           items:
                             type: object
                             properties:
@@ -8339,10 +8360,10 @@ paths:
                                 example: null
                               created_at_diff:
                                 type: string
-                                example: '3 days ago'
+                                example: '1 week ago'
                               updated_at_diff:
                                 type: string
-                                example: '3 days ago'
+                                example: '1 week ago'
                         location:
                           type: string
                           example: null
@@ -8375,7 +8396,7 @@ paths:
                           example: '1 month ago'
                         updated_at_diff:
                           type: string
-                          example: '6 days ago'
+                          example: '1 week ago'
                   links:
                     type: object
                     properties:
@@ -8602,7 +8623,7 @@ paths:
                 id:
                   type: integer
                   description: 'This field is required when <code>sku</code> is <code>null</code>.'
-                  example: 14
+                  example: 10
                   nullable: false
                 sku:
                   type: string
@@ -8667,13 +8688,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - voluptates
+            - rerum
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - voluptates
+              - rerum
             items:
               type: string
         -
@@ -8885,7 +8906,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - error
+                    - distinctio
                   items:
                     type: string
                 city:
@@ -9070,7 +9091,7 @@ paths:
                 referral_code:
                   type: string
                   description: ''
-                  example: quibusdam
+                  example: ut
                   nullable: true
                 wallet_type:
                   type: string
@@ -9298,6 +9319,60 @@ paths:
                   nullable: false
               required:
                 - merchant_user_id
+  /api/v1/merchant/offers/total_purchases:
+    get:
+      summary: 'Get Total Quantity of Purchased Offers by User'
+      operationId: getTotalQuantityOfPurchasedOffersByUser
+      description: ''
+      parameters:
+        -
+          in: query
+          name: from_date
+          description: 'optional Filter by claims created from this date (Y-m-d format).'
+          example: '2025-01-01'
+          required: false
+          schema:
+            type: string
+            description: 'optional Filter by claims created from this date (Y-m-d format).'
+            example: '2025-01-01'
+            nullable: false
+        -
+          in: query
+          name: to_date
+          description: 'optional Filter by claims created until this date (Y-m-d format).'
+          example: '2025-01-16'
+          required: false
+          schema:
+            type: string
+            description: 'optional Filter by claims created until this date (Y-m-d format).'
+            example: '2025-01-16'
+            nullable: false
+        -
+          in: query
+          name: status
+          description: 'optional Filter by claim status (1: Success, 2: Failed, 3: Awaiting Payment).'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by claim status (1: Success, 2: Failed, 3: Awaiting Payment).'
+            example: 1
+            nullable: false
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  total_quantity: 10
+                properties:
+                  total_quantity:
+                    type: integer
+                    example: 10
+      tags:
+        - Merchant
   '/api/v1/merchant/offers/{offer_id}':
     get:
       summary: 'Get Offer By ID'
@@ -9335,7 +9410,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: commodi
+        example: rerum
         required: true
         schema:
           type: string
@@ -10911,7 +10986,7 @@ paths:
                 referral_code:
                   type: string
                   description: ''
-                  example: tempore
+                  example: rerum
                   nullable: true
                 wallet_type:
                   type: string
@@ -10994,7 +11069,7 @@ paths:
         in: path
         name: product_id
         description: 'The ID of the product.'
-        example: magnam
+        example: ex
         required: true
         schema:
           type: string
@@ -11300,7 +11375,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: voluptate
+                  example: nostrum
                   nullable: false
               required:
                 - store_ids
@@ -11402,7 +11477,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: reiciendis
+                  example: nulla
                   nullable: false
               required:
                 - store_ids
@@ -11450,7 +11525,7 @@ paths:
                 location_id:
                   type: string
                   description: ''
-                  example: alias
+                  example: officiis
                   nullable: false
               required:
                 - location_id
@@ -12052,7 +12127,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 19
+                  example: 14
                   nullable: false
               required:
                 - user_id
@@ -12099,7 +12174,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 14
+                  example: 15
                   nullable: false
               required:
                 - user_id
@@ -12146,7 +12221,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 10
+                  example: 7
                   nullable: false
               required:
                 - user_id
@@ -12181,7 +12256,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 13
+                  example: 3
                   nullable: false
               required:
                 - user_id
@@ -12251,17 +12326,17 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: in
+                  example: quae
                   nullable: false
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: harum
+                  example: voluptas
                   nullable: false
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: exercitationem
+                  example: voluptas
                   nullable: false
                 also_block_user:
                   type: boolean
@@ -12535,7 +12610,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: dolores
+                  example: rerum
                   nullable: false
               required:
                 - user_ids
@@ -13536,7 +13611,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: male
+                  example: female
                   nullable: false
                   enum:
                     - male
@@ -13673,7 +13748,7 @@ paths:
                 last_lang:
                   type: string
                   description: ''
-                  example: en
+                  example: zh
                   nullable: false
                   enum:
                     - en

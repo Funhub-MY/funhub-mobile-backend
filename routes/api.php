@@ -177,6 +177,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::post('/cancel', [\App\Http\Controllers\Api\MerchantOfferController::class, 'postCancelTransaction']);
             Route::get('/my_claimed_offers', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getMyMerchantOffers']);
             Route::get('/last_purchase', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getLastPurchaseDateFromMerchantUser']);
+            Route::get('/total_purchases', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getOfferQuantityPurchasedByUser']);
             Route::get('/{offer_id}', [\App\Http\Controllers\Api\MerchantOfferController::class, 'show']);
 
         });

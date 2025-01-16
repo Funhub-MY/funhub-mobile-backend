@@ -42,7 +42,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cgea1fPvd86aZk4b6V3hED5'
+      - 'Bearer k8eah534dDPf16gc6vEbZVa'
     controller: null
     method: null
     route: null
@@ -86,7 +86,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z5f814PdgEVDka3cab6h6ev'
+      - 'Bearer be4V1ZvaPcdD65Ekf3gh86a'
     controller: null
     method: null
     route: null
@@ -167,7 +167,7 @@ endpoints:
         name: referral_code
         description: ''
         required: false
-        example: tempore
+        example: rerum
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -189,7 +189,7 @@ endpoints:
       fiat_payment_method: fpx/card
       card_id: 1
       quantity: 1
-      referral_code: tempore
+      referral_code: rerum
       wallet_type: TNG/FPX-CIMB
     fileParameters: []
     responses:
@@ -237,7 +237,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z3fkDV6v85baPEc4dh6ega1'
+      - 'Bearer 43a5d1e6E6PhkZ8DbavVgfc'
     controller: null
     method: null
     route: null
@@ -291,7 +291,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1PDc68dZ5fVvb3haa4gEe6k'
+      - 'Bearer 6fad35ZPhvV16akED4eg8cb'
     controller: null
     method: null
     route: null
@@ -318,14 +318,14 @@ endpoints:
         name: product_id
         description: 'The ID of the product.'
         required: true
-        example: magnam
+        example: ex
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      product_id: magnam
+      product_id: ex
     queryParameters:
       product_id:
         name: product_id
@@ -356,7 +356,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dg4E3aZkVaDePcvf165b6h8'
+      - 'Bearer b4fegZh35V61DakvdP68aEc'
     controller: null
     method: null
     route: null
