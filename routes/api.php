@@ -177,6 +177,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::post('/cancel', [\App\Http\Controllers\Api\MerchantOfferController::class, 'postCancelTransaction']);
             Route::get('/my_claimed_offers', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getMyMerchantOffers']);
             Route::get('/last_purchase', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getLastPurchaseDateFromMerchantUser']);
+            Route::get('/total_purchases', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getOfferQuantityPurchasedByUser']);
             Route::get('/{offer_id}', [\App\Http\Controllers\Api\MerchantOfferController::class, 'show']);
 
         });
@@ -196,11 +197,12 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         // Stores
         Route::prefix('/stores')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\StoreController::class, 'index']);
-            Route::get('/followings_been_here', [\App\Http\Controllers\Api\StoreController::class, 'getStoresFollowingBeenHere']);
+            Route::get('/following_been_here', [\App\Http\Controllers\Api\StoreController::class, 'getStoresFollowingBeenHere']);
             Route::get('/rating_categories', [\App\Http\Controllers\Api\StoreController::class, 'getRatingCategories']);
             Route::get('/find_by_location', [\App\Http\Controllers\Api\StoreController::class, 'getCheckLocationIsExistingStore']);
             Route::get('/locations', [\App\Http\Controllers\Api\StoreController::class, 'getStoresLocationsByStoreId']);
             Route::get('/stores_by_location', [\App\Http\Controllers\Api\StoreController::class, 'getStoreByLocationId']);
+            Route::get('/check_reviewed', [\App\Http\Controllers\Api\StoreController::class, 'getCheckUserReviewedStore']);
             Route::get('/{store}/ratings', [\App\Http\Controllers\Api\StoreController::class, 'getRatings']);
             Route::post('/{store}/ratings', [\App\Http\Controllers\Api\StoreController::class, 'postRatings']);
             Route::get('/{store}/menus', [\App\Http\Controllers\Api\StoreController::class, 'getMerchantMenus']);
@@ -265,6 +267,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
         // TODO: secure this route
         Route::get('users_by_id', [\App\Http\Controllers\Api\UserController::class, 'getUsersByIds']);
+        Route::get('user/statistics', action: [\App\Http\Controllers\Api\UserController::class, 'getUserStatistics']);
         Route::get('user/{user}', [\App\Http\Controllers\Api\UserController::class, 'show']);
 
         //user module consolidate api
@@ -274,6 +277,10 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::post('user', [\App\Http\Controllers\Api\UserController::class, 'postUpdateUserDetails']);
         Route::post('user/password', [\App\Http\Controllers\Api\UserController::class, 'postUpdatePassword']);
         Route::post('user/email', [\App\Http\Controllers\Api\UserController::class, 'postUpdateEmail']);
+
+        Route::prefix('user')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\UserController::class, 'index']);
+        });
 
         // Views
         Route::prefix('/views')->group(function () {

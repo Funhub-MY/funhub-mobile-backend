@@ -1503,6 +1503,50 @@ class MerchantOfferController extends Controller
         }
     }
 
+    /**
+     * Get Total Quantity of Purchased Offers by User
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Merchant
+     * @subgroup Merchant Offers
+     * @queryParam from_date string optional Filter by claims created from this date (Y-m-d format). Example: 2025-01-01
+     * @queryParam to_date string optional Filter by claims created until this date (Y-m-d format). Example: 2025-01-16
+     * @queryParam status integer optional Filter by claim status (1: Success, 2: Failed, 3: Awaiting Payment). Example: 1
+     * @response scenario=success {
+     *     "total_quantity": 10
+     * }
+     */
+    public function getOfferQuantityPurchasedByUser(Request $request) {
+        $query = MerchantOfferClaim::query()
+            ->where('user_id', auth()->id());
+
+        // filter by date range if provided
+        if ($request->has('from_date')) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+        if ($request->has('to_date')) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        // filter by status if provided, default to success status
+        $status = $request->get('status', MerchantOfferClaim::CLAIM_SUCCESS);
+        $query->where('status', $status);
+
+        $totalQuantity = $query->sum('quantity');
+
+        return response()->json([
+            'total_quantity' => (int) $totalQuantity
+        ]);
+    }
+
+    /**
+     * Process Encrypt
+     *
+     * @param array $data
+     * @return string
+     */
     public function processEncrypt($data) {
         $checkout_secret = config('app.funhub_checkout_secret');
 
@@ -1533,5 +1577,4 @@ class MerchantOfferController extends Controller
             return '';
         }
     }
-    
 }

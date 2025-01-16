@@ -106,7 +106,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cPdvaVZkf5E436ge6h81bDa'
+      - 'Bearer f51aE836DhbVeckda46gPZv'
     controller: null
     method: null
     route: null
@@ -216,7 +216,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fca5aPZhVbek3vEg41D668d'
+      - 'Bearer D1bvV64EZf63a8dgePhc5ak'
     controller: null
     method: null
     route: null
@@ -224,7 +224,7 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/stores/followings_been_here
+    uri: api/v1/stores/following_been_here
     metadata:
       groupName: Stores
       groupDescription: ''
@@ -258,14 +258,14 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: voluptate
+        example: iste
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      store_ids: voluptate
+      store_ids: iste
     fileParameters: []
     responses:
       -
@@ -278,7 +278,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 86hEek6Pd3vDa1gfcVZ4b5a'
+      - 'Bearer ZP1a6Ebfa8cdk3eD4vh65Vg'
     controller: null
     method: null
     route: null
@@ -321,7 +321,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VPdb3fveDcaE856k14g6Zha'
+      - 'Bearer aeb5V6hgDZf1P46vcE83akd'
     controller: null
     method: null
     route: null
@@ -411,7 +411,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer afhd8b3e1gk6cDP4vEV65Za'
+      - 'Bearer cavDkah6E64fVdZ5gbe381P'
     controller: null
     method: null
     route: null
@@ -453,14 +453,14 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: reiciendis
+        example: debitis
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      store_ids: reiciendis
+      store_ids: debitis
     fileParameters: []
     responses:
       -
@@ -477,7 +477,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 36P6e14b5EZfdkgV8Dcvaha'
+      - 'Bearer 5fV3ah6P6gebDa14c8ZkEvd'
     controller: null
     method: null
     route: null
@@ -519,14 +519,14 @@ endpoints:
         name: location_id
         description: ''
         required: true
-        example: alias
+        example: sunt
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      location_id: alias
+      location_id: sunt
     fileParameters: []
     responses:
       -
@@ -543,7 +543,68 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hEe5V61dkbc8PZ63a4gDfva'
+      - 'Bearer 8akagVe1ZDE46hP5cvb3f6d'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/stores/check_reviewed
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Check if User Has Reviewed Stores'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      store_ids:
+        name: store_ids
+        description: 'Comma separated store IDs to check.'
+        required: true
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      store_ids: '1,2,3'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "data": {
+                  "1": {
+                      "store_id": 1,
+                      "store_name": "Store Name",
+                      "has_reviewed": true,
+                      "last_reviewed_at": "2025-01-16 11:40:23"
+                  }
+              }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer PfbE1ad5Zvc3hVe6k6g8Da4'
     controller: null
     method: null
     route: null
@@ -675,7 +736,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b3VDZ6ahaE1vdfgeP6c5k84'
+      - 'Bearer 1vV68ga5acE634kdfPbheZD'
     controller: null
     method: null
     route: null
@@ -773,7 +834,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Zfa8435a6EgDkd61PhcbVev'
+      - 'Bearer 1bfd65c4aaZP6v8hVkge3ED'
     controller: null
     method: null
     route: null
@@ -839,7 +900,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d6cPvha8bEV1Z65agkfD43e'
+      - 'Bearer 668aZch5D4vVkdaEg3e1Pbf'
     controller: null
     method: null
     route: null
@@ -926,7 +987,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gbP8Zakcd6veafhED465V31'
+      - 'Bearer gfa6kZ84eD315dPvbVach6E'
     controller: null
     method: null
     route: null
