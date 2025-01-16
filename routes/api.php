@@ -202,11 +202,11 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::get('/find_by_location', [\App\Http\Controllers\Api\StoreController::class, 'getCheckLocationIsExistingStore']);
             Route::get('/locations', [\App\Http\Controllers\Api\StoreController::class, 'getStoresLocationsByStoreId']);
             Route::get('/stores_by_location', [\App\Http\Controllers\Api\StoreController::class, 'getStoreByLocationId']);
+            Route::get('/check_reviewed', [\App\Http\Controllers\Api\StoreController::class, 'getCheckUserReviewedStore']);
             Route::get('/{store}/ratings', [\App\Http\Controllers\Api\StoreController::class, 'getRatings']);
             Route::post('/{store}/ratings', [\App\Http\Controllers\Api\StoreController::class, 'postRatings']);
             Route::get('/{store}/menus', [\App\Http\Controllers\Api\StoreController::class, 'getMerchantMenus']);
             Route::get('/{store}/ratings/ratings_categories', [\App\Http\Controllers\Api\StoreController::class, 'getStoreRatingCategories']);
-            Route::get('/check_reviewed', [\App\Http\Controllers\Api\StoreController::class, 'getCheckUserReviewedStore']);
         });
 
         // Merchant Offer Categories
