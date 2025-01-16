@@ -1076,6 +1076,7 @@ class UserController extends Controller
      * @group User
      * @queryParam from_date string optional Filter by date from (Y-m-d format). Example: 2025-01-01
      * @queryParam to_date string optional Filter by date to (Y-m-d format). Example: 2025-01-16
+     * @queryParam product_id integer optional Filter by product_id. Example: 1
      *
      * @response scenario=success {
      *     "data": {
@@ -1091,7 +1092,8 @@ class UserController extends Controller
     {
         $userId = auth()->id();
         $query = ['user_id' => $userId]; // will be added to all queries below
-        
+        $product_id = $request->get('product_id', 1);
+
         // base query builder for date filtering
         $dateQuery = function ($query) use ($request) {
             if ($request->has('from_date')) {
@@ -1166,13 +1168,12 @@ class UserController extends Controller
             ->sum('quantity');
 
         // 5. count successful funcard purchases
+       
+
         $funcardPurchased = Transaction::where($query)
             ->where('status', Transaction::STATUS_SUCCESS)
             ->where('transactionable_type', Product::class)
-            ->whereHas('product', function ($query) {
-                $query->where('type', 'limited');
-                $query->where('sku', 'FUNCARD_GL_RM25');
-            })
+            ->where('transactionable_id', $product_id)
             ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
                 return $dateQuery($query);
             })

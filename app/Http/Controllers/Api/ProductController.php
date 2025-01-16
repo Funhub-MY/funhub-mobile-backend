@@ -112,7 +112,7 @@ class ProductController extends Controller
     }
 
     /**
-     * Get Total Quantity of Car Campaign Funcard purchased
+     * Get Total Quantity of Funcard purchased by user
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -120,8 +120,9 @@ class ProductController extends Controller
      * @group Product
      * @queryParam from_date string optional Filter by transaction created from this date (Y-m-d format). Example: 2025-01-01
      * @queryParam to_date string optional Filter by transaction created until this date (Y-m-d format). Example: 2025-01-16
+     * @queryParam product_id integer optional Filter by product_id. Example: 1
      * @response scenario=success {
-     *     "total_quantity": 10
+     *     "quantity": 10
      * }
      */
 
@@ -140,21 +141,20 @@ class ProductController extends Controller
             return $query;
         };
 
-        $quantity = Transaction::where($query)
+        // filter by status if provided, default to success product_id 1
+        $product_id = $request->get('product_id', 1);
+
+        $transaction = Transaction::where($query)
             ->where('status', Transaction::STATUS_SUCCESS)
             ->where('transactionable_type', Product::class)
-            ->whereHas('product', function ($query) {
-                $query->where('type', 'limited');
-                $query->where('sku', 'FUNCARD_GL_RM25'); // MUST FIXED THIS SKU, SO THE SYSTEM ABLE TO IDENTIFY
-            })
+            ->where('transactionable_id', $product_id)
             ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
                 return $dateQuery($query);
             })
             ->count();
 
-
         return response()->json([
-            'quantity' => (int) $quantity
+            'quantity' => (int) $transaction
         ]);
     }
 
