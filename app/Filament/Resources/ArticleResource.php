@@ -134,7 +134,7 @@ class ArticleResource extends Resource
                             // image upload for video thumbnail
                             FileUpload::make('video_thumbnail')
                                 ->label('Video Thumbnail')
-                                ->helperText('This image will be used as the thumbnail for the video')
+                                ->helperText('This image will be used as the thumbnail for the video (Max file size 4MB)')
                                 ->columnSpan('full')
                                 ->disk(function () {
                                     if (config('filesystems.default') === 's3') {
@@ -144,6 +144,8 @@ class ArticleResource extends Resource
                                 ->directory('filament-article-uploads')
                                 ->acceptedFileTypes(['image/*'])
                                 ->rules('image')
+								->required()
+								->maxSize(4096)
                                 ->hidden(fn (Closure $get) => $get('type') !== 'video')
                                 ->getUploadedFileUrlUsing(function ($file) {
                                     $disk = config('filesystems.default');
@@ -168,7 +170,8 @@ class ArticleResource extends Resource
                                 ->acceptedFileTypes(['video/*'])
                                 ->hidden(fn (Closure $get) => $get('type') !== 'video')
                                 ->rules('mimes:m4v,mp4,mov|max:'.config('app.max_size_per_video_kb'))
-                                ->getUploadedFileUrlUsing(function ($file) {
+								->required()
+								->getUploadedFileUrlUsing(function ($file) {
                                     $disk = config('filesystems.default');
 
                                     if (config('filesystems.default') === 's3') {
