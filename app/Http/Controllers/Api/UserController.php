@@ -1149,11 +1149,11 @@ class UserController extends Controller
 
         return response()->json([
             'data' => [
-                'articles_count' => $articlesCount,
-                'store_ratings_count' => $storeRatingsCount,
-                'vouchers_purchased' => $vouchersPurchased,
-                'vouchers_redeemed' => $vouchersRedeemed,
-                'products_purchased' => $productsPurchased
+                'articles_count' => (int) $articlesCount,
+                'store_ratings_count' => (int) $storeRatingsCount,
+                'vouchers_purchased' => (int) $vouchersPurchased,
+                'vouchers_redeemed' => (int) $vouchersRedeemed,
+                'products_purchased' => (int) $productsPurchased
             ]
         ]);
     }
