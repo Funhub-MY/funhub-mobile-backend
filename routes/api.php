@@ -277,6 +277,11 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::post('user/password', [\App\Http\Controllers\Api\UserController::class, 'postUpdatePassword']);
         Route::post('user/email', [\App\Http\Controllers\Api\UserController::class, 'postUpdateEmail']);
 
+        Route::prefix('user')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\UserController::class, 'index']);
+            Route::get('/statistics', [\App\Http\Controllers\Api\UserController::class, 'getUserStatistics']);
+        });
+
         // Views
         Route::prefix('/views')->group(function () {
            Route::post('/', [\App\Http\Controllers\Api\ViewController::class, 'postView']);

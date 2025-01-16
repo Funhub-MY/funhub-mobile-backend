@@ -42,7 +42,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g1abE3evP6f8DZd5Vkc46ha'
+      - 'Bearer v4aa5he6gbd13kV6fZEc8PD'
     controller: null
     method: null
     route: null
@@ -86,7 +86,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6816P5avafce3gbdVkhEDZ4'
+      - 'Bearer 43E6gfae5db8Dh16ZcPvVka'
     controller: null
     method: null
     route: null
@@ -167,7 +167,7 @@ endpoints:
         name: referral_code
         description: ''
         required: false
-        example: beatae
+        example: libero
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -189,7 +189,7 @@ endpoints:
       fiat_payment_method: fpx/card
       card_id: 1
       quantity: 1
-      referral_code: beatae
+      referral_code: libero
       wallet_type: TNG/FPX-CIMB
     fileParameters: []
     responses:
@@ -237,7 +237,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kav15b86e3c6VfdDZ4EgahP'
+      - 'Bearer 1acghkb6evZD4PdE5V36f8a'
     controller: null
     method: null
     route: null
@@ -291,7 +291,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 863acbaDh6EV5vkgfP4d1Ze'
+      - 'Bearer ZVD63df5gkE8Pbah6ce4va1'
     controller: null
     method: null
     route: null
@@ -318,14 +318,14 @@ endpoints:
         name: product_id
         description: 'The ID of the product.'
         required: true
-        example: voluptas
+        example: ut
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      product_id: voluptas
+      product_id: ut
     queryParameters:
       product_id:
         name: product_id
@@ -356,7 +356,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cZV685Ek6a4fP3ahvbdgDe1'
+      - 'Bearer bvae13h5k4faD8EP6cVZdg6'
     controller: null
     method: null
     route: null

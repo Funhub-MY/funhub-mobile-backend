@@ -14,6 +14,10 @@ use App\Models\Comment;
 use App\Models\Interaction;
 use App\Models\Location;
 use App\Models\LocationRating;
+use App\Models\MerchantOfferClaim;
+use App\Models\MerchantOfferClaimRedemptions;
+use App\Models\Product;
+use App\Models\StoreRating;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\UserBlock;
@@ -1060,6 +1064,97 @@ class UserController extends Controller
         return response()->json([
             'user' => new PublicUserResource($user),
             'articles' => PublicArticleResource::collection($recentArticles),
+        ]);
+    }
+
+    /**
+     * Get User Statistics
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group User
+     * @queryParam from_date string optional Filter by date from (Y-m-d format). Example: 2025-01-01
+     * @queryParam to_date string optional Filter by date to (Y-m-d format). Example: 2025-01-16
+     *
+     * @response scenario=success {
+     *     "data": {
+     *         "articles_count": 5,
+     *         "store_ratings_count": 3,
+     *         "vouchers_purchased": 10,
+     *         "vouchers_redeemed": 8,
+     *         "products_purchased": 8
+     *     }
+     * }
+     */
+    public function getUserStatistics(Request $request)
+    {
+        $userId = auth()->id();
+        $query = ['user_id' => $userId]; // will be added to all queries below
+        
+        // base query builder for date filtering
+        $dateQuery = function ($query) use ($request) {
+            if ($request->has('from_date')) {
+                $query->whereDate('created_at', '>=', $request->from_date);
+            }
+            if ($request->has('to_date')) {
+                $query->whereDate('created_at', '<=', $request->to_date);
+            }
+            return $query;
+        };
+
+        // 1. count articles
+        $articlesCount = Article::where($query)
+            ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
+                return $dateQuery($query);
+            })
+            ->count();
+
+        // 2. count store ratings (only latest per store)
+        $storeRatingsCount = StoreRating::select('store_id')
+            ->where($query)
+            ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
+                return $dateQuery($query);
+            })
+            ->groupBy('store_id')
+            ->get()
+            ->count();
+
+        // 3. count successful voucher purchases
+        $vouchersPurchased = MerchantOfferClaim::where($query)
+            ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
+            ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
+                return $dateQuery($query);
+            })
+            ->sum('quantity');
+
+        // 4. count successful voucher redemptions
+        $vouchersRedeemed = MerchantOfferClaimRedemptions::where($query)
+            ->whereHas('claim', function ($query) {
+                $query->where('status', MerchantOfferClaim::CLAIM_SUCCESS);
+            })
+            ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
+                return $dateQuery($query);
+            })
+            ->sum('quantity');
+
+        // 5. count successful product purchases
+        $productsPurchased = Transaction::where($query)
+            ->where('status', Transaction::STATUS_SUCCESS)
+            ->where('transactionable_type', Product::class)
+            ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
+                return $dateQuery($query);
+            })
+            ->count();
+
+        return response()->json([
+            'data' => [
+                'articles_count' => $articlesCount,
+                'store_ratings_count' => $storeRatingsCount,
+                'vouchers_purchased' => $vouchersPurchased,
+                'vouchers_redeemed' => $vouchersRedeemed,
+                'products_purchased' => $productsPurchased
+            ]
         ]);
     }
 

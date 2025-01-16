@@ -29,14 +29,14 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: numquam
+        example: aut
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      username: numquam
+      username: aut
     fileParameters: []
     responses:
       -
@@ -46,7 +46,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '110'
+          x-ratelimit-remaining: '119'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -54,7 +54,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dV5aDEcPhg4befZv386a1k6'
+      - 'Bearer v45bDgaZhcaV6P18kfdeE63'
     controller: null
     method: null
     route: null
@@ -85,14 +85,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: neque
+        example: sit
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: neque
+      share_code: sit
     fileParameters: []
     responses:
       -
@@ -584,7 +584,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '109'
+          x-ratelimit-remaining: '118'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -592,7 +592,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aP64v86gEVhZacdfek351Db'
+      - 'Bearer ec6hDfkaVZPE3d56gba4v81'
     controller: null
     method: null
     route: null
@@ -623,14 +623,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: itaque
+        example: sit
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: itaque
+      share_code: sit
     fileParameters: []
     responses:
       -
@@ -1122,7 +1122,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '108'
+          x-ratelimit-remaining: '117'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1130,7 +1130,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a36ZhD41bPv6cE8aegfd5kV'
+      - 'Bearer 8VPafk6caE51Zdeb3h6vD4g'
     controller: null
     method: null
     route: null
@@ -1161,14 +1161,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: autem
+        example: consequuntur
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: autem
+      share_code: consequuntur
     fileParameters: []
     responses:
       -
@@ -1660,7 +1660,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '106'
+          x-ratelimit-remaining: '115'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1668,7 +1668,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 34aeEbah58ZfPVd1cvkD6g6'
+      - 'Bearer VveafZaPhk638b41gEDc5d6'
     controller: null
     method: null
     route: null
@@ -1708,7 +1708,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '105'
+          x-ratelimit-remaining: '114'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1716,7 +1716,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kVf6c65bag14eh8PZdEv3aD'
+      - 'Bearer cEga381Z4dh5kbfva6DV6Pe'
     controller: null
     method: null
     route: null
@@ -1755,7 +1755,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '104'
+          x-ratelimit-remaining: '113'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1763,7 +1763,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aDbfvch863ZPdV4kEe65g1a'
+      - 'Bearer e8cV3Zva5ghfa14Dk6EP6bd'
     controller: null
     method: null
     route: null
@@ -1799,7 +1799,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 83bgP66c4aedfZ51ahDVEkv'
+      - 'Bearer v1E4kVbD6c5Zh8ge6adfP3a'
     controller: null
     method: null
     route: null
@@ -1835,7 +1835,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D4hV6bZEeakf163vca8dg5P'
+      - 'Bearer 5aeVhgPDdkcv638fba14E6Z'
     controller: null
     method: null
     route: null
@@ -1871,7 +1871,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z6PdEgv3641af58cDVkbeah'
+      - 'Bearer VaE5hZ1vePkcf6gaD864d3b'
     controller: null
     method: null
     route: null
@@ -1907,7 +1907,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1fVcbZ53dg6E48ePa6vDhak'
+      - 'Bearer 51gk6VvhE8ad4fPDZ3aec6b'
     controller: null
     method: null
     route: null
@@ -1943,7 +1943,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4eDbVvd6318hkaf65acgPZE'
+      - 'Bearer cZ4akge636fV5aD1dEbvP8h'
     controller: null
     method: null
     route: null
@@ -1979,7 +1979,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6ha6a1d4gVvDfkEc358ZPbe'
+      - 'Bearer Eghak8d6a1436ZvDfebcV5P'
     controller: null
     method: null
     route: null
@@ -2015,7 +2015,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EaDV6c8e516fv43ZhadbgkP'
+      - 'Bearer e4kE83gaDZ1PdfhVb66vac5'
     controller: null
     method: null
     route: null
@@ -2066,7 +2066,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '103'
+          x-ratelimit-remaining: '112'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -2074,7 +2074,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e681dbv6Dfk5Z3gcEPVa4ha'
+      - 'Bearer dDZP56b834h1E6vfVaageck'
     controller: null
     method: null
     route: null
@@ -2125,7 +2125,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '102'
+          x-ratelimit-remaining: '111'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -2133,7 +2133,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h65g4aP8d6b3VeEZ1vfkacD'
+      - 'Bearer cg3d6hbD1vaeV5k48ZafEP6'
     controller: null
     method: null
     route: null
@@ -2176,7 +2176,50 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h6Vgdvba8EcfZ36aePk154D'
+      - 'Bearer 6hVb83PvDacZEe45dag16fk'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/user
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Display a listing of the resource.'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 8aVd5a6c1Z3efDgbEkvP46h'
     controller: null
     method: null
     route: null
