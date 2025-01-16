@@ -1076,6 +1076,7 @@ class UserController extends Controller
      * @group User
      * @queryParam from_date string optional Filter by date from (Y-m-d format). Example: 2025-01-01
      * @queryParam to_date string optional Filter by date to (Y-m-d format). Example: 2025-01-16
+     * @queryParam product_id integer optional Filter by product_id. Example: 1
      *
      * @response scenario=success {
      *     "data": {
@@ -1091,7 +1092,8 @@ class UserController extends Controller
     {
         $userId = auth()->id();
         $query = ['user_id' => $userId]; // will be added to all queries below
-        
+        $product_id = $request->get('product_id', 1);
+
         // base query builder for date filtering
         $dateQuery = function ($query) use ($request) {
             if ($request->has('from_date')) {
@@ -1104,21 +1106,48 @@ class UserController extends Controller
         };
 
         // 1. count articles
+        // $articlesCount = Article::where($query)
+        //     ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
+        //         return $dateQuery($query);
+        //     })
+        //     ->count();
+        //
         $articlesCount = Article::where($query)
             ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
                 return $dateQuery($query);
             })
-            ->count();
+            ->selectRaw('DATE(created_at) as date, COUNT(id) as daily_count')
+            ->groupBy('date')
+            ->get()
+            ->map(function ($day) {
+                return min($day->daily_count, 3);
+            })
+            ->sum();
+  
 
         // 2. count store ratings (only latest per store)
-        $storeRatingsCount = StoreRating::select('store_id')
-            ->where($query)
+        // $storeRatingsCount = StoreRating::select('store_id')
+        //     ->where($query)
+        //     ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
+        //         return $dateQuery($query);
+        //     })
+        //     ->groupBy('store_id')
+        //     ->get()
+        //     ->count();
+        $storeRatingsCount = StoreRating::where($query)
             ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
                 return $dateQuery($query);
             })
-            ->groupBy('store_id')
+            ->selectRaw('DATE(created_at) as date, store_id')
+            ->orderBy('date') // Order by date to process earliest dates first
             ->get()
-            ->count();
+            ->unique('store_id') // Ensure each store_id is unique across the entire period
+            ->groupBy('date') // Group by date to check daily limits
+            ->map(function ($stores) {
+                // Limit each day's count to a maximum of 3 unique store IDs
+                return min($stores->count(), 3);
+            })
+            ->sum(); 
 
         // 3. count successful voucher purchases
         $vouchersPurchased = MerchantOfferClaim::where($query)
@@ -1138,10 +1167,13 @@ class UserController extends Controller
             })
             ->sum('quantity');
 
-        // 5. count successful product purchases
-        $productsPurchased = Transaction::where($query)
+        // 5. count successful funcard purchases
+       
+
+        $funcardPurchased = Transaction::where($query)
             ->where('status', Transaction::STATUS_SUCCESS)
             ->where('transactionable_type', Product::class)
+            ->where('transactionable_id', $product_id)
             ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
                 return $dateQuery($query);
             })
@@ -1153,7 +1185,7 @@ class UserController extends Controller
                 'store_ratings_count' => (int) $storeRatingsCount,
                 'vouchers_purchased' => (int) $vouchersPurchased,
                 'vouchers_redeemed' => (int) $vouchersRedeemed,
-                'products_purchased' => (int) $productsPurchased
+                'funcard_purchased' => (int) $funcardPurchased
             ]
         ]);
     }

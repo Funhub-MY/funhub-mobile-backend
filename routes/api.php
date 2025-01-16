@@ -267,7 +267,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
         // TODO: secure this route
         Route::get('users_by_id', [\App\Http\Controllers\Api\UserController::class, 'getUsersByIds']);
-        Route::get('user/statistics', action: [\App\Http\Controllers\Api\UserController::class, 'getUserStatistics']);
+        Route::get('user/statistics', [\App\Http\Controllers\Api\UserController::class, 'getUserStatistics']);
         Route::get('user/{user}', [\App\Http\Controllers\Api\UserController::class, 'show']);
 
         //user module consolidate api
@@ -288,6 +288,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::prefix('/products')->group(function (){
             Route::get('/', [\App\Http\Controllers\Api\ProductController::class, 'index']);
             Route::get('/limited', [\App\Http\Controllers\Api\ProductController::class, 'limited']);
+            Route::get('/purchased', [\App\Http\Controllers\Api\ProductController::class, 'getTotalPurchasedByUser']);
             Route::post('/checkout', [\App\Http\Controllers\Api\ProductController::class, 'postCheckout']);
             Route::post('/checkout/cancel', [\App\Http\Controllers\Api\ProductController::class, 'postCancelCheckout']);
             Route::get('/{product_id}', [\App\Http\Controllers\Api\ProductController::class, 'show']);
