@@ -108,7 +108,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pfa4vadk5EheDV61Z6bg8c3'
+      - 'Bearer g3aaPkd5Df6b6hec81V4vZE'
     controller: null
     method: null
     route: null
@@ -218,7 +218,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ae66f45ZDbEP8dakchV3g1v'
+      - 'Bearer v6PkaZehdcb6D3gVafE8541'
     controller: null
     method: null
     route: null
@@ -226,7 +226,7 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/stores/followings_been_here
+    uri: api/v1/stores/following_been_here
     metadata:
       groupName: Stores
       groupDescription: ''
@@ -260,14 +260,14 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: nostrum
+        example: blanditiis
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      store_ids: nostrum
+      store_ids: blanditiis
     fileParameters: []
     responses:
       -
@@ -280,7 +280,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer De6VEaZ1dfka3vg4h86b5cP'
+      - 'Bearer ba3cZkvD1e458hEVf6ad6gP'
     controller: null
     method: null
     route: null
@@ -323,7 +323,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3fDeV6hbdP1ak4EZagcv685'
+      - 'Bearer g6fEVeac1d5b4D8a3PvZh6k'
     controller: null
     method: null
     route: null
@@ -413,7 +413,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hE3adV6fva8cbP4eDg6Zk15'
+      - 'Bearer 6v5ZPEV1aDkhb4d3fg6ca8e'
     controller: null
     method: null
     route: null
@@ -455,14 +455,14 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: nulla
+        example: qui
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      store_ids: nulla
+      store_ids: qui
     fileParameters: []
     responses:
       -
@@ -479,7 +479,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g1dhP65bkZe63aDVvf4c8Ea'
+      - 'Bearer cafE1Da38bkdg5vZe4V6P6h'
     controller: null
     method: null
     route: null
@@ -521,14 +521,14 @@ endpoints:
         name: location_id
         description: ''
         required: true
-        example: officiis
+        example: eum
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      location_id: officiis
+      location_id: eum
     fileParameters: []
     responses:
       -
@@ -545,7 +545,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 566gPVkh3dvEc4eDaab1fZ8'
+      - 'Bearer 36Va6cefhvDkE1d5gb8a4ZP'
     controller: null
     method: null
     route: null
@@ -677,7 +677,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6kg5abh64cad8DeVv13fPZE'
+      - 'Bearer ED686eaaZV3hP4fk1cd5gbv'
     controller: null
     method: null
     route: null
@@ -775,7 +775,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k6g5Vvc3hEdaPf6Dbae84Z1'
+      - 'Bearer 1c6ekgP38vV6bD5a4fadhZE'
     controller: null
     method: null
     route: null
@@ -841,7 +841,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5eEdbfg36av4cZPDha61kV8'
+      - 'Bearer Vfkc6Dhg4dEae56baPv18Z3'
     controller: null
     method: null
     route: null
@@ -928,7 +928,68 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cEb6DkZge63da5Pvhaf4V81'
+      - 'Bearer aaEPhe46fbd3v5VcD1Z8g6k'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/stores/check_reviewed
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Check if User Has Reviewed Stores'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      store_ids:
+        name: store_ids
+        description: 'Comma separated store IDs to check.'
+        required: true
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      store_ids: '1,2,3'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "data": {
+                  "1": {
+                      "store_id": 1,
+                      "store_name": "Store Name",
+                      "has_reviewed": true,
+                      "last_reviewed_at": "2025-01-16 11:40:23"
+                  }
+              }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer v6cZDV5fkdh1Eb3agPe684a'
     controller: null
     method: null
     route: null

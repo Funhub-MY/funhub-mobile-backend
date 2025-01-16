@@ -74,12 +74,12 @@ paths:
                 id:
                   type: integer
                   description: 'This field is required when <code>slug</code> is <code>null</code>.'
-                  example: 20
+                  example: 2
                   nullable: false
                 slug:
                   type: string
                   description: 'This field is required when <code>id</code> is <code>null</code>.'
-                  example: est
+                  example: nesciunt
                   nullable: false
     parameters:
       -
@@ -462,7 +462,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 16
+                  example: 11
                   nullable: false
                 reason:
                   type: string
@@ -472,12 +472,12 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: ipsam
+                  example: et
                   nullable: false
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: magnam
+                  example: itaque
                   nullable: false
                 article:
                   type: integer
@@ -649,7 +649,7 @@ paths:
                   type: array
                   description: 'Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - inventore
+                    - labore
                   items:
                     type: string
               required:
@@ -681,7 +681,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - expedita
+                    - nisi
                   items:
                     type: string
                 category_ids:
@@ -845,7 +845,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - qui
+                    - culpa
                   items:
                     type: string
                 category_ids:
@@ -1612,7 +1612,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: harum
+        example: quaerat
         required: true
         schema:
           type: string
@@ -1703,12 +1703,12 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: et
+                  example: laboriosam
                   nullable: false
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: est
+                  example: magni
                   nullable: false
               required:
                 - comment_id
@@ -2036,7 +2036,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: repellendus
+        example: quo
         required: true
         schema:
           type: string
@@ -2991,7 +2991,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: nannie69@example.net
+                  example: kub.kaya@example.org
                   nullable: false
                 phone:
                   type: string
@@ -3085,7 +3085,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: ullam
+                  example: est
                   nullable: false
               required:
                 - username
@@ -3966,7 +3966,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: et
+                  example: excepturi
                   nullable: false
               required:
                 - share_code
@@ -4847,7 +4847,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: doloribus
+                  example: dolorum
                   nullable: false
               required:
                 - share_code
@@ -5728,7 +5728,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: veritatis
+                  example: repellendus
                   nullable: false
               required:
                 - share_code
@@ -6077,7 +6077,7 @@ paths:
                 supportable_id:
                   type: integer
                   description: 'This field is required when <code>supportable</code> is present.'
-                  example: 9
+                  example: 1
                   nullable: false
                 category_id:
                   type: integer
@@ -6632,7 +6632,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - voluptates
+                    - fugit
                   items:
                     type: string
                 name:
@@ -6697,7 +6697,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - minus
+                    - placeat
                   items:
                     type: string
                 name:
@@ -8623,7 +8623,7 @@ paths:
                 id:
                   type: integer
                   description: 'This field is required when <code>sku</code> is <code>null</code>.'
-                  example: 10
+                  example: 18
                   nullable: false
                 sku:
                   type: string
@@ -8688,13 +8688,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - rerum
+            - molestiae
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - rerum
+              - molestiae
             items:
               type: string
         -
@@ -8906,7 +8906,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - distinctio
+                    - saepe
                   items:
                     type: string
                 city:
@@ -9091,7 +9091,7 @@ paths:
                 referral_code:
                   type: string
                   description: ''
-                  example: ut
+                  example: nesciunt
                   nullable: true
                 wallet_type:
                   type: string
@@ -9410,7 +9410,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: rerum
+        example: aliquam
         required: true
         schema:
           type: string
@@ -10986,7 +10986,7 @@ paths:
                 referral_code:
                   type: string
                   description: ''
-                  example: rerum
+                  example: consequatur
                   nullable: true
                 wallet_type:
                   type: string
@@ -11069,7 +11069,7 @@ paths:
         in: path
         name: product_id
         description: 'The ID of the product.'
-        example: ex
+        example: et
         required: true
         schema:
           type: string
@@ -11323,7 +11323,7 @@ paths:
           present:
             summary: 'When the value is present'
             value: 10
-  /api/v1/stores/followings_been_here:
+  /api/v1/stores/following_been_here:
     get:
       summary: 'Get Stores Following Been Here'
       operationId: getStoresFollowingBeenHere
@@ -11375,7 +11375,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: nostrum
+                  example: blanditiis
                   nullable: false
               required:
                 - store_ids
@@ -11477,7 +11477,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: nulla
+                  example: qui
                   nullable: false
               required:
                 - store_ids
@@ -11525,7 +11525,7 @@ paths:
                 location_id:
                   type: string
                   description: ''
-                  example: officiis
+                  example: eum
                   nullable: false
               required:
                 - location_id
@@ -11797,6 +11797,61 @@ paths:
           present:
             summary: 'When the value is present'
             value: '1'
+  /api/v1/stores/check_reviewed:
+    get:
+      summary: 'Check if User Has Reviewed Stores'
+      operationId: checkIfUserHasReviewedStores
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    '1':
+                      store_id: 1
+                      store_name: 'Store Name'
+                      has_reviewed: true
+                      last_reviewed_at: '2025-01-16 11:40:23'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      1:
+                        type: object
+                        properties:
+                          store_id:
+                            type: integer
+                            example: 1
+                          store_name:
+                            type: string
+                            example: 'Store Name'
+                          has_reviewed:
+                            type: boolean
+                            example: true
+                          last_reviewed_at:
+                            type: string
+                            example: '2025-01-16 11:40:23'
+      tags:
+        - Stores
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                store_ids:
+                  type: string
+                  description: 'Comma separated store IDs to check.'
+                  example: '1,2,3'
+                  nullable: false
+              required:
+                - store_ids
   /api/v1/transactions:
     get:
       summary: "Get all my transactions\nGet all transactions of current logged in users paginated"
@@ -12127,7 +12182,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 14
+                  example: 13
                   nullable: false
               required:
                 - user_id
@@ -12174,7 +12229,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 15
+                  example: 10
                   nullable: false
               required:
                 - user_id
@@ -12221,7 +12276,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 7
+                  example: 19
                   nullable: false
               required:
                 - user_id
@@ -12256,7 +12311,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 3
+                  example: 14
                   nullable: false
               required:
                 - user_id
@@ -12326,17 +12381,17 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: quae
+                  example: aut
                   nullable: false
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: voluptas
+                  example: molestiae
                   nullable: false
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: voluptas
+                  example: asperiores
                   nullable: false
                 also_block_user:
                   type: boolean
@@ -12610,7 +12665,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: rerum
+                  example: consequatur
                   nullable: false
               required:
                 - user_ids
@@ -13611,7 +13666,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: female
+                  example: male
                   nullable: false
                   enum:
                     - male
