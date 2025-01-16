@@ -1537,7 +1537,7 @@ class MerchantOfferController extends Controller
         $totalQuantity = $query->sum('quantity');
 
         return response()->json([
-            'total_quantity' => $totalQuantity
+            'total_quantity' => (int) $totalQuantity
         ]);
     }
 
