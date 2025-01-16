@@ -36,4 +36,9 @@ class Transaction extends Model implements Auditable
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'transactionable_id');
+    }
 }

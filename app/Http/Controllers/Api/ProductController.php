@@ -112,6 +112,53 @@ class ProductController extends Controller
     }
 
     /**
+     * Get Total Quantity of Car Campaign Funcard purchased
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Product
+     * @queryParam from_date string optional Filter by transaction created from this date (Y-m-d format). Example: 2025-01-01
+     * @queryParam to_date string optional Filter by transaction created until this date (Y-m-d format). Example: 2025-01-16
+     * @response scenario=success {
+     *     "total_quantity": 10
+     * }
+     */
+
+    public function getTotalPurchasedByUser(Request $request) {
+        $userId = auth()->id();
+        $query = ['user_id' => $userId];
+
+        // base query builder for date filtering
+        $dateQuery = function ($query) use ($request) {
+            if ($request->has('from_date')) {
+                $query->whereDate('created_at', '>=', $request->from_date);
+            }
+            if ($request->has('to_date')) {
+                $query->whereDate('created_at', '<=', $request->to_date);
+            }
+            return $query;
+        };
+
+        $quantity = Transaction::where($query)
+            ->where('status', Transaction::STATUS_SUCCESS)
+            ->where('transactionable_type', Product::class)
+            ->whereHas('product', function ($query) {
+                $query->where('type', 'limited');
+                $query->where('sku', 'FUNCARD_GL_RM25'); // MUST FIXED THIS SKU, SO THE SYSTEM ABLE TO IDENTIFY
+            })
+            ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
+                return $dateQuery($query);
+            })
+            ->count();
+
+
+        return response()->json([
+            'quantity' => (int) $quantity
+        ]);
+    }
+
+    /**
      * Post Checkout
      *
      * @param Request $request
