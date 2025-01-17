@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\MerchantOfferClaimResource;
 use App\Http\Resources\MerchantOfferResource;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\ProductHistoryResource;
 use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
@@ -127,9 +128,6 @@ class ProductController extends Controller
      */
 
     public function getTotalPurchasedByUser(Request $request) {
-        $userId = auth()->id();
-        $query = ['user_id' => $userId];
-
         // base query builder for date filtering
         $dateQuery = function ($query) use ($request) {
             if ($request->has('from_date')) {
@@ -144,7 +142,7 @@ class ProductController extends Controller
         // filter by status if provided, default to success product_id 1
         $product_id = $request->get('product_id', 1);
 
-        $transaction = Transaction::where($query)
+        $transaction = Transaction::where('user_id', auth()->user()->id)
             ->where('status', Transaction::STATUS_SUCCESS)
             ->where('transactionable_type', Product::class)
             ->where('transactionable_id', $product_id)
@@ -156,6 +154,31 @@ class ProductController extends Controller
         return response()->json([
             'quantity' => (int) $transaction
         ]);
+    }
+
+    /**
+     * Get Funcard or Funbox for last 30 days Transactions History
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Product
+     * @response scenario=success {
+     * "data": []
+     * }
+     */
+
+    public function getHistory(Request $request) {
+
+        $query = Transaction::where('user_id', auth()->user()->id)
+            ->where('status', Transaction::STATUS_SUCCESS)
+            ->where('transactionable_type', Product::class)
+            ->whereDate('created_at', '>=', Carbon::now()->subDays(30)) // Last 30 days
+            ->whereDate('created_at', '<=', Carbon::now()) 
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return ProductHistoryResource::collection($query);
     }
 
     /**
