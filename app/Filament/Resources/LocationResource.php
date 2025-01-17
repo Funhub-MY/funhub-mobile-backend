@@ -99,6 +99,7 @@ class LocationResource extends Resource
                                     fieldName: 'auto_complete_address',
                                     placeField: 'name',
                                     countries: ['MY'],
+                                    types: ["geocode", "establishment"]
                                 )
                                 ->reactive()
                                 ->defaultZoom(15)

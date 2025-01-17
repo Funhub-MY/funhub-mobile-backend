@@ -111,19 +111,38 @@ class ArticleController extends Controller
         if ($request->has('build_recommendations') && $request->build_recommendations == 1 && auth()->user()->has_article_personalization) {
             // seed random with current timestamp for different results each time
             $timestamp = now()->timestamp;
-            $recommendedArticleIds = auth()->user()->articleRecommendations()
-                ->select('article_id')
-                ->orderByRaw('CASE WHEN last_viewed_at IS NULL THEN 0 ELSE 1 END')
+            $recommendationQuery = auth()->user()->articleRecommendations()
+                ->join('articles', 'article_recommendations.article_id', '=', 'articles.id')
+                ->select('article_recommendations.article_id');
+
+            if ($request->has('video_only') && $request->video_only == 1) {
+                $recommendationQuery->leftJoin('media', function($join) {
+                    $join->on('articles.id', '=', 'media.model_id')
+                         ->where('media.model_type', 'App\\Models\\Article')
+                         ->where('media.collection_name', Article::MEDIA_COLLECTION_NAME);
+                })
+                ->leftJoin('video_jobs', function($join) {
+                    $join->on('media.id', '=', 'video_jobs.media_id')
+                         ->where('video_jobs.status', '=', 3) // Completed status
+                         ->whereRaw("JSON_EXTRACT(video_jobs.results, '$.playback_links.abr') IS NOT NULL");
+                })
+                ->orderByRaw('CASE 
+                    WHEN video_jobs.id IS NOT NULL THEN 1
+                    ELSE 2 END');
+            }
+
+            $recommendedArticleIds = $recommendationQuery
+                ->orderByRaw('CASE WHEN article_recommendations.last_viewed_at IS NULL THEN 0 ELSE 1 END')
                 ->orderByRaw("RAND($timestamp)")
                 ->limit(150)
-                ->pluck('article_id')
+                ->pluck('article_recommendations.article_id')
                 ->toArray();
 
             if (!empty($recommendedArticleIds)) {
                 // use recommendations if available
-                $query->whereIn('id', $recommendedArticleIds);
+                $query->whereIn('articles.id', $recommendedArticleIds);
                 // maintain the order of recommendations
-                $orderString = 'FIELD(id,' . implode(',', $recommendedArticleIds) . ')';
+                $orderString = 'FIELD(articles.id,' . implode(',', $recommendedArticleIds) . ')';
                 $query->orderByRaw($orderString);
             } elseif ($request->has('article_ids')) {
                 // fall back to article_ids only if no recommendations
@@ -1086,10 +1105,11 @@ class ArticleController extends Controller
         //  Grab all the same latitude and longitude to find the most matching records.
         if($locations){
             foreach($locations as $keys => $loc){
-                //  Default set the 1st location
-                if($keys == 0){
+                //  By default, the first location is not set to a mall (Mainly for landscape location). If it is a mall, it will be skipped, and the location will be assigned based on the name.
+                if($keys == 0 && $loc->is_mall == 0){
                     $location = $loc;
                 }
+                
                 //  Calculate the percentage of similar both text
                 similar_text(strtolower($locationData['name']), strtolower($loc->name), $percentage);
 

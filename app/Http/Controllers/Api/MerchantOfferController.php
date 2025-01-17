@@ -127,7 +127,11 @@ class MerchantOfferController extends Controller
         }
 
         if ($request->has('merchant_offer_ids')) {
-            $query->whereIn('id', explode(',', $request->merchant_offer_ids));
+            // remove square brackets and spaces before exploding
+            $merchant_offer_ids = str_replace(['[', ']', ' '], '', $request->merchant_offer_ids);
+            $ids = explode(',', $merchant_offer_ids);
+            $query->whereIn('id', $ids)
+                ->orderByRaw("FIELD(id," . implode(',', $ids) . ")");
         }
 
         if ($request->has('available_only')) {
@@ -150,14 +154,14 @@ class MerchantOfferController extends Controller
             $query->where('flash_deal', false);
         }
 
-        // get articles by city
+        // get offers by city
         if ($request->has('city')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->where('city', 'like', '%' . $request->city . '%');
             });
         }
 
-        // get articles by state
+        // get offers by state
         if ($request->has('state')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->whereHas('state', function($q) use ($request) {
@@ -172,7 +176,7 @@ class MerchantOfferController extends Controller
             });
         }
 
-        // get articles by lat, lng
+        // get offers by lat, lng
         if ($request->has('lat') && $request->has('lng')) {
             $radius = $request->has('radius') ? $request->radius : 10000; // 10km default
             // get article where article->location lat,lng is within the radius
@@ -1122,7 +1126,11 @@ class MerchantOfferController extends Controller
         }
 
         if ($request->has('merchant_offer_ids')) {
-            $query->whereIn('id', explode(',', $request->merchant_offer_ids));
+            // Remove square brackets and spaces before exploding
+            $merchant_offer_ids = str_replace(['[', ']', ' '], '', $request->merchant_offer_ids);
+            $ids = explode(',', $merchant_offer_ids);
+            $query->whereIn('id', $ids)
+                ->orderByRaw("FIELD(id," . implode(',', $ids) . ")");
         }
 
         if ($request->has('available_only')) {
@@ -1233,25 +1241,26 @@ class MerchantOfferController extends Controller
             'id' => 'required_if:sku,null|integer',
             'sku' => 'required_if:id,null',
         ]);
-
+    
         if ($request->has('id')) {
             $offer = MerchantOffer::where('id', $request->id)
                 ->published()
-                ->withCount(relations: 'unclaimedVouchers')
-                // ->where('available_for_web', true)
+                ->withCount('unclaimedVouchers') // ensure the count is loaded
                 ->first();
         } else {
             $offer = MerchantOffer::where('sku', $request->sku)
                 ->published()
-                ->withCount(relations: 'unclaimedVouchers')
-                // ->where('available_for_web', true)
+                ->withCount('unclaimedVouchers') // ensure the count is loaded
                 ->first();
         }
-
+    
         if (!$offer) {
             return response()->json(['message' => __('messages.error.merchant_offer_controller.Deal_not_found')], 404);
         }
-
+    
+        // override the unclaimed_vouchers_count with a live query so always get most up to date
+        $offer->unclaimed_vouchers_count = $offer->unclaimedVouchers()->count();
+    
         return response()->json([
             'offer' => new PublicMerchantOfferResource($offer)
         ]);
@@ -1371,7 +1380,11 @@ class MerchantOfferController extends Controller
         }
 
         if ($request->has('merchant_offer_ids')) {
-            $query->whereIn('id', explode(',', $request->merchant_offer_ids));
+            // Remove square brackets and spaces before exploding
+            $merchant_offer_ids = str_replace(['[', ']', ' '], '', $request->merchant_offer_ids);
+            $ids = explode(',', $merchant_offer_ids);
+            $query->whereIn('id', $ids)
+                ->orderByRaw("FIELD(id," . implode(',', $ids) . ")");
         }
 
         if ($request->has('available_only')) {
@@ -1394,14 +1407,14 @@ class MerchantOfferController extends Controller
             $query->where('flash_deal', false);
         }
 
-        // get articles by city
+        // get offers by city
         if ($request->has('city')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->where('city', 'like', '%' . $request->city . '%');
             });
         }
 
-        // get articles by state
+        // get offers by state
         if ($request->has('state')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->whereHas('state', function($q) use ($request) {
@@ -1413,21 +1426,6 @@ class MerchantOfferController extends Controller
         if ($request->has('merchant_id')) {
             $query->whereHas('merchant', function ($query) use ($request) {
                 $query->where('id', $request->merchant_id);
-            });
-        }
-
-        // get articles by lat, lng
-        if ($request->has('lat') && $request->has('lng')) {
-            $radius = $request->has('radius') ? $request->radius : 10000; // 10km default
-            // get article where article->location lat,lng is within the radius
-            $query->whereHas('location', function ($query) use ($request, $radius) {
-                $query->selectRaw('( 6371 * acos( cos( radians(?) ) *
-                    cos( radians( lat ) )
-                    * cos( radians( lng ) - radians(?)
-                    ) + sin( radians(?) ) *
-                    sin( radians( lat ) ) )
-                    ) AS distance', [$request->lat, $request->lng, $request->lat])
-                    ->havingRaw("distance < ?", [$radius]);
             });
         }
 
@@ -1505,6 +1503,50 @@ class MerchantOfferController extends Controller
         }
     }
 
+    /**
+     * Get Total Quantity of Purchased Offers by User
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Merchant
+     * @subgroup Merchant Offers
+     * @queryParam from_date string optional Filter by claims created from this date (Y-m-d format). Example: 2025-01-01
+     * @queryParam to_date string optional Filter by claims created until this date (Y-m-d format). Example: 2025-01-16
+     * @queryParam status integer optional Filter by claim status (1: Success, 2: Failed, 3: Awaiting Payment). Example: 1
+     * @response scenario=success {
+     *     "total_quantity": 10
+     * }
+     */
+    public function getOfferQuantityPurchasedByUser(Request $request) {
+        $query = MerchantOfferClaim::query()
+            ->where('user_id', auth()->id());
+
+        // filter by date range if provided
+        if ($request->has('from_date')) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+        if ($request->has('to_date')) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        // filter by status if provided, default to success status
+        $status = $request->get('status', MerchantOfferClaim::CLAIM_SUCCESS);
+        $query->where('status', $status);
+
+        $totalQuantity = $query->sum('quantity');
+
+        return response()->json([
+            'total_quantity' => (int) $totalQuantity
+        ]);
+    }
+
+    /**
+     * Process Encrypt
+     *
+     * @param array $data
+     * @return string
+     */
     public function processEncrypt($data) {
         $checkout_secret = config('app.funhub_checkout_secret');
 
@@ -1535,5 +1577,4 @@ class MerchantOfferController extends Controller
             return '';
         }
     }
-    
 }

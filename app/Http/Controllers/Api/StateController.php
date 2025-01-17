@@ -66,10 +66,12 @@ class StateController extends Controller
      *     "message": "Success",
      *     "data": {
      *         "id": 1,
-     *         "name": "Selangor",
+     *         "name": {
+     *             "en": "Selangor",
+     *             "zh": ""
+     *         },
      *         "code": "SGR",
-     *         "country_id": 1,
-     *         "name_translation": "Selangor"
+     *         "country_id": 1
      *     }
      * }
      * @response status=422 scenario="validation error" {
@@ -105,11 +107,19 @@ class StateController extends Controller
             if ($cachedState) {
                 $stateModel = State::find($cachedState['state_id']);
                 if ($stateModel) {
-                    $stateModel->name_translation = json_decode($stateModel->name_translation, true)[$locale] ?? $stateModel->name;
+                    $translations = $stateModel->name_translation ? json_decode($stateModel->name_translation, true) : [];
                     return response()->json([
                         'error' => false,
                         'message' => 'Success',
-                        'data' => new StateResource($stateModel)
+                        'data' => [
+                            'id' => $stateModel->id,
+                            'name' => [
+                                'en' => $translations['en'] ?? $stateModel->name,
+                                'zh' => $translations['zh'] ?? $stateModel->name
+                            ],
+                            'code' => $stateModel->code,
+                            'country_id' => $stateModel->country_id
+                        ]
                     ]);
                 }
             }
@@ -156,31 +166,68 @@ class StateController extends Controller
                 ], 404);
             }
 
-            // find the state in our database
-            $stateModel = State::where('name', 'LIKE', '%' . $state . '%')->first();
-            
-            if (!$stateModel) {
+            // first try to find state with matching code that has translations
+            $stateModel = State::where('name', 'like', '%' . $state . '%')
+                ->when(function ($query) use ($state) {
+                    // get all states with this code
+                    $statesWithCode = State::where('name', 'like', '%' . $state . '%')
+                        ->pluck('code')
+                        ->filter()
+                        ->unique();
+                        
+                    if ($statesWithCode->isNotEmpty()) {
+                        // if we found states with codes, get all states with these codes
+                        return $query->whereIn('code', $statesWithCode);
+                    }
+                    return $query;
+                })
+                ->orderByRaw("
+                    CASE 
+                        WHEN name_translation IS NOT NULL 
+                        AND JSON_EXTRACT(name_translation, '$.en') != ''
+                        AND JSON_EXTRACT(name_translation, '$.zh') != ''
+                        THEN 1
+                        ELSE 2
+                    END
+                ")
+                ->first();
+
+            if ($stateModel) {
+                // If we found a state with this code, look for one with translations
+                if ($stateModel->code) {
+                    $stateWithTranslations = State::where('code', $stateModel->code)
+                        ->whereNotNull('name_translation')
+                        ->whereRaw("JSON_EXTRACT(name_translation, '$.zh') != ''")
+                        ->first();
+                    
+                    if ($stateWithTranslations) {
+                        $stateModel = $stateWithTranslations;
+                    }
+                }
+
+                // cache the state data
+                Cache::put($cacheKey, ['state_id' => $stateModel->id], now()->addDays(30));
+
+                $translations = $stateModel->name_translation ? json_decode($stateModel->name_translation, true) : [];
                 return response()->json([
-                    'error' => true,
-                    'message' => 'State not found in our database'
-                ], 404);
+                    'error' => false,
+                    'message' => 'Success',
+                    'data' => [
+                        'id' => $stateModel->id,
+                        'name' => [
+                            'en' => $translations['en'] ?? $stateModel->name,
+                            'zh' => $translations['zh'] ?? $stateModel->name
+                        ],
+                        'code' => $stateModel->code,
+                        'country_id' => $stateModel->country_id
+                    ]
+                ]);
             }
 
-            // cache the state data for 24 hours
-            Cache::put($cacheKey, [
-                'state_id' => $stateModel->id,
-                'lat' => $roundedLat,
-                'lng' => $roundedLng
-            ], now()->addHours(24));
-
-            // add translation
-            $stateModel->name_translation = json_decode($stateModel->name_translation, true)[$locale] ?? $stateModel->name;
-
             return response()->json([
-                'error' => false,
-                'message' => 'Success',
-                'data' => new StateResource($stateModel)
-            ]);
+                'error' => true,
+                'message' => 'State not found in our database'
+            ], 404);
 
         } catch (\Exception $e) {
             Log::error('Error in getStateByUserLocation: ' . $e->getMessage());
