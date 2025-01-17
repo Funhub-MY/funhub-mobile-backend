@@ -157,44 +157,27 @@ class ProductController extends Controller
     }
 
     /**
-     * Get Funcard or Box History Transactions
+     * Get Funcard or Funbox for last 30 days Transactions History
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Product
-     * @urlParam limit integer optional Limit the number of results. Example:10
      * @response scenario=success {
-     * "current_page": 1,
      * "data": []
      * }
      */
 
     public function getHistory(Request $request) {
 
-        // // base query builder for date filtering
-        // $dateQuery = function ($query) use ($request) {
-        //     if ($request->has('from_date')) {
-        //         $query->whereDate('created_at', '>=', $request->from_date);
-        //     }
-        //     if ($request->has('to_date')) {
-        //         $query->whereDate('created_at', '<=', $request->to_date);
-        //     }
-        //     return $query;
-        // };
-
-        $query = Transaction::where('user_id', auth()->user()->id)
-            ->where('status', Transaction::STATUS_SUCCESS)
+        $query = Transaction::where('status', Transaction::STATUS_SUCCESS)
             ->where('transactionable_type', Product::class)
-            ->orderBy('created_at', 'desc');
+            ->whereDate('created_at', '>=', Carbon::now()->subDays(30)) // Last 30 days
+            ->whereDate('created_at', '<=', Carbon::now()) 
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        // return response()->json([
-        //     'quantity' => (int) $transaction
-        // ]);
-
-        $transactions = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
-
-        return ProductHistoryResource::collection($transactions);
+        return ProductHistoryResource::collection($query);
     }
 
     /**
