@@ -170,7 +170,8 @@ class ProductController extends Controller
 
     public function getHistory(Request $request) {
 
-        $query = Transaction::where('status', Transaction::STATUS_SUCCESS)
+        $query = Transaction::where('user_id', auth()->user()->id)
+            ->where('status', Transaction::STATUS_SUCCESS)
             ->where('transactionable_type', Product::class)
             ->whereDate('created_at', '>=', Carbon::now()->subDays(30)) // Last 30 days
             ->whereDate('created_at', '<=', Carbon::now()) 
