@@ -288,6 +288,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::prefix('/products')->group(function (){
             Route::get('/', [\App\Http\Controllers\Api\ProductController::class, 'index']);
             Route::get('/limited', [\App\Http\Controllers\Api\ProductController::class, 'limited']);
+            Route::get('/history', [\App\Http\Controllers\Api\ProductController::class, 'getHistory']);
             Route::get('/purchased', [\App\Http\Controllers\Api\ProductController::class, 'getTotalPurchasedByUser']);
             Route::post('/checkout', [\App\Http\Controllers\Api\ProductController::class, 'postCheckout']);
             Route::post('/checkout/cancel', [\App\Http\Controllers\Api\ProductController::class, 'postCancelCheckout']);
