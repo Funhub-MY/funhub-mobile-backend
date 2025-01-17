@@ -93,14 +93,33 @@ class MissionController extends Controller
                               ->where('missions_users.completed_at', '<=', now()->endOfMonth());
                     })
                     ->when($request->frequency === 'accumulated', function($query) {
-                        $query->whereNotNull('missions_users.claimed_at')
-                            ->whereNotExists(function ($subquery) {
-                                $subquery->from('missions_users as mu2')
-                                    ->whereRaw('mu2.mission_id = missions_users.mission_id')
-                                    ->where('mu2.user_id', auth()->user()->id)
-                                    ->whereNull('mu2.claimed_at')
-                                    ->where('mu2.created_at', '>', 'missions_users.created_at');
+                        $query->where(function($q) {
+                            // For auto-disbursed missions, show only when claimed
+                            $q->where(function($subq) {
+                                $subq->whereHas('mission', function($missionQuery) {
+                                    $missionQuery->where('auto_disburse_rewards', true);
+                                })->whereNotNull('missions_users.claimed_at');
+                            })
+                            // For manual claim missions, show when completed but not claimed
+                            ->orWhere(function($subq) {
+                                $subq->whereHas('mission', function($missionQuery) {
+                                    $missionQuery->where('auto_disburse_rewards', false);
+                                })
+                                ->where('missions_users.is_completed', true)
+                                ->whereNotNull('missions_users.completed_at')
+                                ->whereNull('missions_users.claimed_at');
                             });
+                        })
+                        // Ensure we only show the latest instance
+                        ->whereNotExists(function ($subquery) {
+                            $subquery->from('missions_users as mu2')
+                                ->whereRaw('mu2.mission_id = missions_users.mission_id')
+                                ->where('mu2.user_id', auth()->user()->id)
+                                ->where(function($q) {
+                                    $q->whereNull('mu2.claimed_at')
+                                      ->orWhere('mu2.created_at', '>', 'missions_users.created_at');
+                                });
+                        });
                     });
             });
         });
