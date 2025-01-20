@@ -19,6 +19,7 @@ class ProductHistoryResource extends JsonResource
             'id' => $this->id,
             'transaction_no' => $this->transaction_no,
             'amount' => $this->amount,
+            'funbox' => $this->point_amount,
             'transactionable' => [
                 'id' => $this->transactionable->id,
                 'type' => $this->transactionable->type,
@@ -31,7 +32,7 @@ class ProductHistoryResource extends JsonResource
                 'thumbnail' => $this->transactionable->thumbnail
             ],
             'gateway' => $this->gateway,
-            'payment_method' => $this->payment_method,
+            'payment_method' => $this->payment_method,            
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_at_diff' => $this->created_at->diffForHumans(),
