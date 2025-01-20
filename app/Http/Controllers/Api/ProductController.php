@@ -170,13 +170,19 @@ class ProductController extends Controller
 
     public function getHistory(Request $request) {
 
-        $query = Transaction::where('user_id', auth()->user()->id)
-            ->where('status', Transaction::STATUS_SUCCESS)
-            ->where('transactionable_type', Product::class)
-            ->whereDate('created_at', '>=', Carbon::now()->subDays(30)) // Last 30 days
-            ->whereDate('created_at', '<=', Carbon::now()) 
-            ->orderBy('created_at', 'desc')
+        $query = Transaction::where('transactions.user_id', auth()->user()->id)
+            ->where('transactions.status', Transaction::STATUS_SUCCESS)
+            ->where('transactions.transactionable_type', Product::class)
+            ->whereDate('transactions.created_at', '>=', Carbon::now()->subDays(30)) // Last 30 days
+            ->whereDate('transactions.created_at', '<=', Carbon::now())
+            ->join('point_ledgers', function ($join) {
+                $join->on('transactions.user_id', '=', 'point_ledgers.user_id')
+                     ->on('transactions.transaction_no', '=', 'point_ledgers.remarks');
+            })
+            ->select('transactions.*', 'point_ledgers.amount AS point_amount') 
+            ->orderBy('transactions.created_at', 'desc')
             ->get();
+
 
         return ProductHistoryResource::collection($query);
     }
