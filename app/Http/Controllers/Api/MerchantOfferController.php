@@ -223,9 +223,10 @@ class MerchantOfferController extends Controller
         // order by available_at from past first to future
         $query->orderBy('available_at', 'asc');
 
-        $this->buildQuery($query, $request);
+        // $this->buildQuery($query, $request); // remove legacy build query
 
-        $data = $query->paginate(config('app.paginate_per_page'));
+        // use limit from request, else just use default
+        $data = $query->paginate(($request->has('limit')) ? $request->limit : config('app.paginate_per_page'));
 
         $userPurchasedBeforeFromMerchantIds = $this->getUserPurchasedBeforeFromMerchantIds($request->user());
         // map userPurchasedBeforeFromMerchantIds to MerchantOfferResource
