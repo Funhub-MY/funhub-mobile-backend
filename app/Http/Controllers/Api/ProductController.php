@@ -121,7 +121,7 @@ class ProductController extends Controller
      * @group Product
      * @queryParam from_date string optional Filter by transaction created from this date (Y-m-d format). Example: 2025-01-01
      * @queryParam to_date string optional Filter by transaction created until this date (Y-m-d format). Example: 2025-01-16
-     * @queryParam product_id integer optional Filter by product_id. Example: 1
+     * @queryParam product_ids integer optional Filter by product_id. Example: 1,2,3,4 or 1
      * @response scenario=success {
      *     "quantity": 10
      * }
@@ -140,12 +140,12 @@ class ProductController extends Controller
         };
 
         // filter by status if provided, default to success product_id 1
-        $product_id = $request->get('product_id', 1);
+        $product_ids = $request->has('product_ids') ? explode(',', $request->get('product_ids')) : [1];
 
         $transaction = Transaction::where('user_id', auth()->user()->id)
             ->where('status', Transaction::STATUS_SUCCESS)
             ->where('transactionable_type', Product::class)
-            ->where('transactionable_id', $product_id)
+            ->whereIn('transactionable_id', $product_ids)
             ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
                 return $dateQuery($query);
             })

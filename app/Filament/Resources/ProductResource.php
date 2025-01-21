@@ -57,6 +57,16 @@ class ProductResource extends Resource
                                     })
                                     ->acceptedFileTypes(['image/*'])
                                     ->rules('image'),
+                                Forms\Components\SpatieMediaLibraryFileUpload::make('product_bg_image')
+                                    ->label('Background Image')
+                                    ->collection(Product::MEDIA_BG_COLLECTION_NAME)
+                                    ->disk(function () {
+                                        if (config('filesystems.default') === 's3') {
+                                            return 's3_public';
+                                        }
+                                    })
+                                    ->acceptedFileTypes(['image/*'])
+                                    ->rules('image'),
 
                                 TextInput::make('name')
                                     ->required(),
