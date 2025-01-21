@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Product;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
@@ -43,6 +44,7 @@ class ProductResource extends JsonResource
             'reward' => ($rewards) ? $rewards->toArray() : null,
             'status' => $this->status,
             'thumbnail' => $this->thumbnail,
+            'background' => $this->getFirstMediaUrl(Product::MEDIA_BG_COLLECTION_NAME) ?? null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
