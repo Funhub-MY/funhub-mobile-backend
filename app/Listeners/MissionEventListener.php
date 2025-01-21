@@ -35,10 +35,6 @@ class MissionEventListener
     
     const COMMENT_COOLDOWN = 30; // seconds
 
-    const RATING_COOLDOWN = 60; // 1 minute cooldown between ratings on same store
-    const RATING_SPAM_WINDOW = 5; // 5 minutes window for spam detection
-    const RATING_SPAM_LIMIT = 10; // maximum ratings allowed in spam window
-
     public function __construct(MissionService $missionService)
     {
         $this->missionService = $missionService;
@@ -289,24 +285,14 @@ class MissionEventListener
     }
 
     /**
-     * Check for spam ratings
+     * Check if user has already rated this store before (to prevent mission progress abuse)
      */
     protected function isSpamRating(User $user, Store $store): bool
     {
-        $cacheKey = "spam_rating:{$user->id}:{$store->id}";
-        
-        if (Cache::has($cacheKey)) {
-            return true;
-        }
-
-        Cache::put($cacheKey, true, now()->addSeconds(self::RATING_COOLDOWN));
-
-        $spamThreshold = now()->subMinutes(self::RATING_SPAM_WINDOW);
-        
-        return DB::table('store_ratings')
-            ->where('user_id', $user->id)
-            ->where('created_at', '>=', $spamThreshold)
-            ->count() > self::RATING_SPAM_LIMIT;
+        // check if user has rated this store before (even if rating was updated)
+        return \App\Models\StoreRating::where('user_id', $user->id)
+            ->where('store_id', $store->id)
+            ->exists();
     }
 
     /**
