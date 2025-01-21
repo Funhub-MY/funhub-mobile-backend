@@ -29,6 +29,7 @@ class RedistributeCampaignQuantities extends Command
 
         // get campaigns with agreement_quantity set and have schedules that ended
         $campaigns = MerchantOfferCampaign::whereNotNull('agreement_quantity')
+            ->where('auto_move_vouchers', true)
             ->whereHas('schedules', function ($query) {
                 $query->where('available_until', '<', now())
                     ->whereNotExists(function ($q) {
@@ -40,7 +41,7 @@ class RedistributeCampaignQuantities extends Command
             ->get();
 
         if ($campaigns->isEmpty()) {
-            $this->info('No campaigns found with ended schedules that has agreement_quantity set.');
+            $this->info('No campaigns found with ended schedules that has agreement_quantity set & auto move vouchers turned on.');
             return;
         }
 
@@ -84,15 +85,15 @@ class RedistributeCampaignQuantities extends Command
         // calculate number of schedules needed
         $numberOfSchedules = ceil($unsoldVouchers->count() / self::DEFAULT_QUANTITY_PER_SCHEDULE);
         
-        // start from tomorrow
-        $startDate = now()->addDay()->startOfDay();
+        // start from today
+        $startDate = now()->startOfDay();
 
         DB::transaction(function () use ($campaign, $numberOfSchedules, $unsoldVouchers, $startDate) {
             $voucherIndex = 0;
 
             for ($i = 0; $i < $numberOfSchedules; $i++) {
                 
-                $availableAt = $startDate->copy()->addDays($i * (self::DEFAULT_SCHEDULE_DAYS + self::DEFAULT_INTERVAL_DAYS))->addDay()->startOfDay();
+                $availableAt = $startDate->copy()->addDays($i * (self::DEFAULT_SCHEDULE_DAYS + self::DEFAULT_INTERVAL_DAYS))->startOfDay();
                 $availableUntil = $availableAt->copy()->addDays(self::DEFAULT_SCHEDULE_DAYS)->subDay()->endOfDay();
 
                 // calculate quantity for this schedule
