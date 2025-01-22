@@ -37,14 +37,39 @@ class Sms {
     }
 
     /**
+     * Check if the phone number's country code is allowed
+     *
+     * @param string $phoneNumber
+     * @return bool
+     */
+    protected function isAllowedCountryCode($phoneNumber)
+    {
+        $allowedCountryCodes = config('app.sms.allowed_country_codes');
+        
+        foreach ($allowedCountryCodes as $code) {
+            if (str_starts_with($phoneNumber, $code)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    /**
      * Send SMS
      *
      * @param $to string phone number with country code
-     * @param $message  string message to send
+     * @param $message string message to send
      * @return bool|\Psr\Http\Message\ResponseInterface
      */
     public function sendSms($to, $message)
     {
+        // check if the country code is allowed
+        if (!$this->isAllowedCountryCode($to)) {
+            Log::warning('SMS blocked - Country code not allowed', ['phone_number' => $to]);
+            return false;
+        }
+
         // Try sending SMS using BytePlus
         $byteplusResponse = $this->sendBytePlusSms($to, $message);
 
