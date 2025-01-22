@@ -63,7 +63,8 @@ class CampaignResource extends Resource
                             ->maxFiles(20)
                             ->enableReordering()
                             ->appendFiles()
-                            ->rules('image'),
+                            ->rules('image')
+                            ->required(),
 
                         Forms\Components\SpatieMediaLibraryFileUpload::make('banner')
                             ->label('Banner Image (Home)')
@@ -93,7 +94,8 @@ class CampaignResource extends Resource
                             ->maxFiles(20)
                             ->enableReordering()
                             ->appendFiles()
-                            ->rules('image'),
+                            ->rules('image')
+                            ->required(),
 
 
                         Toggle::make('is_active')
