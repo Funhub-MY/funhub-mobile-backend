@@ -353,6 +353,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | SMS Configuration
+    |--------------------------------------------------------------------------
+    |
+    | This configuration contains settings for SMS service including allowed
+    | country codes. You can specify allowed country codes in your .env file
+    | as a comma-separated list (e.g., SMS_ALLOWED_COUNTRY_CODES=60,65)
+    |
+    */
+    'sms' => [
+        'allowed_country_codes' => array_filter(
+            explode(',', env('SMS_ALLOWED_COUNTRY_CODES', '60,65'))
+        ),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Support Emails
     |--------------------------------------------------------------------------
     |

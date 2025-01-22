@@ -231,8 +231,13 @@ class ArticleController extends Controller
 
         if (!$request->has('lat') && !$request->has('lng')) {
             // Only apply latest() if we're not using recommendations ordering
-            if (!($request->has('build_recommendations') && $request->build_recommendations == 1)) {
-                $query->latest();
+            if (!($request->has('build_recommendations') && $request->build_recommendations == 1 && auth()->user()->has_article_personalization)) {
+                if ($request->has('video_only') && $request->video_only == 1) {
+                    // For video-only queries, ensure proper ordering
+                    $query->orderBy('created_at', 'desc');
+                } else {
+                    $query->latest();
+                }
             }
         }
 
