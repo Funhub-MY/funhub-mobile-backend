@@ -34,6 +34,30 @@ class CampaignController extends Controller
         ]);
     }
 
+     /**
+     * Get Active Campaign By ID
+     *
+     * @param Campaigns $campaign
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Campaigns
+     * @queryParam campaign_id integer required Campaign ID. Example: 1
+     * @response scenario=success {
+     * "data": {}
+     * }
+     *
+     */
+    public function show($id)
+    {
+        $campaign = Campaign::where('is_active', true)->where('id', $id)->first();
+
+        if (!$campaign) {
+            return response()->json(['message' => 'Campaign not found'], 422);
+        }
+
+        return new CampaignResource($campaign);
+    }
+
     /**
      * Get Questions by Campaign
      *
