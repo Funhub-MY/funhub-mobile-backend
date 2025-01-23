@@ -286,12 +286,15 @@ class MissionEventListener
 
     /**
      * Check if user has already rated this store before (to prevent mission progress abuse)
+     * Returns false for new ratings, true for repeated ratings
      */
     protected function isSpamRating(User $user, Store $store): bool
     {
-        // check if user has rated this store before (even if rating was updated)
+        // Check if user has rated this store before (even if rating was updated)
+        // If exists() is false, it means it's a new rating (not spam)
         return \App\Models\StoreRating::where('user_id', $user->id)
             ->where('store_id', $store->id)
+            ->where('created_at', '<', now()) // Only check for ratings created before this one
             ->exists();
     }
 
