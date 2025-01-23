@@ -250,12 +250,13 @@ class UpdateCampaignSchedules extends Command
 
     private function copyMediaAndSyncRelations($campaign, $newOffer)
     {
-        // copy media
+        // copy gallery media
         $mediaItems = $campaign->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_NAME);
         foreach ($mediaItems as $mediaItem) {
             $mediaItem->copy($newOffer, MerchantOffer::MEDIA_COLLECTION_NAME);
         }
 
+        // copy horizontal banner media
         $mediaItems = $campaign->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_HORIZONTAL_BANNER);
         foreach ($mediaItems as $mediaItem) {
             $mediaItem->copy($newOffer, MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);

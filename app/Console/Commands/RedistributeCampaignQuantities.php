@@ -259,19 +259,20 @@ class RedistributeCampaignQuantities extends Command
 
     private function copyMediaAndSyncRelations($campaign, $newOffer)
     {
-        // copy media files
-        foreach ($campaign->getMedia() as $media) {
-            $media->copy($newOffer);
+        // copy gallery media
+        $mediaItems = $campaign->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_NAME);
+        foreach ($mediaItems as $mediaItem) {
+            $mediaItem->copy($newOffer, MerchantOffer::MEDIA_COLLECTION_NAME);
         }
 
-        // sync any other relations if needed
-        // for example: categories, tags, etc.
-        if (method_exists($campaign, 'categories')) {
-            $newOffer->categories()->sync($campaign->categories()->pluck('id'));
+        // copy horizontal banner media
+        $mediaItems = $campaign->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_HORIZONTAL_BANNER);
+        foreach ($mediaItems as $mediaItem) {
+            $mediaItem->copy($newOffer, MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
         }
 
-        if (method_exists($campaign, 'tags')) {
-            $newOffer->tags()->sync($campaign->tags()->pluck('id'));
-        }
+        // sync categories and stores
+        $newOffer->allOfferCategories()->sync($campaign->allOfferCategories->pluck('id'));
+        $newOffer->stores()->sync($campaign->stores->pluck('id'));
     }
 }
