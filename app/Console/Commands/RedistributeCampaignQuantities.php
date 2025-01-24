@@ -223,7 +223,7 @@ class RedistributeCampaignQuantities extends Command
             'sku' => $campaign->sku . '-' . $schedule->id,
             'available_at' => $schedule->available_at,
             'available_until' => $schedule->available_until,
-            'publish_at' => $publishAt,
+            'publish_at' => $schedule->publish_at,
             'flash_deal' => $campaign->flash_deal ?? 0,
             'expiry_days' => $campaign->expiry_days,
             'status' => $status,
