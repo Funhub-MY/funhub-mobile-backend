@@ -109,7 +109,7 @@ class CreateArticle extends CreateRecord
             $video = $data['video'];
 
             $media = $article->addMediaFromDisk($video)
-                ->withCustomProperties(['is_cover' => false])
+                // ->withCustomProperties(['is_cover' => false])
                 ->toMediaCollection(Article::MEDIA_COLLECTION_NAME,
                     (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
                 );
