@@ -73,10 +73,10 @@ class MissionService
             ->whereJsonContains('events', $eventType)
             ->whereHas('predecessors')
             ->whereDoesntHave('predecessors.participants', function ($query) use ($user) {
-                $query->where('user_id', $user->id)
+                $query->where('missions_users.user_id', $user->id)
                     ->where(function ($q) {
-                        $q->where('mission_users.is_completed', false)
-                            ->orWhereNull('mission_users.is_completed');
+                        $q->where('missions_users.is_completed', 0)
+                            ->orWhereNull('missions_users.is_completed');
                     });
             })
             ->with(['participants' => function ($query) use ($user) {
