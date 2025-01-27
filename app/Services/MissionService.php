@@ -334,6 +334,16 @@ class MissionService
      */
     private function updateProgress($userMission, Mission $mission, string $eventType): void
     {
+        // check if all predecessors are completed before allowing progress update
+        if (!$this->arePredecessorsCompleted($userMission->user, $mission)) {
+            Log::info('Skipping progress update - prerequisites not completed', [
+                'mission_id' => $mission->id,
+                'user_id' => $userMission->user->id,
+                'frequency' => $mission->frequency
+            ]);
+            return;
+        }
+
         Log::info('Starting progress update', [
             'mission_id' => $mission->id,
             'event_type' => $eventType,
