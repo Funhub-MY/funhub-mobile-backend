@@ -84,8 +84,8 @@ class MissionService
                         ->where('missions_users.is_completed', 1);
                 });
             }, '=', function ($query) {
-                $query->selectRaw('count(*)')->from('mission_predecessor')
-                    ->whereColumn('mission_predecessor.mission_id', 'missions.id');
+                $query->selectRaw('count(*)')->from('mission_predecessors')
+                    ->whereColumn('mission_predecessors.mission_id', 'missions.id');
             })
             ->with(['participants' => function ($query) use ($user) {
                 $query->where('user_id', $user->id);
