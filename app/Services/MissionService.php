@@ -242,16 +242,6 @@ class MissionService
             'now' => now()->toDateTimeString()
         ]);
 
-        // check if all predecessors are completed before creating new mission
-        if (!$this->arePredecessorsCompleted($user, $mission)) {
-            Log::info('Cannot start mission - prerequisites not completed', [
-                'mission_id' => $mission->id,
-                'user_id' => $user->id,
-                'frequency' => $mission->frequency
-            ]);
-            return false;
-        }
-
         // get current active mission progress
         $userMissionQuery = $user->missionsParticipating()
             ->where('mission_id', $mission->id)
@@ -354,16 +344,6 @@ class MissionService
      */
     private function updateProgress($userMission, Mission $mission, string $eventType): void
     {
-        // check if all predecessors are completed before allowing progress update
-        if (!$this->arePredecessorsCompleted($userMission->user, $mission)) {
-            Log::info('Skipping progress update - prerequisites not completed', [
-                'mission_id' => $mission->id,
-                'user_id' => $userMission->user->id,
-                'frequency' => $mission->frequency
-            ]);
-            return;
-        }
-
         Log::info('Starting progress update', [
             'mission_id' => $mission->id,
             'event_type' => $eventType,
@@ -628,50 +608,5 @@ class MissionService
                 'error' => $e->getMessage()
             ]);
         }
-    }
-    
-    protected function arePredecessorsCompleted(User $user, Mission $mission): bool
-    {
-        // if no predecessors, return true
-        if ($mission->predecessors->isEmpty()) {
-            Log::info('No predecessors found', [
-                'mission_id' => $mission->id,
-                'user_id' => $user->id,
-                'frequency' => $mission->frequency
-            ]);
-            return true;
-        }
-
-        // get all predecessors and their completion status
-        $predecessorStatuses = $mission->predecessors()
-            ->with(['participants' => function($query) use ($user) {
-                $query->where('user_id', $user->id);
-            }])
-            ->get();
-
-        Log::info('Predecessor statuses', [
-            'mission_id' => $mission->id,
-            'user_id' => $user->id,
-            'predecessor_statuses' => $predecessorStatuses
-        ]);
-
-        // check if any predecessor is not completed
-        foreach ($predecessorStatuses as $predecessor) {
-            $isCompleted = $predecessor->participants
-                ->contains(function($participation) {
-                    return $participation->pivot->is_completed;
-                });
-
-            if (!$isCompleted) {
-                Log::info('Predecessor not completed', [
-                    'mission_id' => $mission->id,
-                    'predecessor_id' => $predecessor->id,
-                    'user_id' => $user->id,
-                ]);
-                return false;
-            }
-        }
-
-        return true;
     }
 }
