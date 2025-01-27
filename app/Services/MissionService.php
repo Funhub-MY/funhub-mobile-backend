@@ -60,11 +60,32 @@ class MissionService
      */
     private function getEligibleMissions(string $eventType, User $user): \Illuminate\Database\Eloquent\Collection
     {
-        return Mission::enabled()
+        // first get missions that have no predecessors
+        $missionsWithNoPredecessors = Mission::enabled()
+            ->whereJsonContains('events', $eventType)
+            ->whereDoesntHave('predecessors')
             ->with(['participants' => function ($query) use ($user) {
                 $query->where('user_id', $user->id);
-            }])
+            }]);
+
+        // then get missions whose predecessors are all completed
+        $missionsWithCompletedPredecessors = Mission::enabled()
             ->whereJsonContains('events', $eventType)
+            ->whereHas('predecessors')
+            ->whereDoesntHave('predecessors.participants', function ($query) use ($user) {
+                $query->where('user_id', $user->id)
+                    ->where(function ($q) {
+                        $q->where('mission_user.is_completed', false)
+                            ->orWhereNull('mission_user.is_completed');
+                    });
+            })
+            ->with(['participants' => function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            }]);
+
+        // combine both queries and filter by mission eligibility
+        return $missionsWithNoPredecessors
+            ->union($missionsWithCompletedPredecessors)
             ->get()
             ->filter(function ($mission) use ($user) {
                 return $this->isMissionEligible($mission, $user);
