@@ -614,6 +614,11 @@ class MissionService
     {
         // if no predecessors, return true
         if ($mission->predecessors->isEmpty()) {
+            Log::info('No predecessors found', [
+                'mission_id' => $mission->id,
+                'user_id' => $user->id,
+                'frequency' => $mission->frequency
+            ]);
             return true;
         }
 
@@ -632,6 +637,11 @@ class MissionService
                 });
 
             if (!$isCompleted) {
+                Log::info('Predecessor not completed', [
+                    'mission_id' => $mission->id,
+                    'predecessor_id' => $predecessor->id,
+                    'user_id' => $user->id,
+                ]);
                 return false;
             }
         }
