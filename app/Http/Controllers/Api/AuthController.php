@@ -251,6 +251,14 @@ class AuthController extends Controller
             'phone_no' => 'required|string',
         ]);
 
+        // check if country code is allowed
+        $allowedCountryCodes = config('app.sms.allowed_country_codes', ['60', '65']);
+        if (!in_array($request->country_code, $allowedCountryCodes)) {
+            return response()->json([
+                'message' => 'Error'
+            ], 422);
+        }
+
         // check if start with 0 or 60 for phone_no, remove it first
         if (substr($request->phone_no, 0, 1) == '0') {
             $request->merge(['phone_no' => substr($request->phone_no, 1)]);
