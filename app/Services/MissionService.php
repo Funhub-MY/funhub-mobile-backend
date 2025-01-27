@@ -223,6 +223,16 @@ class MissionService
             'now' => now()->toDateTimeString()
         ]);
 
+        // check if all predecessors are completed before creating new mission
+        if (!$this->arePredecessorsCompleted($user, $mission)) {
+            Log::info('Cannot start mission - prerequisites not completed', [
+                'mission_id' => $mission->id,
+                'user_id' => $user->id,
+                'frequency' => $mission->frequency
+            ]);
+            return false;
+        }
+
         // get current active mission progress
         $userMissionQuery = $user->missionsParticipating()
             ->where('mission_id', $mission->id)
@@ -255,15 +265,6 @@ class MissionService
         $userMission = $userMissionQuery->first();
 
         if (!$userMission) {
-            // check if all predecessors are completed before creating new mission
-            if (!$this->arePredecessorsCompleted($user, $mission)) {
-                Log::info('Cannot start mission - prerequisites not completed', [
-                    'mission_id' => $mission->id,
-                    'user_id' => $user->id,
-                    'frequency' => $mission->frequency
-                ]);
-                return false;
-            }
 
             Log::info('Creating new mission progress', [
                 'mission_id' => $mission->id,
