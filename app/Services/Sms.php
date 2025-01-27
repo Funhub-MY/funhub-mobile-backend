@@ -66,7 +66,7 @@ class Sms {
     {
         // check if the country code is allowed
         if (!$this->isAllowedCountryCode($to)) {
-            Log::warning('SMS blocked - Country code not allowed', ['phone_number' => $to]);
+            Log::warning('SMS blocked', ['phone' => $to]);
             return false;
         }
 
