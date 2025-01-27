@@ -75,8 +75,8 @@ class MissionService
             ->whereDoesntHave('predecessors.participants', function ($query) use ($user) {
                 $query->where('user_id', $user->id)
                     ->where(function ($q) {
-                        $q->where('mission_user.is_completed', false)
-                            ->orWhereNull('mission_user.is_completed');
+                        $q->where('mission_users.is_completed', false)
+                            ->orWhereNull('mission_users.is_completed');
                     });
             })
             ->with(['participants' => function ($query) use ($user) {
