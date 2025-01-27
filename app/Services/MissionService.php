@@ -68,12 +68,6 @@ class MissionService
                 $query->where('user_id', $user->id);
             }]);
 
-        Log::info('Querying missions with no predecessors', [
-            'event_type' => $eventType,
-            'user_id' => $user->id
-        ]);
-
-        // then get missions whose predecessors are all completed
         // we need to ensure ALL predecessors have completed participation records
         $missionsWithCompletedPredecessors = Mission::enabled()
             ->whereJsonContains('events', $eventType)
@@ -93,46 +87,16 @@ class MissionService
                 $query->where('user_id', $user->id);
             }]);
 
-        Log::info('Querying missions with completed predecessors', [
-            'event_type' => $eventType,
-            'user_id' => $user->id
-        ]);
-
         // get both sets of missions
         $missionsWithNoPredecessorsResults = $missionsWithNoPredecessors->get();
         $missionsWithCompletedPredecessorsResults = $missionsWithCompletedPredecessors->get();
-
-        Log::info('Found missions', [
-            'no_predecessors_count' => $missionsWithNoPredecessorsResults->count(),
-            'completed_predecessors_count' => $missionsWithCompletedPredecessorsResults->count()
-        ]);
 
         // combine both queries and filter by mission eligibility
         $allMissions = $missionsWithNoPredecessorsResults->concat($missionsWithCompletedPredecessorsResults);
         
         $eligibleMissions = $allMissions->filter(function ($mission) use ($user) {
-            $isEligible = $this->isMissionEligible($mission, $user);
-            
-            Log::info('Checking mission eligibility', [
-                'mission_id' => $mission->id,
-                'user_id' => $user->id,
-                'is_eligible' => $isEligible,
-                'has_predecessors' => $mission->predecessors->isNotEmpty(),
-                'predecessor_completion' => $mission->predecessors->map(function ($pred) {
-                    return [
-                        'predecessor_id' => $pred->id,
-                        'is_completed' => optional($pred->participants->first())->is_completed ?? false
-                    ];
-                })
-            ]);
-            
-            return $isEligible;
+            return $this->isMissionEligible($mission, $user);
         });
-
-        Log::info('Final eligible missions', [
-            'total_eligible' => $eligibleMissions->count(),
-            'mission_ids' => $eligibleMissions->pluck('id')
-        ]);
 
         return $eligibleMissions;
     }
@@ -166,17 +130,6 @@ class MissionService
             'monthly' => !$latestParticipation->pivot->completed_at || !Carbon::parse($latestParticipation->pivot->completed_at)->isSameMonth(now()),
             default => true,
         };
-
-        // Log::info('Mission eligibility check result', [
-        //     'mission_id' => $mission->id,
-        //     'frequency' => $mission->frequency,
-        //     'is_eligible' => $isEligible,
-        //     'started_at' => $startedAt ? $startedAt->toDateTimeString() : null,
-        //     'is_completed' => $latestParticipation->pivot->is_completed,
-        //     'claimed_at' => $latestParticipation->pivot->claimed_at,
-        //     'latest_participation_id' => $latestParticipation->pivot->id,
-        //     'is_today' => $startedAt ? $startedAt->isToday() : null
-        // ]);
 
         return $isEligible;
     }
