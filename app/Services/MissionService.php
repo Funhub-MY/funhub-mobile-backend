@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Events\MissionProgressUpdated;
 use App\Notifications\MissionCompleted;
 use App\Notifications\RewardReceivedNotification;
+use App\Notifications\MissionStarted;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -64,10 +65,34 @@ class MissionService
             ->with(['participants' => function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             }])
+            ->with('predecessors.participants')  // Eager load predecessors and their participants
             ->whereJsonContains('events', $eventType)
             ->get()
             ->filter(function ($mission) use ($user) {
-                return $this->isMissionEligible($mission, $user);
+                // First check if mission is eligible based on frequency and completion
+                if (!$this->isMissionEligible($mission, $user)) {
+                    Log::info('Mission not eligible based on frequency/completion', [
+                        'mission_id' => $mission->id,
+                        'user_id' => $user->id,
+                        'frequency' => $mission->frequency
+                    ]);
+                    return false;
+                }
+
+                // For accumulated missions, check if all prerequisites are completed
+                if ($mission->frequency === 'accumulated') {
+                    $prerequisitesCompleted = $this->arePredecessorsCompleted($user, $mission);
+                    if (!$prerequisitesCompleted) {
+                        Log::info('Accumulated mission prerequisites not completed', [
+                            'mission_id' => $mission->id,
+                            'user_id' => $user->id,
+                            'frequency' => $mission->frequency
+                        ]);
+                        return false;
+                    }
+                }
+
+                return true;
             });
     }
 
@@ -334,16 +359,6 @@ class MissionService
      */
     private function updateProgress($userMission, Mission $mission, string $eventType): void
     {
-        // check if all predecessors are completed before allowing progress update
-        if (!$this->arePredecessorsCompleted($userMission->user, $mission)) {
-            Log::info('Skipping progress update - prerequisites not completed', [
-                'mission_id' => $mission->id,
-                'user_id' => $userMission->user->id,
-                'frequency' => $mission->frequency
-            ]);
-            return;
-        }
-
         Log::info('Starting progress update', [
             'mission_id' => $mission->id,
             'event_type' => $eventType,
