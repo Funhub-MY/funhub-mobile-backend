@@ -630,6 +630,12 @@ class MissionService
             }])
             ->get();
 
+        Log::info('Predecessor statuses', [
+            'mission_id' => $mission->id,
+            'user_id' => $user->id,
+            'predecessor_statuses' => $predecessorStatuses
+        ]);
+
         // check if any predecessor is not completed
         foreach ($predecessorStatuses as $predecessor) {
             $isCompleted = $predecessor->participants
