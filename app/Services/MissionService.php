@@ -68,28 +68,73 @@ class MissionService
                 $query->where('user_id', $user->id);
             }]);
 
+        Log::info('Querying missions with no predecessors', [
+            'event_type' => $eventType,
+            'user_id' => $user->id
+        ]);
+
         // then get missions whose predecessors are all completed
+        // we need to ensure ALL predecessors have completed participation records
         $missionsWithCompletedPredecessors = Mission::enabled()
             ->whereJsonContains('events', $eventType)
             ->whereHas('predecessors')
-            ->whereDoesntHave('predecessors.participants', function ($query) use ($user) {
-                $query->where('missions_users.user_id', $user->id)
-                    ->where(function ($q) {
-                        $q->where('missions_users.is_completed', 0)
-                            ->orWhereNull('missions_users.is_completed');
-                    });
+            ->whereHas('predecessors', function ($query) use ($user) {
+                $query->whereHas('participants', function ($q) use ($user) {
+                    $q->where('missions_users.user_id', $user->id)
+                        ->where('missions_users.is_completed', 1);
+                });
+            }, '=', function ($query) {
+                $query->selectRaw('count(*)')->from('mission_predecessor')
+                    ->whereColumn('mission_predecessor.mission_id', 'missions.id');
             })
             ->with(['participants' => function ($query) use ($user) {
                 $query->where('user_id', $user->id);
+            }, 'predecessors.participants' => function ($query) use ($user) {
+                $query->where('user_id', $user->id);
             }]);
 
+        Log::info('Querying missions with completed predecessors', [
+            'event_type' => $eventType,
+            'user_id' => $user->id
+        ]);
+
+        // get both sets of missions
+        $missionsWithNoPredecessorsResults = $missionsWithNoPredecessors->get();
+        $missionsWithCompletedPredecessorsResults = $missionsWithCompletedPredecessors->get();
+
+        Log::info('Found missions', [
+            'no_predecessors_count' => $missionsWithNoPredecessorsResults->count(),
+            'completed_predecessors_count' => $missionsWithCompletedPredecessorsResults->count()
+        ]);
+
         // combine both queries and filter by mission eligibility
-        return $missionsWithNoPredecessors
-            ->union($missionsWithCompletedPredecessors)
-            ->get()
-            ->filter(function ($mission) use ($user) {
-                return $this->isMissionEligible($mission, $user);
-            });
+        $allMissions = $missionsWithNoPredecessorsResults->concat($missionsWithCompletedPredecessorsResults);
+        
+        $eligibleMissions = $allMissions->filter(function ($mission) use ($user) {
+            $isEligible = $this->isMissionEligible($mission, $user);
+            
+            Log::info('Checking mission eligibility', [
+                'mission_id' => $mission->id,
+                'user_id' => $user->id,
+                'is_eligible' => $isEligible,
+                'has_predecessors' => $mission->predecessors->isNotEmpty(),
+                'predecessor_completion' => $mission->predecessors->map(function ($pred) {
+                    return [
+                        'predecessor_id' => $pred->id,
+                        'is_completed' => optional($pred->participants->first())->is_completed ?? false
+                    ];
+                })
+            ]);
+            
+            return $isEligible;
+        });
+
+        Log::info('Final eligible missions', [
+            'total_eligible' => $eligibleMissions->count(),
+            'mission_ids' => $eligibleMissions->pluck('id')
+        ]);
+
+        return $eligibleMissions;
     }
 
     /**
