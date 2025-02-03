@@ -123,8 +123,8 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             $ratings = $storeCount > 0 ? round($totalRating / $storeCount, 1) : 0;
             
             // calculate discount rate
-            if ($this->fiat_price > 0 && $this->discounted_fiat_price > 0) {
-                $discountRate = round((($this->fiat_price - $this->discounted_fiat_price) / $this->fiat_price) * 100, 1);
+            if ($this->fiat_price > 0 && $this->discounted_point_fiat_price > 0) {
+                $discountRate = round((($this->point_fiat_price - $this->discounted_point_fiat_price) / $this->point_fiat_price) * 100, 1);
             }
             
             // calculate final score (ratings + discount rate)
