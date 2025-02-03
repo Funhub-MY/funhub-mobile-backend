@@ -4,9 +4,11 @@ namespace App\Http\Resources;
 
 use App\Models\FollowRequest;
 use App\Models\User;
+use App\Models\Setting;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class UserResource extends JsonResource
 {
@@ -50,12 +52,18 @@ class UserResource extends JsonResource
         }
 
         $tutorialSteps = Config::get('app.tutorial_steps', []);
+        
+        // check override setting from cache, if not exists, get from DB and cache it
+        $overrideAllTutorials = Cache::remember('setting_override_all_tutorial_completed', 3600, function () {
+            return Setting::where('key', 'override_all_tutorial_completed')->value('value') === 'true';
+        });
+
         $completedSteps = $this->tutorialCompletions->pluck('tutorial_step')->toArray();
 
-        $tutorialProgress = array_map(function ($step) use ($completedSteps) {
+        $tutorialProgress = array_map(function ($step) use ($completedSteps, $overrideAllTutorials) {
             return [
                 'step' => $step,
-                'completed' => in_array($step, $completedSteps)
+                'completed' => $overrideAllTutorials ? true : in_array($step, $completedSteps)
             ];
         }, $tutorialSteps);
 
