@@ -43,8 +43,8 @@ class ArticleResource extends JsonResource
         $userAvatar = null;
         
         if ($user instanceof User) {
-            // Use the accessor from User model which handles fallback
-            $userAvatar = $user->avatar_url;
+            // use the avatar thumb url which has a fallback to ui-avatars
+            $userAvatar = $user->avatar_thumb_url;
         }
 
         return [
