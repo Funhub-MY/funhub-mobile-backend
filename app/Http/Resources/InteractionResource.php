@@ -27,8 +27,10 @@ class InteractionResource extends JsonResource
                 $name = '用户已注销';
             } else {
                 $name = $user->name;
-                // use the accessor from User model which handles fallback
-                $avatar = $user->avatar_url;
+                // use the avatar thumb url which has a fallback to ui-avatars
+                if ($user) {
+                    $avatar = $user->avatar_thumb_url;
+                }
             }
         }
 
