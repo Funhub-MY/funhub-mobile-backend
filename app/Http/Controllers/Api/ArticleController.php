@@ -110,42 +110,38 @@ class ArticleController extends Controller
                 'articles.source'
             ])
             ->with([
-                'user:id,name,username',
-                'user.media' => function($q) {
-                    $q->where('collection_name', 'avatar');
+                'user' => function($q) {
+                    $q->select('id', 'name', 'username', 'status')
+                      ->with(['media' => function($q) {
+                          $q->where('collection_name', 'avatar');
+                      }]);
                 },
-                'categories' => function($q) {
-                    $q->select([
-                        'article_categories.id',
-                        'article_categories.name',
-                        'article_categories.name_translation',
-                        'article_categories.slug',
-                        'article_categories.cover_media_id',
-                        'article_categories.parent_id',
-                        'article_categories.is_featured',
-                        'article_categories.created_at',
-                        'article_categories.updated_at'
-                    ]);
-                },
+                'categories:id,name,name_translation,slug,cover_media_id,parent_id,is_featured,created_at,updated_at',
                 'categories.media',
-                'subCategories' => function($q) {
-                    $q->select([
-                        'article_categories.id',
-                        'article_categories.name',
-                        'article_categories.name_translation',
-                        'article_categories.slug',
-                        'article_categories.cover_media_id',
-                        'article_categories.parent_id',
-                        'article_categories.is_featured',
-                        'article_categories.created_at',
-                        'article_categories.updated_at'
-                    ]);
-                },
+                'subCategories:id,name,name_translation,slug,cover_media_id,parent_id,is_featured,created_at,updated_at',
                 'subCategories.media',
                 'media',
                 'tags:id,name',
+                'interactions' => function($q) use ($request) {
+                    $q->select('id', 'user_id', 'type', 'interactable_id', 'interactable_type', 'created_at', 'updated_at')
+                      ->where('interactable_type', Article::class)
+                      ->with(['user' => function($q) {
+                          $q->select('id', 'name', 'status')
+                            ->with(['media' => function($q) {
+                                $q->where('collection_name', 'avatar')
+                                  ->select('id', 'model_id', 'model_type', 'disk', 'file_name', 'manipulations', 'custom_properties', 'generated_conversions', 'collection_name');
+                            }]);
+                      }]);
+                    
+                    if ($request->user()) {
+                        $q->where(function($query) use ($request) {
+                            $query->where('user_id', $request->user()->id)
+                                  ->orWhereRaw('1=1');
+                        });
+                    }
+                },
                 'location' => function($q) {
-                    $q->select([
+                    $q->select(
                         'locations.id',
                         'locations.name',
                         'locations.city',
@@ -157,16 +153,16 @@ class ArticleController extends Controller
                         'locations.zip_code',
                         'locations.state_id',
                         'locations.country_id'
-                    ])
-                    ->with(['ratings' => function($q) {
-                        $q->select([
-                            'location_ratings.id',
-                            'location_ratings.location_id',
-                            'location_ratings.user_id',
-                            'location_ratings.rating'
-                        ])
-                        ->from('location_ratings');
-                    }]);
+                    )->with([
+                        'ratings' => function($q) {
+                            $q->select(
+                                'location_ratings.id',
+                                'location_ratings.location_id',
+                                'location_ratings.user_id',
+                                'location_ratings.rating'
+                            );
+                        }
+                    ]);
                 }
             ])
             ->where('status', Article::STATUS_PUBLISHED);

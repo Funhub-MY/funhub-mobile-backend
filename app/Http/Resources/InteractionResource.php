@@ -17,29 +17,34 @@ class InteractionResource extends JsonResource
      */
     public function toArray($request)
     {
+        // get the raw user relationship first
+        $user = $this->resource->user;
         $name = null;
         $avatar = null;
-        if ($this->user->status == User::STATUS_ARCHIVED) {
-            $name = '用户已注销';
-            $avatar = null;
-        } else {
-            $name = $this->user->name;
-            $avatar = $this->user->avatar_url;
+        
+        if ($user instanceof User) {
+            if ($user->status == User::STATUS_ARCHIVED) {
+                $name = '用户已注销';
+            } else {
+                $name = $user->name;
+                // use the accessor from User model which handles fallback
+                $avatar = $user->avatar_url;
+            }
         }
 
         return [
             'id' => $this->id,
-            'user' => [
-                'id' => $this->user->id,
+            'user' => $user instanceof User ? [
+                'id' => $user->id,
                 'name' => $name,
                 'avatar' => $avatar,
-            ],
+            ] : null,
             'type' => $this->type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'share_url' => null,
-            'created_at_diff' => $this->created_at->diffForHumans(),
-            'updated_at_diff' => $this->created_at->diffForHumans(),
+            'created_at_diff' => $this->created_at ? $this->created_at->diffForHumans() : null,
+            'updated_at_diff' => $this->updated_at ? $this->updated_at->diffForHumans() : null,
         ];
     }
 }
