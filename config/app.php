@@ -287,7 +287,7 @@ return [
         'accumulated_bookmarks' => 'Accumulated Bookmarks an Article',
         'accumulated_shares' => 'Accumulated Shares for an Article',
         'accumulated_comments' => 'Accumulated Comments for an Article',
-        'accumulated_likes_for_ratings' => 'Accumulated Likes For Ratings for an Article',
+        'accumulated_likes_for_ratings' => 'Accumulated Likes For Ratings for an Store Ratings',
     ],
 
     'auto_disburse_reward' => env('AUTO_DISBURSE_REWARD', false),

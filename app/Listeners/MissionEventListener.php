@@ -13,6 +13,7 @@ use App\Events\CommentLiked;
 use App\Services\MissionService;
 use App\Events\InteractionCreated;
 use App\Models\Store;
+use App\Models\StoreRating;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
@@ -94,6 +95,46 @@ class MissionEventListener
         $eventType = $this->mapInteractionToEventType($interaction);
         if ($eventType) {
             $this->missionService->handleEvent($eventType, $user, ['interaction' => $interaction]);
+            
+            // handle accumulated events for the article owner
+            try {
+                if ($interaction->interactable_type === Article::class) {
+                    $article = $interaction->interactable;
+                    $articleOwner = $article->user;
+                    
+                    // map interaction types to accumulated events
+                    $accumulatedEventType = match($interaction->type) {
+                        Interaction::TYPE_LIKE => 'accumulated_likes',
+                        Interaction::TYPE_SHARE => 'accumulated_shares',
+                        Interaction::TYPE_BOOKMARK => 'accumulated_bookmarks',
+                        default => null,
+                    };
+                    
+                    if ($accumulatedEventType) {
+                        $this->missionService->handleEvent($accumulatedEventType, $articleOwner, [
+                            'interaction' => $interaction,
+                            'article' => $article
+                        ]);
+                    }
+                } elseif ($interaction->interactable_type === StoreRating::class && $interaction->type === Interaction::TYPE_LIKE) {
+                    // handle accumulated likes for store ratings
+                    $rating = $interaction->interactable;
+                    if ($rating->article) {
+                        $owner = $rating->user;
+                        $this->missionService->handleEvent('accumulated_likes_for_ratings', $owner, [
+                            'interaction' => $interaction,
+                            'rating' => $rating,
+                            'article' => $rating->article
+                        ]);
+                    }
+                }
+            } catch (\Exception $e) {
+                Log::error('Error handling accumulated interaction event', [
+                    'event' => get_class($event),
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+            }
         }
     }
 
@@ -183,13 +224,13 @@ class MissionEventListener
 
     protected function handleRatedStore(\App\Events\RatedStore $event): void
     {
-        if ($this->isSpamRating($event->user, $event->store)) {
-            Log::warning('Spam rating detected', [
-                'user_id' => $event->user->id,
-                'store_id' => $event->store->id
-            ]);
-            return;
-        }
+        // if ($this->isSpamRating($event->user, $event->store)) {
+        //     Log::warning('Spam rating detected', [
+        //         'user_id' => $event->user->id,
+        //         'store_id' => $event->store->id
+        //     ]);
+        //     return;
+        // }
 
         $this->missionService->handleEvent('reviewed_store', $event->user);
     }
