@@ -127,12 +127,8 @@ class ArticleController extends Controller
                       ->where('interactable_type', Article::class)
                       ->with(['user' => function($q) {
                           $q->select('id', 'name', 'status')
-                            ->with(['media' => function($q) {
-                                $q->where('collection_name', 'avatar')
-                                  ->select('id', 'model_id', 'model_type', 'disk', 'file_name', 'manipulations', 'custom_properties', 'generated_conversions', 'collection_name');
-                            }]);
+                            ->with(['media']);
                       }]);
-                    
                     if ($request->user()) {
                         $q->where(function($query) use ($request) {
                             $query->where('user_id', $request->user()->id)
