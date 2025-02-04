@@ -17,30 +17,34 @@ class ArticleResource extends JsonResource
      */
     public function toArray($request)
     {
+        $currentUser = $request->user();
+        $currentUserId = $currentUser ? $currentUser->id : null;
+        $interactions = $this->whenLoaded('interactions');
+        
+        // optimize location query
         $location = null;
         if ($this->has('location')) {
             $loc = $this->location->first();
-
-            // if artilce locaiton has ratings, get current article owner's ratings
             if ($loc && $loc->has('ratings')) {
                 $articleOwnerRating = $loc->ratings->where('user_id', $this->user_id)->first();
                 $location = [
                     'id' => $loc->id,
                     'name' => $loc->name,
                     'address' => $loc->full_address,
-                    'article_owner_rating' => ($articleOwnerRating) ? $articleOwnerRating->rating : null,
-                    'lat' =>  floatval($loc->lat),
+                    'article_owner_rating' => $articleOwnerRating ? $articleOwnerRating->rating : null,
+                    'lat' => floatval($loc->lat),
                     'lng' => floatval($loc->lng),
                 ];
             }
         }
 
-        $userAvatar = ($this->user->media->count() > 0) ? $this->user->media->filter(function ($item) {
-            return $item->collection_name == 'avatar';
-        })->first() : null;
-
-        if ($userAvatar) {
-            $userAvatar = $userAvatar->getFullUrl();
+        // get user data from eager loaded relationship
+        $user = $this->whenLoaded('user');
+        $userAvatar = null;
+        
+        if ($user instanceof User) {
+            // Use the accessor from User model which handles fallback
+            $userAvatar = $user->avatar_url;
         }
 
         return [
@@ -49,18 +53,20 @@ class ArticleResource extends JsonResource
             'type' => $this->type,
             'title' => $this->title,
             'body' => $this->body,
-            'user' => [
-                'id' => $this->user->id,
-                'name' => $this->user->name,
-                'username' => $this->user->username,
-                'avatar' => $userAvatar,
-                'avatar_thumb' => $this->user->avatar_thumb_url,
-                'following_count' => $this->user_followings_count,
-                'followers_count' => $this->user_followers_count,
-                'has_avatar' => $this->user->hasMedia('avatar'),
-                'is_following' => ($request->user()) ? $this->user->followers->contains($request->user()->id) : false,
-				'has_requested_follow' => ($request->user()) ? $this->user->beingFollowedRequests->contains('user_id', $request->user()->id) : false,
-            ],
+            'user' => $this->when($user, function() use ($user, $userAvatar, $request, $currentUserId) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'username' => $user->username,
+                    'avatar' => $userAvatar,
+                    'avatar_thumb' => $userAvatar, // Use the same URL for thumb to reduce queries
+                    'following_count' => $this->user_followings_count,
+                    'followers_count' => $this->user_followers_count,
+                    'has_avatar' => $userAvatar !== null,
+                    'is_following' => $currentUserId ? $user->followers->contains($currentUserId) : false,
+                    'has_requested_follow' => $currentUserId ? $user->beingFollowedRequests->contains('user_id', $currentUserId) : false,
+                ];
+            }),
             'categories' => ArticleCategoryResource::collection($this->categories->load('media')),
             'sub_categories' => ArticleCategoryResource::collection($this->subCategories->load('media')),
             'media' => MediaResource::collection($this->media),
@@ -73,37 +79,23 @@ class ArticleResource extends JsonResource
             // 'tagged_users' => UserResource::collection($this->taggedUsers),
             'count' => [
                 'comments' => $this->comments_count ?? 0,
-                'likes' => $this->when(isset($this->interactions), function () {
-                    return $this->interactions->where('type', Interaction::TYPE_LIKE)->count();
-                }, 0),
-                'dislikes' => $this->when(isset($this->interactions), function () {
-                    return $this->interactions->where('type', Interaction::TYPE_DISLIKE)->count();
-                }, 0),
-                'share' => $this->when(isset($this->interactions), function () {
-                    return $this->interactions->where('type', Interaction::TYPE_SHARE)->count();
-                }, 0),
-                'bookmarks' => $this->when(isset($this->interactions), function () {
-                    return $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count();
-                }, 0),
+                'likes' => $interactions ? $interactions->where('type', Interaction::TYPE_LIKE)->count() : 0,
+                'dislikes' => $interactions ? $interactions->where('type', Interaction::TYPE_DISLIKE)->count() : 0,
+                'share' => $interactions ? $interactions->where('type', Interaction::TYPE_SHARE)->count() : 0,
+                'bookmarks' => $interactions ? $interactions->where('type', Interaction::TYPE_BOOKMARK)->count() : 0,
                 'views' => $this->views_count ?? 0,
             ],
-            'my_interactions' => [
-                'like' => $this->when(auth()->check(), function () {
-                    return $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->first();
-                }),
-                'dislike' => $this->when(auth()->check(), function () {
-                    return $this->interactions->where('type', Interaction::TYPE_DISLIKE)->where('user_id', auth()->user()->id)->first();
-                }),
-                'share' => $this->when(auth()->check(), function () {
-                    return $this->interactions->where('type', Interaction::TYPE_SHARE)->where('user_id', auth()->user()->id)->first();
-                }),
-                'bookmark' => $this->when(auth()->check(), function () {
-                    return $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->first();
-                }),
-            ],
+            'my_interactions' => $this->when($currentUserId, function () use ($interactions, $currentUserId) {
+                return [
+                    'like' => $interactions ? $interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', $currentUserId)->first() : null,
+                    'dislike' => $interactions ? $interactions->where('type', Interaction::TYPE_DISLIKE)->where('user_id', $currentUserId)->first() : null,
+                    'share' => $interactions ? $interactions->where('type', Interaction::TYPE_SHARE)->where('user_id', $currentUserId)->first() : null,
+                    'bookmark' => $interactions ? $interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', $currentUserId)->first() : null,
+                ];
+            }),
             'has_merchant_offer' => (isset($this->has_merchant_offer) && $this->has_merchant_offer) ? true : false,
-            'user_liked' => (auth()->user()) ? $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->count() > 0 : false,
-            'user_bookmarked' => (auth()->user()) ? $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->count() > 0 : false,
+            'user_liked' => $currentUserId && $interactions ? $interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', $currentUserId)->isNotEmpty() : false,
+            'user_bookmarked' => $currentUserId && $interactions ? $interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', $currentUserId)->isNotEmpty() : false,
             'lang' => $this->lang,
             'visibility' => $this->visibility,
             'is_imported' => $this->imports->count() > 0,
