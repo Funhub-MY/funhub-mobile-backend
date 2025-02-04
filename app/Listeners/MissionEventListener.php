@@ -126,6 +126,16 @@ class MissionEventListener
         }
 
         $this->missionService->handleEvent('comment_created', $event->comment->user);
+        // accumulated comment for article owner
+        try {
+            $this->missionService->handleEvent('accumulated_comments', $event->comment->commentable->user, ['comment' => $event->comment]);
+        } catch (\Exception $e) {
+            Log::error('accumulated_comments Error handling mission event ', [
+                'event' => get_class($event),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
     }
 
     protected function handleCommentLiked(CommentLiked $event): void

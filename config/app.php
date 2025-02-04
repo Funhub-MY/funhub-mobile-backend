@@ -281,7 +281,13 @@ return [
         'purchase_gift_card' => 'Purchase a gift card',
         'reviewed_store' => 'Reviewed a store',
         'closed_a_ticket' => 'Closed a complain ticket raised by user',
-        'closed_an_information_update_ticket' => 'Closed an information update ticket raised by user'
+        'closed_an_information_update_ticket' => 'Closed an information update ticket raised by user',
+
+        'accumulated_likes' => 'Accumulated Likes for an Article',
+        'accumulated_bookmarks' => 'Accumulated Bookmarks an Article',
+        'accumulated_shares' => 'Accumulated Shares for an Article',
+        'accumulated_comments' => 'Accumulated Comments for an Article',
+        'accumulated_likes_for_ratings' => 'Accumulated Likes For Ratings for an Article',
     ],
 
     'auto_disburse_reward' => env('AUTO_DISBURSE_REWARD', false),
