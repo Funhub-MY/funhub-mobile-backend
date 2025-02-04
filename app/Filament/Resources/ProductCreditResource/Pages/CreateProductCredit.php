@@ -26,12 +26,17 @@ class CreateProductCredit extends CreateRecord
     protected function afterCreate(): void
     {
         $record = $this->record;
+
+        $price = $record->product->unit_price;
+        if ($record->product->discount_price) { // if has discounted price use it
+            $price = $record->product->discount_price;
+        }
         
         // create transaction
         $transactionService = app(TransactionService::class);
         $transaction = $transactionService->create(
             $record->product,
-            $record->product->unit_price, // since only one record
+            $price, // since only one record
             'manual',
             $record->user_id,
             'manual',
