@@ -278,7 +278,10 @@ class PaymentController extends Controller
                     if ($transaction->user->email) {
                         try {
                             $product = Product::where('id', $transaction->transactionable_id)->first();
-                            $quantity = $transaction->amount / $product->unit_price;
+                            // $quantity = $transaction->amount / $product->unit_price;
+                            //  The payment is based on the discount price, so the quantity shall deduct by discount price and not original price
+                            $quantity = $transaction->amount / $product->discount_price;
+
                             $transaction->user->notify(new PurchasedGiftCardNotification($transaction->transaction_no, $transaction->updated_at, $product->name, $quantity, $transaction->amount));
                         } catch (\Exception $e) {
                             Log::error('Error sending PurchasedGiftCardNotification: ' . $e->getMessage());
