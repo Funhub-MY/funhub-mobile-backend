@@ -145,6 +145,7 @@ class StoreResource extends Resource
                             // categories
                             Select::make('categories')
                                 ->relationship('categories', 'name')
+                                ->required()
                                 ->getOptionLabelFromRecordUsing(fn($record) => $record->name . ($record->parent ? ' - ' . $record->parent->name : ''))
                                 ->searchable()
                                 ->preload()

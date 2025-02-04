@@ -178,13 +178,15 @@ class SupportRequestResource extends Resource
 
                 SelectFilter::make('assignee_id')
                     ->label('Assignee')
+					->searchable()
                     ->relationship('assignee', 'name', function (Builder $query) {
                         $query->whereNotNull('name')->withTrashed();
                     }),
 
                 SelectFilter::make('requestor_id')
                     ->label('Requestor')
-                    ->relationship('requestor', 'name', function (Builder $query) {
+					->searchable()
+					->relationship('requestor', 'name', function (Builder $query) {
                         $query->whereNotNull('name')->withTrashed();
                     }),
             ])

@@ -58,6 +58,7 @@ class Kernel extends ConsoleKernel
         if (config('app.auto_redistribute_vouchers') == true) {
             $schedule->command('campaign:redistribute-quantities')->dailyAt('00:30');
         }
+		$schedule->command('articles:check-expired')->dailyAt('01:00');
 
         // Every Two Hours
         $schedule->command('generate:article-views')->everyTwoHours();

@@ -73,7 +73,7 @@ class MerchantOfferResource extends JsonResource
                     'id' => $store->id,
                     'name' => $store->name,
                     'address' => $store->address,
-                    'ratings' => number_format(floatval($store->ratings), 1),
+                    'ratings' => number_format(floatval($store->storeRatings->avg('rating')), 1),
                     'total_ratings' => ($store->storeRatings) ? $store->storeRatings->count() : 0,
                     'address_postcode' => $store->address_postcode,
                     'lat' => ($store->location && isset($store->location->lat)) ? floatval($store->location->lat) : $store->lang,

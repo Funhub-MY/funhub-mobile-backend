@@ -34,6 +34,11 @@ class CampaignResource extends Resource
             ->schema([
                 Section::make('Campaign Details')
                     ->schema([
+                        TextInput::make('order')
+                            ->required()
+                            ->numeric()
+                            ->label('Order')
+                            ->default(fn () => (Campaign::max('order') ?? 0) + 1),
                         TextInput::make('title')
                             ->autofocus()
                             ->required(),
@@ -45,8 +50,24 @@ class CampaignResource extends Resource
                             ->helperText('Will be displayed as web view in app.')
                             ->required(),
 
+                        Forms\Components\SpatieMediaLibraryFileUpload::make('event_banner')
+                            ->label('Event Banner Image')
+                            ->collection(Campaign::EVENT_COLLECTION)
+                            ->columnSpan('full')
+                            ->disk(function () {
+                                if (config('filesystems.default') === 's3') {
+                                    return 's3_public';
+                                }
+                            })
+                            ->acceptedFileTypes(['image/*'])
+                            ->maxFiles(20)
+                            ->enableReordering()
+                            ->appendFiles()
+                            ->rules('image')
+                            ->required(),
+
                         Forms\Components\SpatieMediaLibraryFileUpload::make('banner')
-                            ->label('Banner Image')
+                            ->label('Banner Image (Home)')
                             ->collection(Campaign::BANNER_COLLECTION)
                             ->columnSpan('full')
                             ->disk(function () {
@@ -61,7 +82,7 @@ class CampaignResource extends Resource
                             ->rules('image'),
 
                         Forms\Components\SpatieMediaLibraryFileUpload::make('icon')
-                            ->label('Icon Image')
+                            ->label('Floating Button Image')
                             ->collection(Campaign::ICON_COLLECTION)
                             ->columnSpan('full')
                             ->disk(function () {
@@ -73,7 +94,8 @@ class CampaignResource extends Resource
                             ->maxFiles(20)
                             ->enableReordering()
                             ->appendFiles()
-                            ->rules('image'),
+                            ->rules('image')
+                            ->required(),
 
 
                         Toggle::make('is_active')
@@ -87,6 +109,9 @@ class CampaignResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('order')
+                    ->sortable()
+                    ->label('Order'),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable()
                     ->sortable(),

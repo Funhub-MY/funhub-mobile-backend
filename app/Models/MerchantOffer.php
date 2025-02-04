@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\BaseModel;
+use Carbon\Carbon;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -83,12 +84,24 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
     {
         $geolocs = null;
         $stores = null;
+        $ratings = 0;
+        $score = 0;
+        $discountRate = 0;
+
         if ($this->stores()->count() > 0) {
             $geolocs = [];
             $stores = [];
-            // load store location
-            $this->stores->load('location');
+            // load store location and ratings
+            $this->stores->load(['location', 'storeRatings']);
+            $totalRating = 0;
+            $storeCount = 0;
+            
             foreach ($this->stores as $store) {
+                // calculate average rating for this store
+                $storeRating = $store->storeRatings()->avg('rating') ?? 0;
+                $totalRating += $storeRating;
+                $storeCount++;
+                
                 // dont repeat if $stores already have same id
                 if (!in_array($store->id, array_column($stores, 'id'))) {
                     $stores[] = [
@@ -105,39 +118,76 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
                     ];
                 }
             }
+            
+            // calculate average rating across all stores
+            $ratings = $storeCount > 0 ? round($totalRating / $storeCount, 1) : 0;
+            
+            // calculate discount rate
+            if ($this->fiat_price > 0 && $this->discounted_point_fiat_price > 0) {
+                $discountRate = round((($this->point_fiat_price - $this->discounted_point_fiat_price) / $this->point_fiat_price) * 100, 1);
+            }
+            
+            // calculate final score (ratings + discount rate)
+            $score = $ratings + $discountRate;
         }
 
         // load categories relationship
         $this->load('categories');
+
+        // get state from store->location
+        $states = [];
+        foreach ($this->stores as $store) {
+            $firstLocation = $store->location->first();
+            if ($firstLocation && isset($firstLocation->state)) {
+                $states[] = $firstLocation->state->name;
+            }
+        }
+
+        if (in_array('Selangor', $states) 
+        || in_array('Kuala Lumpur', $states)
+        || in_array('Wilayah Persekutuan Kuala Lumpur', $states)) {
+            $states[] = 'Klang Valley';
+        }
         
         return [
             'id' => $this->id,
             'sku' => $this->sku,
-            'merchant_id' => ($this->user) ? $this->user->merchant->id : null,
+            'merchant_id' => ($this->user && !empty($this->user->merchant)) ? $this->user->merchant->id : null,
             'stores' => $stores,
             'merchant' => [
-                'id' => ($this->user) ? $this->user->merchant->id : null,
-                'business_name' => ($this->user) ? $this->user->merchant->business_name : null,
-                'user' => [
+                'id' => ($this->user && !empty($this->user->merchant)) ? $this->user->merchant->id : null,
+                'business_name' => ($this->user && !empty($this->user->merchant)) ? $this->user->merchant->business_name : null,
+                'user' => ($this->user) ? [
                     'id' => $this->user->id,
                     'name' => $this->user->name,
-                ],
+                ] : null,
             ],
+            'states' => $states,
             'status' => $this->status,
             'name' => $this->name,
-            // 'description' => $this->description,
             'unit_price' => $this->unit_price,
+            'point_fiat_price' => (float) $this->point_fiat_price,
+            'discounted_point_fiat_price' => (float) $this->discounted_point_fiat_price,
+            'fiat_price' => (float) $this->fiat_price,
+            'discounted_fiat_price' => (float) $this->discounted_fiat_price,
+            'available_at_unix' => Carbon::parse($this->available_at)->unix(),
+            'available_until_unix' => Carbon::parse($this->available_until)->unix(),
             'available_at' => $this->available_at,
             'available_until' => $this->available_until,
             'quantity' => $this->quantity,
             'claimed_quantity' => $this->claimed_quantity,
-            'categories' => $this->allOfferCategories,
+            'categories' => ($this->allOfferCategories?->map(function($category) {
+                return ['id' => $category->id, 'name' => $category->name];
+            })->values()->toArray()) ?? [],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_at_diff' => $this->created_at->diffForHumans(),
             'updated_at_diff' => $this->updated_at->diffForHumans(),
             'category_ids' => $this->categories->pluck('id')->toArray(),
             '_geoloc' => $geolocs,
+            'discount_rate' => $discountRate,
+            'score' => $score,
+            'ratings' => $ratings,
         ];
     }
 

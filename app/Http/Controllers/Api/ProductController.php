@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\MerchantOfferClaimResource;
 use App\Http\Resources\MerchantOfferResource;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\ProductHistoryResource;
 use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
@@ -100,11 +101,90 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = Product::find($id)
+        $product = Product::where('id', $id)
             ->published()
-            ->get()->first();
+            ->first();
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 422);
+        }
 
         return new ProductResource($product);
+    }
+
+    /**
+     * Get Total Quantity of Funcard purchased by user
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Product
+     * @queryParam from_date string optional Filter by transaction created from this date (Y-m-d format). Example: 2025-01-01
+     * @queryParam to_date string optional Filter by transaction created until this date (Y-m-d format). Example: 2025-01-16
+     * @queryParam product_ids integer optional Filter by product_id. Example: 1,2,3,4 or 1
+     * @response scenario=success {
+     *     "quantity": 10
+     * }
+     */
+
+    public function getTotalPurchasedByUser(Request $request) {
+        // base query builder for date filtering
+        $dateQuery = function ($query) use ($request) {
+            if ($request->has('from_date')) {
+                $query->whereDate('created_at', '>=', $request->from_date);
+            }
+            if ($request->has('to_date')) {
+                $query->whereDate('created_at', '<=', $request->to_date);
+            }
+            return $query;
+        };
+
+        // filter by status if provided, default to success product_id 1
+        $product_ids = $request->has('product_ids') ? explode(',', $request->get('product_ids')) : [1];
+
+        $transaction = Transaction::where('user_id', auth()->user()->id)
+            ->where('status', Transaction::STATUS_SUCCESS)
+            ->where('transactionable_type', Product::class)
+            ->whereIn('transactionable_id', $product_ids)
+            ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
+                return $dateQuery($query);
+            })
+            ->count();
+
+        return response()->json([
+            'quantity' => (int) $transaction
+        ]);
+    }
+
+    /**
+     * Get Funcard or Funbox for last 30 days Transactions History
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Product
+     * @response scenario=success {
+     * "data": []
+     * }
+     */
+
+    public function getHistory(Request $request) {
+
+        $query = Transaction::where('transactions.user_id', auth()->user()->id)
+            ->where('transactions.status', Transaction::STATUS_SUCCESS)
+            ->where('transactions.transactionable_type', Product::class)
+            ->whereDate('transactions.created_at', '>=', Carbon::now()->subDays(30)) // Last 30 days
+            ->whereDate('transactions.created_at', '<=', Carbon::now())
+            ->join('point_ledgers', function ($join) {
+                $join->on('transactions.user_id', '=', 'point_ledgers.user_id')
+                     ->on('transactions.transaction_no', '=', 'point_ledgers.remarks');
+            })
+            ->select('transactions.*', 'point_ledgers.amount AS point_amount') 
+            ->orderBy('transactions.created_at', 'desc')
+            ->get();
+
+
+        return ProductHistoryResource::collection($query);
     }
 
     /**
@@ -151,7 +231,8 @@ class ProductController extends Controller
             'payment_method' => 'required',
             'fiat_payment_method' => 'required_if:payment_method,fiat,in:fpx,card',
             'card_id' => 'exists:user_cards,id',
-            'quantity' => 'required|integer|min:1'
+            'quantity' => 'required|integer|min:1',
+			'referral_code' => 'nullable|string'
         ]);
 
        // check if user has verified email address
@@ -211,6 +292,7 @@ class ProductController extends Controller
             'app',
             ($request->has('email') ? $request->email : null),
             ($request->has('name') ? $request->name : null),
+            ($request->has('referral_code') ? $request->referral_code : null),
         );
 
         // if gateway is mpay call mpay service generate Hash for frontend form
