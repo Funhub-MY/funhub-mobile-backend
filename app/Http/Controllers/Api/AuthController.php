@@ -91,7 +91,7 @@ class AuthController extends Controller
             return response()->json(['message' => __('messages.error.auth_controller.User_not_active')], 401);
         }
 
-		$user->tokens()->delete();
+		// $user->tokens()->delete();
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -157,7 +157,7 @@ class AuthController extends Controller
                 'otp_verified_at' => now(),
             ]);
 
-			$user->tokens()->delete();
+			// $user->tokens()->delete();
 
 			// log user in
             $token = $user->createToken('authToken');
