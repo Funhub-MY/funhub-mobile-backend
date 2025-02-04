@@ -141,7 +141,71 @@ class TransactionResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
                 ExportBulkAction::make()->exports([
                     ExcelExport::make('table')->fromTable(),
-                ])
+                ]),
+                Tables\Actions\BulkAction::make('refresh_status')
+                    ->label('Refresh Status')
+                    ->icon('heroicon-o-refresh')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->deselectRecordsAfterCompletion()
+                    ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
+                        // Initialize MPAY gateway
+                        $gateway = new \App\Services\Mpay(
+                            config('services.mpay.mid'),
+                            config('services.mpay.hash_key')
+                        );
+
+                        $updated = 0;
+                        $skipped = 0;
+                        $failed = 0;
+
+                        foreach ($records as $record) {
+                            // Skip non-MPAY or non-pending transactions
+                            if ($record->gateway !== 'MPAY' || $record->status !== Transaction::STATUS_PENDING) {
+                                $skipped++;
+                                continue;
+                            }
+
+                            try {
+                                $response = $gateway->queryTransaction(
+                                    $record->transaction_no,
+                                    $record->amount
+                                );
+
+                                if (isset($response['responseCode'])) {
+                                    $newStatus = match($response['responseCode']) {
+                                        '0' => Transaction::STATUS_SUCCESS,
+                                        'PE' => Transaction::STATUS_PENDING,
+                                        default => Transaction::STATUS_FAILED
+                                    };
+
+                                    if ($record->status !== $newStatus) {
+                                        $record->status = $newStatus;
+                                        $record->save();
+                                        $updated++;
+                                    } else {
+                                        $skipped++;
+                                    }
+                                }
+                            } catch (\Exception $e) {
+                                \Illuminate\Support\Facades\Log::error('[MPAY] Bulk refresh failed for transaction ' . $record->transaction_no . ': ' . $e->getMessage());
+                                $failed++;
+                            }
+                        }
+
+                        // Show summary notification
+                        Filament\Notifications\Notification::make()
+                            ->title('Refresh Complete')
+                            ->body("Updated: {$updated}\nSkipped: {$skipped}\nFailed: {$failed}")
+                            ->success()
+                            ->send();
+                    })
+                    ->visible(fn (\Illuminate\Database\Eloquent\Collection $records = null): bool => 
+                        $records !== null && $records->contains(fn (Transaction $record): bool => 
+                            $record->gateway === 'MPAY' && 
+                            $record->status === Transaction::STATUS_PENDING
+                        )
+                    )
             ]);
     }
 

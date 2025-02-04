@@ -199,7 +199,76 @@ class Mpay {
 
         Log::info('Mpay queryCardToken response', $response);
 
-        return json_decode($response['body'], true);
+        return $response;
+    }
+
+    /**
+     * Query transaction status by invoice number
+     *
+     * @param string $invoice_no    Invoice number
+     * @param float $amount         Amount in RM
+     * @param string|null $authorize Optional - Pass 'authorize' to query capture transaction, leave empty for normal transaction
+     * @param string|null $postURL  Optional - URL to receive result from MPAY Payment Gateway
+     * @return array Response from MPAY containing transaction details
+     * @throws \Exception
+     */
+    public function queryTransaction(string $invoice_no, float $amount, ?string $authorize = null, ?string $postURL = null)
+    {
+        // check if mid and hashKey is set
+        if (!$this->mid || !$this->hashKey) {
+            throw new \Exception('Mpay MID or hash key is not set');
+        }
+
+        // convert amount 000000000100 represent RM 1.00
+        $amount = str_pad(number_format($amount, 2, '', ''), 12, '0', STR_PAD_LEFT);
+
+        // Prepare data for query
+        $data = [
+            'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
+            'mid' => $this->mid,
+            'invno' => $invoice_no,
+            'amt' => $amount,
+        ];
+
+        // Add optional parameters if provided
+        if ($authorize) {
+            $data['authorize'] = $authorize;
+        }
+
+        if ($postURL) {
+            $data['postURL'] = $postURL;
+        }
+
+        try {
+            $url = $this->url . '/payment/query';
+            Log::info('[MPAY] Query transaction request', ['url' => $url, 'data' => $data]);
+            
+            $response = $this->curlRequest($url, $data);
+            
+            if (isset($response['responseCode'])) {
+                Log::info('[MPAY] Query transaction response', ['response' => $response]);
+                
+                // Verify the response hash using the existing hash verification method
+                $verificationHash = $this->generateHashForResponse(
+                    $this->mid,
+                    $response['responseCode'],
+                    $response['authCode'] ?? '',
+                    $response['invno'],
+                    $response['amt']
+                );
+                
+                if ($verificationHash !== ($response['securehash2'] ?? '')) {
+                    throw new \Exception('Invalid response hash from MPAY');
+                }
+                
+                return $response;
+            }
+            
+            throw new \Exception('Failed to query transaction: Invalid response format');
+        } catch (\Exception $e) {
+            Log::error('[MPAY] Query transaction failed: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     /**
