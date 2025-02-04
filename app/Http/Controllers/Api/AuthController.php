@@ -91,7 +91,7 @@ class AuthController extends Controller
             return response()->json(['message' => __('messages.error.auth_controller.User_not_active')], 401);
         }
 
-		$user->tokens()->delete();
+		// $user->tokens()->delete();
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -157,7 +157,7 @@ class AuthController extends Controller
                 'otp_verified_at' => now(),
             ]);
 
-			$user->tokens()->delete();
+			// $user->tokens()->delete();
 
 			// log user in
             $token = $user->createToken('authToken');
@@ -250,6 +250,14 @@ class AuthController extends Controller
             'country_code' => 'required|string',
             'phone_no' => 'required|string',
         ]);
+
+        // check if country code is allowed
+        $allowedCountryCodes = config('app.sms.allowed_country_codes', ['60', '65']);
+        if (!in_array($request->country_code, $allowedCountryCodes)) {
+            return response()->json([
+                'message' => 'Error'
+            ], 422);
+        }
 
         // check if start with 0 or 60 for phone_no, remove it first
         if (substr($request->phone_no, 0, 1) == '0') {

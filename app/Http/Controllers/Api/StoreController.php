@@ -17,6 +17,7 @@ use App\Models\MerchantOffer;
 use App\Models\RatingCategory;
 use App\Models\ShareableLink;
 use App\Models\Store;
+use App\Models\StoreRating;
 use App\Models\User;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
@@ -262,7 +263,6 @@ class StoreController extends Controller
      * @return JsonResponse
      *
      * @group Stores
-     *
      * @urlParam store required Store ID. Example:1
      * @urlParam only_mine boolean optional Only show my ratings. Example:true
      * @urlParam user_id integer optional Only load specific user ratings. Example: 1
@@ -463,6 +463,65 @@ class StoreController extends Controller
     }
 
     /**
+     * Check if store exists at given location
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Stores
+     * @bodyParam lat float optional Latitude coordinate. Example: 3.1390
+     * @bodyParam lng float optional Longitude coordinate. Example: 101.6869
+     * @bodyParam location_name string optional Location name to search. Example: "KLCC"
+     * 
+     * @response scenario=success {
+     *   "exists": true,
+     *   "store": {
+     *     "id": 1,
+     *     "name": "Store Name",
+     *     ...
+     *   }
+     * }
+     * @response scenario=error {
+     *   "message": "Either coordinates (lat, lng) or location_name must be provided"
+     * }
+     */
+    public function getCheckLocationIsExistingStore(Request $request)
+    {
+        $query = Store::query()
+            ->with(['location']);
+
+        if ($request->has(['lat', 'lng'])) {
+            // search by coordinates
+            $lat = $request->input('lat');
+            $lng = $request->input('lng');
+            
+            $query->whereHas('location', function ($q) use ($lat, $lng) {
+                // Using exact match for coordinates
+                $q->where('lat', $lat)
+                    ->where('lng', $lng);
+            });
+        } elseif ($request->has('location_name')) {
+            // search by location name
+            $locationName = $request->input('location_name');
+            
+            $query->whereHas('location', function ($q) use ($locationName) {
+                $q->where('name', 'LIKE', '%' . $locationName . '%');
+            });
+        } else {
+            return response()->json([
+                'message' => 'Either coordinates (lat, lng) or location_name must be provided',
+            ], 422);
+        }
+
+        $store = $query->first();
+
+        return response()->json([
+            'exists' => !is_null($store),
+            'store' => $store ? new StoreResource($store) : null,
+        ]);
+    }
+
+    /**
      * Get Stores by Location ID
      *
      * @param Request $request
@@ -531,6 +590,58 @@ class StoreController extends Controller
 
         return response()->json([
             'store' => new PublicStoreResource($store)
+        ]);
+    }
+
+    /**
+     * Check if User Has Reviewed Stores
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Stores
+     * @bodyParam store_ids string required Comma separated store IDs to check. Example: 1,2,3
+     * @response scenario=success {
+     *     "data": {
+     *         "1": {
+     *             "store_id": 1,
+     *             "store_name": "Store Name",
+     *             "has_reviewed": true,
+     *             "last_reviewed_at": "2025-01-16 11:40:23"
+     *         }
+     *     }
+     * }
+     */
+    public function getCheckUserReviewedStore(Request $request)
+    {
+        $request->validate([
+            'store_ids' => 'required|string'
+        ]);
+
+        $storeIds = explode(',', $request->store_ids);
+        
+        // get stores with their latest reviews by the authenticated user
+        $stores = Store::whereIn('id', $storeIds)
+            ->with(['storeRatings' => function($query) {
+                $query->where('user_id', auth()->id())
+                    ->latest();
+            }])
+            ->get();
+        
+        // create response array with store details and review status
+        $result = $stores->mapWithKeys(function ($store) {
+            $latestRating = $store->storeRatings->first();
+            
+            return [$store->id => [
+                'store_id' => $store->id,
+                'store_name' => $store->name,
+                'has_reviewed' => !is_null($latestRating),
+                'last_reviewed_at' => $latestRating ? $latestRating->created_at : null
+            ]];
+        })->toArray();
+
+        return response()->json([
+            'data' => $result
         ]);
     }
 }

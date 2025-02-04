@@ -127,7 +127,11 @@ class MerchantOfferController extends Controller
         }
 
         if ($request->has('merchant_offer_ids')) {
-            $query->whereIn('id', explode(',', $request->merchant_offer_ids));
+            // remove square brackets and spaces before exploding
+            $merchant_offer_ids = str_replace(['[', ']', ' '], '', $request->merchant_offer_ids);
+            $ids = explode(',', $merchant_offer_ids);
+            $query->whereIn('id', $ids)
+                ->orderByRaw("FIELD(id," . implode(',', $ids) . ")");
         }
 
         if ($request->has('available_only')) {
@@ -219,9 +223,10 @@ class MerchantOfferController extends Controller
         // order by available_at from past first to future
         $query->orderBy('available_at', 'asc');
 
-        $this->buildQuery($query, $request);
+        // $this->buildQuery($query, $request); // remove legacy build query
 
-        $data = $query->paginate(config('app.paginate_per_page'));
+        // use limit from request, else just use default
+        $data = $query->paginate(($request->has('limit')) ? $request->limit : config('app.paginate_per_page'));
 
         $userPurchasedBeforeFromMerchantIds = $this->getUserPurchasedBeforeFromMerchantIds($request->user());
         // map userPurchasedBeforeFromMerchantIds to MerchantOfferResource
@@ -499,6 +504,7 @@ class MerchantOfferController extends Controller
             'quantity' => 'required|integer|min:1',
             'use_point_discount' => 'nullable|boolean',
             'points_to_use' => 'nullable|required_if:use_point_discount,true|integer|exists:point_ledgers,id',
+			'referral_code' => 'nullable|string',
         ]);
 
         // check offer is still valid by checking available_at and available_until, available quantity check is at next statement
@@ -693,7 +699,8 @@ class MerchantOfferController extends Controller
                 $request->get('channel', 'app'),
                 $request->get('email', null),
                 $request->get('channel') === 'funhub_web' ? $request->get('name') : $user->name,
-            );
+				$request->get('referral_code'),
+			);
 
             // if gateway is mpay call mpay service generate Hash for frontend form
             if ($transaction->gateway == 'mpay') {
@@ -1120,7 +1127,11 @@ class MerchantOfferController extends Controller
         }
 
         if ($request->has('merchant_offer_ids')) {
-            $query->whereIn('id', explode(',', $request->merchant_offer_ids));
+            // Remove square brackets and spaces before exploding
+            $merchant_offer_ids = str_replace(['[', ']', ' '], '', $request->merchant_offer_ids);
+            $ids = explode(',', $merchant_offer_ids);
+            $query->whereIn('id', $ids)
+                ->orderByRaw("FIELD(id," . implode(',', $ids) . ")");
         }
 
         if ($request->has('available_only')) {
@@ -1370,7 +1381,11 @@ class MerchantOfferController extends Controller
         }
 
         if ($request->has('merchant_offer_ids')) {
-            $query->whereIn('id', explode(',', $request->merchant_offer_ids));
+            // Remove square brackets and spaces before exploding
+            $merchant_offer_ids = str_replace(['[', ']', ' '], '', $request->merchant_offer_ids);
+            $ids = explode(',', $merchant_offer_ids);
+            $query->whereIn('id', $ids)
+                ->orderByRaw("FIELD(id," . implode(',', $ids) . ")");
         }
 
         if ($request->has('available_only')) {
@@ -1489,6 +1504,50 @@ class MerchantOfferController extends Controller
         }
     }
 
+    /**
+     * Get Total Quantity of Purchased Offers by User
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Merchant
+     * @subgroup Merchant Offers
+     * @queryParam from_date string optional Filter by claims created from this date (Y-m-d format). Example: 2025-01-01
+     * @queryParam to_date string optional Filter by claims created until this date (Y-m-d format). Example: 2025-01-16
+     * @queryParam status integer optional Filter by claim status (1: Success, 2: Failed, 3: Awaiting Payment). Example: 1
+     * @response scenario=success {
+     *     "total_quantity": 10
+     * }
+     */
+    public function getOfferQuantityPurchasedByUser(Request $request) {
+        $query = MerchantOfferClaim::query()
+            ->where('user_id', auth()->id());
+
+        // filter by date range if provided
+        if ($request->has('from_date')) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+        if ($request->has('to_date')) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        // filter by status if provided, default to success status
+        $status = $request->get('status', MerchantOfferClaim::CLAIM_SUCCESS);
+        $query->where('status', $status);
+
+        $totalQuantity = $query->sum('quantity');
+
+        return response()->json([
+            'total_quantity' => (int) $totalQuantity
+        ]);
+    }
+
+    /**
+     * Process Encrypt
+     *
+     * @param array $data
+     * @return string
+     */
     public function processEncrypt($data) {
         $checkout_secret = config('app.funhub_checkout_secret');
 
@@ -1519,5 +1578,4 @@ class MerchantOfferController extends Controller
             return '';
         }
     }
-    
 }

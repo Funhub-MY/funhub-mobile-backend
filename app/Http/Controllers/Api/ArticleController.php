@@ -191,19 +191,42 @@ class ArticleController extends Controller
         // handle recommendations and article_ids
         if ($request->filled('build_recommendations') && $request->build_recommendations == 1 && auth()->user()->has_article_personalization) {
             $timestamp = now()->timestamp;
-            $recommendedIds = auth()->user()->articleRecommendations()
-                ->select('article_id')
-                ->orderByRaw('CASE WHEN last_viewed_at IS NULL THEN 0 ELSE 1 END')
+            $recommendationQuery = auth()->user()->articleRecommendations()
+                ->join('articles', 'article_recommendations.article_id', '=', 'articles.id')
+                ->select('article_recommendations.article_id');
+
+            if ($request->has('video_only') && $request->video_only == 1) {
+                $recommendationQuery->leftJoin('media', function($join) {
+                    $join->on('articles.id', '=', 'media.model_id')
+                         ->where('media.model_type', 'App\\Models\\Article')
+                         ->where('media.collection_name', Article::MEDIA_COLLECTION_NAME);
+                })
+                ->leftJoin('video_jobs', function($join) {
+                    $join->on('media.id', '=', 'video_jobs.media_id')
+                         ->where('video_jobs.status', '=', 3) // Completed status
+                         ->whereRaw("JSON_EXTRACT(video_jobs.results, '$.playback_links.abr') IS NOT NULL");
+                })
+                ->orderByRaw('CASE 
+                    WHEN video_jobs.id IS NOT NULL THEN 1
+                    ELSE 2 END');
+            }
+
+            $recommendedArticleIds = $recommendationQuery
+                ->orderByRaw('CASE WHEN article_recommendations.last_viewed_at IS NULL THEN 0 ELSE 1 END')
                 ->orderByRaw("RAND($timestamp)")
                 ->limit(150)
-                ->pluck('article_id')
+                ->pluck('article_recommendations.article_id')
                 ->toArray();
 
-            if (!empty($recommendedIds)) {
-                $query->whereIn('articles.id', $recommendedIds)
-                      ->orderByRaw('FIELD(articles.id,' . implode(',', $recommendedIds) . ')');
-            } elseif ($request->filled('article_ids')) {
-                $query->whereIn('articles.id', explode(',', $request->article_ids));
+            if (!empty($recommendedArticleIds)) {
+                // use recommendations if available
+                $query->whereIn('articles.id', $recommendedArticleIds);
+                // maintain the order of recommendations
+                $orderString = 'FIELD(articles.id,' . implode(',', $recommendedArticleIds) . ')';
+                $query->orderByRaw($orderString);
+            } elseif ($request->has('article_ids')) {
+                // fall back to article_ids only if no recommendations
+                $query->whereIn('id', explode(',', $request->article_ids));
             }
         } elseif ($request->filled('article_ids')) {
             $query->whereIn('articles.id', explode(',', $request->article_ids));
@@ -263,9 +286,22 @@ class ArticleController extends Controller
             });
         }
 
-        // pinned articles
-        if ($request->filled('pinned_only')) {
-            $query->where('pinned_recommended', (bool)$request->pinned_only);
+        if ($request->has('pinned_only') && $request->pinned_only == 1) {
+            $query->where('pinned_recommended', true);
+        } else {
+            $query->where('pinned_recommended', false);
+        }
+
+        if (!$request->has('lat') && !$request->has('lng')) {
+            // Only apply latest() if we're not using recommendations ordering
+            if (!($request->has('build_recommendations') && $request->build_recommendations == 1 && auth()->user()->has_article_personalization)) {
+                if ($request->has('video_only') && $request->video_only == 1) {
+                    // For video-only queries, ensure proper ordering
+                    $query->orderBy('created_at', 'desc');
+                } else {
+                    $query->latest();
+                }
+            }
         }
 
         // set chunk size based on limit

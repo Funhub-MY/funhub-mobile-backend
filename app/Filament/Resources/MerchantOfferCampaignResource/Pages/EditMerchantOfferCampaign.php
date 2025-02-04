@@ -123,6 +123,13 @@ class EditMerchantOfferCampaign extends EditRecord
 
             // sync latest campaign stores to offer stores
             $offer->stores()->sync($record->stores->pluck('id'));
+
+            // sync algolia
+            try {
+                $offer->searchable();
+            } catch (\Exception $e) {
+                Log::error('[EditMerchantOfferCampaign] Error syncing algolia', ['error' => $e->getMessage()]);
+            }
         }
 
         // archieve any offer that has been removed as of latest $record schedules
