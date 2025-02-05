@@ -191,6 +191,28 @@ class MissionController extends Controller
 
             $this->missionService->disburseReward($mission, $user);
 
+            // For accumulated missions, create new instance after manual claim
+            if ($mission->frequency === 'accumulated') {
+                // Create new progress record with initial values
+                $initialValues = collect($mission->events)
+                    ->mapWithKeys(fn ($event) => [$event => 0])
+                    ->toArray();
+
+                $user->missionsParticipating()->attach($mission->id, [
+                    'started_at' => now(),
+                    'current_values' => json_encode($initialValues),
+                    'is_completed' => false,
+                    'completed_at' => null,
+                    'claimed_at' => null
+                ]);
+
+                Log::info('New accumulated mission instance created after manual claim', [
+                    'mission_id' => $mission->id,
+                    'user_id' => $user->id,
+                    'initial_values' => $initialValues
+                ]);
+            }
+
             return response()->json([
                 'message' => __('messages.success.mission_controller.Mission(s)_completed_successfully'),
                 'completed_missions' => [$mission->id],

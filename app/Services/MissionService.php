@@ -408,6 +408,28 @@ class MissionService
                         // Handle auto-disbursement if enabled
                         if ($mission->auto_disburse_rewards) {
                             $this->disburseReward($mission, $this->currentUser);
+
+                            // For accumulated missions with auto-disbursement, immediately create a new instance after completion
+                            if ($mission->frequency === 'accumulated') {
+                            // Create new progress record with initial values
+                            $initialValues = collect($mission->events)
+                                ->mapWithKeys(fn ($event) => [$event => 0])
+                                ->toArray();
+
+                            $user = $this->currentUser;
+                            $user->missionsParticipating()->attach($mission->id, [
+                                'started_at' => now(),
+                                'current_values' => json_encode($initialValues),
+                                'is_completed' => false,
+                                'completed_at' => null,
+                                'claimed_at' => null
+                            ]);
+
+                            Log::info('New accumulated mission instance created after completion', [
+                                'mission_id' => $mission->id,
+                                'user_id' => $user->id,
+                                'initial_values' => $initialValues
+                            ]);
                         }
                     }
                 }
