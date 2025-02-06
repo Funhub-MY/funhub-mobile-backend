@@ -161,6 +161,10 @@ class ArticleController extends Controller
                     ]);
                 }
             ])
+            ->withCount(['views'])
+            ->with(['user' => function($query) {
+                $query->withCount(['followers', 'followings']);
+            }])
             ->where('status', Article::STATUS_PUBLISHED);
 
         // exclude own articles unless specified
