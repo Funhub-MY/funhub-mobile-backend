@@ -178,8 +178,8 @@ class MerchantOfferCampaignResource extends Resource
                                     ->label('Auto Move Vouchers to Next Schedule If Unsold')
                                     ->columnSpan('full')
                                     ->default(true)
-                                    ->helperText('Automatically move a schedule\'s unsold vouchers to the next schedule if enabled. If disabled, unsold vouchers will be expired after the schedule ends.'),
-
+                                    ->helperText("Automatically move a schedule\'s unsold vouchers to the next schedule if enabled. If disabled, unsold vouchers will be expired after the schedule ends.'"),
+                                    
                                 Forms\Components\Textarea::make('description')
                                     ->rows(5)
                                     ->cols(10)
@@ -587,6 +587,9 @@ class MerchantOfferCampaignResource extends Resource
                 Tables\Columns\TextColumn::make('store.name')
                     ->default('-')
                     ->label('By Store'),
+                // toggle column for auto move vouchers
+                Tables\Columns\ToggleColumn::make('auto_move_vouchers')
+                    ->label('Auto Move Vouchers'),
 
                 Tables\Columns\TextColumn::make('unit_price')
                     ->label('Funhub')
