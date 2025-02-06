@@ -45,7 +45,7 @@ class MissionController extends Controller
                 $query->with(['participants' => function($query) {
                     $query->where('user_id', auth()->user()->id);
                 }]);
-            }])
+            }, 'missionable', 'missionable.media'])
             ->orderBy('created_at', 'desc');
 
         // filter by claimed_only
