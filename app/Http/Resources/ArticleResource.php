@@ -58,8 +58,8 @@ class ArticleResource extends JsonResource
                     'username' => $user->username,
                     'avatar' => $userAvatar,
                     'avatar_thumb' => $userAvatar, // Use the same URL for thumb to reduce queries
-                    'following_count' => $this->user_followings_count,
-                    'followers_count' => $this->user_followers_count,
+                    'following_count' => $user->followings_count,
+                    'followers_count' => $user->followers_count,
                     'has_avatar' => $userAvatar !== null,
                     'is_following' => $currentUserId ? $user->followers->contains($currentUserId) : false,
                     'has_requested_follow' => $currentUserId ? $user->beingFollowedRequests->contains('user_id', $currentUserId) : false,
