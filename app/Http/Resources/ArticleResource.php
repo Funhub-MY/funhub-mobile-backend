@@ -41,9 +41,7 @@ class ArticleResource extends JsonResource
         // get user data from eager loaded relationship
         $user = $this->whenLoaded('user');
         $userAvatar = null;
-        
-        if ($user instanceof User) {
-            // use the avatar thumb url which has a fallback to ui-avatars
+        if ($user && !empty($user->avatar_thumb_url)) {
             $userAvatar = $user->avatar_thumb_url;
         }
 
