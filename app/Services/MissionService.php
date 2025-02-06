@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Mission;
 use App\Models\MissionRewardDisbursement;
 use App\Models\User;
+use App\Models\Product;
 use App\Events\MissionProgressUpdated;
 use App\Notifications\MissionCompleted;
 use App\Notifications\RewardReceivedNotification;
@@ -30,6 +31,11 @@ class MissionService
     /**
      * Handle mission progress for an event
      */
+    public function handleGiftCardPurchased(User $user, Product $product): void
+    {
+        $this->handleEvent('purchase_gift_card', $user);
+    }
+
     public function handleEvent(string $eventType, User $user, array $context = []): void
     {
         try {

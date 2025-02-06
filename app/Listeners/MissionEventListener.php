@@ -10,6 +10,7 @@ use App\Events\FollowedUser;
 use App\Events\ArticleCreated;
 use App\Events\CommentCreated;
 use App\Events\CommentLiked;
+use App\Events\GiftCardPurchased;
 use App\Services\MissionService;
 use App\Events\InteractionCreated;
 use App\Models\Store;
@@ -49,6 +50,7 @@ class MissionEventListener
     {
         try {
             match (true) {
+                $event instanceof GiftCardPurchased => $this->handleGiftCardPurchased($event),
                 $event instanceof InteractionCreated => $this->handleInteractionCreated($event),
                 $event instanceof CommentCreated => $this->handleCommentCreated($event),
                 $event instanceof CommentLiked => $this->handleCommentLiked($event),
@@ -184,6 +186,11 @@ class MissionEventListener
         if ($event->liked && !$this->isOwnArticleInteraction($event)) {
             $this->missionService->handleEvent('like_comment', $event->user);
         }
+    }
+
+    protected function handleGiftCardPurchased(GiftCardPurchased $event): void
+    {
+        $this->missionService->handleEvent(eventType: 'purchase_gift_card', $event->user);
     }
 
     protected function handleArticleCreated(ArticleCreated $event): void

@@ -109,7 +109,11 @@ class EventServiceProvider extends ServiceProvider
 
         ClosedSupportTicket::class => [
             MissionEventListener::class,
-        ]
+        ],
+
+        GiftCardPurchased::class => [
+            MissionEventListener::class,
+        ],
     ];
 
     /**
