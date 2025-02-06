@@ -190,7 +190,7 @@ class MissionEventListener
 
     protected function handleGiftCardPurchased(GiftCardPurchased $event): void
     {
-        $this->missionService->handleEvent(eventType: 'purchase_gift_card', $event->user);
+        $this->missionService->handleEvent(eventType: 'purchase_gift_card', user: $event->user);
     }
 
     protected function handleArticleCreated(ArticleCreated $event): void
