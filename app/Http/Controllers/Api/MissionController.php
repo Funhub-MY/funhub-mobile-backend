@@ -124,8 +124,8 @@ class MissionController extends Controller
             });
         });
 
-        // completed_only = 0
-        $query->when($request->has('completed_only') && $request->completed_only == 0, function($query) use ($request) {
+        // Show incomplete missions by default unless completed_only=1 is specified
+        $query->when(!$request->has('completed_only') || $request->completed_only == 0, function($query) use ($request) {
             $query->where(function ($query) use ($request) {
                 $query->whereHas('participants', function($query) use ($request) {
                     $query->where('user_id', auth()->user()->id)
