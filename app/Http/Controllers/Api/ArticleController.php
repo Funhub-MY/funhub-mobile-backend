@@ -162,9 +162,12 @@ class ArticleController extends Controller
                 }
             ])
             ->withCount(['views'])
-            ->with(['user' => function($query) {
-                $query->withCount(['followers', 'followings']);
+            ->withCount(['userFollowers' => function ($query) {
+                $query->where('status', User::STATUS_ACTIVE);
             }])
+			->withCount(['userFollowings' => function ($query) {
+				$query->where('status', User::STATUS_ACTIVE);
+			}])
             ->where('status', Article::STATUS_PUBLISHED);
 
         // exclude own articles unless specified
@@ -859,7 +862,7 @@ class ArticleController extends Controller
 			->withCount(['userFollowings' => function ($query) {
 				$query->where('status', User::STATUS_ACTIVE);
 			}])
-			->withCount(['comments' => function ($query) {
+			->withCount(relations: ['comments' => function ($query) {
                 $query->whereNull('parent_id')
                 ->whereHas('user' , function ($query) {
                     $query->where('status', User::STATUS_ACTIVE);
