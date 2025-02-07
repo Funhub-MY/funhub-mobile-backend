@@ -176,7 +176,7 @@ class ArticleController extends Controller
         }
 
         // video only filter
-        if ($request->filled('video_only')) {
+        if ($request->filled('video_only') && $request->video_only == 1) {
             $query->where('type', 'video');
         }
 
