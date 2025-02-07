@@ -31,6 +31,7 @@ class MediaResource extends JsonResource
         if (str_contains($this->mime_type, 'video') && $this->video_resolutions) {
             $response['resolutions'] = [
                 'abr' => $this->video_resolutions['abr'] ?? null,
+                'master_abr' => $this->video_resolutions['master_abr'] ?? null,
                 // 'low' => $this->video_resolutions['low'] ?? null,
                 // 'medium' => $this->video_resolutions['medium'] ?? null,
                 // 'high' => $this->video_resolutions['high'] ?? null,
