@@ -12,7 +12,7 @@ class GetByteplusPlayInfo extends Command
      *
      * @var string
      */
-    protected $signature = 'byteplus:play-info {vid : The video ID} {--format= : The format of the video} {--definition= : The video definition} {--streamType= : The stream type}';
+    protected $signature = 'byteplus:play-info {vid : The video ID} {--format= : The format of the video} {--definition= : The video definition} {--streamType= : The stream type} {--codec= : The video codec}';
 
     /**
      * The console command description.
