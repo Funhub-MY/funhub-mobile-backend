@@ -162,9 +162,12 @@ class ArticleController extends Controller
                 }
             ])
             ->withCount(['views'])
-            ->with(['user' => function($query) {
-                $query->withCount(['followers', 'followings']);
+            ->withCount(['userFollowers' => function ($query) {
+                $query->where('status', User::STATUS_ACTIVE);
             }])
+			->withCount(['userFollowings' => function ($query) {
+				$query->where('status', User::STATUS_ACTIVE);
+			}])
             ->where('status', Article::STATUS_PUBLISHED);
 
         // exclude own articles unless specified
@@ -252,25 +255,22 @@ class ArticleController extends Controller
             $query->where('visibility', 'public');
         }
 
-        // city filter using join
-        if ($request->filled('city')) {
-            $query->join('article_locations', 'articles.id', '=', 'article_locations.article_id')
-                  ->join('locations', 'article_locations.location_id', '=', 'locations.id')
-                  ->where('locations.city', 'like', '%' . $request->city . '%');
+        if ($request->has('city')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('city', 'like', '%' . $request->city . '%');
+            });
         }
 
-        // location and store filters
-        if ($request->filled('location_id')) {
-            $query->join('article_locations', 'articles.id', '=', 'article_locations.article_id')
-                  ->where('article_locations.location_id', $request->location_id);
+        if ($request->has('city_id')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('city_id', $request->city_id);
+            });
         }
 
-        if ($request->filled('store_id')) {
-            $query->join('article_locations', 'articles.id', '=', 'article_locations.article_id')
-                  ->join('store_locations', function($join) use ($request) {
-                      $join->on('article_locations.location_id', '=', 'store_locations.location_id')
-                           ->where('store_locations.store_id', $request->store_id);
-                  });
+        if ($request->has('location_id')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('locations.id', $request->location_id);
+            });
         }
 
         // home conditions
@@ -862,7 +862,7 @@ class ArticleController extends Controller
 			->withCount(['userFollowings' => function ($query) {
 				$query->where('status', User::STATUS_ACTIVE);
 			}])
-			->withCount(['comments' => function ($query) {
+			->withCount(relations: ['comments' => function ($query) {
                 $query->whereNull('parent_id')
                 ->whereHas('user' , function ($query) {
                     $query->where('status', User::STATUS_ACTIVE);
