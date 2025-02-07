@@ -27,16 +27,20 @@ class GetByteplusPlayInfo extends Command
     public function handle(ByteplusService $byteplusService)
     {
         $params = [
-            'vid' => $this->argument('vid'),
-            'format' => $this->option('format'),
-            'definition' => $this->option('definition'),
-            'streamType' => $this->option('streamType'),
+            'Action' => 'GetPlayInfo',
+            'Version' => '2023-01-01',
+            'Vid' => $this->argument('vid'),
+            'FileType' => 'video',
+            'Definition' => $this->option('definition') ?? 'auto',
+            'Format' => $this->option('format') ?? 'hls',
+            'Codec' => $this->option('codec') ?? 'H264',
+            'Ssl' => '1'
         ];
 
         // Remove null options
         $params = array_filter($params);
 
-        $result = $byteplusService->getPlayInfo($params);
+        $result = $byteplusService->getPlayInfo($this->argument('vid'), $params);
 
         $this->info('Play info retrieved successfully:');
         $this->line(json_encode($result, JSON_PRETTY_PRINT));
