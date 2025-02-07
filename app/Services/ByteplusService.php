@@ -198,9 +198,9 @@ class ByteplusService
      * @param string $vid
      * @return array
      */
-    public function getPlayInfo(string $vid): array
+    public function getPlayInfo(string $vid, $customParams = null): array
     {
-        $params = [
+        $params = $customParams ?? [
             'Action' => 'GetPlayInfo',
             'Version' => '2023-01-01',
             'Vid' => $vid,
