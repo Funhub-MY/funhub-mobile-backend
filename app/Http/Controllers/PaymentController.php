@@ -332,9 +332,9 @@ class PaymentController extends Controller
                     'message' => 'Transaction Success',
                     'transaction_id' => $transaction->id,
                     'transaction_no' => $transaction->transaction_no,
-                    'offer_name' => $offer_name,
-                    'offer_id' => $offer_id,
-                    'offer_claim_id' => $claim_id,
+                    'offer_name' => $offer_name ?? null,
+                    'offer_id' => $offer_id ?? null,
+                    'offer_claim_id' => $claim_id ?? null,
                     'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
                     'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
                     'success' => true
