@@ -1169,14 +1169,26 @@ class UserController extends Controller
 
         // 5. count successful funcard purchases
 
-        $funcardPurchased = Transaction::where($query)
+        // $funcardPurchased = Transaction::where($query)
+        //     ->selectRaw('product_id, COUNT(product_id) as total')
+        //     ->where('status', Transaction::STATUS_SUCCESS)
+        //     ->where('transactionable_type', Product::class)
+        //     ->whereIn('transactionable_id', $product_ids)
+        //     ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
+        //         return $dateQuery($query);
+        //     })
+        //     ->count();
+
+        $funcardPurchased = Transaction::selectRaw('transactionable_id as product_id, COUNT(transactionable_id) as total_sales')
+            ->where($query)
             ->where('status', Transaction::STATUS_SUCCESS)
             ->where('transactionable_type', Product::class)
             ->whereIn('transactionable_id', $product_ids)
             ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
                 return $dateQuery($query);
             })
-            ->count();
+            ->groupBy('transactionable_id')
+            ->get();
 
         return response()->json([
             'data' => [
@@ -1184,7 +1196,7 @@ class UserController extends Controller
                 'store_ratings_count' => (int) $storeRatingsCount,
                 'vouchers_purchased' => (int) $vouchersPurchased,
                 'vouchers_redeemed' => (int) $vouchersRedeemed,
-                'funcard_purchased' => (int) $funcardPurchased
+                'funcard_purchased' => $funcardPurchased
             ]
         ]);
     }
