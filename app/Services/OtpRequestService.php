@@ -56,7 +56,7 @@ class OtpRequestService
 
         if ($otpRequest) {
             // just resend the same otp
-            $this->smsService->sendSms($phone_no_country_code . $phone_no, 'Your OTP is '.$otpRequest->otp);
+            $this->smsService->sendSms($phone_no_country_code . $phone_no, config('app.name') . ' - Your OTP is '.$otpRequest->otp);
             Log::info('[OtpRequestService] Resend OTP', [
                 'user_id' => $user_id,
                 'phone_no' => $phone_no_country_code . $phone_no,
