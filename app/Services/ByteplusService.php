@@ -198,9 +198,9 @@ class ByteplusService
      * @param string $vid
      * @return array
      */
-    public function getPlayInfo(string $vid): array
+    public function getPlayInfo(string $vid, $customParams = null): array
     {
-        $params = [
+        $params = $customParams ?? [
             'Action' => 'GetPlayInfo',
             'Version' => '2023-01-01',
             'Vid' => $vid,
@@ -236,10 +236,12 @@ class ByteplusService
 
             $playbackLinks = [
                 'abr' => null,    // adaptive bit rate with three different streams
+                'master_abr' => null, // master adaptive bit rate stream
             ];
 
             if (isset($result['PlayInfoList']) && is_array($result['PlayInfoList'])) {
                 $playbackLinks['abr'] = $result['PlayInfoList'][0]['MainPlayUrl'] ?? null;
+                $playbackLinks['master_abr'] = $result['AdaptiveBitrateStreamingInfo']['MainPlayUrl'] ?? null;
                 // foreach ($result['PlayInfoList'] as $playInfo) {
                 //     switch ($playInfo['Definition'] ?? '') {
                 //         case '480p':
