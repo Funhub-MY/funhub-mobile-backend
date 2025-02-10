@@ -111,6 +111,7 @@ class MerchantResource extends Resource
 
                                 Forms\Components\TextInput::make('brand_name')
                                     ->label('Brand Name')
+                                    ->required()
                                     ->rules('max:255'),
 
                                 TextInput::make('redeem_code')
@@ -155,6 +156,7 @@ class MerchantResource extends Resource
                                 Select::make('categories')
                                     ->label('Merchant Categories')
                                     ->relationship('categories', 'name')
+                                    ->required()
                                     ->multiple()
                                     ->preload()
                                     ->searchable(),

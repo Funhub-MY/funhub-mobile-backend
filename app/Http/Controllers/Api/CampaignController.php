@@ -26,12 +26,36 @@ class CampaignController extends Controller
      */
     public function getActiveCampaigns()
     {
-        $campaigns = Campaign::where('is_active', true)->get();
+        $campaigns = Campaign::where('is_active', true)->orderBy('order', 'asc')->get();
 
         return response()->json([
             'has_active_campaign' => ($campaigns->count() > 0) ? true : false,
             'campaigns' => CampaignResource::collection($campaigns),
         ]);
+    }
+
+     /**
+     * Get Active Campaign By ID
+     *
+     * @param Campaigns $campaign
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Campaigns
+     * @queryParam campaign_id integer required Campaign ID. Example: 1
+     * @response scenario=success {
+     * "data": {}
+     * }
+     *
+     */
+    public function show($id)
+    {
+        $campaign = Campaign::where('is_active', true)->where('id', $id)->first();
+
+        if (!$campaign) {
+            return response()->json(['message' => 'Campaign not found'], 422);
+        }
+
+        return new CampaignResource($campaign);
     }
 
     /**

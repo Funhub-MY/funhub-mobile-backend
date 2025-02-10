@@ -123,6 +123,13 @@ class EditMerchantOfferCampaign extends EditRecord
 
             // sync latest campaign stores to offer stores
             $offer->stores()->sync($record->stores->pluck('id'));
+
+            // sync algolia
+            try {
+                $offer->searchable();
+            } catch (\Exception $e) {
+                Log::error('[EditMerchantOfferCampaign] Error syncing algolia', ['error' => $e->getMessage()]);
+            }
         }
 
         // archieve any offer that has been removed as of latest $record schedules
@@ -224,10 +231,15 @@ class EditMerchantOfferCampaign extends EditRecord
             } else {
                 // offer exists, just update the new schedule
 
+                // auto publish if available_at is less than or equal to current time
+                $status = Carbon::parse($schedule->available_at)->lte(Carbon::now())
+                    ? MerchantOffer::STATUS_PUBLISHED
+                    : MerchantOffer::STATUS_DRAFT;
+    
                 $offer->update([
                     'available_at' => $schedule->available_at,
                     'available_until' => $schedule->available_until,
-                    'status' => $schedule->status,
+                    'status' => $status,
                     'publish_at' => $schedule->publish_at,
                 ]);
 

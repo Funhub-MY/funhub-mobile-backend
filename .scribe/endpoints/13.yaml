@@ -40,7 +40,51 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4vbeD6ahkV1a8635fcgPEZd'
+      - 'Bearer v4aa5he6gbd13kV6fZEc8PD'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/products/limited
+    metadata:
+      groupName: Product
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Products for Sale (Limited Gift Cards)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "current_page": 1,
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 43E6gfae5db8Dh16ZcPvVka'
     controller: null
     method: null
     route: null
@@ -117,6 +161,16 @@ endpoints:
         exampleWasSpecified: true
         nullable: false
         custom: []
+      referral_code:
+        name: referral_code
+        description: ''
+        required: false
+        example: libero
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
       wallet_type:
         name: wallet_type
         description: 'optional Wallet Type.'
@@ -133,6 +187,7 @@ endpoints:
       fiat_payment_method: fpx/card
       card_id: 1
       quantity: 1
+      referral_code: libero
       wallet_type: TNG/FPX-CIMB
     fileParameters: []
     responses:
@@ -180,7 +235,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hba1v3da6gcDEe5PVZ4fk68'
+      - 'Bearer 1acghkb6evZD4PdE5V36f8a'
     controller: null
     method: null
     route: null
@@ -234,7 +289,72 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 63DPabEVhvfkZ4a1c6g5ed8'
+      - 'Bearer ZVD63df5gkE8Pbah6ce4va1'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/products/{product_id}'
+    metadata:
+      groupName: Product
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Product By ID'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      product_id:
+        name: product_id
+        description: 'The ID of the product.'
+        required: true
+        example: ut
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      product_id: ut
+    queryParameters:
+      product_id:
+        name: product_id
+        description: 'Product ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      product_id: 1
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": {}
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer bvae13h5k4faD8EP6cVZdg6'
     controller: null
     method: null
     route: null

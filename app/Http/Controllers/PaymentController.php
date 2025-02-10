@@ -217,7 +217,7 @@ class PaymentController extends Controller
                 $transactionUpdateData = [
                     'status' => \App\Models\Transaction::STATUS_SUCCESS,
                     'gateway_transaction_id' => ($request->has('mpay_ref_no')) ? $request->mpay_ref_no : $request->authCode,
-                ];
+				];
 
                 // update transaction status to success first with gateway transaction id
                 $transaction->update($transactionUpdateData);
@@ -278,7 +278,10 @@ class PaymentController extends Controller
                     if ($transaction->user->email) {
                         try {
                             $product = Product::where('id', $transaction->transactionable_id)->first();
-                            $quantity = $transaction->amount / $product->unit_price;
+                            // $quantity = $transaction->amount / $product->unit_price;
+                            //  The payment is based on the discount price, so the quantity shall deduct by discount price and not original price
+                            $quantity = $transaction->amount / $product->discount_price;
+
                             $transaction->user->notify(new PurchasedGiftCardNotification($transaction->transaction_no, $transaction->updated_at, $product->name, $quantity, $transaction->amount));
                         } catch (\Exception $e) {
                             Log::error('Error sending PurchasedGiftCardNotification: ' . $e->getMessage());
@@ -325,9 +328,9 @@ class PaymentController extends Controller
                     'message' => 'Transaction Success',
                     'transaction_id' => $transaction->id,
                     'transaction_no' => $transaction->transaction_no,
-                    'offer_name' => $offer_name,
-                    'offer_id' => $offer_id,
-                    'offer_claim_id' => $claim_id,
+                    'offer_name' => $offer_name ?? null,
+                    'offer_id' => $offer_id ?? null,
+                    'offer_claim_id' => $claim_id ?? null,
                     'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
                     'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
                     'success' => true
@@ -367,7 +370,7 @@ class PaymentController extends Controller
                 $transaction->update([
                     'status' => \App\Models\Transaction::STATUS_FAILED,
                     'gateway_transaction_id' => $gatewayId,
-                ]);
+				]);
 
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);

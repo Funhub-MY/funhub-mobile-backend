@@ -24,11 +24,13 @@ class Product extends BaseModel implements HasMedia, Auditable
     ];
 
     const TYPES = [
-        'normal' => 'Gift Card',
-        'limited' => 'Limited Card with Campaign',
+        'normal' => 'Normal Funcard',
+        'limited' => 'Limited Funcard with Campaign',
+        'discount' => 'Discounted Funcard',
     ];
 
     const MEDIA_COLLECTION_NAME = 'product_images';
+    const MEDIA_BG_COLLECTION_NAME = 'product_bg_image';
 
     protected $guarded = ['id'];
 

@@ -18,11 +18,10 @@ use App\Http\Controllers\PaymentController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-
 Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
     Route::get('public_user', [\App\Http\Controllers\Api\UserController::class, 'getProfileForPublicView']);
     Route::get('public_store', [\App\Http\Controllers\Api\StoreController::class, 'getPublicStorePublicView']);
+    Route::get('merchant_banners', [\App\Http\Controllers\Api\MerchantBannerController::class, 'getBanners']);
 
     // public routes for articles
     Route::get('public_articles', [\App\Http\Controllers\Api\ArticleController::class, 'getPublicArticles']);
@@ -79,6 +78,13 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
      * Authenticated routes
      */
     Route::group(['middleware' => ['auth:sanctum', 'checkStatus']],  function() {
+        Route::get('current_time', function (){
+            return response()->json([
+                'unix_timestamp' => time(),
+                'date_time' => date('Y-m-d H:i:s')
+            ]);
+        });
+        
         Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
         Route::post('user/complete-profile', [\App\Http\Controllers\Api\AuthController::class, 'postCompleteProfile']);
 
@@ -171,6 +177,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::post('/cancel', [\App\Http\Controllers\Api\MerchantOfferController::class, 'postCancelTransaction']);
             Route::get('/my_claimed_offers', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getMyMerchantOffers']);
             Route::get('/last_purchase', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getLastPurchaseDateFromMerchantUser']);
+            Route::get('/total_purchases', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getOfferQuantityPurchasedByUser']);
             Route::get('/{offer_id}', [\App\Http\Controllers\Api\MerchantOfferController::class, 'show']);
 
         });
@@ -192,8 +199,10 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::get('/', [\App\Http\Controllers\Api\StoreController::class, 'index']);
             Route::get('/followings_been_here', [\App\Http\Controllers\Api\StoreController::class, 'getStoresFollowingBeenHere']);
             Route::get('/rating_categories', [\App\Http\Controllers\Api\StoreController::class, 'getRatingCategories']);
+            Route::get('/find_by_location', [\App\Http\Controllers\Api\StoreController::class, 'getCheckLocationIsExistingStore']);
             Route::get('/locations', [\App\Http\Controllers\Api\StoreController::class, 'getStoresLocationsByStoreId']);
             Route::get('/stores_by_location', [\App\Http\Controllers\Api\StoreController::class, 'getStoreByLocationId']);
+            Route::get('/check_reviewed', [\App\Http\Controllers\Api\StoreController::class, 'getCheckUserReviewedStore']);
             Route::get('/{store}/ratings', [\App\Http\Controllers\Api\StoreController::class, 'getRatings']);
             Route::post('/{store}/ratings', [\App\Http\Controllers\Api\StoreController::class, 'postRatings']);
             Route::get('/{store}/menus', [\App\Http\Controllers\Api\StoreController::class, 'getMerchantMenus']);
@@ -258,6 +267,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
         // TODO: secure this route
         Route::get('users_by_id', [\App\Http\Controllers\Api\UserController::class, 'getUsersByIds']);
+        Route::get('user/statistics', [\App\Http\Controllers\Api\UserController::class, 'getUserStatistics']);
         Route::get('user/{user}', [\App\Http\Controllers\Api\UserController::class, 'show']);
 
         //user module consolidate api
@@ -267,7 +277,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::post('user', [\App\Http\Controllers\Api\UserController::class, 'postUpdateUserDetails']);
         Route::post('user/password', [\App\Http\Controllers\Api\UserController::class, 'postUpdatePassword']);
         Route::post('user/email', [\App\Http\Controllers\Api\UserController::class, 'postUpdateEmail']);
-
+        
         // Views
         Route::prefix('/views')->group(function () {
            Route::post('/', [\App\Http\Controllers\Api\ViewController::class, 'postView']);
@@ -278,6 +288,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::prefix('/products')->group(function (){
             Route::get('/', [\App\Http\Controllers\Api\ProductController::class, 'index']);
             Route::get('/limited', [\App\Http\Controllers\Api\ProductController::class, 'limited']);
+            Route::get('/history', [\App\Http\Controllers\Api\ProductController::class, 'getHistory']);
+            Route::get('/purchased', [\App\Http\Controllers\Api\ProductController::class, 'getTotalPurchasedByUser']);
             Route::post('/checkout', [\App\Http\Controllers\Api\ProductController::class, 'postCheckout']);
             Route::post('/checkout/cancel', [\App\Http\Controllers\Api\ProductController::class, 'postCancelCheckout']);
             Route::get('/{product_id}', [\App\Http\Controllers\Api\ProductController::class, 'show']);
@@ -340,6 +352,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
         Route::prefix('/campaigns')->group(function () {
             Route::get('/active', [\App\Http\Controllers\Api\CampaignController::class, 'getActiveCampaigns']);
+            Route::get('/active/{campaign_id}', [\App\Http\Controllers\Api\CampaignController::class, 'show']);
             Route::post('/save/single_aswer', [\App\Http\Controllers\Api\CampaignController::class, 'postSingleAnswer']);
             Route::get('/answers_by_campaign_brand', [\App\Http\Controllers\Api\CampaignController::class, 'getMyAnswersByCampaignAndBrand']);
             Route::get('/questions_by_campaign', [\App\Http\Controllers\Api\CampaignController::class, 'getQuestionsByCampaign']);
