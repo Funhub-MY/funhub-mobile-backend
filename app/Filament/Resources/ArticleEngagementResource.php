@@ -56,7 +56,7 @@ class ArticleEngagementResource extends Resource
                                 ->pluck('name', 'id');
                         })
                         ->getOptionLabelFromRecordUsing(fn ($record) => 'ID:'. $record->id.' ('.$record->name.')')
-                        ->helperText('If multiple users selected, they will gap by random minutes(1-10min) one by one to do action.')
+                        ->helperText('If multiple users selected, they will gap by random minutes(1min-120hours) one by one to do action.')
                         ->searchable(),
 
                     Select::make('article_id')

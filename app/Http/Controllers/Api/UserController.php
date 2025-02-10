@@ -21,6 +21,7 @@ use App\Models\StoreRating;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\UserBlock;
+use App\Models\UserHistoricalLocation;
 use App\Models\UserTutorialCompletion;
 use App\Services\Mpay;
 use App\Services\OtpRequestService;
@@ -1222,10 +1223,20 @@ class UserController extends Controller
             'lng' => 'required|string',
         ]);
     
-        $user = auth()->user();
+        $userId = auth()->id();
+        $user = User::select('id', 'last_lat', 'last_lng')
+            ->where('id', $userId)
+            ->first();
+    
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not found'
+            ], 404);
+        }
+    
         $currentLat = $user->last_lat;
         $currentLng = $user->last_lng;
-    
+
         // calculate distance if both current and new coordinates are available
         $distance = 0;
         if ($currentLat !== null && $currentLng !== null) {
@@ -1234,19 +1245,29 @@ class UserController extends Controller
     
         // update location and create historical record if distance > 300 meters or no previous location
         if ($distance > 300 || $currentLat === null || $currentLng === null) {
-            // update the user's last known location
-            $user->last_lat = $request->lat;
-            $user->last_lng = $request->lng;
-            $user->save();
+           try {
+                // update the user's last known location
+                User::where('id', $userId)
+                ->update([
+                    'last_lat' => $request->lat,
+                    'last_lng' => $request->lng,
+                ]);
     
-            // create a new historical location record
-            $loc = $user->historicalLocations()->create([
-                'lat' => $request->lat,
-                'lng' => $request->lng,
-            ]);
-    
-            // dispatch the job to populate the location address asynchronously
-            dispatch(new PopulateLocationAddressForUser($loc));
+                // create a new historical location record
+                $loc = UserHistoricalLocation::create([
+                    'user_id' => $userId,
+                    'lat' => $request->lat,
+                    'lng' => $request->lng,
+                ]);
+
+                // dispatch the job to populate the location address asynchronously
+                dispatch(new PopulateLocationAddressForUser($loc));
+           } catch (\Exception $e) {
+                Log::error('[UserController] Error updating user last location: ' . $e->getMessage());
+                return response()->json([
+                    'message' => 'Something went wrong'
+                ], 500);
+           }
     
             return response()->json([
                 'message' => 'Location updated'
