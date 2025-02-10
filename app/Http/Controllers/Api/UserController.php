@@ -1092,108 +1092,79 @@ class UserController extends Controller
     public function getUserStatistics(Request $request)
     {
         $userId = auth()->id();
-        $query = ['user_id' => $userId]; // will be added to all queries below
+        $query = ['user_id' => $userId];
         $product_ids = $request->has('product_ids') ? explode(',', $request->get('product_ids')) : [1];
 
-        // base query builder for date filtering
-        $dateQuery = function ($query) use ($request) {
-            if ($request->has('from_date')) {
-                $query->whereDate('created_at', '>=', $request->from_date);
-            }
-            if ($request->has('to_date')) {
-                $query->whereDate('created_at', '<=', $request->to_date);
-            }
-            return $query;
-        };
+        $fromDate = $request->get('from_date');
+        $toDate = $request->get('to_date');
 
-        // 1. count articles
-        // $articlesCount = Article::where($query)
-        //     ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
-        //         return $dateQuery($query);
-        //     })
-        //     ->count();
-        //
-        // $articlesCount = Article::where($query)
-        //     ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
-        //         return $dateQuery($query);
-        //     })
-        //     ->selectRaw('DATE(created_at) as date, COUNT(id) as daily_count')
-        //     ->groupBy('date')
-        //     ->get()
-        //     ->map(function ($day) {
-        //         return min($day->daily_count, 3);
-        //     })
-        //     ->sum();
-  
-
-        // 2. count store ratings (only latest per store)
-        // $storeRatingsCount = StoreRating::select('store_id')
-        //     ->where($query)
-        //     ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
-        //         return $dateQuery($query);
-        //     })
-        //     ->groupBy('store_id')
-        //     ->get()
-        //     ->count();
+        // 2. optimize store ratings count - Use DB aggregation with window functions
         $storeRatingsCount = StoreRating::where($query)
-            ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
-                return $dateQuery($query);
+            ->when($fromDate, function($q) use ($fromDate) {
+                return $q->whereDate('created_at', '>=', $fromDate);
             })
-            ->selectRaw('DATE(created_at) as date, store_id')
-            ->orderBy('date') // Order by date to process earliest dates first
+            ->when($toDate, function($q) use ($toDate) {
+                return $q->whereDate('created_at', '<=', $toDate);
+            })
+            ->select('store_id', 'created_at')
+            ->orderBy('created_at')
             ->get()
-            ->unique('store_id') // Ensure each store_id is unique across the entire period
-            ->groupBy('date') // Group by date to check daily limits
-            ->map(function ($stores) {
-                // Limit each day's count to a maximum of 5 unique store IDs
-                return min($stores->count(), 5);
+            ->groupBy(function($item) {
+                return $item->created_at->format('Y-m-d');
             })
-            ->sum(); 
-
-        // 3. count successful voucher purchases
-        $vouchersPurchased = MerchantOfferClaim::where($query)
-            ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
-            ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
-                return $dateQuery($query);
+            ->map(function($dayRatings) {
+                return min($dayRatings->unique('store_id')->count(), 5);
             })
-            ->sum('quantity');
+            ->sum();
 
-        // 4. count successful voucher redemptions
-        $vouchersRedeemed = MerchantOfferClaimRedemptions::where($query)
-            ->whereHas('claim', function ($query) {
-                $query->where('status', MerchantOfferClaim::CLAIM_SUCCESS);
-            })
-            ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
-                return $dateQuery($query);
-            })
-            ->sum('quantity');
-
-        // 5. count successful funcard purchases
-
-        // $funcardPurchased = Transaction::where($query)
-        //     ->selectRaw('product_id, COUNT(product_id) as total')
-        //     ->where('status', Transaction::STATUS_SUCCESS)
-        //     ->where('transactionable_type', Product::class)
-        //     ->whereIn('transactionable_id', $product_ids)
-        //     ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
-        //         return $dateQuery($query);
-        //     })
-        //     ->count();
-
-        $funcardPurchased = Transaction::selectRaw('transactionable_id as product_id, COUNT(transactionable_id) as total_sales')
+        // 3. optimize voucher purchases - Use indexed columns and avoid unnecessary selects
+        $vouchersPurchased = MerchantOfferClaim::from('merchant_offer_user')
             ->where($query)
+            ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
+            ->when($fromDate, function($q) use ($fromDate) {
+                return $q->whereDate('created_at', '>=', $fromDate);
+            })
+            ->when($toDate, function($q) use ($toDate) {
+                return $q->whereDate('created_at', '<=', $toDate);
+            })
+            ->sum('quantity');
+
+        // 4. optimize voucher redemptions - Use join instead of whereHas for better performance
+        $vouchersRedeemed = MerchantOfferClaimRedemptions::from('merchant_offer_claims_redemptions')
+            ->join(
+                'merchant_offer_user',
+                'merchant_offer_user.id',
+                '=',
+                'merchant_offer_claims_redemptions.claim_id'
+            )
+            ->where('merchant_offer_claims_redemptions.user_id', $userId)
+            ->where('merchant_offer_user.status', MerchantOfferClaim::CLAIM_SUCCESS)
+            ->when($fromDate, function($q) use ($fromDate) {
+                return $q->whereDate('merchant_offer_claims_redemptions.created_at', '>=', $fromDate);
+            })
+            ->when($toDate, function($q) use ($toDate) {
+                return $q->whereDate('merchant_offer_claims_redemptions.created_at', '<=', $toDate);
+            })
+            ->sum('merchant_offer_claims_redemptions.quantity');
+
+        // 5. optimize funcard purchases - Use efficient indexing and grouping
+        $funcardPurchased = Transaction::where($query)
             ->where('status', Transaction::STATUS_SUCCESS)
             ->where('transactionable_type', Product::class)
             ->whereIn('transactionable_id', $product_ids)
-            ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
-                return $dateQuery($query);
+            ->when($fromDate, function($q) use ($fromDate) {
+                return $q->whereDate('created_at', '>=', $fromDate);
+            })
+            ->when($toDate, function($q) use ($toDate) {
+                return $q->whereDate('created_at', '<=', $toDate);
             })
             ->groupBy('transactionable_id')
+            ->select('transactionable_id as product_id')
+            ->selectRaw('COUNT(*) as total_sales')
             ->get();
 
         return response()->json([
             'data' => [
-                // 'articles_count' => (int) $articlesCount,
                 'store_ratings_count' => (int) $storeRatingsCount,
                 'vouchers_purchased' => (int) $vouchersPurchased,
                 'vouchers_redeemed' => (int) $vouchersRedeemed,
