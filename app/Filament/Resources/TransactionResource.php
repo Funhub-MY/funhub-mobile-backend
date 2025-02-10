@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
+use Filament\Notifications\Notification;
 use Filament\Tables;
 use App\Models\Transaction;
 use Filament\Resources\Form;
@@ -136,76 +137,64 @@ class TransactionResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-                ExportBulkAction::make()->exports([
-                    ExcelExport::make('table')->fromTable(),
-                ]),
-                Tables\Actions\BulkAction::make('refresh_status')
+                Tables\Actions\Action::make('refresh_status')
                     ->label('Refresh Status')
                     ->icon('heroicon-o-refresh')
                     ->color('warning')
                     ->requiresConfirmation()
-                    ->deselectRecordsAfterCompletion()
-                    ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
+                    ->action(function ($record) {
                         // Initialize MPAY gateway
                         $gateway = new \App\Services\Mpay(
                             config('services.mpay.mid'),
                             config('services.mpay.hash_key')
                         );
 
-                        $updated = 0;
-                        $skipped = 0;
-                        $failed = 0;
+                        // Skip non-MPAY or non-pending transactions
+                        if ($record->gateway !== 'mpay' || $record->status !== Transaction::STATUS_PENDING) {
+                            return false;
+                        }
 
-                        foreach ($records as $record) {
-                            // Skip non-MPAY or non-pending transactions
-                            if ($record->gateway !== 'MPAY' || $record->status !== Transaction::STATUS_PENDING) {
-                                $skipped++;
-                                continue;
-                            }
+                        try {
+                            $response = $gateway->queryTransaction(
+                                $record->transaction_no,
+                                $record->amount
+                            );
 
-                            try {
-                                $response = $gateway->queryTransaction(
-                                    $record->transaction_no,
-                                    $record->amount
-                                );
+                            if (isset($response['responseCode'])) {
+                                $newStatus = match($response['responseCode']) {
+                                    '0' => Transaction::STATUS_SUCCESS,
+                                    'PE' => Transaction::STATUS_PENDING,
+                                    default => Transaction::STATUS_FAILED
+                                };
 
-                                if (isset($response['responseCode'])) {
-                                    $newStatus = match($response['responseCode']) {
-                                        '0' => Transaction::STATUS_SUCCESS,
-                                        'PE' => Transaction::STATUS_PENDING,
-                                        default => Transaction::STATUS_FAILED
-                                    };
-
-                                    if ($record->status !== $newStatus) {
-                                        $record->status = $newStatus;
-                                        $record->save();
-                                        $updated++;
-                                    } else {
-                                        $skipped++;
-                                    }
+                                if ($record->status !== $newStatus) {
+                                    $record->status = $newStatus;
+                                    $record->save();
+                                } else {
                                 }
-                            } catch (\Exception $e) {
-                                \Illuminate\Support\Facades\Log::error('[MPAY] Bulk refresh failed for transaction ' . $record->transaction_no . ': ' . $e->getMessage());
-                                $failed++;
                             }
+                        } catch (\Exception $e) {
+                            Log::error('[MPAY] Refresh status failed for transaction ' . $record->transaction_no . ': ' . $e->getMessage());
                         }
 
                         // Show summary notification
-                        Filament\Notifications\Notification::make()
-                            ->title('Refresh Complete')
-                            ->body("Updated: {$updated}\nSkipped: {$skipped}\nFailed: {$failed}")
+                        Notification::make()
+                            ->title('Refresh StatusComplete')
+                            ->body("Updated Transaction: {$record->transaction_no} status to " . ucfirst($newStatus))
                             ->success()
                             ->send();
                     })
-                    ->visible(fn (\Illuminate\Database\Eloquent\Collection $records = null): bool => 
-                        $records !== null && $records->contains(fn (Transaction $record): bool => 
-                            $record->gateway === 'MPAY' && 
-                            $record->status === Transaction::STATUS_PENDING
-                        )
+                    ->visible(fn ($record): bool =>
+                        $record->gateway === 'mpay' &&
+                        $record->status === Transaction::STATUS_PENDING
                     )
+            ])
+            ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
+                ExportBulkAction::make()->exports([
+                    ExcelExport::make('table')->fromTable(),
+                ]),
+                
             ]);
     }
 
