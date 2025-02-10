@@ -24,6 +24,7 @@ use Filament\Tables\Filters\SelectFilter;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
+use Illuminate\Support\Facades\Log;
 
 class TransactionResource extends Resource
 {
@@ -144,9 +145,9 @@ class TransactionResource extends Resource
                     ->requiresConfirmation()
                     ->action(function ($record) {
                         // Initialize MPAY gateway
-                        $gateway = new \App\Services\Mpay(
+                        $mpayService = new \App\Services\Mpay(
                             config('services.mpay.mid'),
-                            config('services.mpay.hash_key')
+                            config('services.mpay.hash_key'),
                         );
 
                         // Skip non-MPAY or non-pending transactions
@@ -155,7 +156,7 @@ class TransactionResource extends Resource
                         }
 
                         try {
-                            $response = $gateway->queryTransaction(
+                            $response = $mpayService->queryTransaction(
                                 $record->transaction_no,
                                 $record->amount
                             );
@@ -170,19 +171,26 @@ class TransactionResource extends Resource
                                 if ($record->status !== $newStatus) {
                                     $record->status = $newStatus;
                                     $record->save();
+                                     // Show summary notification
+                                    Notification::make()
+                                    ->title('Refresh Status Completed')
+                                    ->body("Updated Transaction: {$record->transaction_no} status to " . ucfirst($newStatus))
+                                    ->success()
+                                    ->send();
                                 } else {
                                 }
                             }
                         } catch (\Exception $e) {
-                            Log::error('[MPAY] Refresh status failed for transaction ' . $record->transaction_no . ': ' . $e->getMessage());
-                        }
-
-                        // Show summary notification
-                        Notification::make()
-                            ->title('Refresh StatusComplete')
-                            ->body("Updated Transaction: {$record->transaction_no} status to " . ucfirst($newStatus))
-                            ->success()
-                            ->send();
+                            Notification::make()
+                                ->title('Refresh Status Failed')
+                                ->body("Failed to update Transaction: {$record->transaction_no} status")
+                                ->danger()
+                                ->send();
+                            Log::error('[MPAY] Refresh status failed for transaction ' . $record->transaction_no . ': ' . $e->getMessage(), [
+                                'error' => $e->getMessage(),
+                                'transaction_no' => $record->transaction_no,
+                            ]);
+                        }                       
                     })
                     ->visible(fn ($record): bool =>
                         $record->gateway === 'mpay' &&
