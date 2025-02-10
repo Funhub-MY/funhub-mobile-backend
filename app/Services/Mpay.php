@@ -240,7 +240,7 @@ class Mpay {
         }
 
         try {
-            $url = $this->url . '/payment/query';
+            $url = $this->url . '/api/paymentService/queryTransaction';
             Log::info('[MPAY] Query transaction request', ['url' => $url, 'data' => $data]);
             
             $response = $this->curlRequest($url, $data);
