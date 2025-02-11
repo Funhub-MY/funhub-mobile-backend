@@ -17,6 +17,7 @@ use App\Events\RatedLocation;
 use App\Events\RatedStore;
 use App\Events\UserReferred;
 use App\Events\UserSettingsUpdated;
+use App\Events\GiftCardPurchased;
 use App\Observers\ApprovalObserver;
 use App\Models\SupportRequestMessage;
 use Illuminate\Support\Facades\Event;
