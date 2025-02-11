@@ -1112,17 +1112,17 @@ class UserController extends Controller
         //     })
         //     ->count();
         //
-        $articlesCount = Article::where($query)
-            ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
-                return $dateQuery($query);
-            })
-            ->selectRaw('DATE(created_at) as date, COUNT(id) as daily_count')
-            ->groupBy('date')
-            ->get()
-            ->map(function ($day) {
-                return min($day->daily_count, 3);
-            })
-            ->sum();
+        // $articlesCount = Article::where($query)
+        //     ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
+        //         return $dateQuery($query);
+        //     })
+        //     ->selectRaw('DATE(created_at) as date, COUNT(id) as daily_count')
+        //     ->groupBy('date')
+        //     ->get()
+        //     ->map(function ($day) {
+        //         return min($day->daily_count, 3);
+        //     })
+        //     ->sum();
   
 
         // 2. count store ratings (only latest per store)
@@ -1144,8 +1144,8 @@ class UserController extends Controller
             ->unique('store_id') // Ensure each store_id is unique across the entire period
             ->groupBy('date') // Group by date to check daily limits
             ->map(function ($stores) {
-                // Limit each day's count to a maximum of 3 unique store IDs
-                return min($stores->count(), 3);
+                // Limit each day's count to a maximum of 5 unique store IDs
+                return min($stores->count(), 5);
             })
             ->sum(); 
 
@@ -1168,24 +1168,35 @@ class UserController extends Controller
             ->sum('quantity');
 
         // 5. count successful funcard purchases
-       
 
-        $funcardPurchased = Transaction::where($query)
+        // $funcardPurchased = Transaction::where($query)
+        //     ->selectRaw('product_id, COUNT(product_id) as total')
+        //     ->where('status', Transaction::STATUS_SUCCESS)
+        //     ->where('transactionable_type', Product::class)
+        //     ->whereIn('transactionable_id', $product_ids)
+        //     ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
+        //         return $dateQuery($query);
+        //     })
+        //     ->count();
+
+        $funcardPurchased = Transaction::selectRaw('transactionable_id as product_id, COUNT(transactionable_id) as total_sales')
+            ->where($query)
             ->where('status', Transaction::STATUS_SUCCESS)
             ->where('transactionable_type', Product::class)
             ->whereIn('transactionable_id', $product_ids)
             ->when($request->has(['from_date', 'to_date']), function ($query) use ($dateQuery) {
                 return $dateQuery($query);
             })
-            ->count();
+            ->groupBy('transactionable_id')
+            ->get();
 
         return response()->json([
             'data' => [
-                'articles_count' => (int) $articlesCount,
+                // 'articles_count' => (int) $articlesCount,
                 'store_ratings_count' => (int) $storeRatingsCount,
                 'vouchers_purchased' => (int) $vouchersPurchased,
                 'vouchers_redeemed' => (int) $vouchersRedeemed,
-                'funcard_purchased' => (int) $funcardPurchased
+                'funcard_purchased' => $funcardPurchased
             ]
         ]);
     }
