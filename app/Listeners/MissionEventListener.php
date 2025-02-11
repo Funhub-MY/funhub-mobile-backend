@@ -48,6 +48,8 @@ class MissionEventListener
      */
     public function handle($event): void
     {
+        Log::info('[MissionEventListener] Handling mission event', ['event' => get_class($event)]);
+
         try {
             match (true) {
                 $event instanceof GiftCardPurchased => $this->handleGiftCardPurchased($event),
