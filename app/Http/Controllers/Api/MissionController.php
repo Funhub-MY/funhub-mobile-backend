@@ -38,6 +38,7 @@ class MissionController extends Controller
     public function index(Request $request)
     {
         $query = Mission::enabled()
+            ->with('missionable', 'missionable.media')
             ->with(['participants' => function($query) {
                 $query->where('user_id', auth()->user()->id);
             }])
@@ -151,7 +152,7 @@ class MissionController extends Controller
             });
         });
 
-        $missions = $query->paginate(config('app.paginate_per_page'));
+        $missions = $query->paginate(50);
         return MissionResource::collection($missions);
     }
 
