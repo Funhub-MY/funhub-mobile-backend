@@ -1450,6 +1450,7 @@ class ArticleController extends Controller
     {
         // check if owner of Article
         $article = Article::where('id', $id)->where('user_id', auth()->user()->id)
+            ->with('user')
             ->first();
 
         if ($article) {
