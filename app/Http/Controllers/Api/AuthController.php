@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\FirebaseAuthController;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -756,6 +757,10 @@ class AuthController extends Controller
             $user = new User();
             // $user->name = $name;
             $user->email = $firebase_user->email;
+            if (!empty($firebase_user->email)) {
+                // automatic verified email since user logged in via social
+                $user->email_verified_at = Carbon::now(); 
+            }
 
             // Save IDs to associated fields in DB for social providers
             if ($providerId == 'google.com') { // Google Login

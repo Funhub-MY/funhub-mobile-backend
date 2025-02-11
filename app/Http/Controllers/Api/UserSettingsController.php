@@ -100,16 +100,38 @@ class UserSettingsController extends Controller
     public function postSaveEmail(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|unique:users,email,' . auth()->user()->id,
+            'email' => 'required|email',
         ]);
 
+        $user = auth()->user();
+        $newEmail = $request->email;
+
         // if user email still same with current email then reject
-        if ($request->has('email') && auth()->user()->email == $request->email) {
+        if ($user->email == $newEmail && $user->email_verified_at) {
             return response()->json(['message' => __('messages.error.user_settings_controller.Email_already_verified_for_your_account')], 422);
+        }
+
+        // check if the user is using social login
+        $isSocialLogin = $user->google_id || $user->facebook_id || $user->apple_id;
+
+        // if not social login, check email uniqueness against non-social login users
+        if (!$isSocialLogin) {
+            $existingUser = User::where('email', $newEmail)
+                ->where('id', '!=', $user->id)
+                ->whereNull('google_id')
+                ->whereNull('facebook_id')
+                ->whereNull('apple_id')
+                ->first();
+
+            if ($existingUser) {
+                return response()->json(['message' => 'Email already exists, use a different email address'], 422);
+            }
         }
 
         $user = auth()->user();
         $user->email = $request->email;
+        // empty the email verification status
+        $user->email_verified_at = null; // resets
         $user->save();
 
         // send verification email
