@@ -597,12 +597,15 @@ class MerchantOfferController extends Controller
 			$redemption_start_date = $claim->created_at;
 			$redemption_end_date = $claim->created_at->addDays($offer->expiry_days)->endOfDay();
 
+
+            /*
 			$encrypted_data = $this->processEncrypt([
 				'offer_id' => $offer->id,
 				'claim_id' => $claim->id,
 				'phone_no' => $user->phone_no
 			]);
 			$merchantOfferCover = $offer->getFirstMediaUrl(MerchantOffer::MEDIA_COLLECTION_NAME);
+
 
 			if ($user->email) {
 				try {
@@ -626,6 +629,7 @@ class MerchantOfferController extends Controller
 				}
 
             }
+            */
 
             try {
                 // notify user offer claimed
@@ -710,13 +714,13 @@ class MerchantOfferController extends Controller
                     })
                     ->orderBy('id', 'asc')
                 ->first();
-    
+
                 if (!$voucher) {
                     return response()->json([
                         'message' => __('messages.error.merchant_offer_controller.Offer_is_sold_out'),
                     ], 422);
                 }
-                
+
                 $mpayService = new \App\Services\Mpay(
                     config('services.mpay.mid'),
                     config('services.mpay.hash_key'),
@@ -1242,7 +1246,7 @@ class MerchantOfferController extends Controller
             'id' => 'required_if:sku,null|integer',
             'sku' => 'required_if:id,null',
         ]);
-    
+
         if ($request->has('id')) {
             $offer = MerchantOffer::where('id', $request->id)
                 ->published()
@@ -1254,14 +1258,14 @@ class MerchantOfferController extends Controller
                 ->withCount('unclaimedVouchers') // ensure the count is loaded
                 ->first();
         }
-    
+
         if (!$offer) {
             return response()->json(['message' => __('messages.error.merchant_offer_controller.Deal_not_found')], 404);
         }
-    
+
         // override the unclaimed_vouchers_count with a live query so always get most up to date
         $offer->unclaimed_vouchers_count = $offer->unclaimedVouchers()->count();
-    
+
         return response()->json([
             'offer' => new PublicMerchantOfferResource($offer)
         ]);
@@ -1355,7 +1359,7 @@ class MerchantOfferController extends Controller
             // get the IDs of nearby offers
             $nearbyOfferIds = $searchQuery->get()->pluck('id')->toArray();
 
-            // step 2: apply additional filters 
+            // step 2: apply additional filters
             $query = MerchantOffer::whereIn('id', $nearbyOfferIds)
                 ->orderByRaw("FIELD(id, " . implode(',', $nearbyOfferIds) . ") ASC");
             // pass to query builder
