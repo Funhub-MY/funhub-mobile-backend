@@ -88,25 +88,25 @@ Route::get('/test-email', function () {
 
 
 // test route for IP and headers information
-Route::get('/test-1/ip-info', function (\Illuminate\Http\Request $request) {
-    return response()->json([
-        'client_ip' => $request->ip(),
-        'real_ip' => $request->getClientIp(),
-        'all_ips' => $request->ips(),
-        'x_forwarded_for' => $request->header('X-Forwarded-For'),
-        'x_real_ip' => $request->header('X-Real-IP'),
-        'server_addr' => $_SERVER['SERVER_ADDR'] ?? null,
-        'remote_addr' => $_SERVER['REMOTE_ADDR'] ?? null,
-        'all_headers' => $request->headers->all(),
-        'server_vars' => array_intersect_key($_SERVER, array_flip([
-            'HTTP_X_FORWARDED_FOR',
-            'HTTP_X_FORWARDED_PROTO',
-            'HTTP_X_FORWARDED_PORT',
-            'HTTP_X_REAL_IP',
-            'REMOTE_ADDR',
-            'SERVER_ADDR',
-            'SERVER_PORT',
-            'SERVER_PROTOCOL'
-        ]))
-    ]);
-});
+// Route::get('/test-1/ip-info', function (\Illuminate\Http\Request $request) {
+//     return response()->json([
+//         'client_ip' => $request->ip(),
+//         'real_ip' => $request->getClientIp(),
+//         'all_ips' => $request->ips(),
+//         'x_forwarded_for' => $request->header('X-Forwarded-For'),
+//         'x_real_ip' => $request->header('X-Real-IP'),
+//         'server_addr' => $_SERVER['SERVER_ADDR'] ?? null,
+//         'remote_addr' => $_SERVER['REMOTE_ADDR'] ?? null,
+//         'all_headers' => $request->headers->all(),
+//         'server_vars' => array_intersect_key($_SERVER, array_flip([
+//             'HTTP_X_FORWARDED_FOR',
+//             'HTTP_X_FORWARDED_PROTO',
+//             'HTTP_X_FORWARDED_PORT',
+//             'HTTP_X_REAL_IP',
+//             'REMOTE_ADDR',
+//             'SERVER_ADDR',
+//             'SERVER_PORT',
+//             'SERVER_PROTOCOL'
+//         ]))
+//     ]);
+// });
