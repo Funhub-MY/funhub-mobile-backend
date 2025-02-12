@@ -168,16 +168,43 @@ class TransactionResource extends Resource
                                     default => Transaction::STATUS_FAILED
                                 };
 
-                                if ($record->status !== $newStatus) {
+                                $oldStatus = $record->status;
+                                if ($oldStatus !== $newStatus) {
                                     $record->status = $newStatus;
                                     $record->save();
-                                     // Show summary notification
+
+                                    // handle merchant offer transactions when status changes to success
+                                    if ($newStatus === Transaction::STATUS_SUCCESS && 
+                                        ($oldStatus === Transaction::STATUS_PENDING || $oldStatus === Transaction::STATUS_FAILED) &&
+                                        $record->transactionable_type === \App\Models\MerchantOffer::class) {
+                                        
+                                        // find the merchant offer user claim
+                                        $merchantOfferClaim = \App\Models\MerchantOfferClaim::where('transaction_no', $record->transaction_no)
+                                            ->where('user_id', $record->user_id)
+                                            ->first();
+
+                                        if ($merchantOfferClaim) {
+                                            // update claim status to success
+                                            $merchantOfferClaim->status = \App\Models\MerchantOfferClaim::CLAIM_SUCCESS;
+                                            $merchantOfferClaim->save();
+
+                                            // check and update voucher ownership if needed
+                                            if ($merchantOfferClaim->voucher_id) {
+                                                $voucher = \App\Models\MerchantOfferVoucher::find($merchantOfferClaim->voucher_id);
+                                                if ($voucher && (!$voucher->owned_by_id || $voucher->owned_by_id !== $record->user_id)) {
+                                                    $voucher->owned_by_id = $record->user_id;
+                                                    $voucher->save();
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // show summary notification
                                     Notification::make()
-                                    ->title('Refresh Status Completed')
-                                    ->body("Updated Transaction: {$record->transaction_no} status to " . ucfirst($newStatus))
-                                    ->success()
-                                    ->send();
-                                } else {
+                                        ->title('Refresh Status Completed')
+                                        ->body("Updated Transaction: {$record->transaction_no} status to " . ucfirst($newStatus))
+                                        ->success()
+                                        ->send();
                                 }
                             }
                         } catch (\Exception $e) {
