@@ -380,6 +380,13 @@ class ArticleController extends Controller
             'article_ids' => 'required',
         ]);
 
+        if (auth()->user()->has_article_personalization == false) {
+            return response()->json([
+                'message' => 'User need to turn on personalisation',
+                'user_id' => auth()->id(),
+            ], 200);
+        }
+
         try {
             $articleIds = explode(',', $request->article_ids);
             $userId = auth()->id();
