@@ -29,24 +29,24 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: aut
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      username: aut
+      username: et
     fileParameters: []
     responses:
       -
-        status: 404
-        content: '{"message":"User not found"}'
+        status: 200
+        content: '{"user":{"id":11060,"name":"ET","username":"et","avatar":null,"avatar_thumb":"https:\/\/ui-avatars.com\/api\/?name=ET","bio":null,"cover":null,"articles_published_count":0,"following_count":0,"followers_count":0,"has_avatar":false,"is_profile_private":false},"articles":[]}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '119'
+          x-ratelimit-remaining: '110'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -54,7 +54,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v45bDgaZhcaV6P18kfdeE63'
+      - 'Bearer 6f3hPgEcZk5148v6edaaDbV'
     controller: null
     method: null
     route: null
@@ -85,14 +85,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: sit
+        example: vero
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: sit
+      share_code: vero
     fileParameters: []
     responses:
       -
@@ -584,7 +584,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '118'
+          x-ratelimit-remaining: '109'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -592,7 +592,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ec6hDfkaVZPE3d56gba4v81'
+      - 'Bearer fb1Dg4V6PZv35eEha8kc6ad'
     controller: null
     method: null
     route: null
@@ -623,14 +623,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: sit
+        example: laudantium
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: sit
+      share_code: laudantium
     fileParameters: []
     responses:
       -
@@ -651,7 +651,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1796,
+                      "line": 1921,
                       "function": "abort"
                   },
                   {
@@ -1122,7 +1122,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '117'
+          x-ratelimit-remaining: '108'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1130,7 +1130,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8VPafk6caE51Zdeb3h6vD4g'
+      - 'Bearer dbaD6f68g5ch4ekv31EaVPZ'
     controller: null
     method: null
     route: null
@@ -1161,14 +1161,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: consequuntur
+        example: dolor
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: consequuntur
+      share_code: dolor
     fileParameters: []
     responses:
       -
@@ -1189,7 +1189,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php",
-                      "line": 1286,
+                      "line": 1287,
                       "function": "abort"
                   },
                   {
@@ -1660,7 +1660,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '115'
+          x-ratelimit-remaining: '106'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1668,7 +1668,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VveafZaPhk638b41gEDc5d6'
+      - 'Bearer Dk616g4afZV83b5cadEehvP'
     controller: null
     method: null
     route: null
@@ -1708,7 +1708,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '114'
+          x-ratelimit-remaining: '105'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1716,7 +1716,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cEga381Z4dh5kbfva6DV6Pe'
+      - 'Bearer bcD641ZEe6khV8vga5dPfa3'
     controller: null
     method: null
     route: null
@@ -1755,7 +1755,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '113'
+          x-ratelimit-remaining: '104'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1763,7 +1763,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e8cV3Zva5ghfa14Dk6EP6bd'
+      - 'Bearer v1cEP84Ddgh6VkZe6a35fba'
     controller: null
     method: null
     route: null
@@ -1799,7 +1799,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v1E4kVbD6c5Zh8ge6adfP3a'
+      - 'Bearer 4bdgk5eDahv8aEVfZc1636P'
     controller: null
     method: null
     route: null
@@ -1835,7 +1835,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5aeVhgPDdkcv638fba14E6Z'
+      - 'Bearer ve3DVab5akcdE664hg18PZf'
     controller: null
     method: null
     route: null
@@ -1871,7 +1871,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VaE5hZ1vePkcf6gaD864d3b'
+      - 'Bearer VZcPDkfa663bg8vh45dea1E'
     controller: null
     method: null
     route: null
@@ -1907,7 +1907,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 51gk6VvhE8ad4fPDZ3aec6b'
+      - 'Bearer 8vVdek6bD43PEcgh6a5aZ1f'
     controller: null
     method: null
     route: null
@@ -1943,7 +1943,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cZ4akge636fV5aD1dEbvP8h'
+      - 'Bearer a1kbEVve6hZ38Pac5g6Dd4f'
     controller: null
     method: null
     route: null
@@ -1979,7 +1979,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Eghak8d6a1436ZvDfebcV5P'
+      - 'Bearer ePbZ18cVfh66kaa5d4E3vDg'
     controller: null
     method: null
     route: null
@@ -2015,7 +2015,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e4kE83gaDZ1PdfhVb66vac5'
+      - 'Bearer fk6hPd4cDa6g8b1Za3vEe5V'
     controller: null
     method: null
     route: null
@@ -2066,7 +2066,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '112'
+          x-ratelimit-remaining: '103'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -2074,7 +2074,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dDZP56b834h1E6vfVaageck'
+      - 'Bearer 863VbPf5gd4c16ahZeDEakv'
     controller: null
     method: null
     route: null
@@ -2125,7 +2125,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '111'
+          x-ratelimit-remaining: '102'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -2133,7 +2133,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cg3d6hbD1vaeV5k48ZafEP6'
+      - 'Bearer 61hg8a5ZfD43dkcebVaPvE6'
     controller: null
     method: null
     route: null
@@ -2176,50 +2176,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6hVb83PvDacZEe45dag16fk'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/user
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Display a listing of the resource.'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 8aVd5a6c1Z3efDgbEkvP46h'
+      - 'Bearer h16ga6kveDPcV54b8E3Zadf'
     controller: null
     method: null
     route: null
