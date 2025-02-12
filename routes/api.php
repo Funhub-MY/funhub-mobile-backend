@@ -325,7 +325,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
         Route::prefix('/locations')->group(function () {
             // post rate a location
-            Route::post('/', [\App\Http\Controllers\Api\LocationController::class, 'postRateLocation']);
+            Route::post('/rating', [\App\Http\Controllers\Api\LocationController::class, 'postRateLocation']);
             Route::get('/', [\App\Http\Controllers\Api\LocationController::class, 'index']);
             Route::get('/{location}', [\App\Http\Controllers\Api\LocationController::class, 'show']);
         });
