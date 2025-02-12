@@ -311,7 +311,7 @@ class LocationController extends Controller
             Log::info('[LocationController] Store created for location: ' . $location->id . ' with store id: ' . $store->id);
 
             // Set this location as the store's primary location
-            $store->location()->associate($location);
+            $store->location()->attach($location->id);
             $store->save();
         }
 
