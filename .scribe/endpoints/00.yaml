@@ -27,24 +27,24 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: et
+        example: impedit
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      username: et
+      username: impedit
     fileParameters: []
     responses:
       -
-        status: 200
-        content: '{"user":{"id":11060,"name":"ET","username":"et","avatar":null,"avatar_thumb":"https:\/\/ui-avatars.com\/api\/?name=ET","bio":null,"cover":null,"articles_published_count":0,"following_count":0,"followers_count":0,"has_avatar":false,"is_profile_private":false},"articles":[]}'
+        status: 404
+        content: '{"message":"User not found"}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '110'
+          x-ratelimit-remaining: '119'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -52,7 +52,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6f3hPgEcZk5148v6edaaDbV'
+      - 'Bearer Pb846ZavD1Edcg5aV3f6keh'
     controller: null
     method: null
     route: null
@@ -83,14 +83,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: vero
+        example: magnam
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: vero
+      share_code: magnam
     fileParameters: []
     responses:
       -
@@ -582,7 +582,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '109'
+          x-ratelimit-remaining: '118'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -590,7 +590,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fb1Dg4V6PZv35eEha8kc6ad'
+      - 'Bearer ca186dZhVgPE35D4fk6eabv'
     controller: null
     method: null
     route: null
@@ -621,14 +621,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: laudantium
+        example: sed
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: laudantium
+      share_code: sed
     fileParameters: []
     responses:
       -
@@ -1120,7 +1120,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '108'
+          x-ratelimit-remaining: '117'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1128,7 +1128,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dbaD6f68g5ch4ekv31EaVPZ'
+      - 'Bearer 4ge68EbcDPhV5Z1ka6ad3vf'
     controller: null
     method: null
     route: null
@@ -1159,14 +1159,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: dolor
+        example: fuga
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: dolor
+      share_code: fuga
     fileParameters: []
     responses:
       -
@@ -1658,7 +1658,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '106'
+          x-ratelimit-remaining: '115'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1666,7 +1666,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dk616g4afZV83b5cadEehvP'
+      - 'Bearer feEPVk3gD8h1a5Zc66v4adb'
     controller: null
     method: null
     route: null
@@ -1706,7 +1706,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '105'
+          x-ratelimit-remaining: '114'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1714,7 +1714,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bcD641ZEe6khV8vga5dPfa3'
+      - 'Bearer bhZPEv6kd45f8a631geDcVa'
     controller: null
     method: null
     route: null
@@ -1753,7 +1753,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '104'
+          x-ratelimit-remaining: '113'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1761,7 +1761,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v1cEP84Ddgh6VkZe6a35fba'
+      - 'Bearer gaPVf186k5hec36dDvZEb4a'
     controller: null
     method: null
     route: null
@@ -1797,7 +1797,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4bdgk5eDahv8aEVfZc1636P'
+      - 'Bearer vD3aZk6aEP58dcVbgf4h6e1'
     controller: null
     method: null
     route: null
@@ -1833,7 +1833,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ve3DVab5akcdE664hg18PZf'
+      - 'Bearer 3f51bgaZa4veEh8Pkd6Vc6D'
     controller: null
     method: null
     route: null
@@ -1869,7 +1869,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VZcPDkfa663bg8vh45dea1E'
+      - 'Bearer aDfeEhcbPd18kv35a6VZ4g6'
     controller: null
     method: null
     route: null
@@ -1905,7 +1905,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8vVdek6bD43PEcgh6a5aZ1f'
+      - 'Bearer ePcDE8kZfvV3d6b4a6h15ag'
     controller: null
     method: null
     route: null
@@ -1941,7 +1941,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a1kbEVve6hZ38Pac5g6Dd4f'
+      - 'Bearer bf38ch1g6ae5v4aPkDZdV6E'
     controller: null
     method: null
     route: null
@@ -1977,7 +1977,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ePbZ18cVfh66kaa5d4E3vDg'
+      - 'Bearer hD1Pd4683VZvkE5bga6acfe'
     controller: null
     method: null
     route: null
@@ -2013,7 +2013,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fk6hPd4cDa6g8b1Za3vEe5V'
+      - 'Bearer f66kaDg58d3acZE1PhvVbe4'
     controller: null
     method: null
     route: null
@@ -2064,7 +2064,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '103'
+          x-ratelimit-remaining: '112'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -2072,7 +2072,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 863VbPf5gd4c16ahZeDEakv'
+      - 'Bearer a5c1vPg3DaEd68fe6Zbk4hV'
     controller: null
     method: null
     route: null
@@ -2123,7 +2123,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '102'
+          x-ratelimit-remaining: '111'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -2131,7 +2131,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 61hg8a5ZfD43dkcebVaPvE6'
+      - 'Bearer 6g8hEZc3e51bdaafvD6PVk4'
     controller: null
     method: null
     route: null
@@ -2174,7 +2174,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h16ga6kveDPcV54b8E3Zadf'
+      - 'Bearer bc6eP6k4Z85Dfav3g1EVdha'
     controller: null
     method: null
     route: null

@@ -30,7 +30,7 @@ endpoints:
         description: 'optional Location Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - est
+          - voluptas
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -108,7 +108,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       location_ids:
-        - est
+        - voluptas
       name: '"KFC SS15"'
       state_id: 1
       country_id: 1
@@ -135,7 +135,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hv51k6aPgD6VZ3d48ebafcE'
+      - 'Bearer EhZed6g8k3a1V6fcvbDaP45'
     controller: null
     method: null
     route: null
@@ -143,7 +143,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/locations
+    uri: api/v1/locations/rating
     metadata:
       groupName: Location
       groupDescription: ''
@@ -352,7 +352,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dhfa366cDkvE1aPb45eVg8Z'
+      - 'Bearer 6hkP3Vba6Zce1fD54Edvga8'
     controller: null
     method: null
     route: null
@@ -384,7 +384,7 @@ endpoints:
         description: 'optional Location Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - blanditiis
+          - illum
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -462,7 +462,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       location_ids:
-        - blanditiis
+        - illum
       name: '"KFC SS15"'
       state_id: 1
       country_id: 1
@@ -489,7 +489,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PD68v1acZeadE3hgbk65Vf4'
+      - 'Bearer 63aahg58d1bEDkeZV6cPf4v'
     controller: null
     method: null
     route: null
@@ -555,7 +555,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 46VZ5dacfvkDgbh1e3P86Ea'
+      - 'Bearer 84e15fPga3chZ6v6dEbkDVa'
     controller: null
     method: null
     route: null
