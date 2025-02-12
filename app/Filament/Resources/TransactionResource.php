@@ -150,8 +150,8 @@ class TransactionResource extends Resource
                             config('services.mpay.hash_key'),
                         );
 
-                        // Skip non-MPAY or non-pending transactions
-                        if ($record->gateway !== 'mpay' || $record->status !== Transaction::STATUS_PENDING) {
+                        // Skip non-MPAY or success transactions
+                        if ($record->gateway !== 'mpay' || $record->status == Transaction::STATUS_SUCCESS) {
                             return false;
                         }
 
@@ -194,7 +194,7 @@ class TransactionResource extends Resource
                     })
                     ->visible(fn ($record): bool =>
                         $record->gateway === 'mpay' &&
-                        $record->status === Transaction::STATUS_PENDING
+                        $record->status !== Transaction::STATUS_SUCCESS
                     )
             ])
             ->bulkActions([
