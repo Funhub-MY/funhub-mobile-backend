@@ -40,7 +40,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8cbev5aD1dPZEaVfh6g364k'
+      - 'Bearer fhEbDgc46v3aZk6P81Ved5a'
     controller: null
     method: null
     route: null
@@ -84,7 +84,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vecVdhZ6P384kf5aEaDb6g1'
+      - 'Bearer D4v5gE6aV1e3b6kfPca8dhZ'
     controller: null
     method: null
     route: null
@@ -127,7 +127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kv8d16agbcV3ZDa6fE5eP4h'
+      - 'Bearer 84agVDb16hPZE5eackv3df6'
     controller: null
     method: null
     route: null
@@ -203,7 +203,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6e1a8b3cfvDEga56V4ZdkhP'
+      - 'Bearer 346d5bhP1v6Zck8aDfeaEgV'
     controller: null
     method: null
     route: null
@@ -284,7 +284,7 @@ endpoints:
         name: referral_code
         description: ''
         required: false
-        example: ipsa
+        example: soluta
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -306,7 +306,7 @@ endpoints:
       fiat_payment_method: fpx/card
       card_id: 1
       quantity: 1
-      referral_code: ipsa
+      referral_code: soluta
       wallet_type: TNG/FPX-CIMB
     fileParameters: []
     responses:
@@ -354,7 +354,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aDbZd43vkg5afP6E8ec6Vh1'
+      - 'Bearer cZ1EgVdka46vDa36Pfhe85b'
     controller: null
     method: null
     route: null
@@ -408,7 +408,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E4dfbZe6Pc3vkDa85hV61ag'
+      - 'Bearer kP6Dd45c6VaZeEg8vhb3a1f'
     controller: null
     method: null
     route: null
@@ -435,14 +435,14 @@ endpoints:
         name: product_id
         description: 'The ID of the product.'
         required: true
-        example: occaecati
+        example: sed
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      product_id: occaecati
+      product_id: sed
     queryParameters:
       product_id:
         name: product_id
@@ -473,7 +473,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4EaPedv3c5afk8ghb66DVZ1'
+      - 'Bearer a3ZEg6vD6ed8hV5ac1b4Pkf'
     controller: null
     method: null
     route: null
