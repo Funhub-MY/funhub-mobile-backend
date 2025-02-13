@@ -37,6 +37,7 @@ class CampaignResource extends Resource
                         TextInput::make('order')
                             ->required()
                             ->numeric()
+                            ->unique(ignoreRecord: true)
                             ->label('Order')
                             ->default(fn () => (Campaign::max('order') ?? 0) + 1),
                         TextInput::make('title')

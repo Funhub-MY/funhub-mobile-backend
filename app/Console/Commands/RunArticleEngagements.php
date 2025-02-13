@@ -59,9 +59,9 @@ class RunArticleEngagements extends Command
                 foreach ($users as $user) {
                     $this->info("[RunArticleEngagements] Processing engagement for user ID {$user->id} on article ID {$articleId} with action {$action}");
                     Log::info("[RunArticleEngagements] Processing engagement for user ID {$user->id} on article ID {$articleId} with action {$action}");
-                    // random delay between 1-10mins
+                    // random delay between 1min-120hours
                     ProcessEngagementInteractions::dispatch($user->id, $articleId, $action, $comment)
-                        ->delay(Carbon::now()->addMinutes(rand(1, 10)));
+                        ->delay(Carbon::now()->addMinutes(rand(1, 7200)));
                 }
             }
         }

@@ -40,7 +40,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v4aa5he6gbd13kV6fZEc8PD'
+      - 'Bearer fhEbDgc46v3aZk6P81Ved5a'
     controller: null
     method: null
     route: null
@@ -84,7 +84,126 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 43E6gfae5db8Dh16ZcPvVka'
+      - 'Bearer D4v5gE6aV1e3b6kfPca8dhZ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/products/history
+    metadata:
+      groupName: Product
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Funcard or Funbox for last 30 days Transactions History'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 84agVDb16hPZE5eackv3df6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/products/purchased
+    metadata:
+      groupName: Product
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Total Quantity of Funcard purchased by user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      from_date:
+        name: from_date
+        description: 'optional Filter by transaction created from this date (Y-m-d format).'
+        required: false
+        example: '2025-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      to_date:
+        name: to_date
+        description: 'optional Filter by transaction created until this date (Y-m-d format).'
+        required: false
+        example: '2025-01-16'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      product_ids:
+        name: product_ids
+        description: 'optional Filter by product_id.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      from_date: '2025-01-01'
+      to_date: '2025-01-16'
+      product_ids: 1
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "quantity": 10
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 346d5bhP1v6Zck8aDfeaEgV'
     controller: null
     method: null
     route: null
@@ -165,7 +284,7 @@ endpoints:
         name: referral_code
         description: ''
         required: false
-        example: libero
+        example: soluta
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -187,7 +306,7 @@ endpoints:
       fiat_payment_method: fpx/card
       card_id: 1
       quantity: 1
-      referral_code: libero
+      referral_code: soluta
       wallet_type: TNG/FPX-CIMB
     fileParameters: []
     responses:
@@ -235,7 +354,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1acghkb6evZD4PdE5V36f8a'
+      - 'Bearer cZ1EgVdka46vDa36Pfhe85b'
     controller: null
     method: null
     route: null
@@ -289,7 +408,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZVD63df5gkE8Pbah6ce4va1'
+      - 'Bearer kP6Dd45c6VaZeEg8vhb3a1f'
     controller: null
     method: null
     route: null
@@ -316,14 +435,14 @@ endpoints:
         name: product_id
         description: 'The ID of the product.'
         required: true
-        example: ut
+        example: sed
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      product_id: ut
+      product_id: sed
     queryParameters:
       product_id:
         name: product_id
@@ -354,7 +473,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bvae13h5k4faD8EP6cVZdg6'
+      - 'Bearer a3ZEg6vD6ed8hV5ac1b4Pkf'
     controller: null
     method: null
     route: null
