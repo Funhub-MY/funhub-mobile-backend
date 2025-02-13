@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Events\GiftCardPurchased;
+use App\Models\Product;
+use App\Notifications\PurchasedGiftCardNotification;
 use Filament\Forms;
 use Filament\Notifications\Notification;
 use Filament\Tables;
@@ -161,14 +164,10 @@ class TransactionResource extends Resource
                                 $record->amount
                             );
 
-                            if (isset($response['responseCode'])) {
-                                $newStatus = match($response['responseCode']) {
-                                    '0' => Transaction::STATUS_SUCCESS,
-                                    'PE' => Transaction::STATUS_PENDING,
-                                    default => Transaction::STATUS_FAILED
-                                };
-
+                            if (isset($response['responseCode']) && $response['responseCode'] === '0') { // success now
+                                $newStatus = Transaction::STATUS_SUCCESS;
                                 $oldStatus = $record->status;
+
                                 if ($oldStatus !== $newStatus) {
                                     $record->status = $newStatus;
                                     $record->save();
@@ -185,6 +184,7 @@ class TransactionResource extends Resource
 
                                         if ($merchantOfferClaim) {
                                             // update claim status to success
+                                            $oldOfferClaimStatus = $merchantOfferClaim->status;
                                             $merchantOfferClaim->status = \App\Models\MerchantOfferClaim::CLAIM_SUCCESS;
                                             $merchantOfferClaim->save();
 
@@ -199,11 +199,73 @@ class TransactionResource extends Resource
                                                         'voucher_id' => $merchantOfferClaim->voucher_id,
                                                         'user_id' => $record->user_id
                                                     ]);
+
+                                                    // revert back to old status
+                                                    $record->status = $oldStatus;
+                                                    $record->save();
+
+                                                    // revert offer claim status
+                                                    $merchantOfferClaim->status = $oldOfferClaimStatus;
+                                                    $merchantOfferClaim->save();
+
                                                     Notification::make()
                                                         ->title('Refresh Status Failed')
                                                         ->body("Voucher Code:" . $merchantOfferClaim->voucher->code . "Failed to update voucher ownership as its owned by someone else")
                                                         ->danger()
                                                         ->send();
+                                                }
+                                            }
+                                        }
+                                    } else if ($newStatus === Transaction::STATUS_SUCCESS && ($oldStatus === Transaction::STATUS_PENDING || $oldStatus === Transaction::STATUS_FAILED) &&
+                                        $record->transactionable_type === \App\Models\Product::class) {
+
+                                        $product = Product::where('id', $record->transactionable_id)->first();
+
+                                        if (!$product) {
+                                            Notification::make()
+                                                ->title('Refresh Status Failed - Product Not Found')
+                                                ->body("Updated Transaction: {$record->transaction_no} status to " . ucfirst($newStatus) . " failed as product not found")
+                                                ->danger()
+                                                ->send();
+
+                                            // revert back to old status
+                                            $record->status = $oldStatus;
+                                            $record->save();
+
+                                            return false;
+                                        }
+                                        $pointService = new \App\Services\PointService();
+                                        $reward = $product->rewards()->first();
+                                        // credit user
+                                        $pointService->credit(
+                                            $reward,
+                                            $record->user,
+                                            $reward->pivot->quantity,
+                                            'Gift Card Purchase',
+                                            $record->transaction_no
+                                        );
+
+                                        Log::info('[TransactionResource] Prdocut Credited - Updated Transaction: ' . $record->transaction_no . ' status to ' . ucfirst($newStatus) . ' successfully', [
+                                            'user' => $record->user,
+                                            'product' => $product,
+                                            'amount' => $record->amount
+                                        ]);
+
+                                        // update product status
+                                        if ($record->user->email) {
+                                            if ($record->user->email) {
+                                                try {
+                                                    $product = Product::where('id', $record->transactionable_id)->first();
+                                                    // $quantity = $transaction->amount / $product->unit_price;
+                                                    //  The payment is based on the discount price, so the quantity shall deduct by discount price and not original price
+                                                    $quantity = $record->amount / $product->discount_price;
+                        
+                                                    $record->user->notify(new PurchasedGiftCardNotification($record->transaction_no, $record->updated_at, $product->name, $quantity, $record->amount));
+                                                    
+                                                    // fire event for mission progress
+                                                    event(args: new GiftCardPurchased($record->user, $product));
+                                                } catch (\Exception $e) {
+                                                    Log::error('Error sending PurchasedGiftCardNotification: ' . $e->getMessage());
                                                 }
                                             }
                                         }
@@ -216,11 +278,26 @@ class TransactionResource extends Resource
                                         ->success()
                                         ->send();
                                 }
+                            } else if (isset($response['responseCode']) && $response['responseCode'] == 'M0009') {
+                                // transaction not found
+                                Notification::make()
+                                    ->title('Transaction Not Found')
+                                    ->body("Failed to update Transaction: {$record->transaction_no} status as transaction not found")
+                                    ->danger()
+                                    ->send();
+                            } else {
+                                $responseDesc = isset($response['responseDesc']) ? $response['responseDesc'] : '';
+                                // other errors
+                                Notification::make()
+                                    ->title('Refresh Status Failed')
+                                    ->body("Failed to update Transaction: {$record->transaction_no} status: " . $responseDesc)
+                                    ->danger()
+                                    ->send();
                             }
                         } catch (\Exception $e) {
                             Notification::make()
                                 ->title('Refresh Status Failed')
-                                ->body("Failed to update Transaction: {$record->transaction_no} status")
+                                ->body("Failed to update Transaction: {$record->transaction_no} status. Error: ". $e->getMessage())
                                 ->danger()
                                 ->send();
                             Log::error('[MPAY] Refresh status failed for transaction ' . $record->transaction_no . ': ' . $e->getMessage(), [
