@@ -184,6 +184,7 @@ class TransactionResource extends Resource
 
                                         if ($merchantOfferClaim) {
                                             // update claim status to success
+                                            $oldOfferClaimStatus = $merchantOfferClaim->status;
                                             $merchantOfferClaim->status = \App\Models\MerchantOfferClaim::CLAIM_SUCCESS;
                                             $merchantOfferClaim->save();
 
@@ -198,6 +199,15 @@ class TransactionResource extends Resource
                                                         'voucher_id' => $merchantOfferClaim->voucher_id,
                                                         'user_id' => $record->user_id
                                                     ]);
+
+                                                    // revert back to old status
+                                                    $record->status = $oldStatus;
+                                                    $record->save();
+
+                                                    // revert offer claim status
+                                                    $merchantOfferClaim->status = $oldOfferClaimStatus;
+                                                    $merchantOfferClaim->save();
+
                                                     Notification::make()
                                                         ->title('Refresh Status Failed')
                                                         ->body("Voucher Code:" . $merchantOfferClaim->voucher->code . "Failed to update voucher ownership as its owned by someone else")
@@ -217,6 +227,12 @@ class TransactionResource extends Resource
                                                 ->body("Updated Transaction: {$record->transaction_no} status to " . ucfirst($newStatus) . " failed as product not found")
                                                 ->danger()
                                                 ->send();
+
+                                            // revert back to old status
+                                            $record->status = $oldStatus;
+                                            $record->save();
+
+                                            return false;
                                         }
                                         $pointService = new \App\Services\PointService();
                                         $reward = $product->rewards()->first();
@@ -281,7 +297,7 @@ class TransactionResource extends Resource
                         } catch (\Exception $e) {
                             Notification::make()
                                 ->title('Refresh Status Failed')
-                                ->body("Failed to update Transaction: {$record->transaction_no} status")
+                                ->body("Failed to update Transaction: {$record->transaction_no} status. Error: ". $e->getMessage())
                                 ->danger()
                                 ->send();
                             Log::error('[MPAY] Refresh status failed for transaction ' . $record->transaction_no . ': ' . $e->getMessage(), [
