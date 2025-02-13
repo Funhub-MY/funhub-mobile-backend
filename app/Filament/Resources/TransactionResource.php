@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Events\GiftCardPurchased;
+use App\Models\Product;
+use App\Notifications\PurchasedGiftCardNotification;
 use Filament\Forms;
 use Filament\Notifications\Notification;
 use Filament\Tables;
@@ -206,6 +209,50 @@ class TransactionResource extends Resource
                                     } else if ($newStatus === Transaction::STATUS_SUCCESS && ($oldStatus === Transaction::STATUS_PENDING || $oldStatus === Transaction::STATUS_FAILED) &&
                                         $record->transactionable_type === \App\Models\Product::class) {
 
+                                        $product = Product::where('id', $record->transactionable_id)->first();
+
+                                        if (!$product) {
+                                            Notification::make()
+                                                ->title('Refresh Status Failed - Product Not Found')
+                                                ->body("Updated Transaction: {$record->transaction_no} status to " . ucfirst($newStatus) . " failed as product not found")
+                                                ->danger()
+                                                ->send();
+                                        }
+                                        $pointService = new \App\Services\PointService();
+                                        $reward = $product->rewards()->first();
+                                        // credit user
+                                        $pointService->credit(
+                                            $reward,
+                                            $record->user,
+                                            $reward->pivot->quantity,
+                                            'Gift Card Purchase',
+                                            $record->transaction_no
+                                        );
+
+                                        Log::info('[TransactionResource] Prdocut Credited - Updated Transaction: ' . $record->transaction_no . ' status to ' . ucfirst($newStatus) . ' successfully', [
+                                            'user' => $record->user,
+                                            'product' => $product,
+                                            'amount' => $record->amount
+                                        ]);
+
+                                        // update product status
+                                        if ($record->user->email) {
+                                            if ($record->user->email) {
+                                                try {
+                                                    $product = Product::where('id', $record->transactionable_id)->first();
+                                                    // $quantity = $transaction->amount / $product->unit_price;
+                                                    //  The payment is based on the discount price, so the quantity shall deduct by discount price and not original price
+                                                    $quantity = $record->amount / $product->discount_price;
+                        
+                                                    $record->user->notify(new PurchasedGiftCardNotification($record->transaction_no, $record->updated_at, $product->name, $quantity, $record->amount));
+                                                    
+                                                    // fire event for mission progress
+                                                    event(args: new GiftCardPurchased($record->user, $product));
+                                                } catch (\Exception $e) {
+                                                    Log::error('Error sending PurchasedGiftCardNotification: ' . $e->getMessage());
+                                                }
+                                            }
+                                        }
                                     }
 
                                     // show summary notification
@@ -223,10 +270,11 @@ class TransactionResource extends Resource
                                     ->danger()
                                     ->send();
                             } else {
+                                $responseDesc = isset($response['responseDesc']) ? $response['responseDesc'] : '';
                                 // other errors
                                 Notification::make()
                                     ->title('Refresh Status Failed')
-                                    ->body("Failed to update Transaction: {$record->transaction_no} status")
+                                    ->body("Failed to update Transaction: {$record->transaction_no} status: " . $responseDesc)
                                     ->danger()
                                     ->send();
                             }
