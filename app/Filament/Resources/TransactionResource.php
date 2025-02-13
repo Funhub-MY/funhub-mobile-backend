@@ -161,14 +161,10 @@ class TransactionResource extends Resource
                                 $record->amount
                             );
 
-                            if (isset($response['responseCode'])) {
-                                $newStatus = match($response['responseCode']) {
-                                    '0' => Transaction::STATUS_SUCCESS,
-                                    'PE' => Transaction::STATUS_PENDING,
-                                    default => Transaction::STATUS_FAILED
-                                };
-
+                            if (isset($response['responseCode']) && $response['responseCode'] === '0') { // success now
+                                $newStatus = Transaction::STATUS_SUCCESS;
                                 $oldStatus = $record->status;
+
                                 if ($oldStatus !== $newStatus) {
                                     $record->status = $newStatus;
                                     $record->save();
@@ -191,12 +187,25 @@ class TransactionResource extends Resource
                                             // check and update voucher ownership if needed
                                             if ($merchantOfferClaim->voucher_id) {
                                                 $voucher = \App\Models\MerchantOfferVoucher::find($merchantOfferClaim->voucher_id);
-                                                if ($voucher && (!$voucher->owned_by_id || $voucher->owned_by_id !== $record->user_id)) {
+                                                if ($voucher && empty($voucher->owned_by_id)) {
                                                     $voucher->owned_by_id = $record->user_id;
                                                     $voucher->save();
+                                                } else {
+                                                    Log::error('[TransactionResource] Failed to update voucher ownership as its owned by someone else', [
+                                                        'voucher_id' => $merchantOfferClaim->voucher_id,
+                                                        'user_id' => $record->user_id
+                                                    ]);
+                                                    Notification::make()
+                                                        ->title('Refresh Status Failed')
+                                                        ->body("Voucher Code:" . $merchantOfferClaim->voucher->code . "Failed to update voucher ownership as its owned by someone else")
+                                                        ->danger()
+                                                        ->send();
                                                 }
                                             }
                                         }
+                                    } else if ($newStatus === Transaction::STATUS_SUCCESS && ($oldStatus === Transaction::STATUS_PENDING || $oldStatus === Transaction::STATUS_FAILED) &&
+                                        $record->transactionable_type === \App\Models\Product::class) {
+
                                     }
 
                                     // show summary notification
@@ -206,6 +215,20 @@ class TransactionResource extends Resource
                                         ->success()
                                         ->send();
                                 }
+                            } else if (isset($response['responseCode']) && $response['responseCode'] == 'M0009') {
+                                // transaction not found
+                                Notification::make()
+                                    ->title('Transaction Not Found')
+                                    ->body("Failed to update Transaction: {$record->transaction_no} status as transaction not found")
+                                    ->danger()
+                                    ->send();
+                            } else {
+                                // other errors
+                                Notification::make()
+                                    ->title('Refresh Status Failed')
+                                    ->body("Failed to update Transaction: {$record->transaction_no} status")
+                                    ->danger()
+                                    ->send();
                             }
                         } catch (\Exception $e) {
                             Notification::make()
