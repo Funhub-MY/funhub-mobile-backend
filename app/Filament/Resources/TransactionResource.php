@@ -191,9 +191,19 @@ class TransactionResource extends Resource
                                             // check and update voucher ownership if needed
                                             if ($merchantOfferClaim->voucher_id) {
                                                 $voucher = \App\Models\MerchantOfferVoucher::find($merchantOfferClaim->voucher_id);
-                                                if ($voucher && (!$voucher->owned_by_id || $voucher->owned_by_id !== $record->user_id)) {
+                                                if ($voucher && empty($voucher->owned_by_id)) {
                                                     $voucher->owned_by_id = $record->user_id;
                                                     $voucher->save();
+                                                } else {
+                                                    Log::error('[TransactionResource] Failed to update voucher ownership as its owned by someone else', [
+                                                        'voucher_id' => $merchantOfferClaim->voucher_id,
+                                                        'user_id' => $record->user_id
+                                                    ]);
+                                                    Notification::make()
+                                                        ->title('Refresh Status Failed')
+                                                        ->body("Voucher Code:" . $merchantOfferClaim->voucher->code . "Failed to update voucher ownership as its owned by someone else")
+                                                        ->danger()
+                                                        ->send();
                                                 }
                                             }
                                         }
