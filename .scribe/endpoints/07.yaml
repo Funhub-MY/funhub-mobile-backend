@@ -39,7 +39,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Df46g6EZhc35be1kaavV8Pd'
+      - 'Bearer Pach6dZDvVe83ba1Ef465gk'
     controller: null
     method: null
     route: null
@@ -82,7 +82,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D1fZh866vVkPa3dcg45baeE'
+      - 'Bearer b6aefcE5aPZkV8hv6d4g1D3'
     controller: null
     method: null
     route: null
@@ -142,10 +142,12 @@ endpoints:
               "message": "Success",
               "data": {
                   "id": 1,
-                  "name": "Selangor",
+                  "name": {
+                      "en": "Selangor",
+                      "zh": ""
+                  },
                   "code": "SGR",
-                  "country_id": 1,
-                  "name_translation": "Selangor"
+                  "country_id": 1
               }
           }
         headers: []
@@ -168,7 +170,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6g8a1ehkv435bD6fdEaPVZc'
+      - 'Bearer k3ae4c681PbagfEZDvVh65d'
     controller: null
     method: null
     route: null

@@ -30,7 +30,7 @@ endpoints:
         description: 'optional Location Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - itaque
+          - voluptas
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -108,7 +108,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       location_ids:
-        - itaque
+        - voluptas
       name: '"KFC SS15"'
       state_id: 1
       country_id: 1
@@ -135,7 +135,224 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vdeP6afa1VZck4E8b365ghD'
+      - 'Bearer EhZed6g8k3a1V6fcvbDaP45'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/locations/rating
+    metadata:
+      groupName: Location
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Rate a Location and Create/Update Store'
+      description: |-
+        This endpoint allows users to rate a location and automatically creates or updates an associated store.
+        If the location doesn't exist, it will be created. Similarly, if no store exists for the location,
+        a new store will be created with the location's details.
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      lat:
+        name: lat
+        description: 'Latitude of the location.'
+        required: true
+        example: 3.073065
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lng:
+        name: lng
+        description: 'Longitude of the location.'
+        required: true
+        example: 101.607787
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      google_id:
+        name: google_id
+        description: 'required|nullable Google Place ID for the location.'
+        required: false
+        example: ChIJN1t_tDeuEmsRUsoyG83frY4
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      address:
+        name: address
+        description: 'required|nullable Street address of the location.'
+        required: false
+        example: '47, Jalan SS 15/4g'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      address_2:
+        name: address_2
+        description: 'optional Additional address details.'
+        required: false
+        example: 'Subang Jaya'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      postcode:
+        name: postcode
+        description: 'required|nullable Postal code of the location.'
+        required: false
+        example: '47500'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      city:
+        name: city
+        description: 'required|nullable City name.'
+        required: false
+        example: 'Subang Jaya'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      state:
+        name: state
+        description: 'required|nullable State name or ID.'
+        required: false
+        example: Selangor
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country:
+        name: country
+        description: 'required|nullable Country name.'
+        required: false
+        example: Malaysia
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      rating:
+        name: rating
+        description: 'Rating value between 1 and 5.'
+        required: true
+        example: 4
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      comment:
+        name: comment
+        description: 'optional Review comment.'
+        required: false
+        example: 'Great service and ambiance'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      name:
+        name: name
+        description: 'Name of the location.'
+        required: true
+        example: 'KFC SS15'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      ratingCategories:
+        name: ratingCategories
+        description: 'optional Comma-separated category IDs for the rating.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+    cleanBodyParameters:
+      lat: 3.073065
+      lng: 101.607787
+      google_id: ChIJN1t_tDeuEmsRUsoyG83frY4
+      address: '47, Jalan SS 15/4g'
+      address_2: 'Subang Jaya'
+      postcode: '47500'
+      city: 'Subang Jaya'
+      state: Selangor
+      country: Malaysia
+      rating: 4
+      comment: 'Great service and ambiance'
+      name: 'KFC SS15'
+      ratingCategories: '1,2,3'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "success": true,
+           "message": "Location and store rated successfully",
+           "data": {
+             "location": {
+               "id": 1,
+               "name": "KFC SS15",
+               "google_id": "ChIJN1t_tDeuEmsRUsoyG83frY4",
+               "lat": 3.073065,
+               "lng": 101.607787,
+               "address": "47, Jalan SS 15/4g",
+               "city": "Subang Jaya",
+               "state": "Selangor",
+               "country": "Malaysia"
+             },
+             "store": {
+               "id": 1,
+               "name": "KFC SS15",
+               "status": "active",
+               "ratings": 4
+             },
+             "rating": {
+               "id": 1,
+               "rating": 4,
+               "comment": "Great service and ambiance",
+               "categories": [1, 2, 3],
+               "likes_count": 0,
+               "dislikes_count": 0
+             }
+           }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6hkP3Vba6Zce1fD54Edvga8'
     controller: null
     method: null
     route: null
@@ -167,7 +384,7 @@ endpoints:
         description: 'optional Location Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - impedit
+          - illum
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -245,7 +462,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       location_ids:
-        - impedit
+        - illum
       name: '"KFC SS15"'
       state_id: 1
       country_id: 1
@@ -272,7 +489,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f8bV6DEv415aZhdPkcg3e6a'
+      - 'Bearer 63aahg58d1bEDkeZV6cPf4v'
     controller: null
     method: null
     route: null
@@ -338,7 +555,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d53e1P6Vbcavha6EfkDZ48g'
+      - 'Bearer 84e15fPga3chZ6v6dEbkDVa'
     controller: null
     method: null
     route: null

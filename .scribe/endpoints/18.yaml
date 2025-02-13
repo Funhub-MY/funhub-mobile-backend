@@ -40,7 +40,72 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cdf6Z5v3gVeh18D6PaEbak4'
+      - 'Bearer 4h3c5deDkagvVf6b168EaPZ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/campaigns/active/{campaign_id}'
+    metadata:
+      groupName: Campaigns
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Active Campaign By ID'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      campaign_id:
+        name: campaign_id
+        description: 'The ID of the campaign.'
+        required: true
+        example: expedita
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      campaign_id: expedita
+    queryParameters:
+      campaign_id:
+        name: campaign_id
+        description: 'Campaign ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      campaign_id: 1
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": {}
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 86EVbde4PZ3aa6Dcvfkg1h5'
     controller: null
     method: null
     route: null
@@ -105,7 +170,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bcP3665ev1gEaZdhaDVk84f'
+      - 'Bearer b3ae1vVg5f8Pd64ZahEDkc6'
     controller: null
     method: null
     route: null
@@ -171,7 +236,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1ad5E683ab4vDgcP6fhkVeZ'
+      - 'Bearer hd6PbvfVac4Dk5e63E8Z1ga'
     controller: null
     method: null
     route: null
@@ -226,7 +291,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vbgak16aVhDc34PZ68efE5d'
+      - 'Bearer Zad34hcvfVk6bgPDe65aE81'
     controller: null
     method: null
     route: null
@@ -292,7 +357,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D4hcv653dZe8gf6bEV1kPaa'
+      - 'Bearer 463aDa68cEPb51ekVdhgfvZ'
     controller: null
     method: null
     route: null
@@ -343,7 +408,7 @@ endpoints:
         name: email
         description: 'The email of the respondant. Example:'
         required: true
-        example: treutel.yvette@example.com
+        example: reuben08@example.com
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -382,7 +447,7 @@ endpoints:
     cleanBodyParameters:
       campaign_id: 1
       name: 'John Doe'
-      email: treutel.yvette@example.com
+      email: reuben08@example.com
       phone: '0123456789'
       ic: '123456789012'
       address: '123, Jalan ABC, 12345, Kuala Lumpur'
@@ -401,7 +466,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gZkac3bE6vaPe85Vf4hD6d1'
+      - 'Bearer gk63acDV1486PvZe5dbEafh'
     controller: null
     method: null
     route: null
@@ -456,7 +521,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c66DZVf4bd58EePh3gvaka1'
+      - 'Bearer af5V1ZkD83cgP46ad6Eehvb'
     controller: null
     method: null
     route: null

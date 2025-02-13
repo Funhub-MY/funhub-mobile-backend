@@ -74,12 +74,12 @@ paths:
                 id:
                   type: integer
                   description: 'This field is required when <code>slug</code> is <code>null</code>.'
-                  example: 17
+                  example: 15
                   nullable: false
                 slug:
                   type: string
                   description: 'This field is required when <code>id</code> is <code>null</code>.'
-                  example: ut
+                  example: corrupti
                   nullable: false
     parameters:
       -
@@ -462,7 +462,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 8
+                  example: 19
                   nullable: false
                 reason:
                   type: string
@@ -472,12 +472,12 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: ratione
+                  example: mollitia
                   nullable: false
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: fugit
+                  example: totam
                   nullable: false
                 article:
                   type: integer
@@ -649,7 +649,7 @@ paths:
                   type: array
                   description: 'Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - id
+                    - rerum
                   items:
                     type: string
               required:
@@ -681,7 +681,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - iusto
+                    - voluptatem
                   items:
                     type: string
                 category_ids:
@@ -737,6 +737,11 @@ paths:
                   description: 'optional Per Page Limit Override.'
                   example: 10
                   nullable: false
+                offset:
+                  type: integer
+                  description: 'Offset Override.'
+                  example: 0
+                  nullable: false
               required:
                 - lat
                 - lng
@@ -771,7 +776,7 @@ paths:
                 keyword_id:
                   type: integer
                   description: 'The <code>id</code> of an existing record in the search_keywords table.'
-                  example: 6
+                  example: 14
                   nullable: false
               required:
                 - keyword_id
@@ -845,7 +850,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - vitae
+                    - in
                   items:
                     type: string
                 category_ids:
@@ -1612,7 +1617,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: dolor
+        example: tempore
         required: true
         schema:
           type: string
@@ -1703,12 +1708,12 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: ad
+                  example: rerum
                   nullable: false
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: harum
+                  example: nesciunt
                   nullable: false
               required:
                 - comment_id
@@ -2036,7 +2041,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: tempora
+        example: ullam
         required: true
         schema:
           type: string
@@ -2780,6 +2785,47 @@ paths:
                     example: []
       tags:
         - Campaigns
+  '/api/v1/campaigns/active/{campaign_id}':
+    get:
+      summary: 'Get Active Campaign By ID'
+      operationId: getActiveCampaignByID
+      description: ''
+      parameters:
+        -
+          in: query
+          name: campaign_id
+          description: 'Campaign ID.'
+          example: 1
+          required: true
+          schema:
+            type: integer
+            description: 'Campaign ID.'
+            example: 1
+            nullable: false
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data: {  }
+                properties:
+                  data:
+                    type: object
+                    properties: {  }
+      tags:
+        - Campaigns
+    parameters:
+      -
+        in: path
+        name: campaign_id
+        description: 'The ID of the campaign.'
+        example: expedita
+        required: true
+        schema:
+          type: string
   /api/v1/campaigns/save/single_aswer:
     post:
       summary: 'Save Single Answer to a Question'
@@ -2991,7 +3037,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: treutel.yvette@example.com
+                  example: reuben08@example.com
                   nullable: false
                 phone:
                   type: string
@@ -3085,7 +3131,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: aut
+                  example: impedit
                   nullable: false
               required:
                 - username
@@ -3966,7 +4012,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: sit
+                  example: magnam
                   nullable: false
               required:
                 - share_code
@@ -3997,7 +4043,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1796
+                      line: 1921
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -4419,7 +4465,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1796
+                        line: 1921
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -4847,7 +4893,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: sit
+                  example: sed
                   nullable: false
               required:
                 - share_code
@@ -4878,7 +4924,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                      line: 1286
+                      line: 1287
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5300,7 +5346,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                        line: 1286
+                        line: 1287
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5728,7 +5774,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: consequuntur
+                  example: fuga
                   nullable: false
               required:
                 - share_code
@@ -5918,148 +5964,6 @@ paths:
                     example: Unauthenticated.
       tags:
         - Endpoints
-  /api/v1/user:
-    get:
-      summary: 'Display a listing of the resource.'
-      operationId: displayAListingOfTheResource
-      description: ''
-      parameters: []
-      responses:
-        401:
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: Unauthenticated.
-                properties:
-                  message:
-                    type: string
-                    example: Unauthenticated.
-      tags:
-        - Endpoints
-    post:
-      summary: 'Update User Details (name, username, bio, job_title, dob, gender, location, avatar, cover, article_categories)'
-      operationId: updateUserDetailsnameUsernameBioJobTitleDobGenderLocationAvatarCoverArticleCategories
-      description: ''
-      parameters: []
-      responses:
-        200:
-          description: success
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "{\n\"user\":\n{\n \"id\": 1,\n \"name\": \"John Doe\"\n \"username\": \"johndoe\"\n \"email\": \"johndoe@gmail.com\"\n \"verified_email\": true\n \"auth_provider\": \"email\"\n \"avatar\": \"https://domain.com/storage/avatars/1/avatar.jpg\"\n \"avatar_thumb\": \"https://domain.com/storage/avatars/1/avatar_thumb.jpg\"\n \"bio\": \"I am a developer\"\n \"cover\": \"https://domain.com/storage/covers/1/cover.jpg\"\n \"articles_published_count\": 0\n \"following_count\": 0\n \"followers_count\": 0\n \"has_completed_profile\": false\n \"has_avatar\": true\n \"point_balance\": 0\n \"unread_notifications_count\": 0\n \"is_following\": false\n \"dob\": \"1990-01-01\",\n \"gender\": \"male\",\n \"job_title\": \"Engineer\",\n \"country_id\": 1,\n \"state_id\": 1,\n \"category_ids\": [1,2,3]\n},\n\"message\": \"Field updated\"\n\n}"
-        401:
-          description: Unauthenticated
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: Unauthenticated.
-                properties:
-                  message:
-                    type: string
-                    example: Unauthenticated.
-        500:
-          description: 'Error updating user details'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: 'Error updating user details'
-                  error: 'Error message'
-                properties:
-                  message:
-                    type: string
-                    example: 'Error updating user details'
-                  error:
-                    type: string
-                    example: 'Error message'
-      tags:
-        - User
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                update_type:
-                  type: string
-                  description: 'Field to update.'
-                  example: job_title
-                  nullable: false
-                name:
-                  type: string
-                  description: "Name of the user (Required if update_type is 'name')."
-                  example: 'John Doe'
-                  nullable: false
-                username:
-                  type: string
-                  description: "Username of the user (Required if update_type is 'username')."
-                  example: johndoe
-                  nullable: false
-                bio:
-                  type: string
-                  description: "Bio of the user (Required if update_type is 'bio')."
-                  example: 'I am a developer'
-                  nullable: false
-                job_title:
-                  type: string
-                  description: "Job title of the user (Required if update_type is 'job_title')."
-                  example: Developer
-                  nullable: false
-                day:
-                  type: integer
-                  description: "Day of the date of birth (Required if update_type is 'dob')."
-                  example: 1
-                  nullable: false
-                month:
-                  type: integer
-                  description: "Month of the date of birth (Required if update_type is 'dob')."
-                  example: 1
-                  nullable: false
-                year:
-                  type: integer
-                  description: "Year of the date of birth (Required if update_type is 'dob')."
-                  example: 1990
-                  nullable: false
-                country_id:
-                  type: integer
-                  description: "Country id of the user (Required if update_type is 'location')."
-                  example: 1
-                  nullable: false
-                state_id:
-                  type: integer
-                  description: "State id of the user (Required if update_type is 'location')."
-                  example: 1
-                  nullable: false
-                avatar:
-                  type: string
-                  format: binary
-                  description: "One image file to upload,Avatar of the user (Required if update_type is 'avatar')."
-                  nullable: false
-                cover:
-                  type: string
-                  format: binary
-                  description: "One image file to upload,Cover of the user (Required if update_type is 'cover')."
-                  nullable: false
-                category_ids:
-                  type: array
-                  description: "Array of article category ids (Required if update_type is 'article_categories')."
-                  example:
-                    - 1
-                    - 2
-                    - 3
-                  items:
-                    type: string
-              required:
-                - update_type
   /api/v1/help/faqs:
     get:
       summary: 'Get All FAQs'
@@ -6219,7 +6123,7 @@ paths:
                 supportable_id:
                   type: integer
                   description: 'This field is required when <code>supportable</code> is present.'
-                  example: 18
+                  example: 2
                   nullable: false
                 category_id:
                   type: integer
@@ -6774,7 +6678,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - itaque
+                    - voluptas
                   items:
                     type: string
                 name:
@@ -6812,6 +6716,208 @@ paths:
                   description: 'optional Radius (KM) of search if lat,lng provided.'
                   example: 10
                   nullable: false
+  /api/v1/locations/rating:
+    post:
+      summary: 'Rate a Location and Create/Update Store'
+      operationId: rateALocationAndCreateUpdateStore
+      description: "This endpoint allows users to rate a location and automatically creates or updates an associated store.\nIf the location doesn't exist, it will be created. Similarly, if no store exists for the location,\na new store will be created with the location's details."
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Location and store rated successfully'
+                  data:
+                    location:
+                      id: 1
+                      name: 'KFC SS15'
+                      google_id: ChIJN1t_tDeuEmsRUsoyG83frY4
+                      lat: 3.073065
+                      lng: 101.607787
+                      address: '47, Jalan SS 15/4g'
+                      city: 'Subang Jaya'
+                      state: Selangor
+                      country: Malaysia
+                    store:
+                      id: 1
+                      name: 'KFC SS15'
+                      status: active
+                      ratings: 4
+                    rating:
+                      id: 1
+                      rating: 4
+                      comment: 'Great service and ambiance'
+                      categories:
+                        - 1
+                        - 2
+                        - 3
+                      likes_count: 0
+                      dislikes_count: 0
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Location and store rated successfully'
+                  data:
+                    type: object
+                    properties:
+                      location:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          name:
+                            type: string
+                            example: 'KFC SS15'
+                          google_id:
+                            type: string
+                            example: ChIJN1t_tDeuEmsRUsoyG83frY4
+                          lat:
+                            type: number
+                            example: 3.073065
+                          lng:
+                            type: number
+                            example: 101.607787
+                          address:
+                            type: string
+                            example: '47, Jalan SS 15/4g'
+                          city:
+                            type: string
+                            example: 'Subang Jaya'
+                          state:
+                            type: string
+                            example: Selangor
+                          country:
+                            type: string
+                            example: Malaysia
+                      store:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          name:
+                            type: string
+                            example: 'KFC SS15'
+                          status:
+                            type: string
+                            example: active
+                          ratings:
+                            type: integer
+                            example: 4
+                      rating:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          rating:
+                            type: integer
+                            example: 4
+                          comment:
+                            type: string
+                            example: 'Great service and ambiance'
+                          categories:
+                            type: array
+                            example:
+                              - 1
+                              - 2
+                              - 3
+                            items:
+                              type: integer
+                          likes_count:
+                            type: integer
+                            example: 0
+                          dislikes_count:
+                            type: integer
+                            example: 0
+      tags:
+        - Location
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lat:
+                  type: number
+                  description: 'Latitude of the location.'
+                  example: 3.073065
+                  nullable: false
+                lng:
+                  type: number
+                  description: 'Longitude of the location.'
+                  example: 101.607787
+                  nullable: false
+                google_id:
+                  type: string
+                  description: 'required|nullable Google Place ID for the location.'
+                  example: ChIJN1t_tDeuEmsRUsoyG83frY4
+                  nullable: false
+                address:
+                  type: string
+                  description: 'required|nullable Street address of the location.'
+                  example: '47, Jalan SS 15/4g'
+                  nullable: false
+                address_2:
+                  type: string
+                  description: 'optional Additional address details.'
+                  example: 'Subang Jaya'
+                  nullable: true
+                postcode:
+                  type: string
+                  description: 'required|nullable Postal code of the location.'
+                  example: '47500'
+                  nullable: false
+                city:
+                  type: string
+                  description: 'required|nullable City name.'
+                  example: 'Subang Jaya'
+                  nullable: false
+                state:
+                  type: string
+                  description: 'required|nullable State name or ID.'
+                  example: Selangor
+                  nullable: false
+                country:
+                  type: string
+                  description: 'required|nullable Country name.'
+                  example: Malaysia
+                  nullable: false
+                rating:
+                  type: integer
+                  description: 'Rating value between 1 and 5.'
+                  example: 4
+                  nullable: false
+                comment:
+                  type: string
+                  description: 'optional Review comment.'
+                  example: 'Great service and ambiance'
+                  nullable: true
+                name:
+                  type: string
+                  description: 'Name of the location.'
+                  example: 'KFC SS15'
+                  nullable: false
+                ratingCategories:
+                  type: string
+                  description: 'optional Comma-separated category IDs for the rating.'
+                  example: '1,2,3'
+                  nullable: true
+              required:
+                - lat
+                - lng
+                - rating
+                - name
   /api/v1/locations:
     get:
       summary: 'Get Locations'
@@ -6839,7 +6945,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - impedit
+                    - illum
                   items:
                     type: string
                 name:
@@ -7083,374 +7189,8 @@ paths:
                 example:
                   data:
                     -
-                      id: 5490
-                      sku: ItoJapanese002-50-C001-2726
-                      merchant_id: 137
-                      store:
-                        id: null
-                        name: null
-                      stores:
-                        -
-                          id: 793
-                          name: 'Ito Japanese Restaurant'
-                          address: '33, Jalan Puteri 4/8, Puchong, 雪兰莪州, Malaysia'
-                          ratings: '4.7'
-                          total_ratings: 3
-                          address_postcode: '47100'
-                          lat: '3.01609720'
-                          lng: '101.61295420'
-                          is_hq: 0
-                          state:
-                            id: 26
-                            country_id: 131
-                            code: CUSTOMIYz
-                            name: 雪兰莪州
-                            name_translation: '{"en": "雪兰莪州", "zh": ""}'
-                            created_at: '2023-10-10T06:53:55.000000Z'
-                            updated_at: '2023-10-10T06:53:55.000000Z'
-                          country:
-                            id: 131
-                            code: MY
-                            name: Malaysia
-                            phone_code: '60'
-                      logo: null
-                      merchant:
-                        id: 137
-                        logo: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/142295/NHODBz3pgu217g1QQ8kMBK1sNBMpUX-metaTWVyY2hhbnQgTG9nbyBwbGFjZW1lbnRfMjAyNDEwMThfMTYyNzE1XzAwMDAucG5n-.png'
-                        brand_name: 'Ito Japanese Restaurant'
-                        business_name: 'Ito Japanese Restaurant Sdn Bhd'
-                        business_phone_no: '0123567996'
-                        user:
-                          id: 21499
-                          name: 'Ito Japanese Restaurant'
-                      name: 'ITO Japanese Restaurant - RM10 现金优惠券'
-                      is_flash: 0
-                      description: "✨Puchong 区的日式料理屋 ✨\n平价｜服务好｜食物精致美味\n\n必吃 🤤 \n✅ Avocado Salad \n✅ Uni Tofu Nabe \n✅ Salmon Volcano\n✅ Ika Geso Spicy Age\n✅ Avocado Truffle Miso Gratin\n\n🙋 这里食物的选择非常多 \n而且环境舒适卫生 🥹 \n超级适合和家人或朋友一起聚餐哦 👍 \n\n居住在Puchong 或在这里的上班族 \n真的很值得推荐一试！😍 \n\n\n\n🎎【ITO Japanese Restaurant】🎎\n\n📍 G-35, Jalan Puteri 4/8, Bandar Puteri, 47100 Puchong, Selangor\n☎️  03-8052 7996\n⏰Monday to Sunday 11:30am -2:30pm, 5:30pm – 10:30pm\n\n"
-                      fine_print: "1. 优惠券只限用于堂食(Dine In Only)\n2. 兑换此优惠券的最低消费要求为 RM20\n3. 每张优惠券1天只能兑换1次，如需兑换第二张须改日使用\n4. 此优惠券不可与其他优惠券、促销活动、折扣或特别优惠同时使用，且严禁分单\n"
-                      redemption_policy: "1. 该优惠券自预订确认之日起 30 天内有效。最后一天23:59到期\n2. 优惠券不可与任何其他折扣同时使用，包括会员折扣\n3. 优惠券不可兑换现金\n4. 优惠券只能通过 FUNHUB App 兑换/使用\n5. 优惠券只能兑换一次\n6. 每张账单限用 1 张优惠券\n"
-                      cancellation_policy: "1. 已兑换的优惠券不可随意取消、更改或退款。\n2. 已兑换的优惠券一经使用后，不可更改或取消。\n3. 已兑换的优惠券仅限有效期内使用，逾期则作废且不可进行退款。\n4. 若您发现他人盗用您的账号并使用此优惠券，请联系客服申请退还饭盒。\n5. 若您去消费时，因技术情况无法使用此优惠券，请联系客服申请退还饭盒。\n"
-                      point_cost: 1
-                      point_fiat_price: 10
-                      discounted_point_fiat_price: 5
-                      fiat_price: 10
-                      discounted_fiat_price: 8
-                      default_purchase_method: point
-                      available_at: '2025-01-04 00:00:00'
-                      available_until: '2025-01-07 23:59:59'
-                      expiry_days: 30
-                      quantity: 5
-                      media:
-                        -
-                          name: ITO-SD1
-                          file_name: wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc=-.png
-                          uuid: d6675a50-d9a3-4767-90c4-3df171a16615
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152259/wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc%3D-.png'
-                          order: null
-                          custom_properties:
-                            width: 1080
-                            height: 1440
-                            is_cover: false
-                          extension: png
-                          size: 2170208
-                        -
-                          name: ITO-SD1-banner
-                          file_name: B4SjW0vT77ZDAF9g52anCpP6vTz2CV-metaSVRPLVNEMS1iYW5uZXIucG5n-.png
-                          uuid: 4949a680-0c85-41e0-92c4-0ac064dfcb5e
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152260/B4SjW0vT77ZDAF9g52anCpP6vTz2CV-metaSVRPLVNEMS1iYW5uZXIucG5n-.png'
-                          order: null
-                          custom_properties:
-                            width: 1035
-                            height: 339
-                            is_cover: false
-                          extension: png
-                          size: 300718
-                      horizontal_banner:
-                        name: ITO-SD1-banner
-                        file_name: B4SjW0vT77ZDAF9g52anCpP6vTz2CV-metaSVRPLVNEMS1iYW5uZXIucG5n-.png
-                        uuid: 4949a680-0c85-41e0-92c4-0ac064dfcb5e
-                        original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152260/B4SjW0vT77ZDAF9g52anCpP6vTz2CV-metaSVRPLVNEMS1iYW5uZXIucG5n-.png'
-                        order: null
-                        custom_properties:
-                          width: 1035
-                          height: 339
-                          is_cover: false
-                        extension: png
-                        size: 300718
-                      vertical_banner:
-                        name: ITO-SD1
-                        file_name: wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc=-.png
-                        uuid: d6675a50-d9a3-4767-90c4-3df171a16615
-                        original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152259/wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc%3D-.png'
-                        order: null
-                        custom_properties:
-                          width: 1080
-                          height: 1440
-                          is_cover: false
-                        extension: png
-                        size: 2170208
-                      interactions:
-                        -
-                          id: 42954
-                          user:
-                            id: 6696
-                            name: 'Elise 🌸'
-                            avatar: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/105466/image_cropper_0A4C9DC4-A57D-4D51-B8A2-963DB67B09A4-10796-00000291432E54A1.jpg'
-                          type: 3
-                          created_at: '2025-01-06T07:50:49.000000Z'
-                          updated_at: '2025-01-06T07:50:49.000000Z'
-                          share_url: null
-                          created_at_diff: '1 week ago'
-                          updated_at_diff: '1 week ago'
-                      location: null
-                      count:
-                        likes: 0
-                        share: 1
-                        bookmarks: 0
-                        views: 29
-                      categories: []
-                      created_at: '2024-11-21T03:26:28.000000Z'
-                      updated_at: '2025-01-03T16:02:49.000000Z'
-                      created_at_diff: '1 month ago'
-                      updated_at_diff: '1 week ago'
-                    -
-                      id: 8488
-                      sku: FujiyamaJapanese003-54-C001-5668
-                      merchant_id: 130
-                      store:
-                        id: null
-                        name: null
-                      stores:
-                        -
-                          id: 3571
-                          name: 'Fujiyama 101 Japanese Restaurant'
-                          address: '26, JALAN RUGBI 13/30, SEKSYEN 13 TADISMA BUSINESS PARK Shah Alam, 40100 Petaling Jaya, Selangor'
-                          ratings: '0.0'
-                          total_ratings: 0
-                          address_postcode: '40100'
-                          lat: '3.0884927'
-                          lng: '101.5439374'
-                          is_hq: 0
-                          state:
-                            id: 12
-                            country_id: 131
-                            code: SGR
-                            name: Selangor
-                            name_translation: '{"en": "Selangor", "zh": "雪兰莪"}'
-                            created_at: '2023-04-09T23:44:27.000000Z'
-                            updated_at: '2023-04-09T23:44:27.000000Z'
-                          country:
-                            id: 131
-                            code: MY
-                            name: Malaysia
-                            phone_code: '60'
-                      logo: null
-                      merchant:
-                        id: 130
-                        logo: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/141931/JMGJibDf7EsKVmB3BMYVcgC3FYYaKL-metaTG9nbyAoMSkuanBn-.jpg'
-                        brand_name: ' FujiYama 101 Japanese Restaurant '
-                        business_name: 'Fujiyama Japanese Restaurant'
-                        business_phone_no: '0168991900'
-                        user:
-                          id: 21453
-                          name: ' FujiYama 101'
-                      name: 'Salmon Belly Osaka Rolls'
-                      is_flash: 0
-                      description: "Chef Yama 是一位拥有超过35年经验的寿司大师 👏\n\n🙋 哪里可以见到Chef Yama？\n👉 Fujiyama Japanese Restaurant 101 \n\n👉 店里必吃的招牌 \n🍣Salmon Belly Osaka Rolls 🍣\n\n内层： \n🍣 辣味三文鱼 \n🥑 牛油果 \n🥒 黄瓜和墨西哥辣椒\n\n外层： \n🍣 三文鱼肚 \n🧄 蒜 \n🧅 洋葱鱼子酱\n\n最后的点缀： \n✨ 轻轻炙烤后，再配上Chef Yama 的招牌辣味蒜蓉酱\n\n\n每一片厚度均匀的三文鱼 \n都是老板经过三十五年的厨艺，精心打磨而成 🔪 \n一口入嘴， 让人按耐不住想再来一片的念头 😋 \n\n\n⛰️【Fujiyama Japanese Restaurant 101】⛰️\n\n📍26, JALAN RUGBI 13/30, SEKSYEN 13 TADISMA BUSINESS PARK Shah Alam, 40100 Petaling Jaya, Selangor\n☎️ 03-5524 3634\n⏰Monday to Sunday 11am -11pm\n⚠️ 星期五，六和日需预约\n\n"
-                      fine_print: "1. 优惠券只限用于堂食(Dine In Only)\n2. 需消费最低 RM100 才能使用此优惠券\n3. 星期五，六和日需提前预约\n4. 每张优惠券1天只能兑换1次，如需兑换第二张须改日使用\n5. 此优惠券不可与其他优惠券、促销活动、折扣或特别优惠同时使用，且严禁分单\n"
-                      redemption_policy: "1. 该优惠券自预订确认之日起 30 天内有效。最后一天23:59到期\n2. 优惠券不可与任何其他折扣同时使用，包括会员折扣\n3. 优惠券不可兑换现金\n4. 优惠券只能通过 FUNHUB App 兑换/使用\n5. 优惠券只能兑换一次\n6. 每张账单限用 1 张优惠券\n"
-                      cancellation_policy: "1. 已兑换的优惠券不可随意取消、更改或退款。\n2. 已兑换的优惠券一经使用后，不可更改或取消。\n3. 已兑换的优惠券仅限有效期内使用，逾期则作废且不可进行退款。\n4. 若您发现他人盗用您的账号并使用此优惠券，请联系客服申请退还饭盒。\n5. 若您去消费时，因技术情况无法使用此优惠券，请联系客服申请退还饭盒。\n"
-                      point_cost: 4
-                      point_fiat_price: 43.8
-                      discounted_point_fiat_price: 20
-                      fiat_price: 43.8
-                      discounted_fiat_price: 35
-                      default_purchase_method: point
-                      available_at: '2025-01-06 00:00:00'
-                      available_until: '2025-01-08 23:59:59'
-                      expiry_days: 30
-                      quantity: 5
-                      media:
-                        -
-                          name: Fujiyama-SD1
-                          file_name: gQaUy2udVCp1MgDfOnfV1BUhglBWiT-metaRnVqaXlhbWEtU0QxLnBuZw==-.png
-                          uuid: b78c7a04-a0b5-4da8-9c30-57baaa7805e1
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/165509/gQaUy2udVCp1MgDfOnfV1BUhglBWiT-metaRnVqaXlhbWEtU0QxLnBuZw%3D%3D-.png'
-                          order: null
-                          custom_properties:
-                            width: 1080
-                            height: 1440
-                            is_cover: false
-                          extension: png
-                          size: 1609609
-                        -
-                          name: Fujiyama-SD1-voucher
-                          file_name: gC2VLTdw6NtD8xW19UlQJY719AZCYK-metaRnVqaXlhbWEtU0QxLXZvdWNoZXIucG5n-.png
-                          uuid: 05c5b576-b6ee-4fdd-b4b8-bf4137b58b43
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/165510/gC2VLTdw6NtD8xW19UlQJY719AZCYK-metaRnVqaXlhbWEtU0QxLXZvdWNoZXIucG5n-.png'
-                          order: null
-                          custom_properties:
-                            width: 1035
-                            height: 339
-                            is_cover: false
-                          extension: png
-                          size: 273337
-                      horizontal_banner:
-                        name: Fujiyama-SD1-voucher
-                        file_name: gC2VLTdw6NtD8xW19UlQJY719AZCYK-metaRnVqaXlhbWEtU0QxLXZvdWNoZXIucG5n-.png
-                        uuid: 05c5b576-b6ee-4fdd-b4b8-bf4137b58b43
-                        original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/165510/gC2VLTdw6NtD8xW19UlQJY719AZCYK-metaRnVqaXlhbWEtU0QxLXZvdWNoZXIucG5n-.png'
-                        order: null
-                        custom_properties:
-                          width: 1035
-                          height: 339
-                          is_cover: false
-                        extension: png
-                        size: 273337
-                      vertical_banner:
-                        name: Fujiyama-SD1
-                        file_name: gQaUy2udVCp1MgDfOnfV1BUhglBWiT-metaRnVqaXlhbWEtU0QxLnBuZw==-.png
-                        uuid: b78c7a04-a0b5-4da8-9c30-57baaa7805e1
-                        original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/165509/gQaUy2udVCp1MgDfOnfV1BUhglBWiT-metaRnVqaXlhbWEtU0QxLnBuZw%3D%3D-.png'
-                        order: null
-                        custom_properties:
-                          width: 1080
-                          height: 1440
-                          is_cover: false
-                        extension: png
-                        size: 1609609
-                      interactions: []
-                      location: null
-                      count:
-                        likes: 0
-                        share: 0
-                        bookmarks: 0
-                        views: 8
-                      categories: []
-                      created_at: '2024-12-26T06:03:26.000000Z'
-                      updated_at: '2025-01-05T16:04:19.000000Z'
-                      created_at_diff: '2 weeks ago'
-                      updated_at_diff: '1 week ago'
-                    -
-                      id: 7684
-                      sku: Scoopsy001-68-C001-4920
-                      merchant_id: 55
-                      store:
-                        id: null
-                        name: null
-                      stores:
-                        -
-                          id: 8
-                          name: Scoopsy
-                          address: '6A, Jalan SS14/1, SS14, Subang Jaya'
-                          ratings: '4.6'
-                          total_ratings: 10
-                          address_postcode: '47500'
-                          lat: '3.0727664'
-                          lng: '101.5889151'
-                          is_hq: 1
-                          state:
-                            id: 12
-                            country_id: 131
-                            code: SGR
-                            name: Selangor
-                            name_translation: '{"en": "Selangor", "zh": "雪兰莪"}'
-                            created_at: '2023-04-09T23:44:27.000000Z'
-                            updated_at: '2023-04-09T23:44:27.000000Z'
-                          country:
-                            id: 131
-                            code: MY
-                            name: Malaysia
-                            phone_code: '60'
-                      logo: null
-                      merchant:
-                        id: 55
-                        logo: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/116401/XGaPMS05MpJ1ULpy9IdFNQ3gFboic1-metaTWVyY2hhbnQgTG9nbyBwbGFjZW1lbnQgKDMpLnBuZw%3D%3D-.png'
-                        brand_name: Scoopsy
-                        business_name: 'Leading Ovis Sdn Bhd'
-                        business_phone_no: '600356131290'
-                        user:
-                          id: 8048
-                          name: Scoopsy
-                      name: 'Classic Single Scoop Waffle'
-                      is_flash: 0
-                      description: "甜品控们看过来！\n\n🧇单勺冰淇淋华夫饼\n一片华夫饼，再来一勺冰淇淋\n酥脆的外壳搭配爽口的甜度\n有谁不爱呢😋\n\nScoopsy\n☎️03-5613 1290\n📍6A, Jalan SS 14/1, Ss 14, 47500 Subang Jaya, Selangor\n🕒1pm - 10pm\n"
-                      fine_print: ' 此优惠券仅限堂食（Dine-in）。'
-                      redemption_policy: "1. 此优惠券仅限堂食（Dine-in）。\n2. 此优惠券自成功购买当天起的 30天内有效，有效期的最后一天截止时间为23:59。\n3. 此优惠不可与其他促销和折扣叠加使用，包括会员折扣。\n4. 此优惠券不可兑换成现金。\n5. 此优惠券仅通过 FUNHUB App 兑换和使用。\n6. 此优惠券仅限一次交易。\n7. 此优惠券仅限用于一个账单。\n8. 如发现任何违规获取优惠券的情况，经核实后将予以作废处理\n"
-                      cancellation_policy: "1. 已兑换的优惠券不可随意取消、更改或退款。\n2. 已兑换的优惠券一经使用后，不可更改或取消。\n3. 已兑换的优惠券仅限有效期内使用，逾期则作废且不可进行退款。\n4. 若您发现他人盗用您的账号并使用此优惠券，请联系客服申请退还饭盒。\n5. 若您去消费时，因技术情况无法使用此优惠券，请联系客服申请退还饭盒。\n"
-                      point_cost: 1
-                      point_fiat_price: 15.7
-                      discounted_point_fiat_price: 5
-                      fiat_price: 15.7
-                      discounted_fiat_price: 10
-                      default_purchase_method: point
-                      available_at: '2025-01-06 00:00:00'
-                      available_until: '2025-01-08 23:59:00'
-                      expiry_days: 30
-                      quantity: 5
-                      media:
-                        -
-                          name: scoopsy-SD-chi
-                          file_name: IQMCsFJ6Ykz5OBBFZWdJ7Qfdx965Uu-metac2Nvb3BzeS1TRC1jaGkucG5n-.png
-                          uuid: 51bc066e-6277-4195-a8c8-78d91917d9f7
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161490/IQMCsFJ6Ykz5OBBFZWdJ7Qfdx965Uu-metac2Nvb3BzeS1TRC1jaGkucG5n-.png'
-                          order: null
-                          custom_properties:
-                            width: 1080
-                            height: 1441
-                            is_cover: false
-                          extension: png
-                          size: 1769027
-                        -
-                          name: scoopsy-SD_voucher
-                          file_name: xjlI6DHMTyqnPg6dAa60bF7oMK6AX6-metac2Nvb3BzeS1TRF92b3VjaGVyLnBuZw==-.png
-                          uuid: 0039ec24-8b05-4331-b241-cf9a5ec5160a
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161491/xjlI6DHMTyqnPg6dAa60bF7oMK6AX6-metac2Nvb3BzeS1TRF92b3VjaGVyLnBuZw%3D%3D-.png'
-                          order: null
-                          custom_properties:
-                            width: 1042
-                            height: 338
-                            is_cover: false
-                          extension: png
-                          size: 297570
-                      horizontal_banner:
-                        name: scoopsy-SD_voucher
-                        file_name: xjlI6DHMTyqnPg6dAa60bF7oMK6AX6-metac2Nvb3BzeS1TRF92b3VjaGVyLnBuZw==-.png
-                        uuid: 0039ec24-8b05-4331-b241-cf9a5ec5160a
-                        original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161491/xjlI6DHMTyqnPg6dAa60bF7oMK6AX6-metac2Nvb3BzeS1TRF92b3VjaGVyLnBuZw%3D%3D-.png'
-                        order: null
-                        custom_properties:
-                          width: 1042
-                          height: 338
-                          is_cover: false
-                        extension: png
-                        size: 297570
-                      vertical_banner:
-                        name: scoopsy-SD-chi
-                        file_name: IQMCsFJ6Ykz5OBBFZWdJ7Qfdx965Uu-metac2Nvb3BzeS1TRC1jaGkucG5n-.png
-                        uuid: 51bc066e-6277-4195-a8c8-78d91917d9f7
-                        original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161490/IQMCsFJ6Ykz5OBBFZWdJ7Qfdx965Uu-metac2Nvb3BzeS1TRC1jaGkucG5n-.png'
-                        order: null
-                        custom_properties:
-                          width: 1080
-                          height: 1441
-                          is_cover: false
-                        extension: png
-                        size: 1769027
-                      interactions: []
-                      location: null
-                      count:
-                        likes: 0
-                        share: 0
-                        bookmarks: 0
-                        views: 3
-                      categories: []
-                      created_at: '2024-12-14T08:19:28.000000Z'
-                      updated_at: '2025-01-07T04:20:11.000000Z'
-                      created_at_diff: '1 month ago'
-                      updated_at_diff: '1 week ago'
-                    -
-                      id: 7629
-                      sku: SoYoung001-49-C001-4865
+                      id: 7636
+                      sku: SoYoung001-49-C001-4872
                       merchant_id: 264
                       store:
                         id: null
@@ -7524,16 +7264,16 @@ paths:
                       fiat_price: 19.9
                       discounted_fiat_price: 15
                       default_purchase_method: point
-                      available_at: '2025-01-06 00:00:00'
-                      available_until: '2025-01-09 23:59:59'
+                      available_at: '2025-02-03 00:00:00'
+                      available_until: '2025-02-06 23:59:59'
                       expiry_days: 30
                       quantity: 5
                       media:
                         -
                           name: SoYoung-SD1
                           file_name: 5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png
-                          uuid: 930a8eaa-cdb9-48ec-a71c-29b572ff3e18
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161195/5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png'
+                          uuid: 5d1c71ea-270c-4d04-b5fd-69de17248595
+                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161209/5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png'
                           order: null
                           custom_properties:
                             width: 1080
@@ -7544,8 +7284,8 @@ paths:
                         -
                           name: SoYoung-SD1-VOUCHER
                           file_name: s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc=-.png
-                          uuid: 59944e2b-2915-4453-be56-e6a4b3f88e63
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161197/s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc%3D-.png'
+                          uuid: 52e8666e-18b6-441d-8463-497e7ca8bf5c
+                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161211/s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc%3D-.png'
                           order: null
                           custom_properties:
                             width: 1034
@@ -7556,8 +7296,8 @@ paths:
                       horizontal_banner:
                         name: SoYoung-SD1-VOUCHER
                         file_name: s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc=-.png
-                        uuid: 59944e2b-2915-4453-be56-e6a4b3f88e63
-                        original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161197/s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc%3D-.png'
+                        uuid: 52e8666e-18b6-441d-8463-497e7ca8bf5c
+                        original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161211/s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc%3D-.png'
                         order: null
                         custom_properties:
                           width: 1034
@@ -7568,8 +7308,8 @@ paths:
                       vertical_banner:
                         name: SoYoung-SD1
                         file_name: 5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png
-                        uuid: 930a8eaa-cdb9-48ec-a71c-29b572ff3e18
-                        original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161195/5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png'
+                        uuid: 5d1c71ea-270c-4d04-b5fd-69de17248595
+                        original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161209/5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png'
                         order: null
                         custom_properties:
                           width: 1080
@@ -7583,10 +7323,10 @@ paths:
                         likes: 0
                         share: 0
                         bookmarks: 0
-                        views: 3
+                        views: 0
                       categories: []
-                      created_at: '2024-12-13T03:53:55.000000Z'
-                      updated_at: '2025-01-05T16:04:02.000000Z'
+                      created_at: '2024-12-13T03:53:56.000000Z'
+                      updated_at: '2025-02-02T16:04:18.000000Z'
                       created_at_diff: '1 month ago'
                       updated_at_diff: '1 week ago'
                   links:
@@ -7613,381 +7353,15 @@ paths:
                         active: false
                     path: 'https://funhub-mobile-backend.test/api/v1/public_offers'
                     per_page: 10
-                    to: 4
-                    total: 4
+                    to: 1
+                    total: 1
                 properties:
                   data:
                     type: array
                     example:
                       -
-                        id: 5490
-                        sku: ItoJapanese002-50-C001-2726
-                        merchant_id: 137
-                        store:
-                          id: null
-                          name: null
-                        stores:
-                          -
-                            id: 793
-                            name: 'Ito Japanese Restaurant'
-                            address: '33, Jalan Puteri 4/8, Puchong, 雪兰莪州, Malaysia'
-                            ratings: '4.7'
-                            total_ratings: 3
-                            address_postcode: '47100'
-                            lat: '3.01609720'
-                            lng: '101.61295420'
-                            is_hq: 0
-                            state:
-                              id: 26
-                              country_id: 131
-                              code: CUSTOMIYz
-                              name: 雪兰莪州
-                              name_translation: '{"en": "雪兰莪州", "zh": ""}'
-                              created_at: '2023-10-10T06:53:55.000000Z'
-                              updated_at: '2023-10-10T06:53:55.000000Z'
-                            country:
-                              id: 131
-                              code: MY
-                              name: Malaysia
-                              phone_code: '60'
-                        logo: null
-                        merchant:
-                          id: 137
-                          logo: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/142295/NHODBz3pgu217g1QQ8kMBK1sNBMpUX-metaTWVyY2hhbnQgTG9nbyBwbGFjZW1lbnRfMjAyNDEwMThfMTYyNzE1XzAwMDAucG5n-.png'
-                          brand_name: 'Ito Japanese Restaurant'
-                          business_name: 'Ito Japanese Restaurant Sdn Bhd'
-                          business_phone_no: '0123567996'
-                          user:
-                            id: 21499
-                            name: 'Ito Japanese Restaurant'
-                        name: 'ITO Japanese Restaurant - RM10 现金优惠券'
-                        is_flash: 0
-                        description: "✨Puchong 区的日式料理屋 ✨\n平价｜服务好｜食物精致美味\n\n必吃 🤤 \n✅ Avocado Salad \n✅ Uni Tofu Nabe \n✅ Salmon Volcano\n✅ Ika Geso Spicy Age\n✅ Avocado Truffle Miso Gratin\n\n🙋 这里食物的选择非常多 \n而且环境舒适卫生 🥹 \n超级适合和家人或朋友一起聚餐哦 👍 \n\n居住在Puchong 或在这里的上班族 \n真的很值得推荐一试！😍 \n\n\n\n🎎【ITO Japanese Restaurant】🎎\n\n📍 G-35, Jalan Puteri 4/8, Bandar Puteri, 47100 Puchong, Selangor\n☎️  03-8052 7996\n⏰Monday to Sunday 11:30am -2:30pm, 5:30pm – 10:30pm\n\n"
-                        fine_print: "1. 优惠券只限用于堂食(Dine In Only)\n2. 兑换此优惠券的最低消费要求为 RM20\n3. 每张优惠券1天只能兑换1次，如需兑换第二张须改日使用\n4. 此优惠券不可与其他优惠券、促销活动、折扣或特别优惠同时使用，且严禁分单\n"
-                        redemption_policy: "1. 该优惠券自预订确认之日起 30 天内有效。最后一天23:59到期\n2. 优惠券不可与任何其他折扣同时使用，包括会员折扣\n3. 优惠券不可兑换现金\n4. 优惠券只能通过 FUNHUB App 兑换/使用\n5. 优惠券只能兑换一次\n6. 每张账单限用 1 张优惠券\n"
-                        cancellation_policy: "1. 已兑换的优惠券不可随意取消、更改或退款。\n2. 已兑换的优惠券一经使用后，不可更改或取消。\n3. 已兑换的优惠券仅限有效期内使用，逾期则作废且不可进行退款。\n4. 若您发现他人盗用您的账号并使用此优惠券，请联系客服申请退还饭盒。\n5. 若您去消费时，因技术情况无法使用此优惠券，请联系客服申请退还饭盒。\n"
-                        point_cost: 1
-                        point_fiat_price: 10
-                        discounted_point_fiat_price: 5
-                        fiat_price: 10
-                        discounted_fiat_price: 8
-                        default_purchase_method: point
-                        available_at: '2025-01-04 00:00:00'
-                        available_until: '2025-01-07 23:59:59'
-                        expiry_days: 30
-                        quantity: 5
-                        media:
-                          -
-                            name: ITO-SD1
-                            file_name: wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc=-.png
-                            uuid: d6675a50-d9a3-4767-90c4-3df171a16615
-                            original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152259/wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc%3D-.png'
-                            order: null
-                            custom_properties:
-                              width: 1080
-                              height: 1440
-                              is_cover: false
-                            extension: png
-                            size: 2170208
-                          -
-                            name: ITO-SD1-banner
-                            file_name: B4SjW0vT77ZDAF9g52anCpP6vTz2CV-metaSVRPLVNEMS1iYW5uZXIucG5n-.png
-                            uuid: 4949a680-0c85-41e0-92c4-0ac064dfcb5e
-                            original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152260/B4SjW0vT77ZDAF9g52anCpP6vTz2CV-metaSVRPLVNEMS1iYW5uZXIucG5n-.png'
-                            order: null
-                            custom_properties:
-                              width: 1035
-                              height: 339
-                              is_cover: false
-                            extension: png
-                            size: 300718
-                        horizontal_banner:
-                          name: ITO-SD1-banner
-                          file_name: B4SjW0vT77ZDAF9g52anCpP6vTz2CV-metaSVRPLVNEMS1iYW5uZXIucG5n-.png
-                          uuid: 4949a680-0c85-41e0-92c4-0ac064dfcb5e
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152260/B4SjW0vT77ZDAF9g52anCpP6vTz2CV-metaSVRPLVNEMS1iYW5uZXIucG5n-.png'
-                          order: null
-                          custom_properties:
-                            width: 1035
-                            height: 339
-                            is_cover: false
-                          extension: png
-                          size: 300718
-                        vertical_banner:
-                          name: ITO-SD1
-                          file_name: wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc=-.png
-                          uuid: d6675a50-d9a3-4767-90c4-3df171a16615
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152259/wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc%3D-.png'
-                          order: null
-                          custom_properties:
-                            width: 1080
-                            height: 1440
-                            is_cover: false
-                          extension: png
-                          size: 2170208
-                        interactions:
-                          -
-                            id: 42954
-                            user:
-                              id: 6696
-                              name: 'Elise 🌸'
-                              avatar: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/105466/image_cropper_0A4C9DC4-A57D-4D51-B8A2-963DB67B09A4-10796-00000291432E54A1.jpg'
-                            type: 3
-                            created_at: '2025-01-06T07:50:49.000000Z'
-                            updated_at: '2025-01-06T07:50:49.000000Z'
-                            share_url: null
-                            created_at_diff: '1 week ago'
-                            updated_at_diff: '1 week ago'
-                        location: null
-                        count:
-                          likes: 0
-                          share: 1
-                          bookmarks: 0
-                          views: 29
-                        categories: []
-                        created_at: '2024-11-21T03:26:28.000000Z'
-                        updated_at: '2025-01-03T16:02:49.000000Z'
-                        created_at_diff: '1 month ago'
-                        updated_at_diff: '1 week ago'
-                      -
-                        id: 8488
-                        sku: FujiyamaJapanese003-54-C001-5668
-                        merchant_id: 130
-                        store:
-                          id: null
-                          name: null
-                        stores:
-                          -
-                            id: 3571
-                            name: 'Fujiyama 101 Japanese Restaurant'
-                            address: '26, JALAN RUGBI 13/30, SEKSYEN 13 TADISMA BUSINESS PARK Shah Alam, 40100 Petaling Jaya, Selangor'
-                            ratings: '0.0'
-                            total_ratings: 0
-                            address_postcode: '40100'
-                            lat: '3.0884927'
-                            lng: '101.5439374'
-                            is_hq: 0
-                            state:
-                              id: 12
-                              country_id: 131
-                              code: SGR
-                              name: Selangor
-                              name_translation: '{"en": "Selangor", "zh": "雪兰莪"}'
-                              created_at: '2023-04-09T23:44:27.000000Z'
-                              updated_at: '2023-04-09T23:44:27.000000Z'
-                            country:
-                              id: 131
-                              code: MY
-                              name: Malaysia
-                              phone_code: '60'
-                        logo: null
-                        merchant:
-                          id: 130
-                          logo: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/141931/JMGJibDf7EsKVmB3BMYVcgC3FYYaKL-metaTG9nbyAoMSkuanBn-.jpg'
-                          brand_name: ' FujiYama 101 Japanese Restaurant '
-                          business_name: 'Fujiyama Japanese Restaurant'
-                          business_phone_no: '0168991900'
-                          user:
-                            id: 21453
-                            name: ' FujiYama 101'
-                        name: 'Salmon Belly Osaka Rolls'
-                        is_flash: 0
-                        description: "Chef Yama 是一位拥有超过35年经验的寿司大师 👏\n\n🙋 哪里可以见到Chef Yama？\n👉 Fujiyama Japanese Restaurant 101 \n\n👉 店里必吃的招牌 \n🍣Salmon Belly Osaka Rolls 🍣\n\n内层： \n🍣 辣味三文鱼 \n🥑 牛油果 \n🥒 黄瓜和墨西哥辣椒\n\n外层： \n🍣 三文鱼肚 \n🧄 蒜 \n🧅 洋葱鱼子酱\n\n最后的点缀： \n✨ 轻轻炙烤后，再配上Chef Yama 的招牌辣味蒜蓉酱\n\n\n每一片厚度均匀的三文鱼 \n都是老板经过三十五年的厨艺，精心打磨而成 🔪 \n一口入嘴， 让人按耐不住想再来一片的念头 😋 \n\n\n⛰️【Fujiyama Japanese Restaurant 101】⛰️\n\n📍26, JALAN RUGBI 13/30, SEKSYEN 13 TADISMA BUSINESS PARK Shah Alam, 40100 Petaling Jaya, Selangor\n☎️ 03-5524 3634\n⏰Monday to Sunday 11am -11pm\n⚠️ 星期五，六和日需预约\n\n"
-                        fine_print: "1. 优惠券只限用于堂食(Dine In Only)\n2. 需消费最低 RM100 才能使用此优惠券\n3. 星期五，六和日需提前预约\n4. 每张优惠券1天只能兑换1次，如需兑换第二张须改日使用\n5. 此优惠券不可与其他优惠券、促销活动、折扣或特别优惠同时使用，且严禁分单\n"
-                        redemption_policy: "1. 该优惠券自预订确认之日起 30 天内有效。最后一天23:59到期\n2. 优惠券不可与任何其他折扣同时使用，包括会员折扣\n3. 优惠券不可兑换现金\n4. 优惠券只能通过 FUNHUB App 兑换/使用\n5. 优惠券只能兑换一次\n6. 每张账单限用 1 张优惠券\n"
-                        cancellation_policy: "1. 已兑换的优惠券不可随意取消、更改或退款。\n2. 已兑换的优惠券一经使用后，不可更改或取消。\n3. 已兑换的优惠券仅限有效期内使用，逾期则作废且不可进行退款。\n4. 若您发现他人盗用您的账号并使用此优惠券，请联系客服申请退还饭盒。\n5. 若您去消费时，因技术情况无法使用此优惠券，请联系客服申请退还饭盒。\n"
-                        point_cost: 4
-                        point_fiat_price: 43.8
-                        discounted_point_fiat_price: 20
-                        fiat_price: 43.8
-                        discounted_fiat_price: 35
-                        default_purchase_method: point
-                        available_at: '2025-01-06 00:00:00'
-                        available_until: '2025-01-08 23:59:59'
-                        expiry_days: 30
-                        quantity: 5
-                        media:
-                          -
-                            name: Fujiyama-SD1
-                            file_name: gQaUy2udVCp1MgDfOnfV1BUhglBWiT-metaRnVqaXlhbWEtU0QxLnBuZw==-.png
-                            uuid: b78c7a04-a0b5-4da8-9c30-57baaa7805e1
-                            original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/165509/gQaUy2udVCp1MgDfOnfV1BUhglBWiT-metaRnVqaXlhbWEtU0QxLnBuZw%3D%3D-.png'
-                            order: null
-                            custom_properties:
-                              width: 1080
-                              height: 1440
-                              is_cover: false
-                            extension: png
-                            size: 1609609
-                          -
-                            name: Fujiyama-SD1-voucher
-                            file_name: gC2VLTdw6NtD8xW19UlQJY719AZCYK-metaRnVqaXlhbWEtU0QxLXZvdWNoZXIucG5n-.png
-                            uuid: 05c5b576-b6ee-4fdd-b4b8-bf4137b58b43
-                            original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/165510/gC2VLTdw6NtD8xW19UlQJY719AZCYK-metaRnVqaXlhbWEtU0QxLXZvdWNoZXIucG5n-.png'
-                            order: null
-                            custom_properties:
-                              width: 1035
-                              height: 339
-                              is_cover: false
-                            extension: png
-                            size: 273337
-                        horizontal_banner:
-                          name: Fujiyama-SD1-voucher
-                          file_name: gC2VLTdw6NtD8xW19UlQJY719AZCYK-metaRnVqaXlhbWEtU0QxLXZvdWNoZXIucG5n-.png
-                          uuid: 05c5b576-b6ee-4fdd-b4b8-bf4137b58b43
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/165510/gC2VLTdw6NtD8xW19UlQJY719AZCYK-metaRnVqaXlhbWEtU0QxLXZvdWNoZXIucG5n-.png'
-                          order: null
-                          custom_properties:
-                            width: 1035
-                            height: 339
-                            is_cover: false
-                          extension: png
-                          size: 273337
-                        vertical_banner:
-                          name: Fujiyama-SD1
-                          file_name: gQaUy2udVCp1MgDfOnfV1BUhglBWiT-metaRnVqaXlhbWEtU0QxLnBuZw==-.png
-                          uuid: b78c7a04-a0b5-4da8-9c30-57baaa7805e1
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/165509/gQaUy2udVCp1MgDfOnfV1BUhglBWiT-metaRnVqaXlhbWEtU0QxLnBuZw%3D%3D-.png'
-                          order: null
-                          custom_properties:
-                            width: 1080
-                            height: 1440
-                            is_cover: false
-                          extension: png
-                          size: 1609609
-                        interactions: []
-                        location: null
-                        count:
-                          likes: 0
-                          share: 0
-                          bookmarks: 0
-                          views: 8
-                        categories: []
-                        created_at: '2024-12-26T06:03:26.000000Z'
-                        updated_at: '2025-01-05T16:04:19.000000Z'
-                        created_at_diff: '2 weeks ago'
-                        updated_at_diff: '1 week ago'
-                      -
-                        id: 7684
-                        sku: Scoopsy001-68-C001-4920
-                        merchant_id: 55
-                        store:
-                          id: null
-                          name: null
-                        stores:
-                          -
-                            id: 8
-                            name: Scoopsy
-                            address: '6A, Jalan SS14/1, SS14, Subang Jaya'
-                            ratings: '4.6'
-                            total_ratings: 10
-                            address_postcode: '47500'
-                            lat: '3.0727664'
-                            lng: '101.5889151'
-                            is_hq: 1
-                            state:
-                              id: 12
-                              country_id: 131
-                              code: SGR
-                              name: Selangor
-                              name_translation: '{"en": "Selangor", "zh": "雪兰莪"}'
-                              created_at: '2023-04-09T23:44:27.000000Z'
-                              updated_at: '2023-04-09T23:44:27.000000Z'
-                            country:
-                              id: 131
-                              code: MY
-                              name: Malaysia
-                              phone_code: '60'
-                        logo: null
-                        merchant:
-                          id: 55
-                          logo: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/116401/XGaPMS05MpJ1ULpy9IdFNQ3gFboic1-metaTWVyY2hhbnQgTG9nbyBwbGFjZW1lbnQgKDMpLnBuZw%3D%3D-.png'
-                          brand_name: Scoopsy
-                          business_name: 'Leading Ovis Sdn Bhd'
-                          business_phone_no: '600356131290'
-                          user:
-                            id: 8048
-                            name: Scoopsy
-                        name: 'Classic Single Scoop Waffle'
-                        is_flash: 0
-                        description: "甜品控们看过来！\n\n🧇单勺冰淇淋华夫饼\n一片华夫饼，再来一勺冰淇淋\n酥脆的外壳搭配爽口的甜度\n有谁不爱呢😋\n\nScoopsy\n☎️03-5613 1290\n📍6A, Jalan SS 14/1, Ss 14, 47500 Subang Jaya, Selangor\n🕒1pm - 10pm\n"
-                        fine_print: ' 此优惠券仅限堂食（Dine-in）。'
-                        redemption_policy: "1. 此优惠券仅限堂食（Dine-in）。\n2. 此优惠券自成功购买当天起的 30天内有效，有效期的最后一天截止时间为23:59。\n3. 此优惠不可与其他促销和折扣叠加使用，包括会员折扣。\n4. 此优惠券不可兑换成现金。\n5. 此优惠券仅通过 FUNHUB App 兑换和使用。\n6. 此优惠券仅限一次交易。\n7. 此优惠券仅限用于一个账单。\n8. 如发现任何违规获取优惠券的情况，经核实后将予以作废处理\n"
-                        cancellation_policy: "1. 已兑换的优惠券不可随意取消、更改或退款。\n2. 已兑换的优惠券一经使用后，不可更改或取消。\n3. 已兑换的优惠券仅限有效期内使用，逾期则作废且不可进行退款。\n4. 若您发现他人盗用您的账号并使用此优惠券，请联系客服申请退还饭盒。\n5. 若您去消费时，因技术情况无法使用此优惠券，请联系客服申请退还饭盒。\n"
-                        point_cost: 1
-                        point_fiat_price: 15.7
-                        discounted_point_fiat_price: 5
-                        fiat_price: 15.7
-                        discounted_fiat_price: 10
-                        default_purchase_method: point
-                        available_at: '2025-01-06 00:00:00'
-                        available_until: '2025-01-08 23:59:00'
-                        expiry_days: 30
-                        quantity: 5
-                        media:
-                          -
-                            name: scoopsy-SD-chi
-                            file_name: IQMCsFJ6Ykz5OBBFZWdJ7Qfdx965Uu-metac2Nvb3BzeS1TRC1jaGkucG5n-.png
-                            uuid: 51bc066e-6277-4195-a8c8-78d91917d9f7
-                            original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161490/IQMCsFJ6Ykz5OBBFZWdJ7Qfdx965Uu-metac2Nvb3BzeS1TRC1jaGkucG5n-.png'
-                            order: null
-                            custom_properties:
-                              width: 1080
-                              height: 1441
-                              is_cover: false
-                            extension: png
-                            size: 1769027
-                          -
-                            name: scoopsy-SD_voucher
-                            file_name: xjlI6DHMTyqnPg6dAa60bF7oMK6AX6-metac2Nvb3BzeS1TRF92b3VjaGVyLnBuZw==-.png
-                            uuid: 0039ec24-8b05-4331-b241-cf9a5ec5160a
-                            original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161491/xjlI6DHMTyqnPg6dAa60bF7oMK6AX6-metac2Nvb3BzeS1TRF92b3VjaGVyLnBuZw%3D%3D-.png'
-                            order: null
-                            custom_properties:
-                              width: 1042
-                              height: 338
-                              is_cover: false
-                            extension: png
-                            size: 297570
-                        horizontal_banner:
-                          name: scoopsy-SD_voucher
-                          file_name: xjlI6DHMTyqnPg6dAa60bF7oMK6AX6-metac2Nvb3BzeS1TRF92b3VjaGVyLnBuZw==-.png
-                          uuid: 0039ec24-8b05-4331-b241-cf9a5ec5160a
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161491/xjlI6DHMTyqnPg6dAa60bF7oMK6AX6-metac2Nvb3BzeS1TRF92b3VjaGVyLnBuZw%3D%3D-.png'
-                          order: null
-                          custom_properties:
-                            width: 1042
-                            height: 338
-                            is_cover: false
-                          extension: png
-                          size: 297570
-                        vertical_banner:
-                          name: scoopsy-SD-chi
-                          file_name: IQMCsFJ6Ykz5OBBFZWdJ7Qfdx965Uu-metac2Nvb3BzeS1TRC1jaGkucG5n-.png
-                          uuid: 51bc066e-6277-4195-a8c8-78d91917d9f7
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161490/IQMCsFJ6Ykz5OBBFZWdJ7Qfdx965Uu-metac2Nvb3BzeS1TRC1jaGkucG5n-.png'
-                          order: null
-                          custom_properties:
-                            width: 1080
-                            height: 1441
-                            is_cover: false
-                          extension: png
-                          size: 1769027
-                        interactions: []
-                        location: null
-                        count:
-                          likes: 0
-                          share: 0
-                          bookmarks: 0
-                          views: 3
-                        categories: []
-                        created_at: '2024-12-14T08:19:28.000000Z'
-                        updated_at: '2025-01-07T04:20:11.000000Z'
-                        created_at_diff: '1 month ago'
-                        updated_at_diff: '1 week ago'
-                      -
-                        id: 7629
-                        sku: SoYoung001-49-C001-4865
+                        id: 7636
+                        sku: SoYoung001-49-C001-4872
                         merchant_id: 264
                         store:
                           id: null
@@ -8061,16 +7435,16 @@ paths:
                         fiat_price: 19.9
                         discounted_fiat_price: 15
                         default_purchase_method: point
-                        available_at: '2025-01-06 00:00:00'
-                        available_until: '2025-01-09 23:59:59'
+                        available_at: '2025-02-03 00:00:00'
+                        available_until: '2025-02-06 23:59:59'
                         expiry_days: 30
                         quantity: 5
                         media:
                           -
                             name: SoYoung-SD1
                             file_name: 5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png
-                            uuid: 930a8eaa-cdb9-48ec-a71c-29b572ff3e18
-                            original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161195/5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png'
+                            uuid: 5d1c71ea-270c-4d04-b5fd-69de17248595
+                            original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161209/5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png'
                             order: null
                             custom_properties:
                               width: 1080
@@ -8081,8 +7455,8 @@ paths:
                           -
                             name: SoYoung-SD1-VOUCHER
                             file_name: s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc=-.png
-                            uuid: 59944e2b-2915-4453-be56-e6a4b3f88e63
-                            original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161197/s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc%3D-.png'
+                            uuid: 52e8666e-18b6-441d-8463-497e7ca8bf5c
+                            original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161211/s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc%3D-.png'
                             order: null
                             custom_properties:
                               width: 1034
@@ -8093,8 +7467,8 @@ paths:
                         horizontal_banner:
                           name: SoYoung-SD1-VOUCHER
                           file_name: s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc=-.png
-                          uuid: 59944e2b-2915-4453-be56-e6a4b3f88e63
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161197/s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc%3D-.png'
+                          uuid: 52e8666e-18b6-441d-8463-497e7ca8bf5c
+                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161211/s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc%3D-.png'
                           order: null
                           custom_properties:
                             width: 1034
@@ -8105,8 +7479,8 @@ paths:
                         vertical_banner:
                           name: SoYoung-SD1
                           file_name: 5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png
-                          uuid: 930a8eaa-cdb9-48ec-a71c-29b572ff3e18
-                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161195/5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png'
+                          uuid: 5d1c71ea-270c-4d04-b5fd-69de17248595
+                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161209/5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png'
                           order: null
                           custom_properties:
                             width: 1080
@@ -8120,10 +7494,10 @@ paths:
                           likes: 0
                           share: 0
                           bookmarks: 0
-                          views: 3
+                          views: 0
                         categories: []
-                        created_at: '2024-12-13T03:53:55.000000Z'
-                        updated_at: '2025-01-05T16:04:02.000000Z'
+                        created_at: '2024-12-13T03:53:56.000000Z'
+                        updated_at: '2025-02-02T16:04:18.000000Z'
                         created_at_diff: '1 month ago'
                         updated_at_diff: '1 week ago'
                     items:
@@ -8131,13 +7505,13 @@ paths:
                       properties:
                         id:
                           type: integer
-                          example: 5490
+                          example: 7636
                         sku:
                           type: string
-                          example: ItoJapanese002-50-C001-2726
+                          example: SoYoung001-49-C001-4872
                         merchant_id:
                           type: integer
-                          example: 137
+                          example: 264
                         store:
                           type: object
                           properties:
@@ -8151,23 +7525,46 @@ paths:
                           type: array
                           example:
                             -
-                              id: 793
-                              name: 'Ito Japanese Restaurant'
-                              address: '33, Jalan Puteri 4/8, Puchong, 雪兰莪州, Malaysia'
-                              ratings: '4.7'
-                              total_ratings: 3
-                              address_postcode: '47100'
-                              lat: '3.01609720'
-                              lng: '101.61295420'
+                              id: 3958
+                              name: 'SoYoung Malaysia 濃い豆乳 @ Seri Kembangan'
+                              address: 'Jalan Simfoni 1'
+                              ratings: '0.0'
+                              total_ratings: 0
+                              address_postcode: '43300'
+                              lat: '3.02655830'
+                              lng: '101.75286160'
                               is_hq: 0
                               state:
-                                id: 26
+                                id: 12
                                 country_id: 131
-                                code: CUSTOMIYz
-                                name: 雪兰莪州
-                                name_translation: '{"en": "雪兰莪州", "zh": ""}'
-                                created_at: '2023-10-10T06:53:55.000000Z'
-                                updated_at: '2023-10-10T06:53:55.000000Z'
+                                code: SGR
+                                name: Selangor
+                                name_translation: '{"en": "Selangor", "zh": "雪兰莪"}'
+                                created_at: '2023-04-09T23:44:27.000000Z'
+                                updated_at: '2023-04-09T23:44:27.000000Z'
+                              country:
+                                id: 131
+                                code: MY
+                                name: Malaysia
+                                phone_code: '60'
+                            -
+                              id: 3957
+                              name: 'SoYoung Malaysia 濃い豆乳 @ TRX'
+                              address: 'Grand Staircase'
+                              ratings: '5.0'
+                              total_ratings: 1
+                              address_postcode: '55100'
+                              lat: '3.14257190'
+                              lng: '101.71802400'
+                              is_hq: 0
+                              state:
+                                id: 14
+                                country_id: 131
+                                code: KUL
+                                name: 'W.P. Kuala Lumpur'
+                                name_translation: '{"en": "W.P. Kuala Lumpur", "zh": "吉隆坡"}'
+                                created_at: '2023-04-09T23:44:27.000000Z'
+                                updated_at: '2023-04-09T23:44:27.000000Z'
                               country:
                                 id: 131
                                 code: MY
@@ -8178,28 +7575,28 @@ paths:
                             properties:
                               id:
                                 type: integer
-                                example: 793
+                                example: 3958
                               name:
                                 type: string
-                                example: 'Ito Japanese Restaurant'
+                                example: 'SoYoung Malaysia 濃い豆乳 @ Seri Kembangan'
                               address:
                                 type: string
-                                example: '33, Jalan Puteri 4/8, Puchong, 雪兰莪州, Malaysia'
+                                example: 'Jalan Simfoni 1'
                               ratings:
                                 type: string
-                                example: '4.7'
+                                example: '0.0'
                               total_ratings:
                                 type: integer
-                                example: 3
+                                example: 0
                               address_postcode:
                                 type: string
-                                example: '47100'
+                                example: '43300'
                               lat:
                                 type: string
-                                example: '3.01609720'
+                                example: '3.02655830'
                               lng:
                                 type: string
-                                example: '101.61295420'
+                                example: '101.75286160'
                               is_hq:
                                 type: integer
                                 example: 0
@@ -8208,25 +7605,25 @@ paths:
                                 properties:
                                   id:
                                     type: integer
-                                    example: 26
+                                    example: 12
                                   country_id:
                                     type: integer
                                     example: 131
                                   code:
                                     type: string
-                                    example: CUSTOMIYz
+                                    example: SGR
                                   name:
                                     type: string
-                                    example: 雪兰莪州
+                                    example: Selangor
                                   name_translation:
                                     type: string
-                                    example: '{"en": "雪兰莪州", "zh": ""}'
+                                    example: '{"en": "Selangor", "zh": "雪兰莪"}'
                                   created_at:
                                     type: string
-                                    example: '2023-10-10T06:53:55.000000Z'
+                                    example: '2023-04-09T23:44:27.000000Z'
                                   updated_at:
                                     type: string
-                                    example: '2023-10-10T06:53:55.000000Z'
+                                    example: '2023-04-09T23:44:27.000000Z'
                               country:
                                 type: object
                                 properties:
@@ -8250,70 +7647,70 @@ paths:
                           properties:
                             id:
                               type: integer
-                              example: 137
+                              example: 264
                             logo:
                               type: string
-                              example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/142295/NHODBz3pgu217g1QQ8kMBK1sNBMpUX-metaTWVyY2hhbnQgTG9nbyBwbGFjZW1lbnRfMjAyNDEwMThfMTYyNzE1XzAwMDAucG5n-.png'
+                              example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/160736/ph0wWwvzoiioVs2u0NpNPgEX9TipZ0-metaTWVyY2hhbnQgTG9nbyBwbGFjZW1lbnQgKDc2KS5wbmc%3D-.png'
                             brand_name:
                               type: string
-                              example: 'Ito Japanese Restaurant'
+                              example: 'SoYoung 濃い豆乳'
                             business_name:
                               type: string
-                              example: 'Ito Japanese Restaurant Sdn Bhd'
+                              example: 'MOS F&B MARKETING SDN BHD '
                             business_phone_no:
                               type: string
-                              example: '0123567996'
+                              example: 012-2216809
                             user:
                               type: object
                               properties:
                                 id:
                                   type: integer
-                                  example: 21499
+                                  example: 27919
                                 name:
                                   type: string
-                                  example: 'Ito Japanese Restaurant'
+                                  example: 'SoYoung 濃い豆乳'
                         name:
                           type: string
-                          example: 'ITO Japanese Restaurant - RM10 现金优惠券'
+                          example: 'SoYoung - 冬季の初雪·濃豆乳雪花冰'
                         is_flash:
                           type: integer
                           example: 0
                         description:
                           type: string
-                          example: "✨Puchong 区的日式料理屋 ✨\n平价｜服务好｜食物精致美味\n\n必吃 🤤 \n✅ Avocado Salad \n✅ Uni Tofu Nabe \n✅ Salmon Volcano\n✅ Ika Geso Spicy Age\n✅ Avocado Truffle Miso Gratin\n\n🙋 这里食物的选择非常多 \n而且环境舒适卫生 🥹 \n超级适合和家人或朋友一起聚餐哦 👍 \n\n居住在Puchong 或在这里的上班族 \n真的很值得推荐一试！😍 \n\n\n\n🎎【ITO Japanese Restaurant】🎎\n\n📍 G-35, Jalan Puteri 4/8, Bandar Puteri, 47100 Puchong, Selangor\n☎️  03-8052 7996\n⏰Monday to Sunday 11:30am -2:30pm, 5:30pm – 10:30pm\n\n"
+                          example: "❄️ SoYoung | 冬季の初雪·濃豆乳雪花冰 ❄️\n Snowy Shirayuki (Japanese Soymilk Bingsu)\n✨  以豆浆为基底的纯净雪花，焕发活力，令人心旷神怡。\n 精选日本豆乳，打造成如雪花般细腻轻盈的刨冰，清凉的口感与浓郁的豆香在舌尖完美融合，像冬季的第一场雪，轻柔和沁人心脾。\n🍧 自选三种互补的奇特配料。\n选择您最喜欢的三种配料，创造属于您自己的独特风味雪花冰：\n\n 🌟 夜明珠：Q弹爽滑，嚼出丝丝甘甜\n 🌿 嫩仙草：萦绕着淡淡的清香和清新，并带有烟熏的味道。\n 💎 水晶珍珠：晶莹剔透，淀粉魔芋耀眼夺目\n 🌰 焙烤黑芝麻：豆浆的浓郁香气与纯黑芝麻的坚果风味完美融合 \n 🍬黑糖麻薯 & 软熟赤小豆： 经典的甜味一定会俘获你的心。\n 🍠 紫芋丸子 & 冲绳紫薯丸子：软糯香甜，质地诱人\n 🍵 抹茶丸子 & 美国杏仁果：独特的茶香和坚果味，丰富了味觉感受。\n💫 每一口，都是一场冬日的甜蜜旅行。\n 冬季の初雪·濃豆乳雪花冰在马来西亚为你带来不一样的冰雪奇缘。\n🌨️Snowy Shirayuki 将您带入梦幻般的白雪仙境，这是一次让您终生难忘的甜蜜冬日之旅，只在 SoYoung Malaysia！\n\n【SoYoung】\n\n🌱SoYoung (HQ)\n📍2, Jalan Simfoni 1, Balakong, 43300 Seri Kembangan, Selangor\n🕒11am-10pm (Mon-Thurs)\n🕒11am-10:30pm (Fri-Sun)\n☎️012-518 5355\n\n🌱 SoYoung (The Exchange TRX)\n📍C.OS.05, Level Concourse, Persiaran TRX, Tun Razak Exchange, 55188 Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur. \n🕒10am-10pm (Mon to Sun)\n☎️012-252 6845\n"
                         fine_print:
                           type: string
-                          example: "1. 优惠券只限用于堂食(Dine In Only)\n2. 兑换此优惠券的最低消费要求为 RM20\n3. 每张优惠券1天只能兑换1次，如需兑换第二张须改日使用\n4. 此优惠券不可与其他优惠券、促销活动、折扣或特别优惠同时使用，且严禁分单\n"
+                          example: "1. 只限店内用餐可使用\n2. 一张桌子只能兑换一份\n3. 每张优惠券1天只能兑换1次，如需兑换第二张须改日使用\n4. 此优惠券不可与其他优惠券、促销活动、折扣或特别优惠同时使用，且严禁分单\n"
                         redemption_policy:
                           type: string
                           example: "1. 该优惠券自预订确认之日起 30 天内有效。最后一天23:59到期\n2. 优惠券不可与任何其他折扣同时使用，包括会员折扣\n3. 优惠券不可兑换现金\n4. 优惠券只能通过 FUNHUB App 兑换/使用\n5. 优惠券只能兑换一次\n6. 每张账单限用 1 张优惠券\n"
                         cancellation_policy:
                           type: string
-                          example: "1. 已兑换的优惠券不可随意取消、更改或退款。\n2. 已兑换的优惠券一经使用后，不可更改或取消。\n3. 已兑换的优惠券仅限有效期内使用，逾期则作废且不可进行退款。\n4. 若您发现他人盗用您的账号并使用此优惠券，请联系客服申请退还饭盒。\n5. 若您去消费时，因技术情况无法使用此优惠券，请联系客服申请退还饭盒。\n"
+                          example: "1. 已兑换的优惠券不可随意取消、更改或退款。\n2. 已兑换的优惠券一经使用后，不可更改或取消。\n3. 已兑换的优惠券仅限有效期内使用，逾期则作废且不可进行退款。\n4. 若您发现他人盗用您的账号并使用此优惠券，请联系客服申请退还饭盒。\n5. 若您去消费时，因技术情况无法使用此优惠券，请联系客服申请退还饭盒。\n\n"
                         point_cost:
                           type: integer
-                          example: 1
+                          example: 2
                         point_fiat_price:
-                          type: integer
-                          example: 10
+                          type: number
+                          example: 19.9
                         discounted_point_fiat_price:
                           type: integer
-                          example: 5
-                        fiat_price:
-                          type: integer
                           example: 10
+                        fiat_price:
+                          type: number
+                          example: 19.9
                         discounted_fiat_price:
                           type: integer
-                          example: 8
+                          example: 15
                         default_purchase_method:
                           type: string
                           example: point
                         available_at:
                           type: string
-                          example: '2025-01-04 00:00:00'
+                          example: '2025-02-03 00:00:00'
                         available_until:
                           type: string
-                          example: '2025-01-07 23:59:59'
+                          example: '2025-02-06 23:59:59'
                         expiry_days:
                           type: integer
                           example: 30
@@ -8324,44 +7721,44 @@ paths:
                           type: array
                           example:
                             -
-                              name: ITO-SD1
-                              file_name: wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc=-.png
-                              uuid: d6675a50-d9a3-4767-90c4-3df171a16615
-                              original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152259/wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc%3D-.png'
+                              name: SoYoung-SD1
+                              file_name: 5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png
+                              uuid: 5d1c71ea-270c-4d04-b5fd-69de17248595
+                              original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161209/5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png'
                               order: null
                               custom_properties:
                                 width: 1080
                                 height: 1440
                                 is_cover: false
                               extension: png
-                              size: 2170208
+                              size: 1746762
                             -
-                              name: ITO-SD1-banner
-                              file_name: B4SjW0vT77ZDAF9g52anCpP6vTz2CV-metaSVRPLVNEMS1iYW5uZXIucG5n-.png
-                              uuid: 4949a680-0c85-41e0-92c4-0ac064dfcb5e
-                              original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152260/B4SjW0vT77ZDAF9g52anCpP6vTz2CV-metaSVRPLVNEMS1iYW5uZXIucG5n-.png'
+                              name: SoYoung-SD1-VOUCHER
+                              file_name: s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc=-.png
+                              uuid: 52e8666e-18b6-441d-8463-497e7ca8bf5c
+                              original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161211/s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc%3D-.png'
                               order: null
                               custom_properties:
-                                width: 1035
-                                height: 339
+                                width: 1034
+                                height: 331
                                 is_cover: false
                               extension: png
-                              size: 300718
+                              size: 257340
                           items:
                             type: object
                             properties:
                               name:
                                 type: string
-                                example: ITO-SD1
+                                example: SoYoung-SD1
                               file_name:
                                 type: string
-                                example: wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc=-.png
+                                example: 5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png
                               uuid:
                                 type: string
-                                example: d6675a50-d9a3-4767-90c4-3df171a16615
+                                example: 5d1c71ea-270c-4d04-b5fd-69de17248595
                               original_url:
                                 type: string
-                                example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152259/wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc%3D-.png'
+                                example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161209/5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png'
                               order:
                                 type: string
                                 example: null
@@ -8382,22 +7779,22 @@ paths:
                                 example: png
                               size:
                                 type: integer
-                                example: 2170208
+                                example: 1746762
                         horizontal_banner:
                           type: object
                           properties:
                             name:
                               type: string
-                              example: ITO-SD1-banner
+                              example: SoYoung-SD1-VOUCHER
                             file_name:
                               type: string
-                              example: B4SjW0vT77ZDAF9g52anCpP6vTz2CV-metaSVRPLVNEMS1iYW5uZXIucG5n-.png
+                              example: s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc=-.png
                             uuid:
                               type: string
-                              example: 4949a680-0c85-41e0-92c4-0ac064dfcb5e
+                              example: 52e8666e-18b6-441d-8463-497e7ca8bf5c
                             original_url:
                               type: string
-                              example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152260/B4SjW0vT77ZDAF9g52anCpP6vTz2CV-metaSVRPLVNEMS1iYW5uZXIucG5n-.png'
+                              example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161211/s5iwAmHwDOVz5AFIofS0uHMPkxTQW5-metaU29Zb3VuZy1TRDEtVk9VQ0hFUi5wbmc%3D-.png'
                             order:
                               type: string
                               example: null
@@ -8406,10 +7803,10 @@ paths:
                               properties:
                                 width:
                                   type: integer
-                                  example: 1035
+                                  example: 1034
                                 height:
                                   type: integer
-                                  example: 339
+                                  example: 331
                                 is_cover:
                                   type: boolean
                                   example: false
@@ -8418,22 +7815,22 @@ paths:
                               example: png
                             size:
                               type: integer
-                              example: 300718
+                              example: 257340
                         vertical_banner:
                           type: object
                           properties:
                             name:
                               type: string
-                              example: ITO-SD1
+                              example: SoYoung-SD1
                             file_name:
                               type: string
-                              example: wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc=-.png
+                              example: 5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png
                             uuid:
                               type: string
-                              example: d6675a50-d9a3-4767-90c4-3df171a16615
+                              example: 5d1c71ea-270c-4d04-b5fd-69de17248595
                             original_url:
                               type: string
-                              example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/152259/wA81aRLzJmJMPmZZ9iflaEOwPIjHIt-metaSVRPLVNEMS5wbmc%3D-.png'
+                              example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/161209/5mxQJfrRsyawnhJ1HPFBr2RqpjNWCV-metaU29Zb3VuZy1TRDEucG5n-.png'
                             order:
                               type: string
                               example: null
@@ -8454,58 +7851,10 @@ paths:
                               example: png
                             size:
                               type: integer
-                              example: 2170208
+                              example: 1746762
                         interactions:
                           type: array
-                          example:
-                            -
-                              id: 42954
-                              user:
-                                id: 6696
-                                name: 'Elise 🌸'
-                                avatar: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/105466/image_cropper_0A4C9DC4-A57D-4D51-B8A2-963DB67B09A4-10796-00000291432E54A1.jpg'
-                              type: 3
-                              created_at: '2025-01-06T07:50:49.000000Z'
-                              updated_at: '2025-01-06T07:50:49.000000Z'
-                              share_url: null
-                              created_at_diff: '1 week ago'
-                              updated_at_diff: '1 week ago'
-                          items:
-                            type: object
-                            properties:
-                              id:
-                                type: integer
-                                example: 42954
-                              user:
-                                type: object
-                                properties:
-                                  id:
-                                    type: integer
-                                    example: 6696
-                                  name:
-                                    type: string
-                                    example: 'Elise 🌸'
-                                  avatar:
-                                    type: string
-                                    example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/105466/image_cropper_0A4C9DC4-A57D-4D51-B8A2-963DB67B09A4-10796-00000291432E54A1.jpg'
-                              type:
-                                type: integer
-                                example: 3
-                              created_at:
-                                type: string
-                                example: '2025-01-06T07:50:49.000000Z'
-                              updated_at:
-                                type: string
-                                example: '2025-01-06T07:50:49.000000Z'
-                              share_url:
-                                type: string
-                                example: null
-                              created_at_diff:
-                                type: string
-                                example: '1 week ago'
-                              updated_at_diff:
-                                type: string
-                                example: '1 week ago'
+                          example: []
                         location:
                           type: string
                           example: null
@@ -8517,22 +7866,22 @@ paths:
                               example: 0
                             share:
                               type: integer
-                              example: 1
+                              example: 0
                             bookmarks:
                               type: integer
                               example: 0
                             views:
                               type: integer
-                              example: 29
+                              example: 0
                         categories:
                           type: array
                           example: []
                         created_at:
                           type: string
-                          example: '2024-11-21T03:26:28.000000Z'
+                          example: '2024-12-13T03:53:56.000000Z'
                         updated_at:
                           type: string
-                          example: '2025-01-03T16:02:49.000000Z'
+                          example: '2025-02-02T16:04:18.000000Z'
                         created_at_diff:
                           type: string
                           example: '1 month ago'
@@ -8601,10 +7950,10 @@ paths:
                         example: 10
                       to:
                         type: integer
-                        example: 4
+                        example: 1
                       total:
                         type: integer
-                        example: 4
+                        example: 1
       tags:
         - Merchant
     parameters:
@@ -8765,7 +8114,7 @@ paths:
                 id:
                   type: integer
                   description: 'This field is required when <code>sku</code> is <code>null</code>.'
-                  example: 7
+                  example: 11
                   nullable: false
                 sku:
                   type: string
@@ -8830,13 +8179,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - eaque
+            - sunt
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - eaque
+              - sunt
             items:
               type: string
         -
@@ -9048,7 +8397,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - molestiae
+                    - dolorem
                   items:
                     type: string
                 city:
@@ -9233,7 +8582,7 @@ paths:
                 referral_code:
                   type: string
                   description: ''
-                  example: eius
+                  example: placeat
                   nullable: true
                 wallet_type:
                   type: string
@@ -9552,7 +8901,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: repudiandae
+        example: molestiae
         required: true
         schema:
           type: string
@@ -10709,10 +10058,11 @@ paths:
                   message: Success
                   data:
                     id: 1
-                    name: Selangor
+                    name:
+                      en: Selangor
+                      zh: ''
                     code: SGR
                     country_id: 1
-                    name_translation: Selangor
                 properties:
                   error:
                     type: boolean
@@ -10727,17 +10077,20 @@ paths:
                         type: integer
                         example: 1
                       name:
-                        type: string
-                        example: Selangor
+                        type: object
+                        properties:
+                          en:
+                            type: string
+                            example: Selangor
+                          zh:
+                            type: string
+                            example: ''
                       code:
                         type: string
                         example: SGR
                       country_id:
                         type: integer
                         example: 1
-                      name_translation:
-                        type: string
-                        example: Selangor
         422:
           description: 'validation error'
           content:
@@ -11060,6 +10413,81 @@ paths:
                     example: []
       tags:
         - Product
+  /api/v1/products/history:
+    get:
+      summary: 'Get Funcard or Funbox for last 30 days Transactions History'
+      operationId: getFuncardOrFunboxForLast30DaysTransactionsHistory
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data: []
+                properties:
+                  data:
+                    type: array
+                    example: []
+      tags:
+        - Product
+  /api/v1/products/purchased:
+    get:
+      summary: 'Get Total Quantity of Funcard purchased by user'
+      operationId: getTotalQuantityOfFuncardPurchasedByUser
+      description: ''
+      parameters:
+        -
+          in: query
+          name: from_date
+          description: 'optional Filter by transaction created from this date (Y-m-d format).'
+          example: '2025-01-01'
+          required: false
+          schema:
+            type: string
+            description: 'optional Filter by transaction created from this date (Y-m-d format).'
+            example: '2025-01-01'
+            nullable: false
+        -
+          in: query
+          name: to_date
+          description: 'optional Filter by transaction created until this date (Y-m-d format).'
+          example: '2025-01-16'
+          required: false
+          schema:
+            type: string
+            description: 'optional Filter by transaction created until this date (Y-m-d format).'
+            example: '2025-01-16'
+            nullable: false
+        -
+          in: query
+          name: product_ids
+          description: 'optional Filter by product_id.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by product_id.'
+            example: 1
+            nullable: false
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  quantity: 10
+                properties:
+                  quantity:
+                    type: integer
+                    example: 10
+      tags:
+        - Product
   /api/v1/products/checkout:
     post:
       summary: 'Post Checkout'
@@ -11128,7 +10556,7 @@ paths:
                 referral_code:
                   type: string
                   description: ''
-                  example: libero
+                  example: soluta
                   nullable: true
                 wallet_type:
                   type: string
@@ -11211,7 +10639,7 @@ paths:
         in: path
         name: product_id
         description: 'The ID of the product.'
-        example: ut
+        example: sed
         required: true
         schema:
           type: string
@@ -11465,7 +10893,7 @@ paths:
           present:
             summary: 'When the value is present'
             value: 10
-  /api/v1/stores/following_been_here:
+  /api/v1/stores/followings_been_here:
     get:
       summary: 'Get Stores Following Been Here'
       operationId: getStoresFollowingBeenHere
@@ -11517,7 +10945,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: iste
+                  example: exercitationem
                   nullable: false
               required:
                 - store_ids
@@ -11619,7 +11047,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: debitis
+                  example: consequatur
                   nullable: false
               required:
                 - store_ids
@@ -11667,7 +11095,7 @@ paths:
                 location_id:
                   type: string
                   description: ''
-                  example: sunt
+                  example: sit
                   nullable: false
               required:
                 - location_id
@@ -12324,7 +11752,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 16
+                  example: 15
                   nullable: false
               required:
                 - user_id
@@ -12371,7 +11799,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 17
+                  example: 4
                   nullable: false
               required:
                 - user_id
@@ -12418,7 +11846,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 9
+                  example: 4
                   nullable: false
               required:
                 - user_id
@@ -12453,7 +11881,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 18
+                  example: 1
                   nullable: false
               required:
                 - user_id
@@ -12523,17 +11951,17 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: omnis
+                  example: dolores
                   nullable: false
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: sint
+                  example: quos
                   nullable: false
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: ex
+                  example: sint
                   nullable: false
                 also_block_user:
                   type: boolean
@@ -12807,7 +12235,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: et
+                  example: reiciendis
                   nullable: false
               required:
                 - user_ids
@@ -12820,6 +12248,80 @@ paths:
         required: true
         schema:
           type: string
+  /api/v1/user/statistics:
+    get:
+      summary: 'Get User Statistics'
+      operationId: getUserStatistics
+      description: ''
+      parameters:
+        -
+          in: query
+          name: from_date
+          description: 'optional Filter by date from (Y-m-d format).'
+          example: '2025-01-01'
+          required: false
+          schema:
+            type: string
+            description: 'optional Filter by date from (Y-m-d format).'
+            example: '2025-01-01'
+            nullable: false
+        -
+          in: query
+          name: to_date
+          description: 'optional Filter by date to (Y-m-d format).'
+          example: '2025-01-16'
+          required: false
+          schema:
+            type: string
+            description: 'optional Filter by date to (Y-m-d format).'
+            example: '2025-01-16'
+            nullable: false
+        -
+          in: query
+          name: product_ids
+          description: 'optional Filter by product_id.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by product_id.'
+            example: 1
+            nullable: false
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    articles_count: 5
+                    store_ratings_count: 3
+                    vouchers_purchased: 10
+                    vouchers_redeemed: 8
+                    products_purchased: 8
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      articles_count:
+                        type: integer
+                        example: 5
+                      store_ratings_count:
+                        type: integer
+                        example: 3
+                      vouchers_purchased:
+                        type: integer
+                        example: 10
+                      vouchers_redeemed:
+                        type: integer
+                        example: 8
+                      products_purchased:
+                        type: integer
+                        example: 8
+      tags:
+        - User
   '/api/v1/user/{user_id}':
     get:
       summary: 'Get a user'
@@ -12853,6 +12355,143 @@ paths:
         required: true
         schema:
           type: string
+  /api/v1/user:
+    get:
+      summary: 'Get auth user details'
+      operationId: getAuthUserDetails
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"user\": {\n},\n\"token\": \"\""
+      tags:
+        - User
+    post:
+      summary: 'Update User Details (name, username, bio, job_title, dob, gender, location, avatar, cover, article_categories)'
+      operationId: updateUserDetailsnameUsernameBioJobTitleDobGenderLocationAvatarCoverArticleCategories
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"user\":\n{\n \"id\": 1,\n \"name\": \"John Doe\"\n \"username\": \"johndoe\"\n \"email\": \"johndoe@gmail.com\"\n \"verified_email\": true\n \"auth_provider\": \"email\"\n \"avatar\": \"https://domain.com/storage/avatars/1/avatar.jpg\"\n \"avatar_thumb\": \"https://domain.com/storage/avatars/1/avatar_thumb.jpg\"\n \"bio\": \"I am a developer\"\n \"cover\": \"https://domain.com/storage/covers/1/cover.jpg\"\n \"articles_published_count\": 0\n \"following_count\": 0\n \"followers_count\": 0\n \"has_completed_profile\": false\n \"has_avatar\": true\n \"point_balance\": 0\n \"unread_notifications_count\": 0\n \"is_following\": false\n \"dob\": \"1990-01-01\",\n \"gender\": \"male\",\n \"job_title\": \"Engineer\",\n \"country_id\": 1,\n \"state_id\": 1,\n \"category_ids\": [1,2,3]\n},\n\"message\": \"Field updated\"\n\n}"
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+        500:
+          description: 'Error updating user details'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Error updating user details'
+                  error: 'Error message'
+                properties:
+                  message:
+                    type: string
+                    example: 'Error updating user details'
+                  error:
+                    type: string
+                    example: 'Error message'
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                update_type:
+                  type: string
+                  description: 'Field to update.'
+                  example: job_title
+                  nullable: false
+                name:
+                  type: string
+                  description: "Name of the user (Required if update_type is 'name')."
+                  example: 'John Doe'
+                  nullable: false
+                username:
+                  type: string
+                  description: "Username of the user (Required if update_type is 'username')."
+                  example: johndoe
+                  nullable: false
+                bio:
+                  type: string
+                  description: "Bio of the user (Required if update_type is 'bio')."
+                  example: 'I am a developer'
+                  nullable: false
+                job_title:
+                  type: string
+                  description: "Job title of the user (Required if update_type is 'job_title')."
+                  example: Developer
+                  nullable: false
+                day:
+                  type: integer
+                  description: "Day of the date of birth (Required if update_type is 'dob')."
+                  example: 1
+                  nullable: false
+                month:
+                  type: integer
+                  description: "Month of the date of birth (Required if update_type is 'dob')."
+                  example: 1
+                  nullable: false
+                year:
+                  type: integer
+                  description: "Year of the date of birth (Required if update_type is 'dob')."
+                  example: 1990
+                  nullable: false
+                country_id:
+                  type: integer
+                  description: "Country id of the user (Required if update_type is 'location')."
+                  example: 1
+                  nullable: false
+                state_id:
+                  type: integer
+                  description: "State id of the user (Required if update_type is 'location')."
+                  example: 1
+                  nullable: false
+                avatar:
+                  type: string
+                  format: binary
+                  description: "One image file to upload,Avatar of the user (Required if update_type is 'avatar')."
+                  nullable: false
+                cover:
+                  type: string
+                  format: binary
+                  description: "One image file to upload,Cover of the user (Required if update_type is 'cover')."
+                  nullable: false
+                category_ids:
+                  type: array
+                  description: "Array of article category ids (Required if update_type is 'article_categories')."
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
+              required:
+                - update_type
   '/api/v1/public/user/{user_id}':
     get:
       summary: 'Get a public user'
@@ -13013,69 +12652,6 @@ paths:
               required:
                 - new_email
                 - new_email_confirmation
-  /api/v1/user/statistics:
-    get:
-      summary: 'Get User Statistics'
-      operationId: getUserStatistics
-      description: ''
-      parameters:
-        -
-          in: query
-          name: from_date
-          description: 'optional Filter by date from (Y-m-d format).'
-          example: '2025-01-01'
-          required: false
-          schema:
-            type: string
-            description: 'optional Filter by date from (Y-m-d format).'
-            example: '2025-01-01'
-            nullable: false
-        -
-          in: query
-          name: to_date
-          description: 'optional Filter by date to (Y-m-d format).'
-          example: '2025-01-16'
-          required: false
-          schema:
-            type: string
-            description: 'optional Filter by date to (Y-m-d format).'
-            example: '2025-01-16'
-            nullable: false
-      responses:
-        200:
-          description: success
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  data:
-                    articles_count: 5
-                    store_ratings_count: 3
-                    vouchers_purchased: 10
-                    vouchers_redeemed: 8
-                    products_purchased: 8
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      articles_count:
-                        type: integer
-                        example: 5
-                      store_ratings_count:
-                        type: integer
-                        example: 3
-                      vouchers_purchased:
-                        type: integer
-                        example: 10
-                      vouchers_redeemed:
-                        type: integer
-                        example: 8
-                      products_purchased:
-                        type: integer
-                        example: 8
-      tags:
-        - User
   /api/v1/user/settings:
     get:
       summary: 'Get settings of logged in user'
@@ -13734,7 +13310,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: female
+                  example: male
                   nullable: false
                   enum:
                     - male
@@ -13871,7 +13447,7 @@ paths:
                 last_lang:
                   type: string
                   description: ''
-                  example: en
+                  example: zh
                   nullable: false
                   enum:
                     - en
