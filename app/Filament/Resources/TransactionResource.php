@@ -161,14 +161,10 @@ class TransactionResource extends Resource
                                 $record->amount
                             );
 
-                            if (isset($response['responseCode'])) {
-                                $newStatus = match($response['responseCode']) {
-                                    '0' => Transaction::STATUS_SUCCESS,
-                                    'PE' => Transaction::STATUS_PENDING,
-                                    default => Transaction::STATUS_FAILED
-                                };
-
+                            if (isset($response['responseCode']) && $response['responseCode'] === '0') { // success now
+                                $newStatus = Transaction::STATUS_SUCCESS;
                                 $oldStatus = $record->status;
+
                                 if ($oldStatus !== $newStatus) {
                                     $record->status = $newStatus;
                                     $record->save();
@@ -207,6 +203,9 @@ class TransactionResource extends Resource
                                                 }
                                             }
                                         }
+                                    } else if ($newStatus === Transaction::STATUS_SUCCESS && ($oldStatus === Transaction::STATUS_PENDING || $oldStatus === Transaction::STATUS_FAILED) &&
+                                        $record->transactionable_type === \App\Models\Product::class) {
+
                                     }
 
                                     // show summary notification
@@ -216,6 +215,20 @@ class TransactionResource extends Resource
                                         ->success()
                                         ->send();
                                 }
+                            } else if (isset($response['responseCode']) && $response['responseCode'] == 'M0009') {
+                                // transaction not found
+                                Notification::make()
+                                    ->title('Transaction Not Found')
+                                    ->body("Failed to update Transaction: {$record->transaction_no} status as transaction not found")
+                                    ->danger()
+                                    ->send();
+                            } else {
+                                // other errors
+                                Notification::make()
+                                    ->title('Refresh Status Failed')
+                                    ->body("Failed to update Transaction: {$record->transaction_no} status")
+                                    ->danger()
+                                    ->send();
                             }
                         } catch (\Exception $e) {
                             Notification::make()
