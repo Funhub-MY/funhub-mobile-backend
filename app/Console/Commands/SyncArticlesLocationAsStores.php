@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\MerchantCategory;
 use App\Models\Store;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -14,7 +15,9 @@ class SyncArticlesLocationAsStores extends Command
      *
      * @var string
      */
-    protected $signature = 'articles:sync-location-as-stores';
+    protected $signature = 'articles:sync-location-as-stores
+                            {--from= : Start date for article search (format: Y-m-d)}
+                            {--to= : End date for article search (format: Y-m-d)}';
 
     /**
      * The console command description.
@@ -30,9 +33,22 @@ class SyncArticlesLocationAsStores extends Command
      */
     public function handle()
     {
+        $fromDate = $this->option('from') ? Carbon::parse($this->option('from'))->startOfDay() : null;
+        $toDate = $this->option('to') ? Carbon::parse($this->option('to'))->endOfDay() : null;
+
+        if ($fromDate && $toDate) {
+            $this->info("Searching for articles between {$fromDate} and {$toDate}");
+        }
+
         // get all location with Article and doesnt currently linked to a Store
-        $locations = \App\Models\Location::whereHas('articles', function ($query) {
+        $locations = \App\Models\Location::whereHas('articles', function ($query) use ($fromDate, $toDate) {
             $query->where('articles.status', \App\Models\Article::STATUS_PUBLISHED);
+            if ($fromDate) {
+                $query->where('articles.created_at', '>=', $fromDate);
+            }
+            if ($toDate) {
+                $query->where('articles.created_at', '<=', $toDate);
+            }
         })
         ->whereNotNull('google_id')
         ->get();
