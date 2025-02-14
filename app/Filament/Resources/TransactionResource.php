@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Events\GiftCardPurchased;
+
 use App\Models\Product;
 use App\Notifications\PurchasedGiftCardNotification;
 use Filament\Forms;
@@ -28,7 +28,6 @@ use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use Illuminate\Support\Facades\Log;
-
 class TransactionResource extends Resource
 {
     protected static ?string $model = Transaction::class;
@@ -263,7 +262,7 @@ class TransactionResource extends Resource
                                                     $record->user->notify(new PurchasedGiftCardNotification($record->transaction_no, $record->updated_at, $product->name, $quantity, $record->amount));
                                                     
                                                     // fire event for mission progress
-                                                    event(args: new GiftCardPurchased($record->user, $product));
+                                                    //event(args: new GiftCardPurchased($record->user, $product));
                                                 } catch (\Exception $e) {
                                                     Log::error('Error sending PurchasedGiftCardNotification: ' . $e->getMessage());
                                                 }
