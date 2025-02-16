@@ -253,32 +253,14 @@ class MissionEventListener
                 ->first();
 
             if (!$userMission) {
-                // For one-off missions, check if user has ever completed it
-                if ($mission->frequency == 'one-off') {
-                    $everCompleted = $user->missionsParticipating()
+                // For one-off missions, check if ANY record exists (completed or not)
+                if ($mission->frequency === 'one-off') {
+                    $existingRecord = $user->missionsParticipating()
                         ->where('mission_id', $mission->id)
-                        ->where(function($query) {
-                            $query->where('is_completed', true)
-                                  ->orWhereNotNull('completed_at');
-                        })
                         ->exists();
 
-                    if ($everCompleted) {
-                        Log::info('One-off mission was previously completed, skipping', [
-                            'user' => $user->id,
-                            'mission' => $mission->id
-                        ]);
-                        continue;
-                    }
-
-                    // Also check for any existing incomplete one-off mission
-                    $hasIncomplete = $user->missionsParticipating()
-                        ->where('mission_id', $mission->id)
-                        ->where('is_completed', false)
-                        ->exists();
-
-                    if ($hasIncomplete) {
-                        Log::info('One-off mission already in progress, skipping', [
+                    if ($existingRecord) {
+                        Log::info('One-off mission record already exists, skipping new creation', [
                             'user' => $user->id,
                             'mission' => $mission->id
                         ]);
@@ -353,11 +335,14 @@ class MissionEventListener
                         ->orderBy('id', 'desc')
                         ->first();
 
+
+
                     // Check if mission is completed immediately after creation
                     if ($this->isMissionCompleted($mission->events, $mission->values, $currentValues)) {
                         Log::info('Mission Completed on first progress', [
                             'mission' => $mission->id,
-                            'user' => $user->id
+                            'user' => $user->id,
+                            'frequency' => $mission->frequency
                         ]);
 
                         // update mission to completed
