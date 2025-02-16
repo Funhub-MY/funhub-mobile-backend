@@ -69,7 +69,7 @@ class ProcessPendingVideoArticlesToVOD extends Command
             })
             // ->whereHas('articleRecommendations')
             ->where('type', 'video')
-            ->where('source', 'mobile')
+            // ->where('source', operator: 'mobile')
             ->with(['media' => function($query) {
                 $query->whereDoesntHave('videoJob')
                     ->where('collection_name', Article::MEDIA_COLLECTION_NAME)

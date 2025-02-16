@@ -240,29 +240,20 @@ class Mpay {
         }
 
         try {
-            $url = $this->url . '/payment/query';
+            $url = $this->url . '/api/paymentService/queryTransaction';
             Log::info('[MPAY] Query transaction request', ['url' => $url, 'data' => $data]);
             
             $response = $this->curlRequest($url, $data);
-            
+
+            Log::info('[MPAY] Query transaction response', $response);
+
+            $response = json_decode($response['body'], true);
+
             if (isset($response['responseCode'])) {
                 Log::info('[MPAY] Query transaction response', ['response' => $response]);
                 
-                // Verify the response hash using the existing hash verification method
-                $verificationHash = $this->generateHashForResponse(
-                    $this->mid,
-                    $response['responseCode'],
-                    $response['authCode'] ?? '',
-                    $response['invno'],
-                    $response['amt']
-                );
-                
-                if ($verificationHash !== ($response['securehash2'] ?? '')) {
-                    throw new \Exception('Invalid response hash from MPAY');
-                }
-                
                 return $response;
-            }
+            } 
             
             throw new \Exception('Failed to query transaction: Invalid response format');
         } catch (\Exception $e) {
