@@ -253,8 +253,40 @@ class MissionEventListener
                 ->first();
 
             if (!$userMission) {
+                // For one-off missions, check if user has ever completed it
+                if ($mission->frequency == 'one-off') {
+                    $everCompleted = $user->missionsParticipating()
+                        ->where('mission_id', $mission->id)
+                        ->where(function($query) {
+                            $query->where('is_completed', true)
+                                  ->orWhereNotNull('completed_at');
+                        })
+                        ->exists();
+
+                    if ($everCompleted) {
+                        Log::info('One-off mission was previously completed, skipping', [
+                            'user' => $user->id,
+                            'mission' => $mission->id
+                        ]);
+                        continue;
+                    }
+
+                    // Also check for any existing incomplete one-off mission
+                    $hasIncomplete = $user->missionsParticipating()
+                        ->where('mission_id', $mission->id)
+                        ->where('is_completed', false)
+                        ->exists();
+
+                    if ($hasIncomplete) {
+                        Log::info('One-off mission already in progress, skipping', [
+                            'user' => $user->id,
+                            'mission' => $mission->id
+                        ]);
+                        continue;
+                    }
+                }
                 // Check if user has already completed the mission within the current day or month
-                if ($mission->frequency == 'daily') {
+                elseif ($mission->frequency == 'daily') {
                     $completedToday = $user->missionsParticipating()
                         ->where('mission_id', $mission->id)
                         ->where('completed_at', '>=', now()->startOfDay())
