@@ -253,16 +253,16 @@ class MissionEventListener
                 ->first();
 
             if (!$userMission) {
-                // For one-off missions, check if ANY record exists (completed or not)
+                // For one-off missions, check if ANY record exists
                 if ($mission->frequency === 'one-off') {
-                    $existingRecord = $user->missionsParticipating()
+                    $existingOneOff = $user->missionsParticipating()
                         ->where('mission_id', $mission->id)
                         ->exists();
 
-                    if ($existingRecord) {
-                        Log::info('One-off mission record already exists, skipping new creation', [
+                    if ($existingOneOff) {
+                        Log::info('User already has one-off mission record', [
                             'user' => $user->id,
-                            'mission' => $mission->id
+                            'mission' => $mission->id,
                         ]);
                         continue;
                     }
@@ -329,44 +329,38 @@ class MissionEventListener
                         'current_values' => json_encode($currentValues)
                     ]);
 
-                    // Retrieve the newly created mission participation
-                    $userMission = $user->missionsParticipating()
-                        ->where('mission_id', $mission->id)
-                        ->orderBy('id', 'desc')
-                        ->first();
-
-
-
-                    // Check if mission is completed immediately after creation
+                    // Check completion immediately after creation
                     if ($this->isMissionCompleted($mission->events, $mission->values, $currentValues)) {
-                        Log::info('Mission Completed on first progress', [
+                        Log::info('Mission completed on creation', [
                             'mission' => $mission->id,
                             'user' => $user->id,
-                            'frequency' => $mission->frequency
+                            'event' => $eventType
                         ]);
 
-                        // update mission to completed
+                        // Mark as completed
                         $user->missionsParticipating()->updateExistingPivot($mission->id, [
                             'is_completed' => true,
                             'completed_at' => now()
                         ]);
 
+                        // Send completion notification
                         try {
                             $locale = $user->last_lang ?? config('app.locale');
                             $user->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
                         } catch (\Exception $e) {
-                            Log::error('Mission Completed Notification Error', [
-                                'mission_id' => $mission->id,
+                            Log::error('Mission completion notification error', [
+                                'mission' => $mission->id,
                                 'user' => $user->id,
                                 'error' => $e->getMessage()
                             ]);
                         }
 
+                        // Auto-disburse rewards if enabled
                         if ($mission->auto_disburse_rewards) {
                             $this->disburseRewardsBasedOnFrequency($mission, $user);
                         }
                     } else {
-                        // just started fire notification
+                        // Send start notification if not completed
                         try {
                             $locale = $user->last_lang ?? config('app.locale');
                             $user->notify((new MissionStarted($mission, $user, 1, json_encode($mission->events)))->locale($locale));
@@ -468,49 +462,30 @@ class MissionEventListener
      */
     private function isMissionCompleted($missionEvents, $missionValues, $currentValues)
     {
-        // Ensure all inputs are arrays
+        // if missionvalues provided in string(json) decode first
         if (is_string($missionValues)) {
             $missionValues = json_decode($missionValues, true);
         }
+
+        if (count($missionEvents) != count($missionValues)) {
+            return false;
+        }
+
+        // mission events decode if string
         if (is_string($missionEvents)) {
             $missionEvents = json_decode($missionEvents, true);
         }
-        if (is_string($currentValues)) {
-            $currentValues = json_decode($currentValues, true);
-        }
 
-        if (!is_array($missionValues) || !is_array($missionEvents) || !is_array($currentValues)) {
-            Log::error('Mission completion check failed - invalid input types', [
-                'events' => $missionEvents,
-                'values' => $missionValues,
-                'current' => $currentValues
-            ]);
-            return false;
-        }
+        // mission events = ['like_comment', 'like_article', 'commented']
+        // mission values = [10, 20, 30]
 
-        if (count($missionEvents) != count($missionValues)) {
-            Log::info('Mission events and values count mismatch', [
-                'events_count' => count($missionEvents),
-                'values_count' => count($missionValues)
-            ]);
-            return false;
-        }
-
-        // For each event, check if the current value meets or exceeds the required value
-        foreach ($missionEvents as $index => $event) {
-            if (!isset($currentValues[$event])) {
-                Log::info('Mission event not found in current values', ['missing_event' => $event]);
+        foreach ($missionValues as $index => $value) {
+            if (!isset($currentValues[$missionEvents[$index]])) {
                 return false;
             }
 
-            $requiredValue = is_array($missionValues) ? intval($missionValues[$index]) : intval($missionValues);
-            $currentValue = intval($currentValues[$event]);
-            if ($currentValue < $requiredValue) {
-                Log::info('Mission value not met', [
-                    'event' => $event,
-                    'current' => $currentValues[$event],
-                    'required' => $requiredValue
-                ]);
+            // if current values like_comment => 10 < 10
+            if ($currentValues[$missionEvents[$index]] < $value) {
                 return false;
             }
         }
@@ -532,21 +507,6 @@ class MissionEventListener
      */
     private function disburseRewards($mission, $user)
     {
-        // extra safety check for one-off missions to prevent double rewards
-        if ($mission->frequency === 'one-off') {
-            $alreadyRewarded = MissionRewardDisbursement::where('mission_id', $mission->id)
-                ->where('user_id', $user->id)
-                ->exists();
-            
-            if ($alreadyRewarded) {
-                Log::warning('Attempted to reward one-off mission that was already rewarded', [
-                    'mission_id' => $mission->id,
-                    'user_id' => $user->id
-                ]);
-                return;
-            }
-        }
-
         $disbursedRewardCount = MissionRewardDisbursement::where('mission_id', $mission->id)->sum('reward_quantity');
 
         if ($mission->reward_limit > 0 && $disbursedRewardCount >= $mission->reward_limit) {
