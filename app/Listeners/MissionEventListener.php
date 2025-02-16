@@ -253,8 +253,22 @@ class MissionEventListener
                 ->first();
 
             if (!$userMission) {
+                // For one-off missions, check if ANY record exists
+                if ($mission->frequency === 'one-off') {
+                    $existingOneOff = $user->missionsParticipating()
+                        ->where('mission_id', $mission->id)
+                        ->exists();
+
+                    if ($existingOneOff) {
+                        Log::info('User already has one-off mission record', [
+                            'user' => $user->id,
+                            'mission' => $mission->id,
+                        ]);
+                        continue;
+                    }
+                }
                 // Check if user has already completed the mission within the current day or month
-                if ($mission->frequency == 'daily') {
+                elseif ($mission->frequency == 'daily') {
                     $completedToday = $user->missionsParticipating()
                         ->where('mission_id', $mission->id)
                         ->where('completed_at', '>=', now()->startOfDay())
@@ -315,12 +329,44 @@ class MissionEventListener
                         'current_values' => json_encode($currentValues)
                     ]);
 
-                    // just started fire notification
-                    try {
-                        $locale = $user->last_lang ?? config('app.locale');
-                        $user->notify((new MissionStarted($mission, $user, 1, json_encode($mission->events)))->locale($locale));
-                    } catch (\Exception $e) {
-                        Log::error('Error sending mission start notification to user', ['error' => $e->getMessage(), 'user' => $user->id]);
+                    // Check completion immediately after creation
+                    if ($this->isMissionCompleted($mission->events, $mission->values, $currentValues)) {
+                        Log::info('Mission completed on creation', [
+                            'mission' => $mission->id,
+                            'user' => $user->id,
+                            'event' => $eventType
+                        ]);
+
+                        // Mark as completed
+                        $user->missionsParticipating()->updateExistingPivot($mission->id, [
+                            'is_completed' => true,
+                            'completed_at' => now()
+                        ]);
+
+                        // Send completion notification
+                        try {
+                            $locale = $user->last_lang ?? config('app.locale');
+                            $user->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
+                        } catch (\Exception $e) {
+                            Log::error('Mission completion notification error', [
+                                'mission' => $mission->id,
+                                'user' => $user->id,
+                                'error' => $e->getMessage()
+                            ]);
+                        }
+
+                        // Auto-disburse rewards if enabled
+                        if ($mission->auto_disburse_rewards) {
+                            $this->disburseRewardsBasedOnFrequency($mission, $user);
+                        }
+                    } else {
+                        // Send start notification if not completed
+                        try {
+                            $locale = $user->last_lang ?? config('app.locale');
+                            $user->notify((new MissionStarted($mission, $user, 1, json_encode($mission->events)))->locale($locale));
+                        } catch (\Exception $e) {
+                            Log::error('Error sending mission start notification to user', ['error' => $e->getMessage(), 'user' => $user->id]);
+                        }
                     }
                 }
             }
