@@ -315,12 +315,47 @@ class MissionEventListener
                         'current_values' => json_encode($currentValues)
                     ]);
 
-                    // just started fire notification
-                    try {
-                        $locale = $user->last_lang ?? config('app.locale');
-                        $user->notify((new MissionStarted($mission, $user, 1, json_encode($mission->events)))->locale($locale));
-                    } catch (\Exception $e) {
-                        Log::error('Error sending mission start notification to user', ['error' => $e->getMessage(), 'user' => $user->id]);
+                    // Retrieve the newly created mission participation
+                    $userMission = $user->missionsParticipating()
+                        ->where('mission_id', $mission->id)
+                        ->orderBy('id', 'desc')
+                        ->first();
+
+                    // Check if mission is completed immediately after creation
+                    if ($this->isMissionCompleted($mission->events, $mission->values, $currentValues)) {
+                        Log::info('Mission Completed on first progress', [
+                            'mission' => $mission->id,
+                            'user' => $user->id
+                        ]);
+
+                        // update mission to completed
+                        $user->missionsParticipating()->updateExistingPivot($mission->id, [
+                            'is_completed' => true,
+                            'completed_at' => now()
+                        ]);
+
+                        try {
+                            $locale = $user->last_lang ?? config('app.locale');
+                            $user->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
+                        } catch (\Exception $e) {
+                            Log::error('Mission Completed Notification Error', [
+                                'mission_id' => $mission->id,
+                                'user' => $user->id,
+                                'error' => $e->getMessage()
+                            ]);
+                        }
+
+                        if ($mission->auto_disburse_rewards) {
+                            $this->disburseRewardsBasedOnFrequency($mission, $user);
+                        }
+                    } else {
+                        // just started fire notification
+                        try {
+                            $locale = $user->last_lang ?? config('app.locale');
+                            $user->notify((new MissionStarted($mission, $user, 1, json_encode($mission->events)))->locale($locale));
+                        } catch (\Exception $e) {
+                            Log::error('Error sending mission start notification to user', ['error' => $e->getMessage(), 'user' => $user->id]);
+                        }
                     }
                 }
             }
@@ -451,8 +486,9 @@ class MissionEventListener
                 return false;
             }
 
-            $requiredValue = is_array($missionValues) ? $missionValues[$index] : $missionValues;
-            if ($currentValues[$event] < $requiredValue) {
+            $requiredValue = is_array($missionValues) ? intval($missionValues[$index]) : intval($missionValues);
+            $currentValue = intval($currentValues[$event]);
+            if ($currentValue < $requiredValue) {
                 Log::info('Mission value not met', [
                     'event' => $event,
                     'current' => $currentValues[$event],
