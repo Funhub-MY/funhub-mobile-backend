@@ -48,8 +48,7 @@ class ProductResource extends Resource
 									->label('Order')
 									->default(fn () => (Product::max('order') ?? 0) + 1),
                                 Forms\Components\SpatieMediaLibraryFileUpload::make('product_image')
-                                    ->label('Card Image')
-									->required()
+                                    ->label('Image')
                                     ->collection(Product::MEDIA_COLLECTION_NAME)
                                     ->disk(function () {
                                         if (config('filesystems.default') === 's3') {
