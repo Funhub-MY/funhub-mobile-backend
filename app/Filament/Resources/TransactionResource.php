@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Events\GiftCardPurchased;
+
 use App\Models\Product;
 use App\Notifications\PurchasedGiftCardNotification;
 use Filament\Forms;
@@ -28,7 +28,6 @@ use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use Illuminate\Support\Facades\Log;
-
 class TransactionResource extends Resource
 {
     protected static ?string $model = Transaction::class;
@@ -120,6 +119,7 @@ class TransactionResource extends Resource
                 TextColumn::make('user.name')
                     ->sortable()
                     ->searchable()
+                    ->url(fn ($record) => route('filament.resources.users.view', $record->user))
                     ->label('User'),
                 TextColumn::make('transactionable.name')
                     ->label('Item')
@@ -138,6 +138,10 @@ class TransactionResource extends Resource
                     'App\Models\MerchantOffer' => 'Merchant Offer',
                     'App\Models\Product' => 'Product',
                 ]),
+
+                // status filter
+                SelectFilter::make('status')
+                    ->options(Transaction::STATUS),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -219,56 +223,61 @@ class TransactionResource extends Resource
                                     } else if ($newStatus === Transaction::STATUS_SUCCESS && ($oldStatus === Transaction::STATUS_PENDING || $oldStatus === Transaction::STATUS_FAILED) &&
                                         $record->transactionable_type === \App\Models\Product::class) {
 
-                                        $product = Product::where('id', $record->transactionable_id)->first();
-
-                                        if (!$product) {
-                                            Notification::make()
-                                                ->title('Refresh Status Failed - Product Not Found')
-                                                ->body("Updated Transaction: {$record->transaction_no} status to " . ucfirst($newStatus) . " failed as product not found")
-                                                ->danger()
-                                                ->send();
-
-                                            // revert back to old status
-                                            $record->status = $oldStatus;
-                                            $record->save();
-
-                                            return false;
-                                        }
-                                        $pointService = new \App\Services\PointService();
-                                        $reward = $product->rewards()->first();
-                                        // credit user
-                                        $pointService->credit(
-                                            $reward,
-                                            $record->user,
-                                            $reward->pivot->quantity,
-                                            'Gift Card Purchase',
-                                            $record->transaction_no
-                                        );
-
-                                        Log::info('[TransactionResource] Prdocut Credited - Updated Transaction: ' . $record->transaction_no . ' status to ' . ucfirst($newStatus) . ' successfully', [
-                                            'user' => $record->user,
-                                            'product' => $product,
-                                            'amount' => $record->amount
+                                        // callback already credited
+                                        Log::info('[TransactionResource] Product Refresh, callback to credit triggered', [
+                                            'old_status' => $oldStatus,
+                                            'new_status' => $newStatus,
+                                            'transaction' => $record
                                         ]);
 
+                                        // $product = Product::where('id', $record->transactionable_id)->first();
+
+                                        // if (!$product) {
+                                        //     Notification::make()
+                                        //         ->title('Refresh Status Failed - Product Not Found')
+                                        //         ->body("Updated Transaction: {$record->transaction_no} status to " . ucfirst($newStatus) . " failed as product not found")
+                                        //         ->danger()
+                                        //         ->send();
+
+                                        //     // revert back to old status
+                                        //     $record->status = $oldStatus;
+                                        //     $record->save();
+
+                                        //     return false;
+                                        // }
+                                        // $pointService = new \App\Services\PointService();
+                                        // $reward = $product->rewards()->first();
+                                        // // credit user
+                                        // $pointService->credit(
+                                        //     $reward,
+                                        //     $record->user,
+                                        //     $reward->pivot->quantity,
+                                        //     'Gift Card Purchase',
+                                        //     $record->transaction_no
+                                        // );
+
+                                        // Log::info('[TransactionResource] Prdocut Credited - Updated Transaction: ' . $record->transaction_no . ' status to ' . ucfirst($newStatus) . ' successfully', [
+                                        //     'user' => $record->user,
+                                        //     'product' => $product,
+                                        //     'amount' => $record->amount
+                                        // ]);
+
                                         // update product status
-                                        if ($record->user->email) {
-                                            if ($record->user->email) {
-                                                try {
-                                                    $product = Product::where('id', $record->transactionable_id)->first();
-                                                    // $quantity = $transaction->amount / $product->unit_price;
-                                                    //  The payment is based on the discount price, so the quantity shall deduct by discount price and not original price
-                                                    $quantity = $record->amount / $product->discount_price;
-                        
-                                                    $record->user->notify(new PurchasedGiftCardNotification($record->transaction_no, $record->updated_at, $product->name, $quantity, $record->amount));
-                                                    
-                                                    // fire event for mission progress
-                                                    event(args: new GiftCardPurchased($record->user, $product));
-                                                } catch (\Exception $e) {
-                                                    Log::error('Error sending PurchasedGiftCardNotification: ' . $e->getMessage());
-                                                }
-                                            }
-                                        }
+                                        // if ($record->user->email) {
+                                        //     try {
+                                        //         $product = Product::where('id', $record->transactionable_id)->first();
+                                        //         // $quantity = $transaction->amount / $product->unit_price;
+                                        //         //  The payment is based on the discount price, so the quantity shall deduct by discount price and not original price
+                                        //         $quantity = $record->amount / $product->discount_price;
+                    
+                                        //         $record->user->notify(new PurchasedGiftCardNotification($record->transaction_no, $record->updated_at, $product->name, $quantity, $record->amount));
+                                                
+                                        //         // fire event for mission progress
+                                        //         //event(args: new GiftCardPurchased($record->user, $product));
+                                        //     } catch (\Exception $e) {
+                                        //         Log::error('Error sending PurchasedGiftCardNotification: ' . $e->getMessage());
+                                        //     }
+                                        // }
                                     }
 
                                     // show summary notification
@@ -290,7 +299,7 @@ class TransactionResource extends Resource
                                 // other errors
                                 Notification::make()
                                     ->title('Refresh Status Failed')
-                                    ->body("Failed to update Transaction: {$record->transaction_no} status: " . $responseDesc)
+                                    ->body("Failed to update Transaction: {$record->transaction_no} status from MPAY: " . $responseDesc)
                                     ->danger()
                                     ->send();
                             }
