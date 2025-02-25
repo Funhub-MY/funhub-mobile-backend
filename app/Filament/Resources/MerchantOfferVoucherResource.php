@@ -284,28 +284,42 @@ class MerchantOfferVoucherResource extends Resource
                     ])
                     ->query(function (Builder $query, array $data) {
                         if ($data['value'] === 'unclaimed') {
-                            // For unclaimed vouchers where there's no claim record
                             $query->whereNull('owned_by_id');
                         } else if ($data['value']) {
-                            // For specific claim statuses
-                            $query->whereHas('latestSuccessfulClaim', function ($q) use ($data) {
-                                $q->where('status', $data['value']);
+                            $query->whereExists(function ($query) use ($data) {
+                                $query->select(DB::raw(1))
+                                    ->from('merchant_offer_user')
+                                    ->whereColumn('merchant_offer_user.voucher_id', 'merchant_offer_vouchers.id')
+                                    ->where('merchant_offer_user.status', $data['value'])
+                                    ->whereNotExists(function ($query) {
+                                        $query->select(DB::raw(1))
+                                            ->from('merchant_offer_user as newer_claims')
+                                            ->whereColumn('newer_claims.voucher_id', 'merchant_offer_user.voucher_id')
+                                            ->whereColumn('newer_claims.created_at', '>', 'merchant_offer_user.created_at');
+                                    });
                             });
                         }
                     })
                     ->label('Financial Status'),
 
                 SelectFilter::make('getVoucherRedeemedAttribute')
-                    // ->relationship('redeem', 'id')
                     ->options([
                         false => 'Not Redeemed',
                         true => 'Redeemed'
                     ])
                     ->query(function (Builder $query, array $data) {
-                        if ($data['value'] == false) {
-                            // no filter
-                        } else {
-                            $query->whereHas('redeem');
+                        if ($data['value'] == true) {
+                            $query->join('merchant_offer_user', 'merchant_offer_vouchers.id', '=', 'merchant_offer_user.voucher_id')
+                                ->join('merchant_offer_claims_redemptions', 'merchant_offer_user.id', '=', 'merchant_offer_claims_redemptions.claim_id')
+                                ->select('merchant_offer_vouchers.*')
+                                ->distinct();
+                        } else if ($data['value'] == false) {
+                            $query->whereNotExists(function ($query) {
+                                $query->select(DB::raw(1))
+                                    ->from('merchant_offer_user')
+                                    ->join('merchant_offer_claims_redemptions', 'merchant_offer_user.id', '=', 'merchant_offer_claims_redemptions.claim_id')
+                                    ->whereColumn('merchant_offer_user.voucher_id', 'merchant_offer_vouchers.id');
+                            });
                         }
                     })
                     ->label('Redemption Status'),
