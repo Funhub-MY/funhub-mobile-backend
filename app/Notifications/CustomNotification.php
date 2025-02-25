@@ -28,6 +28,9 @@ class CustomNotification extends Notification implements ShouldQueue
     {
         $this->customNotification = $customNotification;
         $this->userLocale = $userLocale ?? config('app.locale');
+        
+        // use the notifications queue with specific settings
+        $this->onQueue('notifications');
     }
 
     /**

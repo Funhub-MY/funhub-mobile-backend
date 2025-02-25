@@ -162,6 +162,12 @@ class ArticleController extends Controller
                 }
             ])
             ->withCount(['views'])
+            ->withCount(['comments' => function ($query) {
+                $query->whereNull('parent_id')
+                ->whereHas('user' , function ($query) {
+                    $query->where('status', User::STATUS_ACTIVE);
+                });
+            }])
             ->withCount(['userFollowers' => function ($query) {
                 $query->where('status', User::STATUS_ACTIVE);
             }])
