@@ -14,9 +14,9 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\DeleteBulkAction;
-use Illuminate\Database\Eloquent\Model;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use pxlrbt\FilamentExcel\Columns\Column;
@@ -134,6 +134,17 @@ class PromotionCodeResource extends Resource
                         'success' => true,
                     ]),
 
+                Tables\Columns\BadgeColumn::make('status')
+                    ->label('Active')
+                    ->enum([
+                        false => 'Inactive',
+                        true => 'Active',
+                    ])
+                    ->colors([
+                        'danger' => false,
+                        'success' => true,
+                    ]),
+
                 Tables\Columns\TagsColumn::make('tags')
                     ->separator(','),
 
@@ -157,6 +168,11 @@ class PromotionCodeResource extends Resource
                         '1' => 'Redeemed',
                         '0' => 'Available',
                     ]),
+                Tables\Filters\SelectFilter::make('status')
+                    ->options([
+                        '1' => 'Active',
+                        '0' => 'Inactive',
+                    ]),
                 Tables\Filters\Filter::make('tags')
                     ->form([
                         Forms\Components\TagsInput::make('tags')
@@ -177,10 +193,49 @@ class PromotionCodeResource extends Resource
                     })
             ])
             ->actions([
+                Tables\Actions\Action::make('toggleStatus')
+                    ->label('Toggle Status')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->action(function (PromotionCode $record) {
+                        $record->update([
+                            'status' => !$record->status,
+                        ]);
+                        
+                        Notification::make()
+                            ->title($record->status ? 'Code activated' : 'Code deactivated')
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading('Toggle Promotion Code Status')
+                    ->modalSubheading('Are you sure you want to change the status of this promotion code?')
+                    ->modalButton('Yes, toggle status'),
             ])
             ->bulkActions([
                 DeleteBulkAction::make()
                     ->requiresConfirmation(),
+                Tables\Actions\BulkAction::make('updateStatus')
+                    ->label('Update Status')
+                    ->icon('heroicon-o-check-circle')
+                    ->form([
+                        Forms\Components\Toggle::make('status')
+                            ->label('Active')
+                            ->default(true)
+                            ->required(),
+                    ])
+                    ->action(function (Collection $records, array $data) {
+                        $records->each(fn ($record) => $record->update([
+                            'status' => $data['status'],
+                        ]));
+
+                        Notification::make()
+                            ->title('Status updated successfully')
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->deselectRecordsAfterCompletion(),
                 ExportBulkAction::make()
                     ->exports([
                         PromotionCodesExport::make()->fromTable()
