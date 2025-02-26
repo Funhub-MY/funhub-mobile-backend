@@ -2,6 +2,9 @@
 namespace App\Services;
 
 use App\Models\PointLedger;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PointService
 {
@@ -17,7 +20,7 @@ class PointService
     }
 
     /**
-     * Debit point
+     * Debit point with database locking to prevent race conditions
      *
      * @param $pointable
      * @param $user
@@ -25,33 +28,44 @@ class PointService
      * @param $title
      * @param $remarks
      * @return PointLedger
+     * @throws \Exception
      */
     public function debit($pointable, $user, $amount, $title, $remarks = null) : PointLedger
     {
-        $userBalance = $this->getBalanceOfUser($user);
+        return DB::transaction(function () use ($pointable, $user, $amount, $title, $remarks) {
+            // lock only this user's point ledgers to prevent concurrent modifications
+            PointLedger::where('user_id', $user->id)
+                ->orderBy('id', 'desc')
+                ->limit(1)
+                ->lockForUpdate()
+                ->first();
+            
+            // get the latest balance with the lock in place
+            $userBalance = $this->getBalanceOfUser($user);
 
-        if ($userBalance < $amount) {
-            throw new \Exception('Insufficient balance');
-        }
+            if ($userBalance < $amount) {
+                throw new \Exception('Insufficient balance');
+            }
 
-        $pointLedger = new PointLedger;
-        $pointLedger->user_id = $user->id;
-        $pointLedger->pointable_id = $pointable->id;
-        $pointLedger->pointable_type = get_class($pointable);
-        $pointLedger->title = $title;
-        $pointLedger->amount = $amount;
-        $pointLedger->debit = true;
-        $pointLedger->balance = $userBalance - $amount;
-        $pointLedger->remarks = $remarks;
-        $pointLedger->save();
+            $pointLedger = new PointLedger;
+            $pointLedger->user_id = $user->id;
+            $pointLedger->pointable_id = $pointable->id;
+            $pointLedger->pointable_type = get_class($pointable);
+            $pointLedger->title = $title;
+            $pointLedger->amount = $amount;
+            $pointLedger->debit = true;
+            $pointLedger->balance = $userBalance - $amount;
+            $pointLedger->remarks = $remarks;
+            $pointLedger->save();
 
-        $this->updatePointBalanceOfUser($user);
+            $this->updatePointBalanceOfUser($user, $pointLedger->balance);
 
-        return $pointLedger;
+            return $pointLedger;
+        }, 5); // 5 retries in case of deadlock
     }
 
     /**
-     * Credit point
+     * Credit point with database locking to prevent race conditions
      *
      * @param $pointable
      * @param $user
@@ -59,31 +73,52 @@ class PointService
      * @param $title
      * @param $remarks
      * @return PointLedger
+     * @throws \Exception
      */
     public function credit($pointable, $user, $amount, $title, $remarks = null) : PointLedger
     {
-        $userBalance = $this->getBalanceOfUser($user);
+        return DB::transaction(function () use ($pointable, $user, $amount, $title, $remarks) {
+            // lock only this user's point ledgers to prevent concurrent modifications
+            PointLedger::where('user_id', $user->id)
+                ->orderBy('id', 'desc')
+                ->limit(1)
+                ->lockForUpdate()
+                ->first();
+            
+            // get the latest balance with the lock in place
+            $userBalance = $this->getBalanceOfUser($user);
 
-        $pointLedger = new PointLedger;
-        $pointLedger->user_id = $user->id;
-        $pointLedger->pointable_id = $pointable->id;
-        $pointLedger->pointable_type = get_class($pointable);
-        $pointLedger->title = $title;
-        $pointLedger->amount = $amount;
-        $pointLedger->credit = true;
-        $pointLedger->balance = $userBalance + $amount;
-        $pointLedger->remarks = $remarks;
-        $pointLedger->save();
+            $pointLedger = new PointLedger;
+            $pointLedger->user_id = $user->id;
+            $pointLedger->pointable_id = $pointable->id;
+            $pointLedger->pointable_type = get_class($pointable);
+            $pointLedger->title = $title;
+            $pointLedger->amount = $amount;
+            $pointLedger->credit = true;
+            $pointLedger->balance = $userBalance + $amount;
+            $pointLedger->remarks = $remarks;
+            $pointLedger->save();
 
-        $this->updatePointBalanceOfUser($user);
+            $this->updatePointBalanceOfUser($user, $pointLedger->balance);
 
-        return $pointLedger;
+            return $pointLedger;
+        }, 5); // 5 retries in case of deadlock
     }
 
-    public function updatePointBalanceOfUser($user)
+    /**
+     * Update the point balance of a user with the provided balance
+     *
+     * @param User $user
+     * @param int|null $balance If null, will recalculate from the latest ledger
+     * @return void
+     */
+    public function updatePointBalanceOfUser($user, $balance = null)
     {
-        $pointBalance = $this->getBalanceOfUser($user);
-        $user->point_balance = $pointBalance;
+        if ($balance === null) {
+            $balance = $this->getBalanceOfUser($user);
+        }
+        
+        $user->point_balance = $balance;
         $user->save();
     }
 }
