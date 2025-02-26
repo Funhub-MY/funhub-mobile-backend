@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use pxlrbt\FilamentExcel\Columns\Column;
+use App\Exports\PromotionCodesExport;
 
 class PromotionCodeResource extends Resource
 {
@@ -182,43 +183,7 @@ class PromotionCodeResource extends Resource
                     ->requiresConfirmation(),
                 ExportBulkAction::make()
                     ->exports([
-                        ExcelExport::make()
-                            ->label('Export Promotion Codes')
-                            ->withColumns([
-                                Column::make('code')
-                                    ->heading('Code'),
-                                Column::make('promotionCodeGroup.name')
-                                    ->heading('Group Name'),
-                                Column::make('reward_name')
-                                    ->heading('Reward')
-                                    ->getStateUsing(function ($record) {
-                                        if ($record->reward->first()) {
-                                            return $record->reward->first()->name;
-                                        }
-                                        return $record->rewardComponent->first()?->name;
-                                    }),
-                                Column::make('reward_quantity')
-                                    ->heading('Quantity')
-                                    ->getStateUsing(function ($record) {
-                                        if ($record->reward->first()) {
-                                            return $record->reward->first()->pivot->quantity;
-                                        }
-                                        return $record->rewardComponent->first()?->pivot?->quantity;
-                                    }),
-                                Column::make('is_redeemed')
-                                    ->heading('Status')
-                                    ->getStateUsing(fn ($record) => $record->is_redeemed ? 'Redeemed' : 'Not Redeemed'),
-                                Column::make('claimedBy.name')
-                                    ->heading('Claimed By'),
-                                Column::make('redeemed_at')
-                                    ->heading('Redeemed At')
-                                    ->formatStateUsing(fn ($state) => $state ? $state->format('Y-m-d H:i:s') : ''),
-                                Column::make('tags')
-                                    ->heading('Tags')
-                                    ->getStateUsing(fn ($record) => implode(', ', $record->tags ?? [])),
-                            ])
-                            ->withFilename(fn() => 'promotion-codes-' . date('Y-m-d'))
-                            ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
+                        PromotionCodesExport::make()->fromTable()
                     ]),
             ]);
     }

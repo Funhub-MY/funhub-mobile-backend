@@ -23,9 +23,8 @@ class PromotionCodesExport extends ExcelExport
         $this
             ->withColumns([
                 Column::make('code'),
-                Column::make('group_name')
-                    ->heading('Group Name')
-                    ->getStateUsing(fn ($record) => $record->promotionCodeGroup->name),
+                Column::make('promotionCodeGroup.name')
+                    ->heading('Group Name'),
                 Column::make('reward_name')
                     ->heading('Reward')
                     ->getStateUsing(function ($record) {
@@ -43,9 +42,8 @@ class PromotionCodesExport extends ExcelExport
                 Column::make('is_redeemed')
                     ->heading('Status')
                     ->formatStateUsing(fn ($state) => $state ? 'Redeemed' : 'Not Redeemed'),
-                Column::make('claimed_by')
-                    ->heading('Claimed By')
-                    ->getStateUsing(fn ($record) => $record->claimedBy?->name),
+                Column::make('claimedBy.name')
+                    ->heading('Claimed By'),
                 Column::make('redeemed_at')
                     ->heading('Redeemed At')
                     ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('Y-m-d H:i:s') : ''),
@@ -54,7 +52,9 @@ class PromotionCodesExport extends ExcelExport
                     ->formatStateUsing(fn ($state) => is_array($state) ? implode(', ', $state) : ''),
             ])
             ->withFilename(fn () => 'promotion-codes-' . date('Y-m-d'))
-            ->withWriterType(\Maatwebsite\Excel\Excel::CSV);
+            ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
+            ->queue()
+            ->withChunkSize(500);
     }
 
     public function record($record)
@@ -65,10 +65,16 @@ class PromotionCodesExport extends ExcelExport
 
     public function getRows(): array
     {
-        return PromotionCode::query()
-            ->where('promotion_code_group_id', $this->promotionCodeGroup->id)
-            ->with(['reward', 'rewardComponent', 'claimedBy', 'promotionCodeGroup'])
-            ->get()
-            ->toArray();
+        // if a specific promotion code group is provided, use that
+        if ($this->promotionCodeGroup) {
+            return PromotionCode::query()
+                ->where('promotion_code_group_id', $this->promotionCodeGroup->id)
+                ->with(['reward', 'rewardComponent', 'claimedBy', 'promotionCodeGroup'])
+                ->get()
+                ->toArray();
+        }
+        
+        // otherwise, use the parent implementation
+        return parent::getRows();
     }
 }
