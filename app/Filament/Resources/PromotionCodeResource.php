@@ -110,8 +110,7 @@ class PromotionCodeResource extends Resource
                             return $record->reward->first()->name;
                         }
                         return $record->rewardComponent->first()?->name;
-                    })
-                    ->searchable(),
+                    }),
 
                 Tables\Columns\TextColumn::make('reward_quantity')
                     ->label('Quantity')
