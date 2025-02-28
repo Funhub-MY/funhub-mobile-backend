@@ -34,9 +34,9 @@ class CreateArticleEngagement extends CreateRecord
             } else {
                 foreach ($users as $user) {
                     Log::info("Processing engagement for user ID {$user->id} on article ID {$articleId} with action {$action}");
-                    // random delay between 1-10mins
+                    // random delay between 1min-120hours
                     ProcessEngagementInteractions::dispatch($user->id, $articleId, $action, $comment)
-                        ->delay(Carbon::now()->addMinutes(rand(1, 10)));
+                        ->delay(Carbon::now()->addMinutes(rand(1, 7200)));
                 }
             }
         }
