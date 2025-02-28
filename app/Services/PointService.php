@@ -15,7 +15,8 @@ class PointService
 
     public function getBalanceOfUser($user)
     {
-        $latestLedger = $user->pointLedgers()->orderBy('id', 'desc')->first();
+        $latestLedger = $user->pointLedgers()
+            ->orderBy('id', 'desc')->first();
         return $latestLedger ? $latestLedger->balance : 0;
     }
 

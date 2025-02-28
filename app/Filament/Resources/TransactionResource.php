@@ -168,6 +168,33 @@ class TransactionResource extends Resource
                                 $record->amount
                             );
 
+                            // if status is failure(not pending and not success)
+                            if (isset($response['responseCode']) 
+                                && $response['responseCode'] !== 'PE' 
+                                && $response['responseCode'] !== '0') {
+                                // failure
+                                $newStatus = Transaction::STATUS_FAILED;
+                                $oldStatus = $record->status;
+
+                                if ($oldStatus !== $newStatus) {
+                                    $record->status = $newStatus;
+                                    $record->save();
+
+                                    Log::info('[TransactionResource] Transaction Updated to Failed', [
+                                        'transaction_id' => $record->id,
+                                        'old_status' => $oldStatus,
+                                        'new_status' => $newStatus,
+                                        'response' => $response
+                                    ]);
+
+                                    Notification::make()
+                                        ->title('Transaction '. $record->transaction_no .' Updated to Failed')
+                                        ->body('Transaction ' . $record->transaction_no . ' latest status is ' . $newStatus)
+                                        ->success()
+                                        ->send();
+                                }
+                            }
+
                             if (isset($response['responseCode']) && $response['responseCode'] === '0') { // success now
                                 $newStatus = Transaction::STATUS_SUCCESS;
                                 $oldStatus = $record->status;
