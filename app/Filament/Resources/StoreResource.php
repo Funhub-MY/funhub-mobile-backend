@@ -346,6 +346,9 @@ class StoreResource extends Resource
                                     }),
                             ])
                     ]),
+				Toggle::make('is_appointment_only')
+					->label('Appointment Only')
+					->default(false),
 
                 Group::make()
                     ->columnSpanFull()
@@ -496,6 +499,9 @@ class StoreResource extends Resource
                     // format state to truncate string ...
                     ->formatStateUsing(fn($state) => substr($state, 0, 20) . '...')
                     ->searchable(),
+
+				Tables\Columns\ToggleColumn::make('is_appointment_only')
+					->label('Appointment Only'),
 
                 Tables\Columns\TextColumn::make('address_postcode')
                     ->sortable()
