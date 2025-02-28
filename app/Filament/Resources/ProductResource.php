@@ -116,7 +116,6 @@ class ProductResource extends Resource
                                             ),
                                         Forms\Components\TextInput::make('discount_price')
                                             ->label('Discounted Unit Price')
-                                            ->required()
                                             ->numeric()
                                             ->prefix('RM')
                                             ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
