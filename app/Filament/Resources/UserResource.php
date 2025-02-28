@@ -37,6 +37,7 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\Finder\Iterator\DateRangeFilterIterator;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
@@ -394,11 +395,23 @@ class UserResource extends Resource
                ->action(function (Collection $records, array $data): void {
                         $resetCount = 0;
                         foreach ($records as $record) {
+                            $missionIds = $record->missionsParticipating()->pluck('mission_id')->toArray();
+                            
                             Log::info('[UserResource] Resetting mission progress for user: ' . $record->id, [
-                                'missions' => $record->missionsParticipating()->pluck('mission_id')->toArray(),
+                                'missions' => $missionIds,
                                 'reseted_by' => auth()->user()->id,
                             ]);
+                            
+                            // delete mission progress
                             DB::table('missions_users')->where('user_id', $record->id)->delete();
+                            
+                            // clear FCM notification cache for each mission
+                            foreach ($missionIds as $missionId) {
+                                $cacheKey = 'fcm_notification_mission_' . $missionId . '_user_' . $record->id;
+                                Cache::forget($cacheKey);
+                                Log::info("Cleared FCM notification cache for mission {$missionId} and user {$record->id}");
+                            }
+                            
                             $resetCount++;
                         }
                         if ($resetCount > 0) {
