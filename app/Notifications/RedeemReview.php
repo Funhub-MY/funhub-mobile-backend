@@ -19,18 +19,18 @@ class RedeemReview extends Notification
 {
     use Queueable;
 
-    protected $claim, $user, $store, $merchant_offer_id, $claim_id, $merchant_id;
+    protected $claim, $user, $offer, $merchant_offer_id, $claim_id, $merchant_id;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(MerchantOfferClaim  $claim, User $user, Store $store = null, $merchant_offer_id = null)
+    public function __construct(MerchantOfferClaim  $claim, User $user, $offer = null, $merchant_offer_id = null)
     {
         $this->claim = $claim;
         $this->user = $user;
-        $this->store = $store;
+        $this->offer = $offer;
         $this->merchant_offer_id = $merchant_offer_id;
 
         $this->claim_id = null;
@@ -59,9 +59,12 @@ class RedeemReview extends Notification
 		if ($this->user && $this->user->last_lang) {
 			App::setLocale($this->user->last_lang);
 		}
+        
+        // use merchant brand name/name instead
+        $name = $this->offer->merchant->brand_name ?? $this->offer->merchant->name;
 
         return __('messages.notification.fcm.RedemptioReviewReminder', [
-            'storeName' => ($this->store) ? $this->store->name : ''
+            'storeName' => $name
         ]);
     }
 
@@ -100,11 +103,11 @@ class RedeemReview extends Notification
 
         return FcmMessage::create()
             ->setData([
-                'object' => $this->store ? (string) get_class($this->store) : 'App\Models\Store',
-                'object_id' => $this->store ? (string) $this->store->id : '',
+                'object' => $this->offer ? (string) get_class($this->offer) : 'App\Models\MerchantOffer',
+                'object_id' => $this->offer ? (string) $this->offer->id : '',
                 'merchant_offer_id' => (string) $this->merchant_offer_id,
                 'link_to_url' => (string) 'false',
-                'link_to' => ($this->store) ? (string) $this->store->id : '', // if link to url false, means get link_to_object
+                'link_to' => ($this->offer) ? (string) $this->offer->id : '', // if link to url false, means get link_to_object
                 'link_to_object' => (string) 'null', // if link to url false, means get link_to_object
                 'action' => 'redeemed_review',
                 'from_name' => (string) $this->user->name,
@@ -140,11 +143,11 @@ class RedeemReview extends Notification
         $this->getOffer();
 
         return [
-            'object' => (string) get_class($this->store),
-            'object_id' =>($this->store) ?  (string) $this->store->id : null,
+            'object' => $this->offer ? (string) get_class($this->offer) : 'App\Models\MerchantOffer',
+            'object_id' => ($this->offer) ? (string) $this->offer->id : null,
             'merchant_offer_id' => (string) $this->merchant_offer_id,
             'link_to_url' => false,
-            'link_to' => (string) ($this->store) ? $this->store->id : null, // if link to url false, means get link_to_object
+            'link_to' => ($this->offer) ? (string) $this->offer->id : null, // if link to url false, means get link_to_object
             'link_to_object' => null, // if link to url false, means get link_to_object
             'action' => 'redeemed_review',
             'from_name' => $this->user->name,
