@@ -85,6 +85,7 @@ class PublicStoreResource extends JsonResource
                 ];
             }) : null,
             'business_phone_no' => $this->business_phone_no,
+			'is_appointment_only' => $this->is_appointment_only,
             'business_hours' => ($this->business_hours) ? json_decode($this->business_hours) : null,
             'current_day_business_hour' => ($this->business_hours) ? $currentDayBusinessHour : null,
             'location' => $this->location,
