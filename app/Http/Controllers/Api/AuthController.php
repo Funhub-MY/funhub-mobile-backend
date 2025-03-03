@@ -95,6 +95,16 @@ class AuthController extends Controller
 		// $user->tokens()->delete();
 
         $token = $user->createToken('auth_token')->plainTextToken;
+        
+        // dispatch job to clean up duplicate FCM tokens
+        try {
+            if (!empty($user->fcm_token)) {
+                \App\Jobs\CleanupDuplicateFcmTokensJob::dispatch($user->fcm_token, $user->id);
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to dispatch FCM token cleanup job: ' . $e->getMessage());
+            // Don't let this affect the login process
+        }
 
         return response()->json([
             'user' => new UserResource($user, true),
@@ -372,6 +382,15 @@ class AuthController extends Controller
              // log user in
             $token = $user->createToken('authToken');
             Auth::login($user);
+            
+            // dispatch job to clean up duplicate FCM tokens
+            try {
+                if (!empty($user->fcm_token)) {
+                    \App\Jobs\CleanupDuplicateFcmTokensJob::dispatch($user->fcm_token, $user->id);
+                }
+            } catch (\Exception $e) {
+                Log::error('Failed to dispatch FCM token cleanup job: ' . $e->getMessage());
+            }
 
             return response()->json([
                 'user' => new UserResource($user, true),
@@ -828,6 +847,15 @@ class AuthController extends Controller
         //log the new user in
         auth()->login($user);
         $sanctumToken = $user->createToken('authToken');
+        
+        // dispatch job to clean up duplicate FCM tokens
+        try {
+            if (!empty($user->fcm_token)) {
+                \App\Jobs\CleanupDuplicateFcmTokensJob::dispatch($user->fcm_token, $user->id);
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to dispatch FCM token cleanup job: ' . $e->getMessage());
+        }
 
         return response()->json([
             'status' => 'success',
