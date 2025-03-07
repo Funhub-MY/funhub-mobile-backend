@@ -15,6 +15,7 @@ use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Grid;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
@@ -124,6 +125,11 @@ class LocationResource extends Resource
                                     'searchBoxControl'  => false, // creates geocomplete field inside map
                                     'zoomControl'       => false,
                                 ])
+                                ->afterStateUpdated(function ($state, callable $get, callable $set) {
+                                    // Set latitude and longitude as before
+                                    $set('lat', $state['lat']);
+                                    $set('lng', $state['lng']);
+                                })
                                 ->clickable(true),
 
                             Forms\Components\TextInput::make('address')
@@ -157,6 +163,16 @@ class LocationResource extends Resource
                                 ->default(131)
                                 ->required()
                                 ->relationship('country', 'name'),
+
+                            Grid::make(2)
+                                ->schema([
+                                    Forms\Components\TextInput::make('lat')
+                                        ->columnSpan(1)
+                                        ->label('Latitude'),
+                                    Forms\Components\TextInput::make('lng')
+                                        ->columnSpan(1)
+                                        ->label('Logitude'),
+                            ]),
                         ])
                 ])->columnSpan(['lg' => 1]),
             ])->columns(2);
