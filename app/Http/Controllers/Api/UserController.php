@@ -434,6 +434,9 @@ class UserController extends Controller
         $user->email = null;
         $user->password = null;
         $user->status = User::STATUS_ARCHIVED;
+		$user->google_id = null;
+		$user->facebook_id = null;
+		$user->apple_id = null;
         $user->save();
 
         return response()->json(['message' => __('messages.success.user_controller.Account_deleted_successfully')]);

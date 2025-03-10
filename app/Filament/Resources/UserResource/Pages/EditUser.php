@@ -70,6 +70,9 @@ class EditUser extends EditRecord
 					$user->email = null;
 					$user->password = null;
 					$user->status = User::STATUS_ARCHIVED;
+					$user->google_id = null;
+					$user->facebook_id = null;
+					$user->apple_id = null;
 					$user->save();
 
 					$this->notify('success', 'User account deleted successfully.');
