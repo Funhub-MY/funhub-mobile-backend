@@ -76,6 +76,9 @@ class EditMerchantOfferCampaign extends EditRecord
         // update existent offers data first
         foreach ($offers as $offer)
         {
+            // Preserve the status if the offer is archived
+            $isArchived = $offer->status === MerchantOffer::STATUS_ARCHIVED;
+            
             $offer->update([
                 'name' => $record->name,
 				'highlight_messages' => $record->highlight_messages,
@@ -92,9 +95,13 @@ class EditMerchantOfferCampaign extends EditRecord
                 'discounted_fiat_price' => $record->discounted_fiat_price,
                 'fiat_price' => $record->fiat_price,
                 'expiry_days' => $record->expiry_days,
-                // 'status' => $record->status,
                 'user_id' => $record->user_id, // requires for store selection as well
             ]);
+            
+            // If the offer was archived, restore its status to archived
+            if ($isArchived) {
+                $offer->update(['status' => MerchantOffer::STATUS_ARCHIVED]);
+            }
 
             // replace images
             $offer->clearMediaCollection(MerchantOffer::MEDIA_COLLECTION_NAME);
@@ -156,14 +163,23 @@ class EditMerchantOfferCampaign extends EditRecord
 
         // updating schedules and quantity
         foreach ($record->schedules as $index => $schedule) {
+            // Store the original status to preserve it if it was archived
+            $originalStatus = $schedule->status;
+            $wasArchived = $originalStatus === MerchantOfferCampaignSchedule::STATUS_ARCHIVED;
+            
             // if schedule available_at and available_until is past, cannot update
             // if not past can update
             if (Carbon::now()->gte(Carbon::parse($schedule->available_until)) || Carbon::now()->gte(Carbon::parse($schedule->available_at))) {
                 Log::info('Cannot update schedule as available_at/until is past', [
                     'schedule_id' => $schedule->id,
-                    'offer_id' => $offer->id,
+                    'offer_id' => isset($offer) ? $offer->id : null,
                     'available_until' => $schedule->available_until,
                 ]);
+                
+                // If the schedule was archived, ensure it stays archived
+                if ($wasArchived) {
+                    $schedule->update(['status' => MerchantOfferCampaignSchedule::STATUS_ARCHIVED]);
+                }
                 continue;
             }
 
@@ -236,12 +252,20 @@ class EditMerchantOfferCampaign extends EditRecord
                     ? MerchantOffer::STATUS_PUBLISHED
                     : MerchantOffer::STATUS_DRAFT;
     
+                // Check if the offer is already archived
+                $isOfferArchived = $offer->status === MerchantOffer::STATUS_ARCHIVED;
+                
                 $offer->update([
                     'available_at' => $schedule->available_at,
                     'available_until' => $schedule->available_until,
-                    'status' => $status,
+                    'status' => $isOfferArchived ? MerchantOffer::STATUS_ARCHIVED : $status,
                     'publish_at' => $schedule->publish_at,
                 ]);
+                
+                // If the schedule was archived, ensure it stays archived
+                if ($wasArchived) {
+                    $schedule->update(['status' => MerchantOfferCampaignSchedule::STATUS_ARCHIVED]);
+                }
 
                 // match quantity difference and update
                 $existingVouchers = $offer->vouchers()->count();
