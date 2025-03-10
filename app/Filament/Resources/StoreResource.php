@@ -489,7 +489,9 @@ class StoreResource extends Resource
 					->label('Sub Categories')
 					->sortable(),
 
-                Tables\Columns\TextColumn::make('business_phone_no'),
+                Tables\Columns\TextColumn::make('business_phone_no')
+					->formatStateUsing(fn ($record) => $record->business_phone_no ? ($record->country?->phone_code ? $record->country->phone_code : '') . $record->business_phone_no : null),
+
                 Tables\Columns\TextColumn::make('address')
                     // format state to truncate string ...
                     ->formatStateUsing(fn($state) => substr($state, 0, 20) . '...')
