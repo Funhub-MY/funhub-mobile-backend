@@ -401,6 +401,9 @@ class UserResource extends Resource
 							$user->email = null;
 							$user->password = null;
 							$user->status = User::STATUS_ARCHIVED;
+							$user->google_id = null;
+							$user->facebook_id = null;
+							$user->apple_id = null;
 							$user->save();
 						}
 					}),
