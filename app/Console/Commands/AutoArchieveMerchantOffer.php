@@ -41,6 +41,14 @@ class AutoArchieveMerchantOffer extends Command
             $offer->update([
                 'status' => MerchantOffer::STATUS_ARCHIVED,
             ]);
+            
+            // Also update the associated schedule status if it exists
+            if ($offer->schedule_id) {
+                \App\Models\MerchantOfferCampaignSchedule::where('id', $offer->schedule_id)
+                    ->update(['status' => \App\Models\MerchantOfferCampaignSchedule::STATUS_ARCHIVED]);
+                
+                Log::info('[AutoArchiveMerchantOffer] Also archived Schedule: ' . $offer->schedule_id . ' for Offer: ' . $offer->id);
+            }
 
             $this->info('[AutoArchiveMerchantOffer] Archived Offer: ' . $offer->id. ' sold out');
             Log::info('[AutoArchiveMerchantOffer] Archived Offer: ' . $offer->id. ' sold out');
@@ -55,6 +63,14 @@ class AutoArchieveMerchantOffer extends Command
             $offer->update([
                 'status' => MerchantOffer::STATUS_ARCHIVED,
             ]);
+            
+            // Also update the associated schedule status if it exists
+            if ($offer->schedule_id) {
+                \App\Models\MerchantOfferCampaignSchedule::where('id', $offer->schedule_id)
+                    ->update(['status' => \App\Models\MerchantOfferCampaignSchedule::STATUS_ARCHIVED]);
+                
+                Log::info('[AutoArchiveMerchantOffer] Also archived Schedule: ' . $offer->schedule_id . ' for Offer: ' . $offer->id);
+            }
 
             $this->info('[AutoArchiveMerchantOffer] Archived Offer: ' . $offer->id. ' past available_until');
             Log::info('[AutoArchiveMerchantOffer] Archived Offer: ' . $offer->id. ' past available_until');
