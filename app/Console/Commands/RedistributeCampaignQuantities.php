@@ -204,6 +204,13 @@ class RedistributeCampaignQuantities extends Command
 
     private function createMerchantOffer($campaign, $schedule, $quantity, $publishAt = null)
     {
+        // first check if an offer already exists for this schedule
+        $existingOffer = MerchantOffer::where('schedule_id', $schedule->id)->first();
+        if ($existingOffer) {
+            Log::warning("[RedistributeCampaignQuantities] Offer already exists for schedule ID: {$schedule->id}, using existing offer ID: {$existingOffer->id}");
+            return $existingOffer;
+        }
+        
         $publishAt = $publishAt ?? now()->addDay()->startOfDay();
         $now = now();
 

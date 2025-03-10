@@ -20,7 +20,12 @@ class CreateStore extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        if (count($data['business_hours']) > 0) {
+		// Remove leading 0 or +60 from phone number
+		if (!empty($data['business_phone_no'])) {
+			$data['business_phone_no'] = preg_replace('/^(0|\+60)/', '', $data['business_phone_no']);
+		}
+
+		if (count($data['business_hours']) > 0) {
             $data['business_hours'] = json_encode(collect($data['business_hours'])->mapWithKeys(function ($item) {
                 return [$item['day'] => [
                     'open_time' => $item['open_time'],

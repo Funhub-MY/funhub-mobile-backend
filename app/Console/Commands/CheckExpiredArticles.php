@@ -83,23 +83,55 @@ class CheckExpiredArticles extends Command
 	{
 		$content = $article->title . ' ' . $article->body;
 
-		$dates = $this->extractDates($content);
-
-		if (empty($dates)) {
-			return false;
-		}
-
 		$currentDate = Carbon::now();
 
-		// Check if any extracted date is in the past
-		foreach ($dates as $date) {
-			if ($date->startOfDay()->lt($currentDate->startOfDay())) {
-				Log::info("[Check Expired Articles] Article ID {$article->id} marked as expired due to date: " . $date->toDateString());
+		// Scenario 1: Check dates in title/content
+		$dates = $this->extractDates($content);
+
+		if (!empty($dates)) {
+			// Get the latest date if multiple dates exist
+			$latestDate = $this->getLatestDate($dates);
+
+			// Check if the latest date is more than 10 days old AND in the past
+			if ($latestDate->startOfDay()->isPast() &&
+				$latestDate->startOfDay()->diffInDays($currentDate->startOfDay()) > 10) {
+				Log::info("[Check Expired Articles] Article ID {$article->id} marked as expired due to date being more than 10 days old: " . $latestDate->toDateString());
 				return true;
 			}
 		}
 
+		// Scenario 2: Check for expired keywords with dates
+		$keywords = ExpiredKeyword::pluck('keyword')->toArray();
+		foreach ($keywords as $keyword) {
+			if (stripos($content, $keyword) !== false) {
+				// If keyword is found and there's a date more than 10 days old
+				if (!empty($dates)) {
+					$latestDate = $this->getLatestDate($dates);
+					if ($latestDate->startOfDay()->isPast() &&
+						$latestDate->startOfDay()->diffInDays($currentDate->startOfDay()) > 10) {
+						Log::info("[Check Expired Articles] Article ID {$article->id} marked as expired due to date being more than 10 days old: " . $latestDate->toDateString());
+						return true;
+					}
+				}
+			}
+		}
+
 		return false;
+	}
+
+	private function getLatestDate($dates)
+	{
+		if (empty($dates)) {
+			return null;
+		}
+
+		$latestDate = $dates[0];
+		foreach ($dates as $date) {
+			if ($date->gt($latestDate)) {
+				$latestDate = $date;
+			}
+		}
+		return $latestDate;
 	}
 
 	private function extractDates($content)

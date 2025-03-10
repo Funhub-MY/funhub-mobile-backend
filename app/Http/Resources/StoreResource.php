@@ -128,6 +128,7 @@ class StoreResource extends JsonResource
                 ];
             }) : null,
             'business_phone_no' => $this->business_phone_no,
+			'is_appointment_only' => $this->is_appointment_only,
             'business_hours' => $completeBusinessWeek,
             'current_day_business_hour' => ($this->business_hours) ? $currentDayBusinessHour : null,
             'current_day_rest_hour' => ($this->rest_hours) ? $currentDayRestHour : null,

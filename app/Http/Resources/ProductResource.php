@@ -38,7 +38,7 @@ class ProductResource extends JsonResource
             'description' => $this->description,
             'campaign_url' => $this->campaign_url ?? null,
             'unit_price' => $this->unit_price,
-            'discount_price' => $this->discount_price,
+            'discount_price' => $this->discount_price ?? null,
             'unlimited_supply' => $this->unlimited_supply,
             'quantity' => $this->quantity,
             'reward' => ($rewards) ? $rewards->toArray() : null,
