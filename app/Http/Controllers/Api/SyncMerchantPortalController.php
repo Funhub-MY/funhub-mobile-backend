@@ -597,7 +597,7 @@ class SyncMerchantPortalController extends Controller
                 $userId = $merchant->user_id;
 
                 // Use Cache::remember to handle caching
-                $lists = Cache::remember("merchant_offer_vouchers_{$userId}", 1440, function () use ($userId) {
+                $lists = Cache::remember("merchant_offer_vouchers_{$userId}", 60, function () use ($userId) {
                     $lists = collect();
 
                     //  Get campaign agreement quantity
