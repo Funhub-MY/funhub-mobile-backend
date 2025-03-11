@@ -618,6 +618,43 @@ class MerchantOfferResource extends Resource
                     })
                     ->requiresConfirmation()
                     ->deselectRecordsAfterCompletion(),
+                    
+                // Force sync with Algolia Scout
+                Tables\Actions\BulkAction::make('force_sync_algolia')
+                    ->label('Force Sync with Algolia')
+                    ->modalContent(fn () => new HtmlString("Use this when you make same day edits to Offers"))
+                    ->icon('heroicon-o-refresh')
+                    ->action(function (Collection $records): void {
+                        $successCount = 0;
+                        $errorCount = 0;
+                        
+                        foreach ($records as $record) {
+                            try {
+                                // Force the record to be searchable in Algolia
+                                $record->searchable();
+                                $successCount++;
+                            } catch (\Exception $e) {
+                                $errorCount++;
+                                Log::error('[MerchantOfferResource] Force Sync Algolia Error', [
+                                    'record_id' => $record->id,
+                                    'error' => $e->getMessage(),
+                                    'trace' => $e->getTraceAsString(),
+                                ]);
+                            }
+                        }
+                        
+                        $message = "Successfully synced {$successCount} offers with Algolia";
+                        if ($errorCount > 0) {
+                            $message .= " ({$errorCount} errors)";
+                        }
+                        
+                        Notification::make()
+                            ->success()
+                            ->title($message)
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->deselectRecordsAfterCompletion(),
 
                 Tables\Actions\BulkAction::make('update_status')
                     ->hidden(fn () => auth()->user()->hasRole('merchant'))
