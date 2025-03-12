@@ -82,14 +82,14 @@ class PromotionCodeGroupResource extends Resource
                                         Forms\Components\MorphToSelect\Type::make(RewardComponent::class)
                                             ->titleColumnName('name'),
                                     ])
-                                    ->required()
+                                    ->required(fn ($livewire) => $livewire instanceof Pages\CreatePromotionCodeGroup)
                                     ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
                                 Forms\Components\TextInput::make('quantity')
                                     ->label('Reward Quantity')
                                     ->helperText('How many rewards to give when code is redeemed')
                                     ->numeric()
                                     ->default(1)
-                                    ->required()
+                                    ->required(fn ($livewire) => $livewire instanceof Pages\CreatePromotionCodeGroup)
                                     ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
                             ])
                             ->columnSpan(1),
