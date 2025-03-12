@@ -253,7 +253,7 @@ class VouchersRelationManager extends RelationManager
                                     ]);
 
                                     // Send the notification
-                                    $user->notify(new RedeemReview($redemption->claim, $user, $store, $redemption->claim->merchant_offer_id));
+                                    $user->notify(new RedeemReview($redemption->claim, $user, $redemption->claim->merchantOffer, $redemption->claim->merchant_offer_id));
                                     $sentCount++;
 
                                     Log::info('RedeemReview notification sent successfully');

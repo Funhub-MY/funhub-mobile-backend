@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ArticleResource\Pages;
 
 use App\Filament\Resources\ArticleResource;
+use App\Jobs\ByteplusVODProcess;
 use App\Jobs\UpdateArticleTagArticlesCount;
 use App\Models\Article;
 use Filament\Pages\Actions;
@@ -116,13 +117,19 @@ class CreateArticle extends CreateRecord
 
             Log::info('Media added: ', $media->toArray());
 
+            // Process video with ByteplusVOD if it's a video
+            if (str_contains($media->mime_type, 'video')) {
+                ByteplusVODProcess::dispatch($media);
+                Log::info('ByteplusVODProcess dispatched for media: ' . $media->id);
+            }
+
             // Then remove the file from storage
             // Check if the video exists and then delete it
             if (Storage::exists($video)) {
                 Storage::delete($video);
-                Log::info('Video thumbnail deleted: ' . $video);
+                Log::info('Video deleted: ' . $video);
             } else {
-                Log::warning('Video thumbnail not found: ' . $video);
+                Log::warning('Video not found: ' . $video);
             }
         }
 

@@ -346,6 +346,7 @@ class MerchantOfferCampaignResource extends Resource
                                                     TextInput::make('available_quantity')
                                                         ->label('Available Quantity per Schedule')
                                                         ->numeric()
+														->required()
                                                         ->minValue(1),
                                                 ])
                                                 ->columns(2),

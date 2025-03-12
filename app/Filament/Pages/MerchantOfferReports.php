@@ -18,11 +18,12 @@ use Illuminate\Contracts\View\View;
 use NumberFormatter;
 use App\Exports\MerchantOfferReportsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 class MerchantOfferReports extends Page implements HasTable
 {
-    use InteractsWithTable;
-
+    use InteractsWithTable, HasPageShield;
+    
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $navigationGroup = 'Reports';

@@ -48,6 +48,7 @@ class Store extends BaseModel implements HasMedia, Auditable
         'is_closed',
         'manager_name',
         'business_phone_no',
+		'is_appointment_only',
         'business_hours',
         'rest_hours',
         'address',

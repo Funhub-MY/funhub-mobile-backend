@@ -28,7 +28,7 @@ class ProductHistoryResource extends JsonResource
                 'description' => $this->transactionable->description,
                 'campaign_url' => $this->transactionable->campaign_url ?? null,
                 'unit_price' => $this->transactionable->unit_price,
-                'discount_price' => $this->transactionable->discount_price,
+                'discount_price' => $this->transactionable->discount_price ?? null,
                 'thumbnail' => $this->transactionable->thumbnail
             ],
             'gateway' => $this->gateway,

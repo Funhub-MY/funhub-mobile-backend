@@ -264,13 +264,10 @@ class StoreResource extends Resource
                             ->offIcon('heroicon-s-x-circle')
                             ->hidden(fn($get) => $get('location_type') != 'googlemap'),
                         Forms\Components\Textarea::make('address')
-                            ->disabled(fn($get) => $get('location_type') === 'existing')
                             ->required(),
 						Forms\Components\TextInput::make('city')
-							->disabled(fn($get) => $get('location_type') === 'existing')
 							->required(),
 						Forms\Components\TextInput::make('address_postcode')
-                            ->disabled(fn($get) => $get('location_type') === 'existing')
                             ->required(),
 
                         Grid::make(2)
@@ -297,13 +294,11 @@ class StoreResource extends Resource
                                 Forms\Components\TextInput::make('lang')
                                     ->columnSpan(1)
                                     ->label('Latitude')
-                                    ->helperText('This is to locate your store in the map. Leave 0 if not sure')
-                                    ->disabled(fn($get) => $get('location_type') === 'existing'),
+                                    ->helperText('This is to locate your store in the map. Leave 0 if not sure'),
                                 Forms\Components\TextInput::make('long')
                                     ->columnSpan(1)
                                     ->label('Logitude')
-                                    ->helperText('This is to locate your store in the map. Leave 0 if not sure')
-                                    ->disabled(fn($get) => $get('location_type') === 'existing'),
+                                    ->helperText('This is to locate your store in the map. Leave 0 if not sure'),
                             ]),
 
                         SpatieMediaLibraryFileUpload::make('company_photos')
@@ -346,6 +341,9 @@ class StoreResource extends Resource
                                     }),
                             ])
                     ]),
+				Toggle::make('is_appointment_only')
+					->label('Appointment Only')
+					->default(false),
 
                 Group::make()
                     ->columnSpanFull()
@@ -491,11 +489,16 @@ class StoreResource extends Resource
 					->label('Sub Categories')
 					->sortable(),
 
-                Tables\Columns\TextColumn::make('business_phone_no'),
+                Tables\Columns\TextColumn::make('business_phone_no')
+					->formatStateUsing(fn ($record) => $record->business_phone_no ? ($record->country?->phone_code ? $record->country->phone_code : '') . $record->business_phone_no : null),
+
                 Tables\Columns\TextColumn::make('address')
                     // format state to truncate string ...
                     ->formatStateUsing(fn($state) => substr($state, 0, 20) . '...')
                     ->searchable(),
+
+				Tables\Columns\ToggleColumn::make('is_appointment_only')
+					->label('Appointment Only'),
 
                 Tables\Columns\TextColumn::make('address_postcode')
                     ->sortable()

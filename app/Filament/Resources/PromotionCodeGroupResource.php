@@ -82,13 +82,15 @@ class PromotionCodeGroupResource extends Resource
                                         Forms\Components\MorphToSelect\Type::make(RewardComponent::class)
                                             ->titleColumnName('name'),
                                     ])
-                                    ->required(),
+                                    ->required(fn ($livewire) => $livewire instanceof Pages\CreatePromotionCodeGroup)
+                                    ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
                                 Forms\Components\TextInput::make('quantity')
                                     ->label('Reward Quantity')
                                     ->helperText('How many rewards to give when code is redeemed')
                                     ->numeric()
                                     ->default(1)
-                                    ->required(),
+                                    ->required(fn ($livewire) => $livewire instanceof Pages\CreatePromotionCodeGroup)
+                                    ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
                             ])
                             ->columnSpan(1),
                     ])
@@ -130,6 +132,30 @@ class PromotionCodeGroupResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Tables\Actions\Action::make('toggleStatus')
+                    ->label(fn ($record) => $record->status ? 'Deactivate' : 'Activate')
+                    ->icon('heroicon-o-check-circle')
+                    ->color(fn ($record) => $record->status ? 'danger' : 'success')
+                    ->action(function ($record) {
+                        $newStatus = !$record->status;
+                        
+                        $record->update([
+                            'status' => $newStatus,
+                        ]);
+                        
+                        \App\Models\PromotionCode::where('promotion_code_group_id', $record->id)
+                            ->update(['status' => $newStatus]);
+                        
+                        Notification::make()
+                            ->title('Status updated successfully')
+                            ->body('All promotion codes in this group have been ' . ($newStatus ? 'activated' : 'deactivated'))
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading(fn ($record) => ($record->status ? 'Deactivate' : 'Activate') . ' promotion code group')
+                    ->modalSubheading(fn ($record) => 'Are you sure you want to ' . ($record->status ? 'deactivate' : 'activate') . ' this promotion code group? This will also ' . ($record->status ? 'deactivate' : 'activate') . ' all promotion codes in this group.')
+                    ->modalButton(fn ($record) => $record->status ? 'Deactivate' : 'Activate'),
                 ExportAction::make()
                     ->label('Export Codes')
                     ->exports([
@@ -148,12 +174,17 @@ class PromotionCodeGroupResource extends Resource
                             ->required(),
                     ])
                     ->action(function (Collection $records, array $data) {
-                        $records->each(fn ($record) => $record->update([
-                            'status' => $data['status'],
-                        ]));
+                        $records->each(function ($record) use ($data) {
+                            $record->update([
+                                'status' => $data['status'],
+                            ]);
+                            \App\Models\PromotionCode::where('promotion_code_group_id', $record->id)
+                                ->update(['status' => $data['status']]);
+                        });
 
                         Notification::make()
                             ->title('Status updated successfully')
+                            ->body('All promotion codes in the selected groups have been ' . ($data['status'] ? 'activated' : 'deactivated'))
                             ->success()
                             ->send();
                     })

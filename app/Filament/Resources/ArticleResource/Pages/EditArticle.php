@@ -12,6 +12,7 @@ use App\Filament\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Jobs\ByteplusVODProcess;
 
 class EditArticle extends EditRecord
 {
@@ -188,6 +189,12 @@ class EditArticle extends EditRecord
                     ->toMediaCollection(Article::MEDIA_COLLECTION_NAME, $disk);
 
                 Log::info('File uploaded: ', ['media' => $media, 'file' => $file]);
+
+                // Process video with ByteplusVOD if it's a video
+                if (str_contains($media->mime_type, 'video')) {
+                    ByteplusVODProcess::dispatch($media);
+                    Log::info('ByteplusVODProcess dispatched for media: ' . $media->id);
+                }
 
                 // Delete the file from the temporary directory if it exists
                 if (isset($existingVideo[$file])) {

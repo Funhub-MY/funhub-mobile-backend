@@ -48,7 +48,8 @@ class ProductResource extends Resource
 									->label('Order')
 									->default(fn () => (Product::max('order') ?? 0) + 1),
                                 Forms\Components\SpatieMediaLibraryFileUpload::make('product_image')
-                                    ->label('Image')
+                                    ->label('Card Image')
+									->required()
                                     ->collection(Product::MEDIA_COLLECTION_NAME)
                                     ->disk(function () {
                                         if (config('filesystems.default') === 's3') {
@@ -115,7 +116,6 @@ class ProductResource extends Resource
                                             ),
                                         Forms\Components\TextInput::make('discount_price')
                                             ->label('Discounted Unit Price')
-                                            ->required()
                                             ->numeric()
                                             ->prefix('RM')
                                             ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask

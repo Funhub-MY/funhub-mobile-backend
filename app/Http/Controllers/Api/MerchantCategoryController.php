@@ -39,7 +39,7 @@ class MerchantCategoryController extends Controller
     public function index(Request $request)
     {
         // get popular tags by offer count
-        $query = MerchantCategory::withCount('offer');
+        $query = MerchantCategory::query();
 
         // get is_featured only
         if ($request->has('is_featured') && $request->is_featured == 1) {
@@ -71,11 +71,12 @@ class MerchantCategoryController extends Controller
 
          // has store offers
          if ($request->has('has_store_offers') && $request->has_store_offers == 1) {
-            $query->join('merchant_category_stores', 'merchant_categories.id', '=', 'merchant_category_stores.merchant_category_id')
-                ->join('merchant_offer_stores', 'merchant_category_stores.store_id', '=', 'merchant_offer_stores.store_id')
-                ->join('merchant_offers', 'merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
-                ->where('merchant_offers.status', MerchantOffer::STATUS_PUBLISHED)
-                ->distinct();
+            // use a single optimized subquery with direct SQL for maximum performance
+            $query->whereRaw("EXISTS (SELECT 1 FROM merchant_category_stores mcs 
+                JOIN merchant_offer_stores mos ON mcs.store_id = mos.store_id 
+                JOIN merchant_offers mo ON mos.merchant_offer_id = mo.id 
+                WHERE mcs.merchant_category_id = merchant_categories.id 
+                AND mo.status = ? LIMIT 1)", [MerchantOffer::STATUS_PUBLISHED]);
         }
 
         $this->buildQuery($query, $request);

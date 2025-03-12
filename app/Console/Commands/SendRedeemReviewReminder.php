@@ -49,14 +49,17 @@ class SendRedeemReviewReminder extends Command
 				}
 
 				if (!$hasReviewedAnyStore) {
-					foreach ($stores as $store) {
-						// Send the RedeemReview notification to the user
-						$user->notify(new RedeemReview($redemption->claim, $user, $store, $redemption->claim->merchant_offer_id));
-						Log::info('[SendRedeemReviewReminder] User Redeemed from Store: ' . $store->id . ' and Notified to remind for review', [
-							'user_id' => $user->id,
-							'store_id' => $store->id,
-						]);
-					}
+					// foreach ($stores as $store) {
+					// 	// Send the RedeemReview notification to the user
+					// 	$user->notify(new RedeemReview($redemption->claim, $user, $store, $redemption->claim->merchant_offer_id));
+					// 	Log::info('[SendRedeemReviewReminder] User Redeemed from Store: ' . $store->id . ' and Notified to remind for review', [
+					// 		'user_id' => $user->id,
+					// 		'store_id' => $store->id,
+					// 	]);
+					// }
+
+					$user->notify(new RedeemReview($redemption->claim, $user, $redemption->claim->merchantOffer, $redemption->claim->merchant_offer_id));
+
 					$redemption->update(['reminder_sent_at' => now()]);
 
 					$this->info('[SendRedeemReviewReminder] User ' . $user->id);
