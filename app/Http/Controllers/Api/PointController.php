@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\PointComponentLedgerResource;
 use App\Http\Resources\PointLedgerResource;
 use App\Models\PointComponentLedger;
@@ -190,6 +192,32 @@ class PointController extends Controller
             'quantity' => 'required|integer'
         ]);
 
+        $user = $request->user();
+        
+        // anti-spam protection: Rate limit requests using cache
+        $cacheKey = 'combine_points_' . $user->id;
+        $cooldownSeconds = 5;
+        if (Cache::has($cacheKey)) {
+            $lastRequestTime = Cache::get($cacheKey);
+            $secondsAgo = now()->diffInSeconds($lastRequestTime);
+            $remainingSeconds = $cooldownSeconds - $secondsAgo;
+            
+            if ($remainingSeconds > 0) {
+                Log::warning('Rate limited combine points request', [
+                    'user_id' => $user->id,
+                    'seconds_remaining' => $remainingSeconds
+                ]);
+                
+                return response()->json([
+                    'message' => 'Too Many Requests', ['seconds' => $remainingSeconds]),
+                    'seconds_remaining' => $remainingSeconds
+                ], 429); // 429 Too Many Requests
+            }
+        }
+        
+        // Store current timestamp in cache
+        Cache::put($cacheKey, now(), $cooldownSeconds);
+
         // get the first reward
         $reward = Reward::with('rewardComponents')
             ->firstOrFail();
@@ -197,8 +225,6 @@ class PointController extends Controller
         if ($reward->rewardComponents->count() == 0) {
             return response()->json(['message' => __('messages.error.point_controller.Reward_has_no_components_to_form_yet')], 422);
         }
-
-        $user = $request->user();
 
         foreach($reward->rewardComponents as $component) {
             if ($component->pivot->points * $request->quantity > $this->pointComponentService->getBalanceByComponent($user, $component)) {
@@ -211,18 +237,24 @@ class PointController extends Controller
         }
 
         try {
+            // Use a database transaction to ensure atomicity
+            DB::beginTransaction();
+            
             foreach($reward->rewardComponents as $component) {
-                // debit from point componenet
+                // debit from point component
                 $this->pointComponentService->debit($reward, $component, $user, $component->pivot->points * $request->quantity, 'Debit for combining to form Reward'. $reward->name);
             }
+            
+            // credit to reward
+            $this->pointService->credit($reward, $user, $request->quantity, 'Reward Formed');
+            
+            DB::commit();
+            Log::info('Reward Formed', ['user_id' => $user->id, 'reward_id' => $reward->id, 'quantity' => $request->quantity]);
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error($e->getMessage(), ['user_id' => $user->id, 'reward_id' => $reward->id, 'quantity' => $request->quantity]);
             return response()->json(['message' => __('messages.error.point_controller.Error_while_deducting_points_from_user')], 422);
         }
-
-        // credit to reward
-        $this->pointService->credit($reward, $user, $request->quantity, 'Reward Formed');
-        Log::info('Reward Formed', ['user_id' => $user->id, 'reward_id' => $reward->id, 'quantity' => $request->quantity]);
 
         return response()->json([
             'point_balance' => $user->point_balance,
