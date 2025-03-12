@@ -90,4 +90,10 @@ return [
         'sms_account' => env('BYTEPLUS_SMS_ACCOUNT'),
         'sms_password' => env('BYTEPLUS_SMS_PASSWORD'),
     ],
+
+    'merchantportal' => [
+        'domain' => env('MERCHANT_PORTAL_DOMAIN'),
+        'key' => env('MERCHANT_PORTAL_API_KEY'),
+    ],
+
 ];
