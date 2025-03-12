@@ -11,7 +11,7 @@ use App\Models\MerchantOffer;
 use App\Notifications\NewMerchantOfferListed;
 use Illuminate\Support\Facades\Log;
 
-class MerchantOfferPublishedListener
+class MerchantOfferPublishedListener implements ShouldQueue
 {
     /**
      * Create the event listener.
