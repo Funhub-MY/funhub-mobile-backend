@@ -52,11 +52,11 @@ class Kernel extends ConsoleKernel
         // Daily at Specific Times
         $schedule->command('merchant-offers:publish')->dailyAt('00:00')->withoutOverlapping(expiresAt: 10)->onOneServer();
         $schedule->command('merchant-offers:auto-archieve')->dailyAt('00:05')->onOneServer();
-        $schedule->command('article:auto-archive')->dailyAt('00:05')->onOneServer();
-        $schedule->command('merchant-offers:send-expiring-notification')->dailyAt('00:10')->onOneServer();
-        $schedule->command('merchant-offers:auto-move-vouchers-unsold')->dailyAt('00:15')->withoutOverlapping(10)->onOneServer();
+        $schedule->command('article:auto-archive')->dailyAt('00:10')->onOneServer();
+        $schedule->command('merchant-offers:send-expiring-notification')->dailyAt('00:25')->onOneServer();
+        $schedule->command('merchant-offers:auto-move-vouchers-unsold')->dailyAt('00:35')->withoutOverlapping(10)->onOneServer();
         if (config('app.auto_redistribute_vouchers') == true) {
-            $schedule->command('campaign:redistribute-quantities')->dailyAt('00:30')->onOneServer();
+            $schedule->command('campaign:redistribute-quantities')->dailyAt('00:45')->onOneServer();
         }
 		$schedule->command('articles:check-expired')->dailyAt('01:00')->onOneServer();
 
