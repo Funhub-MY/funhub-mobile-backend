@@ -209,7 +209,7 @@ class PointController extends Controller
                 ]);
                 
                 return response()->json([
-                    'message' => 'Too Many Requests', ['seconds' => $remainingSeconds]),
+                    'message' => 'Too Many Requests',
                     'seconds_remaining' => $remainingSeconds
                 ], 429); // 429 Too Many Requests
             }
