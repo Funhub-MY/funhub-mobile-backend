@@ -50,8 +50,8 @@ class Kernel extends ConsoleKernel
 		$schedule->command('redeem:send-review-reminder')->hourly()->onOneServer();
 
         // Daily at Specific Times
-        $schedule->command('merchant-offers:publish')->dailyAt('00:00')->withoutOverlapping(60)->onOneServer();
-        $schedule->command('merchant-offers:auto-archieve')->dailyAt('00:01')->onOneServer();
+        $schedule->command('merchant-offers:publish')->dailyAt('00:00')->withoutOverlapping(expiresAt: 10)->onOneServer();
+        $schedule->command('merchant-offers:auto-archieve')->dailyAt('00:05')->onOneServer();
         $schedule->command('article:auto-archive')->dailyAt('00:05')->onOneServer();
         $schedule->command('merchant-offers:send-expiring-notification')->dailyAt('00:10')->onOneServer();
         $schedule->command('merchant-offers:auto-move-vouchers-unsold')->dailyAt('00:15')->withoutOverlapping(10)->onOneServer();
