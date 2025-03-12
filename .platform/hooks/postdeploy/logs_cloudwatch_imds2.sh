@@ -7,7 +7,7 @@ echo '{
                     "collect_list": [
                         {
                             "file_path": "/var/app/current/storage/logs/*.log",
-                            "log_group_name": "/aws/elasticbeanstalk/funhub-preprod/var/app/current/storage/logs/",
+                            "log_group_name": "/aws/elasticbeanstalk/funhub/var/app/current/storage/logs/",
                             "log_stream_name": "{instance_id}"
                         }
                     ]
