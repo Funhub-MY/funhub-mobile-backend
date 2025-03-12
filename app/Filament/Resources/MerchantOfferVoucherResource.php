@@ -82,15 +82,14 @@ class MerchantOfferVoucherResource extends Resource
             'merchant_offer' => function ($query) {
                 $query->select('id', 'name', 'sku');
             },
-            // Eager load redemptions to avoid N+1 queries for voucher_redeemed attribute
             'redeem'
         ]);
         
-        // Add index hint for better performance when using MySQL
-        if (config('database.default') === 'mysql') {
-            // Force the use of the primary key for faster searches
-            $query->from(\DB::raw('merchant_offer_vouchers USE INDEX (PRIMARY)'));
-        }
+        // // Add index hint for better performance when using MySQL
+        // if (config('database.default') === 'mysql') {
+        //     // Force the use of the primary key for faster searches
+        //     $query->from(\DB::raw('merchant_offer_vouchers USE INDEX (PRIMARY)'));
+        // }
         
         return $query;
 	}
@@ -193,7 +192,6 @@ class MerchantOfferVoucherResource extends Resource
                 Tables\Columns\BadgeColumn::make('voucher_redeemed') // using append.
                     ->label('Redemption Status')
                     ->sortable(query: function (Builder $query, string $direction): Builder {
-                        // Optimize sorting with subquery instead of joins
                         return $query->orderByRaw("(EXISTS (SELECT 1 FROM merchant_offer_user 
                             JOIN merchant_offer_claims_redemptions ON merchant_offer_user.id = merchant_offer_claims_redemptions.claim_id 
                             WHERE merchant_offer_user.voucher_id = merchant_offer_vouchers.id LIMIT 1)) {$direction}");
@@ -268,7 +266,6 @@ class MerchantOfferVoucherResource extends Resource
                     ->label('Purchased At')
                     ->date('d/m/Y h:ia')
                     ->sortable(query: function (Builder $query, string $direction): Builder {
-                        // Optimize sorting with direct SQL subquery
                         return $query->orderByRaw("(SELECT COALESCE(
                             (SELECT created_at FROM merchant_offer_user 
                             WHERE merchant_offer_user.voucher_id = merchant_offer_vouchers.id 
@@ -315,22 +312,13 @@ class MerchantOfferVoucherResource extends Resource
                         if (!isset($data['value']) || $data['value'] === null) {
                             return $query;
                         }
-
-                        // Add index hint for better performance
-                        if (config('database.default') === 'mysql') {
-                            $query->from(\DB::raw('merchant_offer_vouchers FORCE INDEX (PRIMARY)'));
-                        }
                         
                         if ($data['value'] === 'unclaimed') {
-                            // Highly optimized query for unclaimed vouchers
-                            // Use LEFT JOIN + IS NULL pattern which is often faster than NOT EXISTS
                             return $query->leftJoin('merchant_offer_user', function($join) {
                                 $join->on('merchant_offer_user.voucher_id', '=', 'merchant_offer_vouchers.id')
                                      ->where('merchant_offer_user.status', '=', 1);
                             })->whereNull('merchant_offer_user.id');
                         } else if ($data['value']) {
-                            // Revert to a simpler approach that works correctly
-                            // Use EXISTS with correlated subquery which is reliable for this case
                             return $query->whereExists(function ($subquery) use ($data) {
                                 $subquery->select(\DB::raw(1))
                                     ->from('merchant_offer_user')
@@ -370,19 +358,33 @@ class MerchantOfferVoucherResource extends Resource
                         true => 'Redeemed'
                     ])
                     ->query(function (Builder $query, array $data) {
-                        if ($data['value'] == true) {
-                            // Optimized query for redeemed vouchers - use EXISTS instead of JOIN for better performance
-                            return $query->whereRaw("EXISTS (SELECT 1 FROM merchant_offer_user 
-                                JOIN merchant_offer_claims_redemptions ON merchant_offer_user.id = merchant_offer_claims_redemptions.claim_id 
-                                WHERE merchant_offer_user.voucher_id = merchant_offer_vouchers.id 
-                                LIMIT 1)");
-                        } else if ($data['value'] == false) {
-                            // Optimized query for unredeemed vouchers
-                            return $query->whereRaw("NOT EXISTS (SELECT 1 FROM merchant_offer_user 
-                                JOIN merchant_offer_claims_redemptions ON merchant_offer_user.id = merchant_offer_claims_redemptions.claim_id 
-                                WHERE merchant_offer_user.voucher_id = merchant_offer_vouchers.id 
-                                LIMIT 1)");
+                        // If no value is selected, return the unmodified query
+                        if (!isset($data['value']) || $data['value'] === null) {
+                            return $query;
                         }
+                        
+                        if ($data['value'] == true) {
+                            // Highly optimized query for redeemed vouchers
+                            // Use a correlated subquery with EXISTS directly on redemptions table
+                            return $query->whereExists(function ($subquery) {
+                                $subquery->select(DB::raw(1))
+                                    ->from('merchant_offer_claims_redemptions')
+                                    ->join('merchant_offer_user', 'merchant_offer_claims_redemptions.claim_id', '=', 'merchant_offer_user.id')
+                                    ->whereColumn('merchant_offer_user.voucher_id', 'merchant_offer_vouchers.id')
+                                    ->limit(1);
+                            });
+                        } else if ($data['value'] == false) {
+                            // Highly optimized query for unredeemed vouchers
+                            // Use a correlated subquery with NOT EXISTS directly on redemptions table
+                            return $query->whereNotExists(function ($subquery) {
+                                $subquery->select(DB::raw(1))
+                                    ->from('merchant_offer_claims_redemptions')
+                                    ->join('merchant_offer_user', 'merchant_offer_claims_redemptions.claim_id', '=', 'merchant_offer_user.id')
+                                    ->whereColumn('merchant_offer_user.voucher_id', 'merchant_offer_vouchers.id')
+                                    ->limit(1);
+                            });
+                        }
+                        
                         return $query;
                     })
                     ->label('Redemption Status'),
@@ -390,13 +392,16 @@ class MerchantOfferVoucherResource extends Resource
                     ->relationship('merchant_offer', 'name')
                     ->searchable()
                     ->label('Merchant Offer'),
+
                 Filter::make('purchased_from')
                     ->form([
                         DatePicker::make('purchased_from')
                             ->placeholder('Select start date'),
+                        DatePicker::make('purchased_until')
+                            ->placeholder('Select end date'),
                     ])
                     ->query(function (Builder $query, array $data) {
-                        if ($data['purchased_from']) {
+                        if (isset($data['purchased_from']) && $data['purchased_from']) {
                             $query->whereHas('latestSuccessfulClaim', function ($q) use ($data) {
                                 $q->whereDate('created_at', '>=', $data['purchased_from']);
                             });
@@ -404,19 +409,19 @@ class MerchantOfferVoucherResource extends Resource
                     })
                     ->label('Purchased From'),
 
-                Filter::make('purchased_until')
-                    ->form([
-                        DatePicker::make('purchased_until')
-                            ->placeholder('Select end date'),
-                    ])
-                    ->query(function (Builder $query, array $data) {
-                        if ($data['purchased_until']) {
-                            $query->whereHas('latestSuccessfulClaim', function ($q) use ($data) {
-                                $q->whereDate('created_at', '<=', $data['purchased_until']);
-                            });
-                        }
-                    })
-                    ->label('Purchased Until'),
+                // Filter::make('purchased_until')
+                //     ->form([
+                //         DatePicker::make('purchased_until')
+                //             ->placeholder('Select end date'),
+                //     ])
+                //     ->query(function (Builder $query, array $data) {
+                //         if ($data['purchased_until']) {
+                //             $query->whereHas('latestSuccessfulClaim', function ($q) use ($data) {
+                //                 $q->whereDate('created_at', '<=', $data['purchased_until']);
+                //             });
+                //         }
+                //     })
+                //     ->label('Purchased Until'),
             ])
             ->actions([
                 ViewAction::make(),
