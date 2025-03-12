@@ -38,6 +38,7 @@ class Location extends BaseModel implements HasMedia, Auditable
         return [
             'id' => (int) $this->id,
             'name' => $this->name,
+            'google_id' => $this->google_id,
             'address' => $this->address,
             'address2' => $this->address2,
             'zip_code' => $this->zip_code,
