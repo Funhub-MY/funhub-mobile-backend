@@ -1225,7 +1225,7 @@ class ArticleController extends Controller
         //         ->first();
         // }
 
-        //$article->location()->detach(); // detaches all
+        $article->location()->detach(); // detaches all
 
         if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
             $locations = Location::where('google_id', $locationData['google_id'])->get();
