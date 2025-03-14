@@ -32,7 +32,6 @@ class ListInteractions extends ListRecords
 								}),
 							Column::make('interactable_id')
 								->heading('Interactable Id'),
-							Column::make('body')->heading('Comment'),
 							Column::make('type')
 								->heading('Type')
 								->formatStateUsing(fn ($record) => [
