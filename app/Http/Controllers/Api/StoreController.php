@@ -14,6 +14,7 @@ use App\Models\Location;
 use App\Models\LocationRating;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
+use App\Models\MerchantOfferClaim;
 use App\Models\RatingCategory;
 use App\Models\ShareableLink;
 use App\Models\Store;
@@ -21,6 +22,7 @@ use App\Models\StoreRating;
 use App\Models\User;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -643,5 +645,65 @@ class StoreController extends Controller
         return response()->json([
             'data' => $result
         ]);
+    }
+
+    /**
+     * Get Stores by Merchant Offer Claim ID
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Stores
+     * @urlParam claim_id integer required The merchant offer claim ID. Example: 1
+     * 
+     * @response scenario=success {
+     *   "data": {
+     *     "id": 1,
+     *     "name": "Store Name",
+     *     ...
+     *   }
+     * }
+     * @response scenario=error {
+     *   "message": "Claim not found"
+     * }
+     */
+    public function getStoreByClaim(Request $request)
+    {
+        $request->validate([
+            'claim_id' => 'required|integer'
+        ]);
+
+        // find the claim
+        $claim = MerchantOfferClaim::with('merchantOffer')->findOrFail($request->claim_id);
+        
+        if (!$claim || !$claim->merchantOffer) {
+            return response()->json(['message' => 'Claim or merchant offer not found'], 404);
+        }
+        
+        // get the merchant offer associated with the claim
+        $merchantOffer = $claim->merchantOffer;
+        
+        // get all stores associated with the merchant offer
+        $stores = $merchantOffer->stores()
+            ->with([
+                'merchant',
+                'merchant.media',
+                'storeRatings',
+                'location',
+                'categories',
+                'parentCategories',
+                'media'
+            ])
+            ->withCount([
+                'storeRatings as store_ratings_count',
+                'availableMerchantOffers'
+            ])
+            ->get();
+            
+        if ($stores->isEmpty()) {
+            return response()->json(['message' => 'No stores found for this claim'], 404);
+        }
+        
+        return StoreResource::collection($stores);
     }
 }

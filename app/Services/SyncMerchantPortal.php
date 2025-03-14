@@ -19,8 +19,8 @@ class SyncMerchantPortal
     {
         // Instantiate Guzzle Client
         $this->client           = new Client();
-        $this->authorization    = 'Bearer '.env('MERCHANT_PORTAL_API_KEY');
-        $this->domain           = env('MERCHANT_PORTAL_DOMAIN');
+        $this->authorization    = 'Bearer '.config('services.merchantportal.key');
+        $this->domain           = config('services.merchantportal.domain');
         $this->header           = [
             'Authorization' => $this->authorization,
             'Accept' => 'application/json',
