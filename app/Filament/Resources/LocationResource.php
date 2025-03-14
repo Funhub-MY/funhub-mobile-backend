@@ -163,7 +163,7 @@ class LocationResource extends Resource
                                 ->default(131)
                                 ->required()
                                 ->relationship('country', 'name'),
-
+                            Forms\Components\TextInput::make('google_id'),
                             Grid::make(2)
                                 ->schema([
                                     Forms\Components\TextInput::make('lat')
@@ -185,7 +185,14 @@ class LocationResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-
+                BadgeColumn::make('status')
+                    ->enum(MerchantOffer::STATUS)
+                    ->colors([
+                        'secondary' => 0,
+                        'success' => 1,
+                    ])
+                    ->sortable()
+                    ->searchable(),
                 ToggleColumn::make('is_mall')
                     ->label('Is Mall ?')
                     ->sortable(),
@@ -203,11 +210,21 @@ class LocationResource extends Resource
                     ->url(fn ($record) => $record->cityLinked ? route('filament.resources.cities.edit', $record->cityLinked) : null)
                     ->openUrlInNewTab()
                     ->searchable(),
-
-
-                TextColumn::make('state.name'),
-
+                TextColumn::make('state.name')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('country.name')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('google_id')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('lat')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('lng')
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
                 // filter by is_mall
