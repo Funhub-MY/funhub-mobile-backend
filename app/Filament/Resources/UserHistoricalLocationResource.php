@@ -155,6 +155,9 @@ class UserHistoricalLocationResource extends Resource
 							Column::make('Country')
 								->getStateUsing(fn ($record) => $record->country),
 						])
+						->withChunkSize(500)
+						->withFilename(fn ($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
+						->withWriterType(\Maatwebsite\Excel\Excel::CSV),
 				]),
                 // Tables\Actions\DeleteBulkAction::make(),
             ]);

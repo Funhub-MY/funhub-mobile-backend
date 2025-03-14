@@ -409,7 +409,11 @@ class UserResource extends Resource
 					}),
 
                 ExportBulkAction::make()->exports([
-                    ExcelExport::make('table')->fromTable(),
+                    ExcelExport::make('table')
+						->fromTable()
+						->withChunkSize(500)
+						->withFilename(fn ($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
+						->withWriterType(\Maatwebsite\Excel\Excel::CSV),
                 ]),
 
                 BulkAction::make('Toggle Profile Private')

@@ -63,6 +63,7 @@ class ListUsers extends ListRecords
                                 ->heading('Total Engagement'),
                             Column::make('created_at')->heading('Created at'),
                         ])
+						->withChunkSize(500)
                         ->withFilename(fn ($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
                         ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
                 ]),
