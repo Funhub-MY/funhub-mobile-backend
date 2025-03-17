@@ -5,6 +5,8 @@ namespace App\Notifications;
 use App\Models\User;
 use App\Models\Mission;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
 use Illuminate\Notifications\Notification;
@@ -13,7 +15,6 @@ use Illuminate\Notifications\Messages\MailMessage;
 
 class MissionCompleted extends Notification
 {
-
     protected $mission, $user, $reward, $rewardQuantity, $translatedMissionName;
 
     /**
@@ -53,7 +54,19 @@ class MissionCompleted extends Notification
         $channels = ['database'];
 
         if (!$this->mission->disable_fcm) {
-            $channels[] = FcmChannel::class;
+            // create a unique cache key for this notification
+            $cacheKey = 'fcm_notification_mission_' . $this->mission->id . '_user_' . $notifiable->id;
+            
+            // check if we've already sent an FCM notification to this user for this mission
+            if (!Cache::has($cacheKey)) {
+                // store in cache for 24 hours
+                Cache::put($cacheKey, true, now()->addDay());
+                
+                Log::info("Sending FCM notification for mission {$this->mission->id} to user {$notifiable->id}");
+                $channels[] = FcmChannel::class;
+            } else {
+                Log::info("Skipping duplicate FCM notification for mission {$this->mission->id} to user {$notifiable->id}");
+            }
         }
 
         return $channels;
@@ -88,6 +101,7 @@ class MissionCompleted extends Notification
                     'complete_mission_image_en_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION_EN),
                     'complete_mission_image_zh_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION_ZH),
                     'frequency' => $this->mission->frequency,
+                    'auto_disburse_rewards' => (string) $this->mission->auto_disburse_rewards ? 'true' : 'false'
                 ])
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
@@ -121,6 +135,7 @@ class MissionCompleted extends Notification
                 'complete_mission_image_en_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION_EN),
                 'complete_mission_image_zh_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION_ZH),
                 'frequency' => $this->mission->frequency,
+                'auto_disburse_rewards' => (string) $this->mission->auto_disburse_rewards ? 'true' : 'false'
             ]
         ];
     }

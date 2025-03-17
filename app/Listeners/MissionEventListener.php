@@ -10,557 +10,372 @@ use App\Events\FollowedUser;
 use App\Events\ArticleCreated;
 use App\Events\CommentCreated;
 use App\Events\CommentLiked;
-use App\Services\PointService;
+use App\Events\GiftCardPurchased;
+use App\Services\MissionService;
 use App\Events\InteractionCreated;
-use App\Models\MissionRewardDisbursement;
-use App\Models\Reward;
-use App\Models\RewardComponent;
-use App\Models\SupportRequest;
-use App\Notifications\MissionCompleted;
-use App\Notifications\MissionStarted;
-use App\Notifications\RewardReceivedNotification;
+use App\Models\Store;
+use App\Models\StoreRating;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
-use App\Services\PointComponentService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class MissionEventListener
 {
-    private $pointService, $pointComponentService;
+    protected MissionService $missionService;
+    protected array $eventMatrix;
 
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct(PointService $pointService, PointComponentService $pointComponentService)
+    // spam detection thresholds
+    const INTERACTION_SPAM_LIMIT = 3;
+    const INTERACTION_SPAM_WINDOW = 10; // minutes
+    
+    const FOLLOW_SPAM_LIMIT = 2;
+    const FOLLOW_SPAM_WINDOW = 10; // minutes
+    
+    const COMMENT_SPAM_LIMIT = 5;
+    const COMMENT_SPAM_WINDOW = 10; // minutes
+    
+    const COMMENT_COOLDOWN = 30; // seconds
+
+    public function __construct(MissionService $missionService)
     {
-        $this->pointService = $pointService;
-        $this->pointComponentService = $pointComponentService;
+        $this->missionService = $missionService;
+        $this->eventMatrix = config('app.event_matrix');
     }
 
     /**
-     * Handle the event.
-     *
-     * @param  object  $event
-     * @return void
+     * Handle mission-related events
      */
-    public function handle($event)
+    public function handle($event): void
     {
-        if ($event instanceof InteractionCreated) {
-            $this->handleInteractionCreated($event);
-        } else if ($event instanceof CommentCreated) {
-            $this->handleCommentCreated($event);
-        } else if ($event instanceof CommentLiked) {
-            $this->handleCommentLiked($event);
-        } else if ($event instanceof ArticleCreated) {
-            $this->handleArticleCreated($event);
-        } else if ($event instanceof FollowedUser) {
-            $this->handleFollowings($event);
-        } else if ($event instanceof \App\Events\CompletedProfile) {
-            $this->updateMissionProgress('completed_profile_setup', $event->user, 1);
-        } else if ($event instanceof \App\Events\PurchasedMerchantOffer) {
-            $this->handlePurchasedMerchantOffer($event);
-        } else if ($event instanceof \App\Events\RatedStore) {
-            $this->handleRatedStore($event);
-        } else if ($event instanceof \App\Events\ClosedSupportTicket) {
-            $this->handleClosedSupportTicket($event);
+        Log::info('[MissionEventListener] Handling mission event', ['event' => get_class($event)]);
+
+        try {
+            match (true) {
+                $event instanceof GiftCardPurchased => $this->handleGiftCardPurchased($event),
+                $event instanceof InteractionCreated => $this->handleInteractionCreated($event),
+                $event instanceof CommentCreated => $this->handleCommentCreated($event),
+                $event instanceof CommentLiked => $this->handleCommentLiked($event),
+                $event instanceof ArticleCreated => $this->handleArticleCreated($event),
+                $event instanceof FollowedUser => $this->handleFollowings($event),
+                $event instanceof \App\Events\CompletedProfile => $this->handleProfileCompleted($event),
+                $event instanceof \App\Events\PurchasedMerchantOffer => $this->handlePurchasedMerchantOffer($event),
+                $event instanceof \App\Events\RatedStore => $this->handleRatedStore($event),
+                $event instanceof \App\Events\ClosedSupportTicket => $this->handleClosedSupportTicket($event),
+                default => null,
+            };
+        } catch (\Exception $e) {
+            Log::error('Error handling mission event', [
+                'event' => get_class($event),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
         }
     }
 
-    private function handlePurchasedMerchantOffer($event)
-    {
-        if ($event->paymentMethod == 'points') {
-            $this->updateMissionProgress('purchased_merchant_offer_points', $event->user, 1);
-        } else if ($event->paymentMethod == 'cash') {
-            $this->updateMissionProgress('purchased_merchant_offer_cash', $event->user, 1);
-        }
-    }
-
-    private function handleRatedStore($event)
-    {
-        $this->updateMissionProgress('reviewed_store', $event->user, 1);
-    }
-
     /**
-     * Handle Interactions (like, share, bookmark)
+     * Handle interaction events (like, share, bookmark)
      */
-    private function handleInteractionCreated($event)
+    protected function handleInteractionCreated(InteractionCreated $event): void
     {
-        $eventType = null;
-        $user = $event->interaction->user;
         $interaction = $event->interaction;
+        $user = $interaction->user;
 
-        // Check if the user is spamming interactions
         if ($this->isSpamInteraction($user, $interaction)) {
-            Log::warning('[MissionEventListener] User spam interaction detected', [
-                'user' => $user->id,
-                'interaction' => $interaction->id,
+            Log::warning('Spam interaction detected', [
+                'user_id' => $user->id,
+                'interaction_id' => $interaction->id,
+                'type' => $interaction->type,
+                'interactable_type' => $interaction->interactable_type,
+                'interactable_id' => $interaction->interactable_id
             ]);
             return;
         }
-        if ($interaction->interactable_type == Article::class && $interaction->type == Interaction::TYPE_LIKE) {
-            $eventType = 'like_article';
-        } else if ($interaction->interactable_type == Comment::class && $interaction->type == Interaction::TYPE_LIKE) {
-            $eventType = 'like_comment';
-        } else if ($interaction->interactable_type == Article::class && $interaction->type == Interaction::TYPE_SHARE) {
-            $eventType = 'share_article';
-        } else if ($interaction->interactable_type == Article::class && $interaction->type == Interaction::TYPE_BOOKMARK) {
-            $eventType = 'bookmark_an_article';
+
+        if ($this->isOwnArticleInteraction($event)) {
+            return;
         }
 
-        $this->updateMissionProgress($eventType, $user, 1);
-    }
-
-    /**
-     * Handle Comment Created
-     */
-    private function handleCommentCreated($event)
-    {
-        $comment = $event->comment;
-        $user = $comment->user;
-        $this->updateMissionProgress('comment_created', $user, 1);
-    }
-
-    private function handleCommentLiked($event)
-    {
-        $user = $event->user;
-        $liked = $event->liked;
-
-        if ($liked) {
-            $this->updateMissionProgress('like_comment', $user, 1);
+        $eventType = $this->mapInteractionToEventType($interaction);
+        if ($eventType) {
+            $this->missionService->handleEvent($eventType, $user, ['interaction' => $interaction]);
+            
+            // handle accumulated events for the article owner
+            try {
+                if ($interaction->interactable_type === Article::class) {
+                    $article = $interaction->interactable;
+                    $articleOwner = $article->user;
+                    
+                    // map interaction types to accumulated events
+                    $accumulatedEventType = match($interaction->type) {
+                        Interaction::TYPE_LIKE => 'accumulated_likes',
+                        Interaction::TYPE_SHARE => 'accumulated_shares',
+                        Interaction::TYPE_BOOKMARK => 'accumulated_bookmarks',
+                        default => null,
+                    };
+                    
+                    if ($accumulatedEventType) {
+                        $this->missionService->handleEvent($accumulatedEventType, $articleOwner, [
+                            'interaction' => $interaction,
+                            'article' => $article
+                        ]);
+                    }
+                } elseif ($interaction->interactable_type === StoreRating::class && $interaction->type === Interaction::TYPE_LIKE) {
+                    // handle accumulated likes for store ratings
+                    $rating = $interaction->interactable;
+                    if ($rating->article) {
+                        $owner = $rating->user;
+                        $this->missionService->handleEvent('accumulated_likes_for_ratings', $owner, [
+                            'interaction' => $interaction,
+                            'rating' => $rating,
+                            'article' => $rating->article
+                        ]);
+                    }
+                }
+            } catch (\Exception $e) {
+                Log::error('Error handling accumulated interaction event', [
+                    'event' => get_class($event),
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+            }
         }
     }
 
     /**
-     * Handle Article Created
+     * Map interaction to event type
      */
-    private function handleArticleCreated($event)
+    protected function mapInteractionToEventType(Interaction $interaction): ?string
     {
-        $article = $event->article;
-        $user = $article->user;
-        $this->updateMissionProgress('article_created', $user, 1);
+        return match (true) {
+            $interaction->interactable_type === Article::class && $interaction->type === Interaction::TYPE_LIKE => 'like_article',
+            $interaction->interactable_type === Comment::class && $interaction->type === Interaction::TYPE_LIKE => 'like_comment',
+            $interaction->interactable_type === Article::class && $interaction->type === Interaction::TYPE_SHARE => 'share_article',
+            $interaction->interactable_type === Article::class && $interaction->type === Interaction::TYPE_BOOKMARK => 'bookmark_an_article',
+            default => null,
+        };
     }
 
-    /**
-     * Handle Followings
-     */
-    private function handleFollowings($event)
+    protected function handleCommentCreated(CommentCreated $event): void
+    {
+        if ($this->isSpamComment($event->comment->user, $event->comment)) {
+            Log::warning('Spam comment detected', [
+                'user_id' => $event->comment->user->id,
+                'comment_id' => $event->comment->id
+            ]);
+            return;
+        }
+
+        if ($this->isOwnArticleInteraction($event)) {
+            return;
+        }
+
+        $this->missionService->handleEvent('comment_created', $event->comment->user);
+        // accumulated comment for article owner
+        try {
+            $this->missionService->handleEvent('accumulated_comments', $event->comment->commentable->user, ['comment' => $event->comment]);
+        } catch (\Exception $e) {
+            Log::error('accumulated_comments Error handling mission event ', [
+                'event' => get_class($event),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
+    protected function handleCommentLiked(CommentLiked $event): void
+    {
+        if ($event->liked && !$this->isOwnArticleInteraction($event)) {
+            $this->missionService->handleEvent('like_comment', $event->user);
+        }
+    }
+
+    protected function handleGiftCardPurchased(GiftCardPurchased $event): void
+    {
+        $this->missionService->handleEvent('purchase_gift_card', $event->user);
+    }
+
+    protected function handleArticleCreated(ArticleCreated $event): void
+    {
+        $this->missionService->handleEvent('article_created', $event->article->user);
+    }
+
+    protected function handleFollowings(FollowedUser $event): void
     {
         if ($this->isSpamFollowing($event->user, $event->followedUser)) {
-            Log::warning('[MissionEventListener] User spam following detected', [
-                'user' => $event->user->id,
-                'followed_user' => $event->followedUser->id,
+            Log::warning('Spam following detected', [
+                'user_id' => $event->user->id,
+                'followed_user_id' => $event->followedUser->id
             ]);
             return;
         }
-        $this->updateMissionProgress('follow_a_user', $event->user, 1);
-        $this->updateMissionProgress('accumulated_followers', $event->followedUser, 1);
+
+        $this->missionService->handleEvent('follow_a_user', $event->user, [
+            'followed_user' => $event->followedUser
+        ]);
+
+        $this->missionService->handleEvent('accumulated_followers', $event->followedUser);
     }
 
-    /*
-     * Handle closed support ticket
-     * Update mission progress if request is closed
-     *
-     * @param \App\Events\ClosedSupportTicket $event
-     */
-    private function handleClosedSupportTicket($event)
+    protected function handleProfileCompleted(\App\Events\CompletedProfile $event): void
+    {
+        $this->missionService->handleEvent('completed_profile_setup', $event->user);
+    }
+
+    protected function handlePurchasedMerchantOffer(\App\Events\PurchasedMerchantOffer $event): void
+    {
+        $eventType = $event->paymentMethod === 'points'
+            ? 'purchased_merchant_offer_points'
+            : 'purchased_merchant_offer_cash';
+
+        $this->missionService->handleEvent($eventType, $event->user);
+    }
+
+    protected function handleRatedStore(\App\Events\RatedStore $event): void
+    {
+        // if ($this->isSpamRating($event->user, $event->store)) {
+        //     Log::warning('Spam rating detected', [
+        //         'user_id' => $event->user->id,
+        //         'store_id' => $event->store->id
+        //     ]);
+        //     return;
+        // }
+
+        $this->missionService->handleEvent('reviewed_store', $event->user);
+    }
+
+    protected function handleClosedSupportTicket(\App\Events\ClosedSupportTicket $event): void
     {
         $supportRequest = $event->supportRequest;
+        $supportType = $supportRequest->category->type;
 
-        // Check if the support request category type is 'complain' / 'information_update'
-        $isEligibleTypeTicket = $supportRequest->category->type === 'complain' || $supportRequest->category->type === 'information_update';
-
-        // if type is not "complain", then do nothing
-        if (!$isEligibleTypeTicket) {
-            Log::info('[MissionEventListener] Support Request is not in "Complain" category, skipping mission progress update', [
-                'support_request' => $supportRequest->id,
-                'category' => $supportRequest->category->type,
+        if (!in_array($supportType, ['complain', 'information_update'])) {
+            Log::info('Support request not eligible for mission', [
+                'request_id' => $supportRequest->id,
+                'type' => $supportType
             ]);
             return;
         }
 
         $closedAudits = $supportRequest->audits()
-            ->where('new_values->status', SupportRequest::STATUS_CLOSED)
-            ->where('old_values->status', '!=', SupportRequest::STATUS_CLOSED)
+            ->where('new_values->status', $supportRequest::STATUS_CLOSED)
+            ->where('old_values->status', '!=', $supportRequest::STATUS_CLOSED)
             ->count();
 
         if ($closedAudits > 1) {
-            Log::info('[MissionEventListener] Support Request was closed before', [
-                'support_request' => $supportRequest->id,
+            Log::info('Support request already closed before', [
+                'request_id' => $supportRequest->id
             ]);
             return;
         }
 
-        // update 1 request is closed
-        if ($supportRequest->category->type === 'complain') {
-            $this->updateMissionProgress('closed_a_ticket', $event->supportRequest->requestor, 1);
-        } else if ($supportRequest->category->type === 'information_update') {
-            $this->updateMissionProgress('closed_an_information_update_ticket', $event->supportRequest->requestor, 1);
-        }
+        $eventType = $supportType === 'complain'
+            ? 'closed_a_ticket'
+            : 'closed_an_information_update_ticket';
+
+        $this->missionService->handleEvent($eventType, $event->supportRequest->requestor);
     }
 
     /**
-     * Update Mission Progress
+     * Check for spam interactions (e.g., repeated likes/unlikes on the same content)
      */
-    private function updateMissionProgress($eventType, $user, $increments)
+    protected function isSpamInteraction(User $user, Interaction $interaction): bool
     {
-        $missions = Mission::where('status', 1)->get();
-        // filter by missions->events
-        $missions = $missions->filter(function ($mission) use ($eventType) {
-            // if mission event is string decode, if not return as is
-            $mission->events = is_string($mission->events) ? json_decode($mission->events) : $mission->events;
-            return in_array($eventType, $mission->events);
-        });
-
-        foreach ($missions as $mission) {
-            // check if the user has completed the specific one-off mission
-            if ($mission->frequency == 'one-off') {
-                $completedOneOff = $user->missionsParticipating()
-                    ->where('is_completed', true)
-                    ->where('mission_id', $mission->id)
-                    ->exists();
-
-                if ($completedOneOff) {
-                    Log::info('User already completed one-off mission', [
-                        'user' => $user->id,
-                        'mission' => $mission->id,
-                    ]);
-                    continue; // skip the current one-off mission and move to the next mission
-                }
-            }
-
-            // for accumulated missions, first check if there's a completed but unclaimed mission
-            if ($mission->frequency == 'accumulated' && !$mission->auto_disburse_rewards) {
-                $unclaimedCompletedMission = $user->missionsParticipating()
-                    ->where('mission_id', $mission->id)
-                    ->where('is_completed', true)
-                    ->whereNull('claimed_at')
-                    ->first();
-
-                if ($unclaimedCompletedMission) {
-                    Log::info('Accumulated mission completed but not claimed yet, skipping new progress', [
-                        'user' => $user->id,
-                        'mission' => $mission->id,
-                        'mission_user_id' => $unclaimedCompletedMission->pivot->id
-                    ]);
-                    continue; // skip processing new progress if there's an unclaimed completed mission
-                }
-            }
-
-            $userMission = $user->missionsParticipating()->where('is_completed', false)
-                ->where('mission_id', $mission->id)
-                ->orderBy('id', 'desc') // latest one first
-                ->first();
-
-            if (!$userMission) {
-                // Check if user has already completed the mission within the current day or month
-                if ($mission->frequency == 'daily') {
-                    $completedToday = $user->missionsParticipating()
-                        ->where('mission_id', $mission->id)
-                        ->where('completed_at', '>=', now()->startOfDay())
-                        ->where('completed_at', '<', now()->endOfDay())
-                        ->exists();
-
-                    if ($completedToday) {
-                        continue; // Skip creating a new record if already completed today
-                    }
-                } elseif ($mission->frequency == 'monthly') {
-                    $completedThisMonth = $user->missionsParticipating()
-                        ->where('mission_id', $mission->id)
-                        ->where('completed_at', '>=', now()->startOfMonth())
-                        ->where('completed_at', '<', now()->endOfMonth())
-                        ->exists();
-
-                    if ($completedThisMonth) {
-                        continue; // Skip creating a new record if already completed this month
-                    }
-                } elseif ($mission->frequency == 'accumulated') {
-                    // for accumulated missions, check for any uncompleted mission first
-                    $incompleteMission = $user->missionsParticipating()
-                        ->where('mission_id', $mission->id)
-                        ->where('is_completed', false)
-                        ->first();
-
-                    if ($incompleteMission) {
-                        $userMission = $incompleteMission; // Use existing incomplete mission
-                    } else {
-                        // only create new mission if there's no incomplete mission and no unclaimed completed mission
-                        $unclaimedCompletedMission = $user->missionsParticipating()
-                            ->where('mission_id', $mission->id)
-                            ->where('is_completed', true)
-                            ->whereNull('claimed_at')
-                            ->exists();
-
-                        if ($unclaimedCompletedMission) {
-                            Log::info('Accumulated mission already completed but not claimed, skipping new mission creation', [
-                                'user' => $user->id,
-                                'mission' => $mission->id
-                            ]);
-                            continue;
-                        }
-                    }
-                }
-
-                if (!isset($userMission)) { // Only create new if we don't have an existing mission to use
-                    $currentValues = [];
-                    $mission->events = is_string($mission->events) ? json_decode($mission->events) : $mission->events;
-
-                    foreach ($mission->events as $event) {
-                        $currentValues[$event] = ($event == $eventType) ? $increments : 0;
-                    }
-
-                    // create new mission for this user (start as new mission)
-                    $user->missionsParticipating()->attach($mission->id, [
-                        'started_at' => now(),
-                        'current_values' => json_encode($currentValues)
-                    ]);
-
-                    // just started fire notification
-                    try {
-                        $locale = $user->last_lang ?? config('app.locale');
-                        $user->notify((new MissionStarted($mission, $user, 1, json_encode($mission->events)))->locale($locale));
-                    } catch (\Exception $e) {
-                        Log::error('Error sending mission start notification to user', ['error' => $e->getMessage(), 'user' => $user->id]);
-                    }
-                }
-            }
-
-            if ($userMission && !$userMission->pivot->is_completed) {
-                Log::info('Updating mission progress', [
-                    'user' => $user->id,
-                    'mission' => $mission->id,
-                    'eventType' => $eventType
-                ]);
-
-                $currentValues = is_string($userMission->pivot->current_values) ?
-                    json_decode($userMission->pivot->current_values, true) :
-                    $userMission->pivot->current_values;
-
-                $currentValues[$eventType] = isset($currentValues[$eventType]) ?
-                    $currentValues[$eventType] + $increments :
-                    $increments;
-
-                $userMission->pivot->current_values = json_encode($currentValues);
-                $userMission->pivot->save();
-
-                if ($this->isMissionCompleted($mission->events, $mission->values, $currentValues)) {
-                    Log::info('Mission Completed', [
-                        'mission' => $mission->id,
-                        'user' => $user->id
-                    ]);
-
-                    // update mission to completed first
-                    $user->missionsParticipating()->updateExistingPivot($mission->id, [
-                        'is_completed' => true,
-                        'completed_at' => now()
-                    ]);
-
-                    try {
-                        $locale = $user->last_lang ?? config('app.locale');
-                        $user->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
-                    } catch (\Exception $e) {
-                        Log::error('Mission Completed Notification Error', [
-                            'mission_id' => $mission->id,
-                            'user' => $user->id,
-                            'error' => $e->getMessage()
-                        ]);
-                    }
-
-                    if ($mission->auto_disburse_rewards) {
-                        $this->disburseRewardsBasedOnFrequency($mission, $user);
-                    }
-                }
-            }
-        }
-    }
-
-    private function disburseRewardsBasedOnFrequency($mission, $user)
-    {
-        $userMission = $user->missionsParticipating()->where('mission_id', $mission->id)->first();
-        $lastRewardedAt = $userMission->pivot->last_rewarded_at;
-
-        if ($mission->frequency == 'one-off' && !$lastRewardedAt) {
-            $this->disburseRewards($mission, $user);
-            $userMission->pivot->last_rewarded_at = now();
-            $userMission->pivot->save();
-        } elseif ($mission->frequency == 'daily') {
-            $currentDate = now()->startOfDay();
-            if (!$lastRewardedAt || $lastRewardedAt->lt($currentDate)) {
-                $this->disburseRewards($mission, $user);
-                $userMission->pivot->last_rewarded_at = $currentDate;
-                $userMission->pivot->save();
-            }
-        } elseif ($mission->frequency == 'monthly') {
-            $currentMonth = now()->startOfMonth();
-            if (!$lastRewardedAt || $lastRewardedAt->lt($currentMonth)) {
-                $this->disburseRewards($mission, $user);
-                $userMission->pivot->last_rewarded_at = $currentMonth;
-                $userMission->pivot->save();
-            }
-        } elseif ($mission->frequency == 'accumulated') {
-            if (!$lastRewardedAt) {
-                $this->disburseRewards($mission, $user);
-                $userMission->pivot->last_rewarded_at = now();
-                $userMission->pivot->save();
-            }
-        }
-    }
-
-    /**
-     * Check if Mission is Completed
-     *
-     * @param array $missionEvents
-     * @param array $missionValues
-     * @param array $currentValues
-     * @return boolean
-     */
-    private function isMissionCompleted($missionEvents, $missionValues, $currentValues)
-    {
-        // if missionvalues provided in string(json) decode first
-        if (is_string($missionValues)) {
-            $missionValues = json_decode($missionValues, true);
+        $cacheKey = "spam_interaction:{$user->id}:{$interaction->interactable_type}:{$interaction->interactable_id}:{$interaction->type}";
+        
+        // check if user has recently interacted with this content
+        if (Cache::has($cacheKey)) {
+            return true;
         }
 
-        if (count($missionEvents) != count($missionValues)) {
-            return false;
-        }
+        // set a cooldown period for this interaction
+        Cache::put($cacheKey, true, now()->addMinutes(config('app.missions_spam_threshold', 10)));
 
-        // mission events decode if string
-        if (is_string($missionEvents)) {
-            $missionEvents = json_decode($missionEvents, true);
-        }
-
-        // mission events = ['like_comment', 'like_article', 'commented']
-        // mission values = [10, 20, 30]
-
-        foreach ($missionValues as $index => $value) {
-            if (!isset($currentValues[$missionEvents[$index]])) {
-                return false;
-            }
-
-            // if current values like_comment => 10 < 10
-            if ($currentValues[$missionEvents[$index]] < $value) {
-                return false;
-            }
-        }
-
-        Log::info('Mission Completed', [
-            'events' => $missionEvents,
-            'values' => $missionValues,
-            'current' => $currentValues
-        ]);
-        return true;
-    }
-
-    /**
-     * Disburse rewards to user
-     *
-     * @param Mission $mission
-     * @param User $user
-     * @return void
-     */
-    private function disburseRewards($mission, $user)
-    {
-        $disbursedRewardCount = MissionRewardDisbursement::where('mission_id', $mission->id)->sum('reward_quantity');
-
-        if ($mission->reward_limit > 0 && $disbursedRewardCount >= $mission->reward_limit) {
-            Log::info('Mission reward limit reached', [
-                'mission' => $mission->id,
-                'user' => $user->id,
-                'reward_limit' => $mission->reward_limit
-            ]);
-            return;
-        }
-
-        $missionableType = $mission->missionable_type;
-        $missionableId = $mission->missionable_id;
-
-        if ($missionableType == Reward::class) {
-            $this->pointService->credit($mission, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
-            Log::info('Mission Completed and Disbursed Reward', [
-                'mission' => $mission->id,
-                'user' => $user->id,
-                'reward_type' => 'point',
-                'reward' => $mission->reward_quantity
-            ]);
-        } else if ($missionableType == RewardComponent::class) {
-            $missionable = RewardComponent::find($missionableId); // RewardComponent
-            $this->pointComponentService->credit($mission, $missionable, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
-            Log::info('Mission Completed and Disbursed Reward', [
-                'mission' => $mission->id,
-                'user' => $user->id,
-                'reward_type' => 'point component',
-                'reward' => $mission->reward_quantity
-            ]);
-        }
-        try {
-            MissionRewardDisbursement::create([
-                'mission_id' => $mission->id,
-                'user_id' => $user->id,
-                'reward_quantity' => $mission->reward_quantity
-            ]);
-
-            // here dont update claimed_at as claimed_at is for manual claiming /api/missions/complete
-        } catch (\Exception $e) {
-            Log::error('[MissionEventListener] Error disbursing reward for mission ' . $mission->id . ' and user ' . $user->id . ' error: ' . $e->getMessage());
-        }
-
-        $locale = $user->last_lang ?? config('app.locale');
-
-        try {
-            $locale = $user->last_lang ?? config('app.locale');
-            $user->notify((new RewardReceivedNotification(
-                $mission->missionable,
-                $mission->reward_quantity,
-                $user,
-                $mission->name,
-                $mission
-            ))->locale($locale));
-        } catch (\Exception $e) {
-            Log::error('Reward Received Notification Error', [
-                'mission_id' => $mission->id,
-                'user' => $user->id,
-                'error' => $e->getMessage()
-            ]);
-        }
-    }
-
-    /**
-     * Check if user has spam interaction
-     *
-     * @param User $user
-     * @param Interaction $interaction
-     * @return boolean
-     */
-    private function isSpamInteraction($user, $interaction)
-    {
-        $spamThreshold = now()->subMinutes(config('app.missions_spam_threshold'));
-
-        $recentInteractions = Interaction::where('user_id', $user->id)
+        // also check database for historical spam patterns
+        $spamThreshold = now()->subMinutes(self::INTERACTION_SPAM_WINDOW);
+        
+        return Interaction::where('user_id', $user->id)
             ->where('interactable_type', $interaction->interactable_type)
             ->where('interactable_id', $interaction->interactable_id)
+            ->where('type', $interaction->type)
             ->where('created_at', '>=', $spamThreshold)
-            ->count();
-
-        return $recentInteractions > 1;
+            ->count() > self::INTERACTION_SPAM_LIMIT;
     }
 
     /**
-     * Check if user has spam following
-     *
-     * @param User $user
-     * @param User $followedUser
-     * @return boolean
+     * Check for spam follow/unfollow actions
      */
-    private function isSpamFollowing($user, $followedUser)
+    protected function isSpamFollowing(User $user, User $followedUser): bool
     {
-        $spamThreshold = now()->subMinutes(config('app.missions_spam_threshold'));
+        $cacheKey = "spam_following:{$user->id}:{$followedUser->id}";
+        
+        if (Cache::has($cacheKey)) {
+            return true;
+        }
 
-        $recentFollowings = $user->followings()
+        Cache::put($cacheKey, true, now()->addMinutes(config('app.missions_spam_threshold', 10)));
+
+        $spamThreshold = now()->subMinutes(self::FOLLOW_SPAM_WINDOW);
+        
+        return DB::table('users_followings')
+            ->where('user_id', $user->id)
             ->where('following_id', $followedUser->id)
-            ->where('users_followings.created_at', '>=', $spamThreshold)
-            ->count();
+            ->where('created_at', '>=', $spamThreshold)
+            ->count() > self::FOLLOW_SPAM_LIMIT;
+    }
 
-        return $recentFollowings > 1;
+    /**
+     * Check for spam comments
+     */
+    protected function isSpamComment(User $user, Comment $comment): bool
+    {
+        $cacheKey = "spam_comment:{$user->id}:{$comment->commentable_type}:{$comment->commentable_id}";
+        
+        if (Cache::has($cacheKey)) {
+            return true;
+        }
+
+        Cache::put($cacheKey, true, now()->addSeconds(self::COMMENT_COOLDOWN));
+
+        $spamThreshold = now()->subMinutes(self::COMMENT_SPAM_WINDOW);
+        
+        return Comment::where('user_id', $user->id)
+            ->where('created_at', '>=', $spamThreshold)
+            ->count() > self::COMMENT_SPAM_LIMIT;
+    }
+
+    /**
+     * Check if user has already rated this store before (to prevent mission progress abuse)
+     * Returns false for new ratings, true for repeated ratings
+     */
+    protected function isSpamRating(User $user, Store $store): bool
+    {
+        // Check if user has rated this store before (even if rating was updated)
+        // If exists() is false, it means it's a new rating (not spam)
+        return \App\Models\StoreRating::where('user_id', $user->id)
+            ->where('store_id', $store->id)
+            ->where('created_at', '<', now()) // Only check for ratings created before this one
+            ->exists();
+    }
+
+    /**
+     * Check if interaction/comment is on user's own article or own comment
+     */
+    protected function isOwnArticleInteraction($event): bool
+    {
+        if ($event instanceof InteractionCreated) {
+            $interactable = $event->interaction->interactable;
+            if ($interactable instanceof Article) {
+                return $interactable->user_id === $event->interaction->user_id;
+            }
+        } elseif ($event instanceof CommentCreated) {
+            $commentable = $event->comment->commentable;
+            if ($commentable instanceof Article) {
+                return $commentable->user_id === $event->comment->user_id;
+            }
+        } elseif ($event instanceof CommentLiked && $event->liked) {
+            return $event->comment->user_id === $event->user->id;
+        }
+        return false;
     }
 }
