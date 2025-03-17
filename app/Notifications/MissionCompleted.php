@@ -54,19 +54,7 @@ class MissionCompleted extends Notification
         $channels = ['database'];
 
         if (!$this->mission->disable_fcm) {
-            // create a unique cache key for this notification
-            $cacheKey = 'fcm_notification_mission_' . $this->mission->id . '_user_' . $notifiable->id;
-            
-            // check if we've already sent an FCM notification to this user for this mission
-            if (!Cache::has($cacheKey)) {
-                // store in cache for 24 hours
-                Cache::put($cacheKey, true, now()->addDay());
-                
-                Log::info("Sending FCM notification for mission {$this->mission->id} to user {$notifiable->id}");
-                $channels[] = FcmChannel::class;
-            } else {
-                Log::info("Skipping duplicate FCM notification for mission {$this->mission->id} to user {$notifiable->id}");
-            }
+            $channels[] = FcmChannel::class;
         }
 
         return $channels;
