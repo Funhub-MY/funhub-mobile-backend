@@ -38,6 +38,7 @@ class ListUserHistoricalLocations extends ListRecords
 							Column::make('state')->heading('State'),
 							Column::make('country')->heading('Country'),
                         ])
+						->withChunkSize(500)
                         ->withFilename(fn ($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
                         ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
                 ]),
