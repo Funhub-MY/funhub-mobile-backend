@@ -47,10 +47,6 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::get('merchant/categories', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchant_categories']);
             // Route::post('campaigns', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'campaigns']);\
             Route::post('merchant/dashboard', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'dashboard']);
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
             Route::post('merchant/merchant_overview', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchant_overview']);
             Route::post('merchant/review_lists', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'review_lists']);
 
