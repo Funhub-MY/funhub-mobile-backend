@@ -47,6 +47,7 @@ class AppServiceProvider extends ServiceProvider
         MerchantOffer::observe(\App\Observers\MerchantOfferObserver::class);
         ArticleFeedWhitelistUser::observe(\App\Observers\ArticleFeedWhitelistUserObserver::class);
         Setting::observe(\App\Observers\SettingObserver::class);
+        \App\Models\MerchantOfferVoucher::observe(\App\Observers\MerchantOfferVoucherObserver::class);
 
         // TextInput::macro('translations', function ($fieldName) {
         //     $locales = config('app.available_locales');

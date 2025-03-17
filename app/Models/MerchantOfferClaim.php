@@ -48,4 +48,9 @@ class MerchantOfferClaim extends Model
     {
         return $this->hasOne(MerchantOfferVoucher::class, 'id', 'voucher_id');
     }
+    
+    public function transaction()
+    {
+        return $this->morphOne(Transaction::class, 'transactionable');
+    }
 }

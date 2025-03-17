@@ -69,7 +69,6 @@ class UserResource extends Resource
                         // username
                         Forms\Components\TextInput::make('username')
                             ->required()
-							->unique()
                             // transform lowercaser and remove spaces
                             ->afterStateHydrated(function ($component, $state) {
                                 $component->state(Str::slug($state));
