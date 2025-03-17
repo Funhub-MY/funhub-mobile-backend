@@ -556,6 +556,7 @@ class SyncMerchantPortalController extends Controller
     }
 
 
+<<<<<<< Updated upstream
     /**
      * Get Merchant's Reports
      * Merchant portal will call this api for reporting overview regarding merchant
@@ -691,6 +692,8 @@ class SyncMerchantPortalController extends Controller
         }
     }
 
+=======
+>>>>>>> Stashed changes
     /**
      * Get Merchant's Offer Overview
      * Merchant portal will call this api for reporting overview

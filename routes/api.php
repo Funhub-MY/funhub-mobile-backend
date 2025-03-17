@@ -48,6 +48,10 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             // Route::post('campaigns', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'campaigns']);\
             Route::post('merchant/dashboard', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'dashboard']);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 =======
 
 >>>>>>> Stashed changes
