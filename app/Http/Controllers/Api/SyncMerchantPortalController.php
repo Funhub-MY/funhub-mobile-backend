@@ -440,6 +440,11 @@ class SyncMerchantPortalController extends Controller
                     return $store->storeRatings->count();
                 });
 
+                //  Total unique user to give review
+                $users = $merchant->stores->sum(function ($store) {
+                    return $store->storeRatings->groupBy('user_id')->count();
+                });
+
                 //  Get articles under this merchant
                 $articles = $merchant->stores->sum(function ($store) {
                     return $store->articles->count();
@@ -463,6 +468,7 @@ class SyncMerchantPortalController extends Controller
 
                 $data = [
                     'rating'            => (float) number_format($averageRating, 1),
+                    'users'             => $users,
                     'review'            => $reviews,
                     'articles'          => $articles,
                     'storesView'        => $storesView,
@@ -506,12 +512,9 @@ class SyncMerchantPortalController extends Controller
             $merchant = Merchant::find($request->merchant_id);
             if($merchant){
                 //  Get comments under this merchant
-                // $comments = $merchant->stores->flatMap(function ($store) {
-                //     return $store->storeRatings;
-
-                // });
                 $comments = $merchant->stores->flatMap(function ($store) {
-                    return $store->storeRatings->map(function ($rating) {
+                    return $store->storeRatings->load('user')->map(function ($rating) {
+
                         return [
                             'id' => $rating->id,
                             'comment' => $rating->comment,
@@ -527,6 +530,8 @@ class SyncMerchantPortalController extends Controller
                                     'name_en' => $translations['en'] ?? $category->name, // Default to name if 'en' is missing
                                 ];
                             }),
+                            'user_id' => $rating->user_id,
+                            'user_name' => $rating->user->name
                         ];
                     });
                 });
