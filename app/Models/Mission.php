@@ -27,6 +27,19 @@ class Mission extends BaseModel implements HasMedia, Auditable
         'values' => 'json',
     ];
 
+    public function predecessors()
+    {
+        return $this->belongsToMany(Mission::class, 'mission_predecessors', 'mission_id', 'predecessor_id')
+            ->where('frequency', 'one-off')
+            ->withTimestamps();
+    }
+
+    public function successors()
+    {
+        return $this->belongsToMany(Mission::class, 'mission_predecessors', 'predecessor_id', 'mission_id')
+            ->withTimestamps();
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

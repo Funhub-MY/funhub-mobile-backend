@@ -108,7 +108,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gah68k51bP3Zfv6aVDeE4dc'
+      - 'Bearer 6kaE8ev36g5Vah4D1bfZPdc'
     controller: null
     method: null
     route: null
@@ -218,7 +218,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Ed8kagv6bfV5Za1Dh36ce4P'
+      - 'Bearer b6PEchgaDVa51fe4Zd3k68v'
     controller: null
     method: null
     route: null
@@ -260,14 +260,14 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: exercitationem
+        example: voluptatum
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      store_ids: exercitationem
+      store_ids: voluptatum
     fileParameters: []
     responses:
       -
@@ -280,7 +280,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5b41hEdc8ZfaDvPa6V6g3ek'
+      - 'Bearer 3V5h64cab1DZ6EefvkdaP8g'
     controller: null
     method: null
     route: null
@@ -323,7 +323,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aa8P56cdeVhfE1kgbD4Z6v3'
+      - 'Bearer ZbDa154c6e8f6hgEvka3dPV'
     controller: null
     method: null
     route: null
@@ -413,7 +413,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 36g8fvdh1kaaPeb5c6EDZV4'
+      - 'Bearer h5f6aa6dV8g31Evkb4ecZPD'
     controller: null
     method: null
     route: null
@@ -455,14 +455,14 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: consequatur
+        example: aut
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      store_ids: consequatur
+      store_ids: aut
     fileParameters: []
     responses:
       -
@@ -479,7 +479,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6vd4bef1PkgV5haEa6c38ZD'
+      - 'Bearer 45ahvZa6VkEb1cD8g36fPed'
     controller: null
     method: null
     route: null
@@ -521,14 +521,14 @@ endpoints:
         name: location_id
         description: ''
         required: true
-        example: sit
+        example: dolores
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      location_id: sit
+      location_id: dolores
     fileParameters: []
     responses:
       -
@@ -545,7 +545,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 81v4hdDbVkE5egaZ6cf3aP6'
+      - 'Bearer ah64P65a3gdbvcD1VeEk8Zf'
     controller: null
     method: null
     route: null
@@ -606,7 +606,85 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ad81k6VE6D5v3feaPZ4bhgc'
+      - 'Bearer c8fe1v63aVkPEhZg645adbD'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/stores/by_claim
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Stores by Merchant Offer Claim ID'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      claim_id:
+        name: claim_id
+        description: 'The merchant offer claim ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      claim_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      claim_id:
+        name: claim_id
+        description: ''
+        required: true
+        example: 14
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      claim_id: 14
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": {
+              "id": 1,
+              "name": "Store Name",
+              ...
+            }
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Claim not found"
+          }
+        headers: []
+        description: error
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 61kEvadabh4gce356fVDPZ8'
     controller: null
     method: null
     route: null
@@ -738,7 +816,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6b3E8hDdekgaZ6P1vfacV45'
+      - 'Bearer 6dg3bh1kZcaf45eEP6VD8av'
     controller: null
     method: null
     route: null
@@ -836,7 +914,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3h6gab5PEc4vdfe6ZDa18kV'
+      - 'Bearer cf166hbaVPvaD3ZeE4d8kg5'
     controller: null
     method: null
     route: null
@@ -902,7 +980,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4D5kg3a18ah6EfPVZ6cdbve'
+      - 'Bearer d6bZv8kDehaV4E3g6cf1a5P'
     controller: null
     method: null
     route: null
@@ -989,7 +1067,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P656gEZDfVad18khe3cva4b'
+      - 'Bearer g5864vVkbdEaef36hca1ZPD'
     controller: null
     method: null
     route: null

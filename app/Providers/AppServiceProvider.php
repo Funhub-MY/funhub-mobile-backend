@@ -43,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
         MerchantOffer::observe(\App\Observers\MerchantOfferObserver::class);
         ArticleFeedWhitelistUser::observe(\App\Observers\ArticleFeedWhitelistUserObserver::class);
         Setting::observe(\App\Observers\SettingObserver::class);

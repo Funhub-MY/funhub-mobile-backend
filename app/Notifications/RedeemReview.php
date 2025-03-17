@@ -60,8 +60,18 @@ class RedeemReview extends Notification
 			App::setLocale($this->user->last_lang);
 		}
         
-        // use merchant brand name/name instead
-        $name = $this->offer->merchant->brand_name ?? $this->offer->merchant->name;
+        $name = '';
+        $userId = $this->offer->user_id;
+        if ($userId) {
+            $merchant = \App\Models\Merchant::where('user_id', $userId)->first();
+            if ($merchant) {
+                $name = $merchant->brand_name ?? $merchant->name;
+            } else {
+                $name = $this->offer->name;
+            }
+        } else {
+            $name = $this->offer->name;
+        }
 
         return __('messages.notification.fcm.RedemptioReviewReminder', [
             'storeName' => $name

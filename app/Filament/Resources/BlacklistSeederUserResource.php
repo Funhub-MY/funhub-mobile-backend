@@ -13,6 +13,10 @@ use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\BlacklistSeederUserResource\Pages;
+use Maatwebsite\Excel\Excel;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Columns\Column;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\BlacklistSeederUserResource\RelationManagers;
 
@@ -51,6 +55,18 @@ class BlacklistSeederUserResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+				ExportBulkAction::make()
+					->exports([
+						ExcelExport::make()
+							->withColumns([
+								Column::make('id')->heading('Id'),
+								Column::make('user_id')->heading('User Id'),
+								Column::make('user.name')->heading('User Name'),
+							])
+							->withChunkSize(500)
+							->withFilename(fn ($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
+							->withWriterType(Excel::CSV),
+					])
             ]);
     }
     

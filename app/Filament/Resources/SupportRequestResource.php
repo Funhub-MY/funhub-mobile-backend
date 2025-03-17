@@ -89,7 +89,8 @@ class SupportRequestResource extends Resource
 
                             Select::make('requestor_id')
                                 ->relationship('requestor', 'name')
-                                ->searchable(),
+								->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} (ID: {$record->id})")
+								->searchable(),
 
                             Select::make('assignee_id')
                                 ->label('Assignee (Admin/Staff)')
@@ -158,7 +159,13 @@ class SupportRequestResource extends Resource
 
                 TextColumn::make('requestor.name')
                     ->label('Requestor')
-                    ->searchable(),
+                    ->searchable()
+					->formatStateUsing(function ($state, $record) {
+						if ($record->requestor) {
+							return "{$record->requestor->name} (ID: {$record->requestor->id})";
+						}
+						return null;
+					}),
 
                 TextColumn::make('assignee.name')
                     ->label('Assignee')

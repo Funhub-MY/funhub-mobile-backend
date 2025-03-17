@@ -320,11 +320,11 @@ class SystemNotificationResource extends Resource
 							->hidden(fn (Closure $get) => $get('all_active_users') === true)
 							->helperText('If want to import User list, please create notification first then import CSV in the "User" table below'),
 						Select::make('users')
-							->preload()
+//							->preload()
 							->multiple()
 							->searchable()
 							->relationship('users', 'username')
-                            ->options(User::pluck('username', 'id')->toArray())
+//                            ->options(User::pluck('username', 'id')->toArray())
 							->placeholder('Enter username or select by user status')
 							->hidden(fn (Closure $get) => $get('selection_type') === 'import' || $get('selection_type') === null || $get('all_active_users') === true)
 							->rules([
