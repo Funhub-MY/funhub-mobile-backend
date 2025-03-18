@@ -511,35 +511,42 @@ class SyncMerchantPortalController extends Controller
             //  Get this merchant and update
             $merchant = Merchant::find($request->merchant_id);
             if($merchant){
-                //  Get comments under this merchant
-                $comments = $merchant->stores->flatMap(function ($store) {
-                    return $store->storeRatings->load('user')->map(function ($rating) {
+                $userId     = $merchant->user_id;
 
-                        return [
-                            'id' => $rating->id,
-                            'comment' => $rating->comment,
-                            'rating' => $rating->rating,
-                            'created_at' => $rating->created_at,
-                            'categories' => $rating->ratingCategories->map(function ($category) {
-                                // Decode JSON to get English translation
-                                $translations = json_decode($category->name_translations, true);
-
-                                return [
-                                    'id' => $category->id,
-                                    'name' => $category->name,
-                                    'name_en' => $translations['en'] ?? $category->name, // Default to name if 'en' is missing
-                                ];
-                            }),
-                            'user_id' => $rating->user_id,
-                            'user_name' => $rating->user->name
-                        ];
+                // Use Cache::remember to handle caching
+                $lists = Cache::remember("merchant_review_list_{$userId}", 60, function () use ($merchant) {
+                    $lists = collect();
+                    
+                    //  Get comments under this merchant
+                    $lists = $merchant->stores->load('storeRatings.user', 'storeRatings.ratingCategories')->flatMap(function ($store) {
+                        return $store->storeRatings->map(function ($rating) {
+                            return [
+                                'id' => $rating->id,
+                                'comment' => $rating->comment,
+                                'rating' => $rating->rating,
+                                'created_at' => $rating->created_at,
+                                'categories' => $rating->ratingCategories->map(function ($category) {
+                                    // Decode JSON to get English translation
+                                    $translations = json_decode($category->name_translations, true);
+                                    return [
+                                        'id' => $category->id,
+                                        'name' => $category->name,
+                                        'name_en' => $translations['en'] ?? $category->name,
+                                    ];
+                                }),
+                                'user_id' => $rating->user_id,
+                                'user_name' => $rating->user->name ?? null, // Avoid error if user is missing
+                            ];
+                        });
                     });
+
+                    return $lists;
                 });
-              
+
                 return response()->json([
                     'error'     => false,
                     'message'   => "Success",
-                    'data'      => $comments
+                    'data'      => $lists
                 ]);
 
             }else{
