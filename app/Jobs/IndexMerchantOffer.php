@@ -49,15 +49,39 @@ class IndexMerchantOffer implements ShouldQueue
         try {
             $offer = MerchantOffer::find($this->merchantOfferId);
             
-            if ($offer && $offer->status === MerchantOffer::STATUS_PUBLISHED) {
-                $offer->searchable();
-                Log::info('[IndexMerchantOffer] Successfully indexed merchant offer', [
+            if (!$offer) {
+                Log::info('[IndexMerchantOffer] Skipped indexing - offer not found', [
                     'offer_id' => $this->merchantOfferId
+                ]);
+                return;
+            }
+            
+            // Handle both published and archived statuses
+            if ($offer->status === MerchantOffer::STATUS_PUBLISHED || 
+                $offer->status === MerchantOffer::STATUS_ARCHIVED) {
+                
+                // Make the offer searchable (or update its searchable status)
+                $offer->searchable();
+                
+                Log::info('[IndexMerchantOffer] Successfully indexed merchant offer', [
+                    'offer_id' => $this->merchantOfferId,
+                    'status' => $offer->status
                 ]);
             } else {
-                Log::info('[IndexMerchantOffer] Skipped indexing - offer not found or not published', [
-                    'offer_id' => $this->merchantOfferId
-                ]);
+                // For other statuses like DRAFT, we might want to remove from index
+                // If the offer was previously indexed but is now in a non-searchable state
+                if (method_exists($offer, 'unsearchable')) {
+                    $offer->unsearchable();
+                    Log::info('[IndexMerchantOffer] Made offer unsearchable', [
+                        'offer_id' => $this->merchantOfferId,
+                        'status' => $offer->status
+                    ]);
+                } else {
+                    Log::info('[IndexMerchantOffer] Skipped indexing - offer has non-indexable status', [
+                        'offer_id' => $this->merchantOfferId,
+                        'status' => $offer->status
+                    ]);
+                }
             }
         } catch (\Exception $e) {
             Log::error('[IndexMerchantOffer] Error indexing merchant offer', [
