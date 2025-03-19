@@ -82,10 +82,9 @@ class MissionCompleted extends Notification
     {
         $missionName = $this->translatedMissionName;
         $completedTitle = __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $missionName]);
-        $missionableType = $this->mission->missionable_type;
         $rewardImage = null;
         if ($this->mission->missionable_type == RewardComponent::class || $this->mission->missionable_type == Reward::class) {
-            $rewardImage = $this->mission->missionable->getFirstMediaUrl($missionableType::COLLECTION_NAME);
+            $rewardImage = $this->mission->getFirstMediaUrl(Mission::MEDIA_COLLECTION_NAME);
         }
             
         return FcmMessage::create()
@@ -125,11 +124,10 @@ class MissionCompleted extends Notification
         $missionName = $this->translatedMissionName;
         $completedTitle = __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $missionName]);
         $rewardImage = null;
-        $missionableType = $this->mission->missionable_type;
         if ($this->mission->missionable_type == RewardComponent::class || $this->mission->missionable_type == Reward::class) {
-            $rewardImage = $this->mission->missionable->getFirstMediaUrl($missionableType::COLLECTION_NAME);
+            $rewardImage = $this->mission->getFirstMediaUrl(Mission::MEDIA_COLLECTION_NAME);
         }
-            
+
         return [
             'object' => get_class($this->mission),
             'object_id' => $this->mission->id,
