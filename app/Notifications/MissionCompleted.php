@@ -63,8 +63,9 @@ class MissionCompleted extends Notification
 
     protected function getMessage()
     {
+        $missionName = $this->translatedMissionName;
         return __('messages.notification.fcm.MissionCompletedTitleSelfClaim', [
-            'missionName' => $this->mission->name,
+            'missionName' => $missionName,
             'reward' => $this->reward,
             'rewardQuantity' => $this->rewardQuantity
         ]);
@@ -72,7 +73,13 @@ class MissionCompleted extends Notification
 
     public function toFcm($notifiable)
     {
-        $completedTitle = __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $this->mission->name]);
+        $missionName = $this->translatedMissionName;
+        $completedTitle = __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $missionName]);
+        $missionableType = $this->mission->missionable_type;
+        if ($this->mission->missionable_type == RewardComponent::class || $this->mission->missionable_type == Reward::class) {
+            $rewardImage = $this->mission->missionable->getFirstMediaUrl($missionableType::COLLECTION_NAME);
+        }
+            
         return FcmMessage::create()
             ->setData([
                 'object' => (string) get_class($this->mission),
@@ -90,6 +97,7 @@ class MissionCompleted extends Notification
                     'complete_mission_image_zh_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION_ZH),
                     'frequency' => $this->mission->frequency,
                     'auto_disburse_rewards' => (string) $this->mission->auto_disburse_rewards ? 'true' : 'false',
+                    'reward_image_url' => $rewardImage
                 ])
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
@@ -106,7 +114,8 @@ class MissionCompleted extends Notification
      */
     public function toArray($notifiable)
     {
-        $completedTitle = __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $this->mission->name]);
+        $missionName = $this->translatedMissionName;
+        $completedTitle = __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $missionName]);
         $rewardImage = null;
         $missionableType = $this->mission->missionable_type;
         if ($this->mission->missionable_type == RewardComponent::class || $this->mission->missionable_type == Reward::class) {
