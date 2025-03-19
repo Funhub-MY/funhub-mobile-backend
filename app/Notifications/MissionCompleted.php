@@ -67,7 +67,9 @@ class MissionCompleted extends Notification
 
         if ($this->mission->auto_disburse_rewards) {
             return __('messages.notification.fcm.MissionCompletedTitleAutoClaim', [
-                'missionName' => $missionName
+                'missionName' => $missionName,
+                'reward' => $this->reward,
+                'rewardQuantity' => $this->rewardQuantity
             ], $this->user->last_lang ?? config('app.locale'));
         } else {
             return __('messages.notification.fcm.MissionCompletedTitleSelfClaim', [
