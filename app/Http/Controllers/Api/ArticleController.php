@@ -1228,30 +1228,29 @@ class ArticleController extends Controller
         $article->location()->detach(); // detaches all
 
         if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
-            $locations = Location::where('google_id', $locationData['google_id'])->get();
-        }
+            $location = Location::where('google_id', $locationData['google_id'])->first();
 
         // if location cant be found by google_id, then find by lat,lng
-        if (empty($locations) || $locations->isEmpty()) {
+        }else{
             $locations = Location::where('lat', $locationData['lat'])
                 ->where('lng', $locationData['lng'])
                 ->get();
-        }
-       
-        //  Grab all the same latitude and longitude to find the most matching records.
-        if($locations){
-            foreach($locations as $keys => $loc){
-                //  By default, the first location is not set to a mall (Mainly for landscape location). If it is a mall, it will be skipped, and the location will be assigned based on the name.
-                if($keys == 0 && $loc->is_mall == 0){
-                    $location = $loc;
-                }
-                
-                //  Calculate the percentage of similar both text
-                similar_text(strtolower($locationData['name']), strtolower($loc->name), $percentage);
 
-                if ($loc && ($locationData['name'] == $loc->name || $percentage > 90)) {
-                    $location = $loc;
-                    break;
+            //  Grab all the same latitude and longitude to find the most matching records.
+            if($locations){
+                foreach($locations as $keys => $loc){
+                    //  By default, the first location is not set to a mall (Mainly for landscape location). If it is a mall, it will be skipped, and the location will be assigned based on the name.
+                    if($keys == 0 && $loc->is_mall == 0){
+                        $location = $loc;
+                    }
+                    
+                    //  Calculate the percentage of similar both text
+                    similar_text(strtolower($locationData['name']), strtolower($loc->name), $percentage);
+
+                    if ($loc && ($locationData['name'] == $loc->name || $percentage > 90)) {
+                        $location = $loc;
+                        break;
+                    }
                 }
             }
         }
