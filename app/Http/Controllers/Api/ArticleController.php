@@ -1227,11 +1227,13 @@ class ArticleController extends Controller
 
         $article->location()->detach(); // detaches all
 
+        //  Use google_id to find the location, cause from the app will get the google_id
         if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
             $location = Location::where('google_id', $locationData['google_id'])->first();
+        }
 
-        // if location cant be found by google_id, then find by lat,lng
-        }else{
+        // If google_id cannot get the location, then find by lat,lng // || $location->isEmpty()
+        if (empty($location)) {
             $locations = Location::where('lat', $locationData['lat'])
                 ->where('lng', $locationData['lng'])
                 ->get();
@@ -1254,7 +1256,9 @@ class ArticleController extends Controller
                 }
             }
         }
-        
+
+
+        //  If both method above able to get the location
         if ($location) {
             // just attach to article with new ratings if there is
             $article->location()->attach($location->id);
