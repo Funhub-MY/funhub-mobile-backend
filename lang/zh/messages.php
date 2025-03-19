@@ -271,6 +271,7 @@ return [
             'MissionCompleted' => '已完成任务“:missionName”，随机获得:reward x :rewardQuantity',
             "MissionStartedTitle" => '任务开始',
             "MissionStarted" => '开始任务 :missionName',
+            'NewfollowerTitle' => '新粉丝',
             'Newfollower' => ':followerName 狠狠关注了你，来认识新朋友吧',
             'NewFollowRequest' => ':followerName 请求关注您',
             'NewFunboxRewardApproved' => ':username 您有新的饭盒',

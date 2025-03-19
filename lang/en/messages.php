@@ -277,6 +277,7 @@ return [
             'MissionCompleted' => 'Completed mission ":missionName",  Randomly Acquire :reward x :rewardQuantity',
             "MissionStartedTitle" => "Mission Started",
             "MissionStarted" => "Started mission :missionName",
+            'NewfollowerTitle' => 'New Follower',
             'Newfollower' => ':followerName followed you, let\'s meet new friends!',
             'NewFollowRequest' => ':followerName requested to follow you',
             'NewFunboxRewardApproved' => ':username you have received Funbox',

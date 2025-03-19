@@ -66,7 +66,7 @@ class Newfollower extends Notification implements ShouldQueue
             'message' => __('messages.notification.database.Newfollower')
         ])
         ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-            ->setTitle('新粉丝')
+            ->setTitle(__('messages.notification.fcm.NewfollowerTitle'))
             ->setBody(__('messages.notification.fcm.Newfollower', ['followerName' => $this->follower->name]))
         );
     }
