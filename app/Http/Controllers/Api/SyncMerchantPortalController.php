@@ -7,6 +7,7 @@ use App\Models\Merchant;
 use App\Models\MerchantCategory;
 use App\Models\RatingCategory;
 use App\Models\Store;
+use App\Models\Article;
 use App\Models\MerchantUserAutolink;
 use App\Models\User;
 use App\Models\MerchantOfferCampaign;
@@ -446,9 +447,16 @@ class SyncMerchantPortalController extends Controller
                 });
 
                 //  Get articles under this merchant
-                $articles = $merchant->stores->sum(function ($store) {
-                    return $store->articles->count();
-                });
+                // $articles = $merchant->stores->sum(function ($store) {
+                //     return $store->articles->count();
+                // });
+
+                $locationIds = $merchant->stores->pluck('location')->flatten()->pluck('id')->unique();
+
+                $articles = Article::where("status", Article::STATUS_PUBLISHED)
+                    ->whereHas('location', function ($q) use ($locationIds) {
+                        $q->whereIn('locations.id', $locationIds);
+                    })->count();
 
                 //  Get the average rating for all stores under this merchant
                 $ratings = $merchant->stores->sum(function ($store) {
