@@ -14,6 +14,7 @@ use App\Models\MerchantOfferVoucher;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\UserCard;
+use App\Events\GiftCardPurchased;
 use App\Notifications\PurchasedGiftCardNotification;
 use App\Notifications\PurchasedOfferNotification;
 use App\Services\PointService;
@@ -283,6 +284,9 @@ class PaymentController extends Controller
                             $quantity = $transaction->amount / (($product->discount_price) ?? $product->unit_price);
 
                             $transaction->user->notify(new PurchasedGiftCardNotification($transaction->transaction_no, $transaction->updated_at, $product->name, $quantity, $transaction->amount));
+                            
+                            // fire event for mission progress
+                            event(new GiftCardPurchased($transaction->user, $product));
                         } catch (\Exception $e) {
                             Log::error('Error sending PurchasedGiftCardNotification: ' . $e->getMessage());
                         }

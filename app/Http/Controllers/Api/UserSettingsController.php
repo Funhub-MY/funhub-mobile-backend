@@ -459,14 +459,15 @@ class UserSettingsController extends Controller
         }
 
         // if the category has a parent_id add into category_ids as well
+        $categoryIds = $request->category_ids;
         if ($categories->where('parent_id', '!=', null)->count()) {
-            $request->category_ids = array_merge($request->category_ids, $categories->where('parent_id', '!=', null)->pluck('parent_id')->toArray());
+            $categoryIds = array_merge($categoryIds, $categories->where('parent_id', '!=', null)->pluck('parent_id')->toArray());
         }
 
         $user = auth()->user();
 
         // check if article category ids exists only sync
-        $user->articleCategoriesInterests()->sync($request->category_ids);
+        $user->articleCategoriesInterests()->sync($categoryIds);
 
         // fire event
         event(new \App\Events\UserSettingsUpdated($user));

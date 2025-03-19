@@ -25,7 +25,7 @@ use App\Filament\Resources\MissionResource\RelationManagers;
 use App\Filament\Resources\MissionResource\RelationManagers\ParticipantsRelationManager;
 use Filament\Forms\Components\KeyValue;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
-
+use Filament\Tables\Filters\SelectFilter;
 class MissionResource extends Resource
 {
     protected static ?string $model = Mission::class;
@@ -49,71 +49,80 @@ class MissionResource extends Resource
                                 ->rules('required', 'max:255'),
 
                             KeyValue::make('name_translation')
-                            ->label('Name Translation')
-                            ->keyLabel('Language')
-                            ->valueLabel('Name Translation')
-                            ->disableAddingRows()
-                            ->disableDeletingRows()
-                            ->disableEditingKeys()
-                            ->afterStateHydrated(function ($context, $state, callable $set, $record) {
-                                // Retrieve available locales
-                                $locales = config('app.available_locales', []);
+                                ->label('Name Translation')
+                                ->keyLabel('Language Code (e.g., en, zh)')
+                                ->valueLabel('Translation')
+                                ->disableAddingRows()
+                                ->disableDeletingRows()
+                                ->disableEditingKeys()
+                                ->afterStateHydrated(function ($context, $state, callable $set, $record) {
+                                    // Retrieve available locales
+                                    $locales = config('app.available_locales', []);
 
-                                // If in edit context, retrieve the existing translations from the database
-                                if ($context === 'edit' && $record) {
-                                    if (!isset($record->name_translation)) {
-                                        $record->name_translation = [];
+                                    // If in edit context, retrieve the existing translations from the database
+                                    if ($context === 'edit' && $record) {
+                                        if (!isset($record->name_translation)) {
+                                            $record->name_translation = [];
+                                        } else {
+                                            $translations = json_decode($record->name_translation ?? [], true);
+                                        }
+
+                                        // Map available locales to keys of KeyValue component with corresponding values
+                                        foreach ($locales as $locale => $language) {
+                                            // Search for the key (language code) corresponding to the current language name
+                                            $languageCode = array_search($language, $locales);
+
+                                            // Set the value for the corresponding key and value in the state
+                                            $set("name_translation.$language", $translations[$languageCode] ?? '');
+                                        }
                                     } else {
-                                        $translations = json_decode($record->name_translation ?? [], true);
+                                        // For other contexts or new records, map available locales to keys of KeyValue component with empty values
+                                        foreach ($locales as $locale => $language) {
+                                            // Set the value for the corresponding key in the state
+                                            $set("name_translation.$language", '');
+                                        }
+                                    }
+                                })
+                                ->dehydrateStateUsing(function ($state) {
+                                    // Retrieve available locales
+                                    $locales = config('app.available_locales', []);
+
+                                    $transformedState = [];
+
+                                    // Iterate over the keys in $state
+                                    foreach ($state as $key => $value) {
+                                        // Search for the corresponding key in $locales
+                                        $localeKey = array_search($key, $locales);
+
+                                        // If a corresponding key is found, use it to replace the key in $state
+                                        if ($localeKey !== false) {
+                                            $transformedState[$localeKey] = $value;
+                                        }
                                     }
 
-                                    // Map available locales to keys of KeyValue component with corresponding values
-                                    foreach ($locales as $locale => $language) {
-                                        // Search for the key (language code) corresponding to the current language name
-                                        $languageCode = array_search($language, $locales);
+                                    // Convert the transformed state to JSON
+                                    $stateJson = json_encode($transformedState);
 
-                                        // Set the value for the corresponding key and value in the state
-                                        $set("name_translation.$language", $translations[$languageCode] ?? '');
-                                    }
-                                } else {
-                                    // For other contexts or new records, map available locales to keys of KeyValue component with empty values
-                                    foreach ($locales as $locale => $language) {
-                                        // Set the value for the corresponding key in the state
-                                        $set("name_translation.$language", '');
-                                    }
-                                }
-                            })
-                            ->dehydrateStateUsing(function ($state) {
-                                // Retrieve available locales
-                                $locales = config('app.available_locales', []);
+                                    return $stateJson;
+                                }),
 
-                                $transformedState = [];
-
-                                // Iterate over the keys in $state
-                                foreach ($state as $key => $value) {
-                                    // Search for the corresponding key in $locales
-                                    $localeKey = array_search($key, $locales);
-
-                                    // If a corresponding key is found, use it to replace the key in $state
-                                    if ($localeKey !== false) {
-                                        $transformedState[$localeKey] = $value;
-                                    }
-                                }
-
-                                // Convert the transformed state to JSON
-                                $stateJson = json_encode($transformedState);
-
-                                return $stateJson;
-                            }),
-
+                            Select::make('predecessors')
+                                ->multiple()
+                                ->relationship('predecessors', 'name')
+                                ->preload()
+                                ->label('Required Missions')
+                                ->helperText('Select one-off missions that must be completed before this mission can be started')
+                                ->options(function () {
+                                    return Mission::where('frequency', 'one-off')->pluck('name', 'id');
+                                }),
 
                             Textarea::make('description')
                                 ->required(),
 
                             KeyValue::make('description_translation')
                                 ->label('Description Translation')
-                                ->keyLabel('Language')
-                                ->valueLabel('Description Translation')
+                                ->keyLabel('Language Code (e.g., en, zh)')
+                                ->valueLabel('Translation')
                                 ->disableAddingRows()
                                 ->disableDeletingRows()
                                 ->disableEditingKeys()
@@ -253,6 +262,7 @@ class MissionResource extends Resource
 
                             Forms\Components\Toggle::make('disable_fcm')
                                 ->label('Disable FCM')
+                                ->helperText('If disabled, no push notification will be sent, but will send in-app notifications.')
                                 ->onIcon('heroicon-s-check-circle')
                                 ->offIcon('heroicon-s-x-circle'),
 
@@ -288,7 +298,9 @@ class MissionResource extends Resource
                             // reward limit
                             TextInput::make('reward_limit')
                                 ->label('Max Reward Limit')
-                                ->helperText('How many reward to be given to user, once hit limit, mission will no longer reward user. Leave empty if no limit set.'),
+                                ->default(0)
+                                ->required()
+                                ->helperText('How many reward to be given to user, once hit limit, mission will no longer reward user. Default 0 if no limit set.'),
 
                             // frequency select input
                             Select::make('frequency')
@@ -373,7 +385,19 @@ class MissionResource extends Resource
                     ->counts('participants'),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->options([
+                        0 => 'Disabled',
+                        1 => 'Enabled',
+                    ])
+                    ->label('Status'),
+                SelectFilter::make('frequency')
+                    ->options([
+                        'one-off' => 'One-off (Non Repeatable)',
+                        'accumulated' => 'Accumulated (Repeatable)',
+                        'daily' => 'Daily, Resets Midnight (Repeatable)',
+                        'monthly' => 'Monthly, Resets Start of Month (Repeatable)',
+                    ])
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
