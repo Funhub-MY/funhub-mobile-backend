@@ -273,6 +273,7 @@ return [
             'CommentRepliedTitle' => 'New Comment Reply',
             'CommentReplied' => ':username replied to your comment ":comment"',
             "MissionCompletedTitle" => "Mission Completed",
+            "MissionCompletedTitleAutoClaim" => "You've completed the mission \":missionName\".",
             "MissionCompletedTitleSelfClaim" => "You've completed the mission \":missionName\". Claim your rewards now!",
             'MissionCompleted' => 'Completed mission ":missionName",  Randomly Acquire :reward x :rewardQuantity',
             "MissionStartedTitle" => "Mission Started",
