@@ -451,6 +451,7 @@ class SyncMerchantPortalController extends Controller
                 //     return $store->articles->count();
                 // });
 
+                //  As frontend display the article is bind with location, so need to get the locations data and find the articles.
                 $locationIds = $merchant->stores->pluck('location')->flatten()->pluck('id')->unique();
 
                 $articles = Article::where("status", Article::STATUS_PUBLISHED)
