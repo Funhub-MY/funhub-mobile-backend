@@ -33,7 +33,7 @@ class UserSettingsSavedListener
         if ($user->name
             && $user->email
             && $user->avatar
-            && $user->disableCache()->articleCategoriesInterests()->count() > 0
+            && $user->articleCategoriesInterests()->count() > 0
             && $user->dob)
         {
             Log::info('User profile completed', [
@@ -48,7 +48,7 @@ class UserSettingsSavedListener
                 'user_name' => $user->name,
                 'user_email' => $user->email,
                 'avatar_id' => $user->avatar,
-                'user_interests' => $user->disableCache()->articleCategoriesInterests()->count(),
+                'user_interests' => $user->articleCategoriesInterests()->count(),
                 'user_dob' => $user->dob,
             ]);
         }
