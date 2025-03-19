@@ -39,9 +39,18 @@ class MerchantOfferPurchasedTable extends Component implements HasTable
                 ->label('ID')
                 ->sortable()
                 ->searchable(),
+            TextColumn::make('created_at')
+                ->dateTime()
+                ->sortable(),
+            TextColumn::make('updated_at')
+                ->dateTime()
+                ->sortable(),
             TextColumn::make('merchantOffer.name')
                 ->label('Item Name')
                 ->sortable()
+                ->searchable(),
+            TextColumn::make('voucher.code')
+                ->copyable()
                 ->searchable(),
             TextColumn::make('net_amount')
                 ->label('Net Amount'),
@@ -58,7 +67,7 @@ class MerchantOfferPurchasedTable extends Component implements HasTable
             TextColumn::make('purchase_method')
                 ->label('Payment Method')
                 ->sortable(),
-            TextColumn::make('transaction_no')
+            TextColumn::make('transaction.transaction_no')
                 ->label('Transaction No.')
                 ->sortable()
                 ->searchable(),
@@ -75,9 +84,6 @@ class MerchantOfferPurchasedTable extends Component implements HasTable
                 ])
                 ->sortable(),           
             TextColumn::make('remarks'),
-            TextColumn::make('created_at')
-                ->dateTime()
-                ->sortable(),
         ];
     }
 
