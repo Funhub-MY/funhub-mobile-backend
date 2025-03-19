@@ -64,11 +64,18 @@ class MissionCompleted extends Notification
     protected function getMessage()
     {
         $missionName = $this->translatedMissionName;
-        return __('messages.notification.fcm.MissionCompletedTitleSelfClaim', [
-            'missionName' => $missionName,
-            'reward' => $this->reward,
-            'rewardQuantity' => $this->rewardQuantity
-        ]);
+
+        if ($this->mission->auto_disburse_rewards) {
+            return __('messages.notification.fcm.MissionCompletedTitleAutoClaim', [
+                'missionName' => $missionName
+            ]);
+        } else {
+            return __('messages.notification.fcm.MissionCompletedTitleSelfClaim', [
+                'missionName' => $missionName,
+                'reward' => $this->reward,
+                'rewardQuantity' => $this->rewardQuantity
+            ]);
+        }
     }
 
     public function toFcm($notifiable)

@@ -268,6 +268,7 @@ return [
             'CommentReplied' => ':username 回复了你的评论 ":comment"',
             'MissionCompletedTitle' => "好棒棒！你做到了！",
             "MissionCompletedTitleSelfClaim" => " 你已完成 \":missionName\"，来领取奖励吧！",
+            "MissionCompletedTitleAutoClaim" => " 你已完成 \":missionName\"",
             'MissionCompleted' => '已完成任务“:missionName”，随机获得:reward x :rewardQuantity',
             "MissionStartedTitle" => '任务开始',
             "MissionStarted" => '开始任务 :missionName',
