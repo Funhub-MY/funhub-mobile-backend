@@ -83,6 +83,7 @@ class MissionCompleted extends Notification
         $missionName = $this->translatedMissionName;
         $completedTitle = __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $missionName]);
         $missionableType = $this->mission->missionable_type;
+        $rewardImage = null;
         if ($this->mission->missionable_type == RewardComponent::class || $this->mission->missionable_type == Reward::class) {
             $rewardImage = $this->mission->missionable->getFirstMediaUrl($missionableType::COLLECTION_NAME);
         }
