@@ -516,7 +516,9 @@ class MissionService
             }
 
             // Send reward notification
-            $this->sendRewardReceivedNotification($mission, $user, $disbursement);
+            if (!$mission->auto_disburse_rewards) {
+                $this->sendRewardReceivedNotification($mission, $user, $disbursement);
+            }
         });
     }
 
