@@ -419,6 +419,152 @@ class SyncMerchantPortalController extends Controller
     }
 
     /**
+     * Get Merchant's Reports
+     * Merchant portal will call this api for reporting overview regarding merchant
+     */
+    public function merchant_overview(Request $request)
+    {
+        try {
+            $request->validate([
+                'merchant_id' => 'required',
+            ]);
+
+            //  Get this merchant and update
+            $merchant = Merchant::find($request->merchant_id);
+            if($merchant){
+                $userId     = $merchant->user_id;
+                $storeIds   = $merchant->stores->pluck('id');
+
+                //  Total Reviews for all stores under this merchant
+                $reviews = $merchant->stores->sum(function ($store) {
+                    return $store->storeRatings->count();
+                });
+
+                //  Total unique user to give review
+                $users = $merchant->stores->sum(function ($store) {
+                    return $store->storeRatings->groupBy('user_id')->count();
+                });
+
+                //  Get articles under this merchant
+                $articles = $merchant->stores->sum(function ($store) {
+                    return $store->articles->count();
+                });
+
+                //  Get the average rating for all stores under this merchant
+                $ratings = $merchant->stores->sum(function ($store) {
+                    return $store->storeRatings->avg('rating');
+                });
+                $averageRating = $ratings > 0 ? $ratings / count($storeIds) : 0;
+
+                //  Stores Views
+                $storesView = View::where('viewable_type', Store::class)
+                    ->whereIn('viewable_id', $storeIds)
+                    ->count();
+
+                $storesUniqueView = View::where('viewable_type', Store::class)
+                    ->whereIn('viewable_id', $storeIds)
+                    ->distinct('user_id')
+                    ->count('user_id');
+
+                $data = [
+                    'rating'            => (float) number_format($averageRating, 1),
+                    'users'             => $users,
+                    'review'            => $reviews,
+                    'articles'          => $articles,
+                    'storesView'        => $storesView,
+                    'storesUniqueView'  => $storesUniqueView
+                ];
+
+                return response()->json([
+                    'error'     => false,
+                    'message'   => 'Success',
+                    'data'      => $data
+                ]);
+
+            }else{
+                return response()->json([
+                    'error'     => true,
+                    'message'   => 'Oops! invalid request.'
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('[SyncMerchantPortalController] get merchant overview api failed: ' . $e->getMessage());
+            return response()->json([
+                'error'     => true,
+                'message'   => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Get Merchant's Review lists
+     * Merchant portal will call this api for review comment lists
+     */
+    public function review_lists(Request $request)
+    {
+        try {
+            $request->validate([
+                'merchant_id' => 'required',
+            ]);
+
+            //  Get this merchant and update
+            $merchant = Merchant::find($request->merchant_id);
+            if($merchant){
+                $userId     = $merchant->user_id;
+
+                // Use Cache::remember to handle caching
+                $lists = Cache::remember("merchant_review_list_{$userId}", 60, function () use ($merchant) {
+                    $lists = collect();
+                    
+                    //  Get comments under this merchant
+                    $lists = $merchant->stores->load('storeRatings.user', 'storeRatings.ratingCategories')->flatMap(function ($store) {
+                        return $store->storeRatings->map(function ($rating) {
+                            return [
+                                'id' => $rating->id,
+                                'comment' => $rating->comment,
+                                'rating' => $rating->rating,
+                                'created_at' => $rating->created_at,
+                                'categories' => $rating->ratingCategories->map(function ($category) {
+                                    // Decode JSON to get English translation
+                                    $translations = json_decode($category->name_translations, true);
+                                    return [
+                                        'id' => $category->id,
+                                        'name' => $category->name,
+                                        'name_en' => $translations['en'] ?? $category->name,
+                                    ];
+                                }),
+                                'user_id' => $rating->user_id,
+                                'user_name' => $rating->user->name ?? null, // Avoid error if user is missing
+                            ];
+                        });
+                    });
+
+                    return $lists;
+                });
+
+                return response()->json([
+                    'error'     => false,
+                    'message'   => "Success",
+                    'data'      => $lists
+                ]);
+
+            }else{
+                return response()->json([
+                    'error'     => true,
+                    'message'   => 'Oops! invalid request.'
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('[SyncMerchantPortalController] get review lists api failed: ' . $e->getMessage());
+            return response()->json([
+                'error'     => true,
+                'message'   => $e->getMessage()
+            ]);
+        }
+    }
+    /**
      * Get Merchant's Offer Overview
      * Merchant portal will call this api for reporting overview
      */
