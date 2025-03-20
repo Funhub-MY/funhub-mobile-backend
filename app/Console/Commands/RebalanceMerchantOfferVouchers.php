@@ -400,7 +400,25 @@ class RebalanceMerchantOfferVouchers extends Command
                     ->first();
                 
                 $vouchersAdded = 0;
-                $startDate = now()->startOfDay();
+                
+                // Find the last available_until date from campaign schedules
+                $lastSchedule = $campaign->schedules()
+                    ->orderBy('available_until', 'desc')
+                    ->first();
+                
+                if ($lastSchedule) {
+                    // Parse the last available_until date
+                    $lastEndDate = Carbon::parse($lastSchedule->available_until);
+                    
+                    // Calculate the next day at midnight (00:00:00)
+                    $startDate = $lastEndDate->copy()->addDay()->startOfDay();
+                    
+                    $this->info("Last schedule ends at: {$lastSchedule->available_until}");
+                    $this->info("Next schedule will start at: {$startDate->format('Y-m-d H:i:s')}");
+                } else {
+                    $startDate = now()->startOfDay();
+                    $this->info("No previous schedules found. Using current date as starting point.");
+                }
                 
                 for ($i = 0; $i < $offersNeeded; $i++) {
                     // If we've added enough vouchers, break out

@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\RewardComponent;
 use App\Models\User;
 use App\Models\Mission;
 use Illuminate\Bus\Queueable;
@@ -54,19 +55,7 @@ class MissionCompleted extends Notification
         $channels = ['database'];
 
         if (!$this->mission->disable_fcm) {
-            // create a unique cache key for this notification
-            $cacheKey = 'fcm_notification_mission_' . $this->mission->id . '_user_' . $notifiable->id;
-            
-            // check if we've already sent an FCM notification to this user for this mission
-            if (!Cache::has($cacheKey)) {
-                // store in cache for 24 hours
-                Cache::put($cacheKey, true, now()->addDay());
-                
-                Log::info("Sending FCM notification for mission {$this->mission->id} to user {$notifiable->id}");
-                $channels[] = FcmChannel::class;
-            } else {
-                Log::info("Skipping duplicate FCM notification for mission {$this->mission->id} to user {$notifiable->id}");
-            }
+            $channels[] = FcmChannel::class;
         }
 
         return $channels;
@@ -74,17 +63,32 @@ class MissionCompleted extends Notification
 
     protected function getMessage()
     {
-        return __('messages.notification.fcm.MissionCompletedTitleSelfClaim', [
-            'missionName' => $this->mission->name,
-            'reward' => $this->reward,
-            'rewardQuantity' => $this->rewardQuantity
-        ]);
+        $missionName = $this->translatedMissionName;
+
+        if ($this->mission->auto_disburse_rewards) {
+            return __('messages.notification.fcm.MissionCompletedTitleAutoClaim', [
+                'missionName' => $missionName,
+                'reward' => $this->reward,
+                'rewardQuantity' => $this->rewardQuantity
+            ], $this->user->last_lang ?? config('app.locale'));
+        } else {
+            return __('messages.notification.fcm.MissionCompletedTitleSelfClaim', [
+                'missionName' => $missionName,
+                'reward' => $this->reward,
+                'rewardQuantity' => $this->rewardQuantity
+            ], $this->user->last_lang ?? config('app.locale'));
+        }
     }
 
     public function toFcm($notifiable)
     {
-        $completedTitle = __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $this->mission->name]);
-
+        $missionName = $this->translatedMissionName;
+        $completedTitle = __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $missionName]);
+        $rewardImage = null;
+        if ($this->mission->missionable_type == RewardComponent::class || $this->mission->missionable_type == Reward::class) {
+            $rewardImage = $this->mission->getFirstMediaUrl(Mission::MEDIA_COLLECTION_NAME);
+        }
+            
         return FcmMessage::create()
             ->setData([
                 'object' => (string) get_class($this->mission),
@@ -101,7 +105,8 @@ class MissionCompleted extends Notification
                     'complete_mission_image_en_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION_EN),
                     'complete_mission_image_zh_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION_ZH),
                     'frequency' => $this->mission->frequency,
-                    'auto_disburse_rewards' => (string) $this->mission->auto_disburse_rewards ? 'true' : 'false'
+                    'auto_disburse_rewards' => (string) $this->mission->auto_disburse_rewards ? 'true' : 'false',
+                    'reward_image_url' => $rewardImage
                 ])
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
@@ -118,7 +123,12 @@ class MissionCompleted extends Notification
      */
     public function toArray($notifiable)
     {
-        $completedTitle = __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $this->mission->name]);
+        $missionName = $this->translatedMissionName;
+        $completedTitle = __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $missionName]);
+        $rewardImage = null;
+        if ($this->mission->missionable_type == RewardComponent::class || $this->mission->missionable_type == Reward::class) {
+            $rewardImage = $this->mission->getFirstMediaUrl(Mission::MEDIA_COLLECTION_NAME);
+        }
 
         return [
             'object' => get_class($this->mission),
@@ -135,7 +145,8 @@ class MissionCompleted extends Notification
                 'complete_mission_image_en_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION_EN),
                 'complete_mission_image_zh_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION_ZH),
                 'frequency' => $this->mission->frequency,
-                'auto_disburse_rewards' => (string) $this->mission->auto_disburse_rewards ? 'true' : 'false'
+                'auto_disburse_rewards' => (string) $this->mission->auto_disburse_rewards ? 'true' : 'false',
+                'reward_image_url' => $rewardImage
             ]
         ];
     }

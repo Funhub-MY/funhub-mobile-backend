@@ -96,4 +96,11 @@ return [
         'key' => env('MERCHANT_PORTAL_API_KEY'),
     ],
 
+    'mixpanel' => [
+        'token' => env('MIXPANEL_TOKEN'),
+        'enable-default-tracking' => env('MIXPANEL_ENABLE_DEFAULT_TRACKING', false),
+        'consumer' => env('MIXPANEL_CONSUMER', 'socket'),
+        'connect-timeout' => env('MIXPANEL_CONNECT_TIMEOUT', 2),
+    ],
+
 ];

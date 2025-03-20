@@ -31,6 +31,9 @@ class PublishMerchantOffers extends Command
      */
     public function handle()
     {
+        $this->info("[PublishMerchantOffers] Running PublishMerchantOffers");
+        Log::info("[PublishMerchantOffers] Running PublishMerchantOffers");
+
         // get offers that need to be published
         $offersQuery = MerchantOffer::whereNotNull('publish_at')
             ->where('status', MerchantOffer::STATUS_DRAFT)
@@ -38,9 +41,11 @@ class PublishMerchantOffers extends Command
             
         $totalCount = $offersQuery->count();
         $this->info("Found {$totalCount} merchant offers to publish");
+        Log::info("[PublishMerchantOffers] Found {$totalCount} merchant offers to publish");
         
         if ($totalCount === 0) {
             $this->info("No merchant offers to publish");
+            Log::info("[PublishMerchantOffers] No merchant offers to publish");
             return Command::SUCCESS;
         }
         
@@ -52,6 +57,7 @@ class PublishMerchantOffers extends Command
             ->update(['status' => MerchantOffer::STATUS_PUBLISHED]);
             
         $this->info("Updated {$updatedCount} merchant offers to published status");
+        Log::info("[PublishMerchantOffers] Updated {$updatedCount} merchant offers to published status");
         
         $processedCount = 0;
         
@@ -81,6 +87,7 @@ class PublishMerchantOffers extends Command
         }
             
         $this->info("Successfully processed {$processedCount} merchant offers");
+        Log::info("[PublishMerchantOffers] Successfully processed {$processedCount} merchant offers");
         
         if (count($offerIds) > 0) {
             try {
