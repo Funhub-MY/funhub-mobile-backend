@@ -45,7 +45,7 @@ class ProcessArticleToCategoriesML extends Command
 
         // get articles that are published and has no sub categories
         $articles = Article::published()->whereDoesntHave('imports')
-			->where('source', 'mobile')
+			->whereIn('source', ['mobile', 'backend'])
 			->whereDoesntHave('subCategories')
             ->orderBy('created_at', 'DESC') // latest first
             ->limit(100)
