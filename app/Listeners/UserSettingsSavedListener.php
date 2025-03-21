@@ -3,11 +3,13 @@
 namespace App\Listeners;
 
 use App\Events\CompletedProfile;
+use App\Models\ArticleCategory;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserSettingsUpdated;
+use Illuminate\Support\Facades\DB;
 
 class UserSettingsSavedListener
 {
@@ -29,11 +31,14 @@ class UserSettingsSavedListener
     public function handle(UserSettingsUpdated $event)
     {
         $user = $event->user;
+        $userInterestCategoriesCount = DB::table('user_article_categories')
+            ->where('user_id', $user->id)->count();
+
         // check if name, email, interests, birthday, gender are all saved
         if ($user->name
             && $user->email
             && $user->avatar
-            && $user->articleCategoriesInterests()->count() > 0
+            && $userInterestCategoriesCount > 0
             && $user->dob)
         {
             Log::info('User profile completed', [
@@ -48,7 +53,7 @@ class UserSettingsSavedListener
                 'user_name' => $user->name,
                 'user_email' => $user->email,
                 'avatar_id' => $user->avatar,
-                'user_interests' => $user->articleCategoriesInterests()->count(),
+                'user_interests' => $userInterestCategoriesCount,
                 'user_dob' => $user->dob,
             ]);
         }
