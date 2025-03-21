@@ -37,14 +37,14 @@ class AutoArchieveMerchantOffer extends Command
         Log::info('[AutoArchiveMerchantOffer] Running AutoArchiveMerchantOffer');
         
         // get sold out offers IDs (all vouchers claimed)
-        $soldOutOffersQuery = MerchantOffer::published()
-            ->doesntHave('unclaimedVouchers') // all bought
-            ->available()
-            ->select('id', 'schedule_id');
+        // $soldOutOffersQuery = MerchantOffer::published()
+        //     ->doesntHave('unclaimedVouchers') // all bought
+        //     ->available()
+        //     ->select('id', 'schedule_id');
             
-        $soldOutCount = $soldOutOffersQuery->count();
-        $this->info("[AutoArchiveMerchantOffer] Found {$soldOutCount} sold out offers to archive");
-        Log::info("[AutoArchiveMerchantOffer] Found {$soldOutCount} sold out offers to archive");
+        // $soldOutCount = $soldOutOffersQuery->count();
+        // $this->info("[AutoArchiveMerchantOffer] Found {$soldOutCount} sold out offers to archive");
+        // Log::info("[AutoArchiveMerchantOffer] Found {$soldOutCount} sold out offers to archive");
         
         // get past available_until offers IDs
         $pastAvailableUntilOffersQuery = MerchantOffer::published()
@@ -56,10 +56,11 @@ class AutoArchieveMerchantOffer extends Command
         Log::info("[AutoArchiveMerchantOffer] Found {$pastAvailableCount} past available_until offers to archive");
         
         // combine both queries to get all offers to archive
-        $soldOutOfferIds = $soldOutOffersQuery->pluck('id')->toArray();
+        // $soldOutOfferIds = $soldOutOffersQuery->pluck('id')->toArray();
         $pastAvailableOfferIds = $pastAvailableUntilOffersQuery->pluck('id')->toArray();
         
-        $allOfferIdsToArchive = array_unique(array_merge($soldOutOfferIds, $pastAvailableOfferIds));
+        // $allOfferIdsToArchive = array_unique(array_merge($soldOutOfferIds, $pastAvailableOfferIds));
+        $allOfferIdsToArchive = $pastAvailableOfferIds;
         
         if (empty($allOfferIdsToArchive)) {
             $this->info('No offers to archive');
