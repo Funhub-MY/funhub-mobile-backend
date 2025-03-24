@@ -174,7 +174,10 @@ class ArticleController extends Controller
 			->withCount(['userFollowings' => function ($query) {
 				$query->where('status', User::STATUS_ACTIVE);
 			}])
-            ->where('status', Article::STATUS_PUBLISHED);
+            ->where('status', Article::STATUS_PUBLISHED)
+			->whereDoesntHave('hiddenUsers', function ($query) use ($request) {
+				$query->where('user_id', $request->user()->id);
+			});
 
         // exclude own articles unless specified
         if (!$request->has('include_own_article') || $request->include_own_article == 0) {
