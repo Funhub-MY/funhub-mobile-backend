@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\IndexStore;
 use App\Models\RatingCategory;
 use App\Models\Store;
 use App\Models\StoreRating;
@@ -244,6 +245,10 @@ class PullBubbleDataForUserStoreRatings extends Command
                         'store_id' => $store->id,
                         'review_data' => $review,
                     ]);
+                    
+                    // Dispatch job to update store in search index
+                    IndexStore::dispatch($store->id);
+                    $this->info("Dispatched IndexStore job for store ID: " . $store->id);
                     
                     // Process categories if they exist
                     if (isset($review['Topic']) && is_array($review['Topic'])) {
