@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helper;
 use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\Store;
@@ -38,7 +39,8 @@ class StoreResource extends JsonResource
                     return str_contains($media->mime_type, 'image');
                 })->first();
 				if ($articlePhoto){
-					$photos[] = $articlePhoto->getFullUrl();
+					$url = $articlePhoto->getFullUrl();
+					$photos[] = Helper::encodeUrlFilename($url);
 				}
 //                $photos[] = ($articlePhoto) ? [$articlePhoto->getFullUrl()] : null;
             }
@@ -49,7 +51,8 @@ class StoreResource extends JsonResource
             $photos = $this->media->filter(function ($item) {
                 return $item->collection_name == Store::MEDIA_COLLECTION_PHOTOS;
             })->map(function ($item) {
-                return $item->getFullUrl();
+                $url = $item->getFullUrl();
+                return Helper::encodeUrlFilename($url);
             })->values()->toArray();
         }
 
@@ -110,7 +113,8 @@ class StoreResource extends JsonResource
             'manager_name' => $this->manager_name,
             'onboarded' => ($this->merchant) ? true : false,
             // get merchant company logo
-            'logo' => ($this->merchant) ? $this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME) : null,
+            'logo' => ($this->merchant && $this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME)) ? 
+                Helper::encodeUrlFilename($this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME)) : null,
             'photos' => array_values($photos),
             //  solve the issue which occur due to the store don't have merchant information.
             'merchant' => [
