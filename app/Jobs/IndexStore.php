@@ -56,12 +56,19 @@ class IndexStore implements ShouldQueue
                 return;
             }
             
+            // Recalculate the average rating
+            $avgRating = $store->storeRatings()->avg('rating');
+            
+            // Update the store's ratings field
+            $store->ratings = $avgRating;
+            $store->save();
+            
             // Make the store searchable (or update its searchable status)
             $store->searchable();
             
-            Log::info('[IndexStore] Successfully indexed store', [
+            Log::info('[IndexStore] Successfully updated store ratings and indexed store', [
                 'store_id' => $this->storeId,
-                'ratings_avg' => $store->storeRatings->avg('rating')
+                'ratings_avg' => $avgRating
             ]);
             
         } catch (\Exception $e) {
