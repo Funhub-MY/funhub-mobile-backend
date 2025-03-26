@@ -36,8 +36,6 @@ class UpdateArticleTagArticlesCount implements ShouldQueue
         //TODO: get all article tag -> sum all article tag count -> use new article tag count
         $sumArticlesCounts = $articlesCounts->sum('articles_count');
 
-        Log::info('Current ArticleTag Model: ', $articlesCounts->toArray());
-
         try {
             DB::table('article_tags_articles_count')->updateOrInsert(
                 ['name' => $this->articleTag->name],

@@ -62,6 +62,7 @@ class Store extends BaseModel implements HasMedia, Auditable
         'merchant_id',
         'state_id',
         'country_id',
+        'ratings',
         'deleted_at',
         'created_at',
         'updated_at'
