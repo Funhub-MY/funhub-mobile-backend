@@ -12,6 +12,16 @@ use App\Models\Article;
 
 class StoreResource extends JsonResource
 {
+    protected function encodeUrl($originalUrl)
+    {
+        if ($originalUrl && strpos($originalUrl, 'cloudfront') !== false) {
+            $parts = explode('/', $originalUrl);
+            $parts[count($parts) - 1] = urlencode($parts[count($parts) - 1]);
+            $originalUrl = implode('/', $parts);
+        }
+        return $originalUrl;
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -38,7 +48,7 @@ class StoreResource extends JsonResource
                     return str_contains($media->mime_type, 'image');
                 })->first();
 				if ($articlePhoto){
-					$photos[] = $articlePhoto->getFullUrl();
+					$photos[] = $this->encodeUrl($articlePhoto->getFullUrl());
 				}
 //                $photos[] = ($articlePhoto) ? [$articlePhoto->getFullUrl()] : null;
             }
@@ -49,7 +59,7 @@ class StoreResource extends JsonResource
             $photos = $this->media->filter(function ($item) {
                 return $item->collection_name == Store::MEDIA_COLLECTION_PHOTOS;
             })->map(function ($item) {
-                return $item->getFullUrl();
+                return $this->encodeUrl($item->getFullUrl());
             })->values()->toArray();
         }
 
@@ -110,7 +120,7 @@ class StoreResource extends JsonResource
             'manager_name' => $this->manager_name,
             'onboarded' => ($this->merchant) ? true : false,
             // get merchant company logo
-            'logo' => ($this->merchant) ? $this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME) : null,
+            'logo' => ($this->merchant) ? $this->encodeUrl($this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME)) : null,
             'photos' => array_values($photos),
             //  solve the issue which occur due to the store don't have merchant information.
             'merchant' => [
