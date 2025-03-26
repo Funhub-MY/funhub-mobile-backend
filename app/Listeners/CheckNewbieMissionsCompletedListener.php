@@ -44,12 +44,10 @@ class CheckNewbieMissionsCompletedListener implements ShouldQueue
             ->count();
             
         // Get count of completed one-off missions for this user
-        $completedOneOffMissions = $user->participants()
+        $completedOneOffMissions = $user->missionsParticipating()
             ->wherePivot('is_completed', true)
-            ->whereHas('mission', function ($query) {
-                $query->where('frequency', 'one-off')
-                      ->where('status', 1);
-            })
+            ->where('frequency', 'one-off')
+            ->where('status', 1)
             ->count();
         
         // If all one-off missions are completed, send notification
