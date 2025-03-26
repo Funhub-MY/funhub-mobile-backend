@@ -18,11 +18,13 @@ use App\Events\RatedStore;
 use App\Events\UserReferred;
 use App\Events\UserSettingsUpdated;
 use App\Events\GiftCardPurchased;
+use App\Events\MissionCompletedEvent;
 use App\Observers\ApprovalObserver;
 use App\Models\SupportRequestMessage;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use App\Listeners\MissionEventListener;
+use App\Listeners\CheckNewbieMissionsCompletedListener;
 use App\Listeners\SyncHashtagsToSearchKeywords;
 use App\Listeners\CreateViewsForArticleListener;
 use App\Listeners\MerchantOfferPublishedListener;
@@ -114,6 +116,10 @@ class EventServiceProvider extends ServiceProvider
 
         GiftCardPurchased::class => [
             MissionEventListener::class,
+        ],
+
+        MissionCompletedEvent::class => [
+            CheckNewbieMissionsCompletedListener::class,
         ],
     ];
 

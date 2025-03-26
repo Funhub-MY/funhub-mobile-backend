@@ -278,6 +278,8 @@ return [
             'MissionCompleted' => 'Completed mission ":missionName",  Randomly Acquire :reward x :rewardQuantity',
             "MissionStartedTitle" => "Mission Started",
             "MissionStarted" => "Started mission :missionName",
+            'NewbieMissionsCompletedTitle' => '🎉Amazing! You completed all the Newbie Missions🥳',
+            'NewbieMissionsCompletedMessage' => 'You\'ve unlocked more FUN Missions, click & continue your fun adventure NOW🚀',
             'NewfollowerTitle' => 'New Follower',
             'Newfollower' => ':followerName followed you, let\'s meet new friends!',
             'NewFollowRequest' => ':followerName requested to follow you',

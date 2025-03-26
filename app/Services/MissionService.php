@@ -7,6 +7,7 @@ use App\Models\MissionRewardDisbursement;
 use App\Models\User;
 use App\Models\Product;
 use App\Events\MissionProgressUpdated;
+use App\Events\MissionCompletedEvent;
 use App\Notifications\MissionCompleted;
 use App\Notifications\RewardReceivedNotification;
 use Carbon\Carbon;
@@ -612,6 +613,9 @@ class MissionService
                 $mission->missionable->name,
                 $mission->reward_quantity
             ));
+            
+            // dispatch event for mission completion
+            event(new MissionCompletedEvent($mission, $user));
         } catch (\Exception $e) {
             Log::error('Failed to send mission completed notification', [
                 'mission_id' => $mission->id,
