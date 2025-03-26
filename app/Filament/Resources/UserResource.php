@@ -457,6 +457,9 @@ class UserResource extends Resource
                         $resetCount = 0;
                         foreach ($records as $record) {
                             $missionIds = $record->missionsParticipating()->pluck('mission_id')->toArray();
+
+                            $record->newbie_missions_completed_at = null;
+                            $record->save();
                             
                             Log::info('[UserResource] Resetting mission progress for user: ' . $record->id, [
                                 'missions' => $missionIds,
