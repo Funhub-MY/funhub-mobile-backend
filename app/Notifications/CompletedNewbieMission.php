@@ -61,11 +61,13 @@ class CompletedNewbieMission extends Notification implements ShouldQueue
                 'link_to' => (string) 'missions', 
                 'link_to_object' => (string) 'null',
                 'action' => 'newbie_missions_completed',
-                'from_name' => (string) $this->user->name,
-                'from_id' => (string) $this->user->id,
+                'from_name' => 'Funhub',
+                'from_id' => '',
                 'title' => (string) $title,
                 'message' => (string) $this->getMessage(),
-                'extra' => json_encode([])
+                'extra' => json_encode([
+                    'newbie_missions_completed' => true
+                ])
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle($title)
@@ -88,14 +90,16 @@ class CompletedNewbieMission extends Notification implements ShouldQueue
             'object' => get_class($this->user),
             'object_id' => $this->user->id,
             'link_to_url' => false,
-            'link_to' => 'missions',
+            'link_to' => $this->user->id, // if link to url false, means get link_to_object
             'link_to_object' => null,
             'action' => 'newbie_missions_completed',
-            'from_name' => $this->user->name,
-            'from_id' => $this->user->id,
+            'from_name' => 'Funhub',
+            'from_id' => '',
             'title' => $title,
             'message' => $this->getMessage(),
-            'extra' => []
+            'extra' => [
+                'newbie_missions_completed' => true
+            ]
         ];
     }
 }
