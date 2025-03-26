@@ -74,6 +74,12 @@ class CheckNewbieMissionsCompletedListener implements ShouldQueue
                     'trace' => $e->getTraceAsString()
                 ]);
             }
+        } else {
+            Log::info('User has not completed all one-off missions', [
+                'user_id' => $user->id,
+                'total_missions' => $totalOneOffMissions,
+                'completed_missions' => $completedOneOffMissions
+            ]);
         }
     }
 }
