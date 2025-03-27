@@ -97,6 +97,12 @@ class UserResource extends Resource
                             ->default(1)
                             ->required(),
 
+                        // account_restricted
+                        Forms\Components\Toggle::make('account_restricted')
+                            ->helperText('If user is restricted, they cannot checkout merchant offers')
+                            ->default(0)
+                            ->required(),
+
                         // for_engagement
                         Forms\Components\Toggle::make('for_engagement')
                             ->helperText('If user is used for engagement, they cannot login App.')
@@ -234,6 +240,19 @@ class UserResource extends Resource
                         'secondary' => 3,
                     ])
                     ->searchable(),
+
+                // account restricted
+                Tables\Columns\BadgeColumn::make('account_restricted')
+                    ->label('Account Restricted')
+                    ->enum([
+                        0 => 'No',
+                        1 => 'Yes',
+                    ])
+                    ->colors([
+                        'success' => 0,
+                        'danger' => 1,
+                    ]),
+
                 Tables\Columns\TextColumn::make('full_phone_no')
                     ->label('Phone No')
                     ->sortable(['phone_country_code','phone_no']),
@@ -415,6 +434,26 @@ class UserResource extends Resource
 						->withFilename(fn ($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
 						->withWriterType(\Maatwebsite\Excel\Excel::CSV),
                 ]),
+
+                // bulk action for account restricted
+                BulkAction::make('Toggle Account Restricted')
+                    ->label('Toggle Account Restricted')
+                    ->action(function (Collection $records, array $data): void {
+                        foreach ($records as $record) {
+                            $record->account_restricted = $data['account_restricted'];
+                            $record->save();
+                        }
+                    })
+                    ->form([
+                      Select::make('account_restricted')
+                            ->label('Account Restricted')
+                            ->options([
+                                0 => 'No',
+                                1 => 'Yes',
+                            ])
+                            ->required(),
+                    ])
+                    ->requiresConfirmation()->deselectRecordsAfterCompletion(),
 
                 BulkAction::make('Toggle Profile Private')
                     ->label('Toggle Profile Private')
