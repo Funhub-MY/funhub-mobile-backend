@@ -68,7 +68,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('telescope:prune')->daily()->onOneServer();
         
         // Mixpanel Data Sync
-        // $schedule->command('mixpanel:sync-voucher-sales')->dailyAt('02:00')->onOneServer();
+        $schedule->command('mixpanel:sync-voucher-sales')->dailyAt('02:00')->onOneServer();
     }
 
     /**
