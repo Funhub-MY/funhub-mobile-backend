@@ -103,7 +103,7 @@ class MixpanelService
                 'sku' => $voucher->code,
                 '$insert_id' => (string) $voucher->id, // ensure it's a string
                 'merchant_offer_id' => $merchantOffer->id,
-                'time' => $purchaseDateTime->timestamp * 1000,
+                // 'time' => $purchaseDateTime->timestamp * 1000,
                 'timestamp' => $purchaseDateTime->timestamp * 1000 // convert to milliseconds
             ];
             

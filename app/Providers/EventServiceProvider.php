@@ -30,6 +30,7 @@ use App\Listeners\CreateViewsForArticleListener;
 use App\Listeners\MerchantOfferPublishedListener;
 use App\Listeners\RatedLocationListener;
 use App\Listeners\RecommendationAutoByPass;
+use App\Listeners\TrackPurchasedMerchantOfferListener;
 use App\Listeners\UpdateLastRatedForMerchantOfferClaim;
 use App\Listeners\UserReferredListener;
 use App\Listeners\UserSettingsSavedListener;
@@ -87,6 +88,7 @@ class EventServiceProvider extends ServiceProvider
 
         PurchasedMerchantOffer::class => [
             MissionEventListener::class,
+            TrackPurchasedMerchantOfferListener::class,
         ],
 
         FollowedUser::class => [
