@@ -8,44 +8,6 @@ use Illuminate\Support\Facades\Log;
 class MixpanelService
 {
     /**
-     * track an event in Mixpanel with environment prefix
-     *
-     * @param string $event event name
-     * @param array $properties event properties
-     * @param string|null $distinctId distinct ID for the event
-     * @return bool
-     */
-    public function track(string $event, array $properties = [], ?string $distinctId = null): bool
-    {
-        try {
-            // add environment to the event name to differentiate between environments
-            $envPrefix = app()->environment('production') ? 'prod' : 'dev';
-            $eventName = "{$envPrefix}_{$event}";
-            
-            // add environment to properties as well for additional filtering capability
-            $properties['environment'] = app()->environment();
-            
-            // track the event in Mixpanel
-            if ($distinctId) {
-                // for tracking with distinct ID, we need to use the Mixpanel facade directly
-                $mixpanel = Mixpanel::getFacadeRoot();
-                $mixpanel->track($eventName, $properties, $distinctId);
-                return true; // assume success unless exception is thrown
-            } else {
-                Mixpanel::track($eventName, $properties);
-                return true; // assume success unless exception is thrown
-            }
-        } catch (\Exception $e) {
-            Log::error('mixpanel tracking error: ' . $e->getMessage(), [
-                'event' => $event,
-                'properties' => $properties,
-                'distinctId' => $distinctId
-            ]);
-            return false;
-        }
-    }
-
-    /**
      * track voucher sale data in Mixpanel
      *
      * @param \App\Models\MerchantOfferVoucher $voucher the voucher to track
@@ -78,7 +40,7 @@ class MixpanelService
             // get merchant/brand name
             $brandName = 'Unknown';
             if ($merchantOffer->user && $merchantOffer->user->merchant) {
-                $brandName = $merchantOffer->user->merchant->business_name ?? 'Unknown';
+                $brandName = $merchantOffer->user->merchant->brand_name ?? 'Unknown';
             }
             
             // get payment method from transaction data
@@ -116,7 +78,7 @@ class MixpanelService
             }
             
             // format the purchase date time as required
-            $formattedDateTime = $purchaseDateTime->format('d/m/Y H:i:s');
+            $formattedDateTime = $purchaseDateTime->timezone('UTC')->format('d/m/Y H:i:s');
             
             // get user information safely
             $userEmail = null;
@@ -151,10 +113,15 @@ class MixpanelService
                 Log::info('dry run - would track the following properties:', $properties);
                 return true;
             }
+            $mixpanel = Mixpanel::getFacadeRoot();
+            // Create a user profile first to ensure our distinct ID is used as canonical
+            $mixpanel->identify($distinctId);
+            $envPrefix = app()->environment('production') ? 'prod' : 'dev';
+            $eventName = "{$envPrefix}_voucher_sale_data";
+            // Now track the event
+            $mixpanel->track($eventName, $properties, $distinctId);
             
-            // track the event
-            return $this->track('voucher_sale_data', $properties, $distinctId);
-            
+            return true;
         } catch (\Exception $e) {
             Log::error('error tracking voucher sale: ' . $e->getMessage(), [
                 'voucher_id' => $voucher->id ?? null,
