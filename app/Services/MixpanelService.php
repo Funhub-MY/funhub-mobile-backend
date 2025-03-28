@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\User;
+use Carbon\Carbon;
 use GeneaLabs\LaravelMixpanel\Facades\Mixpanel;
 use Illuminate\Support\Facades\Log;
 
@@ -126,6 +128,85 @@ class MixpanelService
         } catch (\Exception $e) {
             Log::error('error tracking voucher sale: ' . $e->getMessage(), [
                 'voucher_id' => $voucher->id ?? null,
+                'exception' => $e
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Track user data in Mixpanel
+     *
+     * @param \App\Models\User $user The user to track
+     * @param bool $dryRun Whether to run in dry-run mode (no actual tracking)
+     * @return bool Success or failure
+     */
+    public function trackUserData(User $user, bool $dryRun = false): bool
+    {
+        try {
+            if (!$user->relationLoaded('referredBy')) {
+                $user->load('referredBy');
+            }
+
+            // calculate age from date of birth if available
+            $age = null;
+            if ($user->dob) {
+                $age = Carbon::parse($user->dob)->age;
+            }
+
+            $status = 'active';
+            if ($user->account_restricted && $user->account_restricted_until && $user->account_restricted_until > now()) {
+                $status = 'restricted';
+            } elseif ($user->status == User::STATUS_SUSPENDED || 
+                      ($user->suspended_until && $user->suspended_until > now())) {
+                $status = 'suspended';
+            }
+
+            // determine source (organic vs referral)
+            $source = 'organic';
+            $referralUserId = null;
+            if ($user->referred_by_id && $user->referredBy) {
+                $source = 'referral';
+                $referralUserId = $user->referred_by_id;
+            }
+            $properties = [
+                'user_id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'date_of_birth' => $user->dob ? (is_string($user->dob) ? $user->dob : $user->dob->format('Y-m-d')) : null,
+                'age' => $age,
+                'gender' => $user->gender,
+                'status' => $status,
+                'phone_number' => $user->full_phone_no,
+                'funbox_balance' => (float) $user->point_balance,
+                'source' => $source,
+                'referral_user_id' => $referralUserId,
+                'created_at' => $user->created_at->timestamp * 1000, // convert to milliseconds
+                // 'time' => $user->created_at->timestamp * 1000, // convert to milliseconds
+                '$insert_id' => (string) $user->id // ensure it's a string
+            ];
+            
+            // use user ID as the distinct ID for proper user tracking
+            $distinctId = (string) 'funhub-mobile-users-' . $user->id; // ensure it's a string
+
+            if ($dryRun) {
+                Log::info('dry run - would track the following user data:', $properties);
+                return true;
+            }
+
+            $mixpanel = Mixpanel::getFacadeRoot();
+            
+            $mixpanel->identify($distinctId);
+            $mixpanel->people->set($distinctId, $properties);
+            
+            $envPrefix = app()->environment('production') ? 'prod' : 'dev';
+            $eventName = "{$envPrefix}_user_data";
+            $mixpanel->track($eventName, $properties, $distinctId);
+            
+            return true;
+        } catch (\Exception $e) {
+            Log::error('error tracking user data: ' . $e->getMessage(), [
+                'user_id' => $user->id ?? null,
                 'exception' => $e
             ]);
             return false;
