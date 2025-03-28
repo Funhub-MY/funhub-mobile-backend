@@ -100,8 +100,11 @@ class UserResource extends Resource
                         // account_restricted
                         Forms\Components\Toggle::make('account_restricted')
                             ->helperText('If user is restricted, they cannot checkout merchant offers')
-                            ->default(0)
-                            ->required(),
+                            ->default(0),
+
+                        // account_restricted_until
+                        Forms\Components\DateTimePicker::make('account_restricted_until')
+                            ->helperText('If user is restricted, they cannot checkout merchant offers'),
 
                         // for_engagement
                         Forms\Components\Toggle::make('for_engagement')
@@ -252,6 +255,11 @@ class UserResource extends Resource
                         'success' => 0,
                         'danger' => 1,
                     ]),
+
+                // account restricted until
+                Tables\Columns\TextColumn::make('account_restricted_until')
+                    ->label('Account Restricted Until')
+                    ->dateTime(),
 
                 Tables\Columns\TextColumn::make('full_phone_no')
                     ->label('Phone No')
