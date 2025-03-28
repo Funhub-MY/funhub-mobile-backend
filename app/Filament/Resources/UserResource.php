@@ -465,7 +465,7 @@ class UserResource extends Resource
 
                         DateTimePicker::make('account_restricted_until')
                             ->label('Account Restricted Until')
-                            ->required(),
+                            ->requiredIf('account_restricted', 1)
                     ])
                     ->requiresConfirmation()->deselectRecordsAfterCompletion(),
 
