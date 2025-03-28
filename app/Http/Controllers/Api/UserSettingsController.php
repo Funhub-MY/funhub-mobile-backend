@@ -908,7 +908,7 @@ class UserSettingsController extends Controller
 
         // check if referral code exists
         $referredBy = User::where('referral_code', $request->referral_code)->first();
-        if (!$referredBy) {
+        if (!$referredBy || $referredBy->account_restricted) {
             return response()->json(['message' => __('messages.error.user_settings_controller.Referral_code_not_found')], 422);
         }
 
