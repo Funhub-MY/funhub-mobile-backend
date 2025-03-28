@@ -10,6 +10,7 @@ use Closure;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Tables;
 use App\Models\Reward;
 use App\Models\Approval;
@@ -449,6 +450,7 @@ class UserResource extends Resource
                     ->action(function (Collection $records, array $data): void {
                         foreach ($records as $record) {
                             $record->account_restricted = $data['account_restricted'];
+                            $record->account_restricted_until = $data['account_restricted_until'];
                             $record->save();
                         }
                     })
@@ -459,6 +461,10 @@ class UserResource extends Resource
                                 0 => 'No',
                                 1 => 'Yes',
                             ])
+                            ->required(),
+
+                        DateTimePicker::make('account_restricted_until')
+                            ->label('Account Restricted Until')
                             ->required(),
                     ])
                     ->requiresConfirmation()->deselectRecordsAfterCompletion(),
