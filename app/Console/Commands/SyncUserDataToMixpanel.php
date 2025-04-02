@@ -18,6 +18,7 @@ class SyncUserDataToMixpanel extends Command
     protected $signature = 'mixpanel:sync-user-data 
                             {--days=1 : Number of days to look back for new/updated users}
                             {--all : Sync all users regardless of date}
+                            {--user_id= : Sync a specific user by ID}
                             {--limit=100 : Maximum number of records to process per batch}
                             {--status= : Filter by status (active, restricted, suspended)}
                             {--source= : Filter by source (organic, referral)}
@@ -62,6 +63,7 @@ class SyncUserDataToMixpanel extends Command
         $dryRun = (bool) $this->option('dry-run');
         $status = $this->option('status');
         $source = $this->option('source');
+        $userId = $this->option('user_id');
         
         if ($dryRun) {
             $this->comment('Running in dry-run mode - no data will be sent to Mixpanel');
@@ -71,8 +73,13 @@ class SyncUserDataToMixpanel extends Command
             // Build the query for users
             $query = User::with(['referredBy']);
             
-            // Apply date filter if not syncing all
-            if (!$all) {
+            // If specific user_id is provided, only sync that user
+            if ($userId) {
+                $query->where('id', $userId);
+                $this->info("Syncing specific user with ID: {$userId}");
+            }
+            // Apply date filter if not syncing all and no specific user_id
+            else if (!$all) {
                 $startDate = Carbon::now()->subDays($days);
                 $this->info("Syncing users updated from {$startDate->format('Y-m-d')} to now");
                 $query->where('updated_at', '>=', $startDate);
