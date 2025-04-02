@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
         }
 
 		// Every Ten Minutes
-		$schedule->command('articles:sync-location-as-stores')->everyTenMinutes()->onOneServer();
+		// $schedule->command('articles:sync-location-as-stores')->everyTenMinutes()->onOneServer();
 
         // Every Fifteen Minutes
         $schedule->command('merchant-offers:release')->everyFifteenMinutes()->onOneServer();
