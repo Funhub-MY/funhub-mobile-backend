@@ -51,18 +51,17 @@ class ExportPromotionCodesJob implements ShouldQueue
 		$downloadUrl = $disk === 's3_public'
 			? Storage::disk('s3_public')->temporaryUrl(
 				$filePath,
-				now()->addHour(), // Added expiration time
+				now()->addHour(),
 				['ResponseContentDisposition' => 'attachment; filename="' . $filename . '"']
 			)
 			: Storage::disk('public')->url($filePath);
 
-		Log::info('Export file created', [
+		Log::info('[ExportPromotionCodesJob] Export file created', [
 			'disk' => $disk,
 			'file_path' => $filePath,
 			'download_url' => $downloadUrl,
 		]);
 
-		// Send notification
 		Notification::make()
 			->title('Export Ready')
 			->body('Your promotion codes export is ready.')
@@ -74,7 +73,7 @@ class ExportPromotionCodesJob implements ShouldQueue
 			->success()
 			->sendToDatabase(\App\Models\User::find($this->userId));
 
-		Log::info('ExportPromotionCodesJob completed', [
+		Log::info('[ExportPromotionCodesJob] Promotion codes Export completed', [
 			'file_path' => $filePath,
 			'download_url' => $downloadUrl,
 		]);
