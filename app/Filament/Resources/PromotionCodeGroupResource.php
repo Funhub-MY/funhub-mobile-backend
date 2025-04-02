@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PromotionCodeGroupResource\Pages;
 use App\Filament\Resources\PromotionCodeGroupResource\RelationManagers;
+use App\Jobs\ExportPromotionCodesJob;
 use App\Models\PromotionCodeGroup;
 use App\Models\Reward;
 use App\Models\RewardComponent;
@@ -156,11 +157,18 @@ class PromotionCodeGroupResource extends Resource
                     ->modalHeading(fn ($record) => ($record->status ? 'Deactivate' : 'Activate') . ' promotion code group')
                     ->modalSubheading(fn ($record) => 'Are you sure you want to ' . ($record->status ? 'deactivate' : 'activate') . ' this promotion code group? This will also ' . ($record->status ? 'deactivate' : 'activate') . ' all promotion codes in this group.')
                     ->modalButton(fn ($record) => $record->status ? 'Deactivate' : 'Activate'),
-                ExportAction::make()
-                    ->label('Export Codes')
-                    ->exports([
-                        PromotionCodesExport::make()->record(fn ($livewire) => $livewire->record)
-                    ]),
+				Tables\Actions\Action::make('export')
+					->label('Export Codes')
+					->button()
+					->action(function ($record) {
+						ExportPromotionCodesJob::dispatch($record, [], auth()->id());
+
+						Notification::make()
+							->title('Export Queued')
+							->body('The promotion codes are being exported. You will be notified when it’s ready.')
+							->success()
+							->send();
+					}),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
