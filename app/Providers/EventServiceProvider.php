@@ -18,16 +18,19 @@ use App\Events\RatedStore;
 use App\Events\UserReferred;
 use App\Events\UserSettingsUpdated;
 use App\Events\GiftCardPurchased;
+use App\Events\MissionCompletedEvent;
 use App\Observers\ApprovalObserver;
 use App\Models\SupportRequestMessage;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use App\Listeners\MissionEventListener;
+use App\Listeners\CheckNewbieMissionsCompletedListener;
 use App\Listeners\SyncHashtagsToSearchKeywords;
 use App\Listeners\CreateViewsForArticleListener;
 use App\Listeners\MerchantOfferPublishedListener;
 use App\Listeners\RatedLocationListener;
 use App\Listeners\RecommendationAutoByPass;
+use App\Listeners\TrackPurchasedMerchantOfferListener;
 use App\Listeners\UpdateLastRatedForMerchantOfferClaim;
 use App\Listeners\UserReferredListener;
 use App\Listeners\UserSettingsSavedListener;
@@ -85,6 +88,7 @@ class EventServiceProvider extends ServiceProvider
 
         PurchasedMerchantOffer::class => [
             MissionEventListener::class,
+            TrackPurchasedMerchantOfferListener::class,
         ],
 
         FollowedUser::class => [
@@ -114,6 +118,10 @@ class EventServiceProvider extends ServiceProvider
 
         GiftCardPurchased::class => [
             MissionEventListener::class,
+        ],
+
+        MissionCompletedEvent::class => [
+            CheckNewbieMissionsCompletedListener::class,
         ],
     ];
 

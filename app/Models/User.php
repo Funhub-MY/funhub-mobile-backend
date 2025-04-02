@@ -66,7 +66,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         'cover_url',
         'profile_is_private'
     ];
-
+    
     protected static function boot()
     {
         parent::boot();

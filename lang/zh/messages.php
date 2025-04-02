@@ -272,6 +272,8 @@ return [
             'MissionCompleted' => '已完成任务“:missionName”，随机获得:reward x :rewardQuantity',
             "MissionStartedTitle" => '任务开始',
             "MissionStarted" => '开始任务 :missionName',
+            'NewbieMissionsCompletedTitle' => '🎉太强了！你完成所有新手任务🥳',
+            'NewbieMissionsCompletedMessage' => '你已解锁更多探玩任务，马上点击继续你的吃喝玩乐旅程吧🚀',
             'NewfollowerTitle' => '新粉丝',
             'Newfollower' => ':followerName 狠狠关注了你，来认识新朋友吧',
             'NewFollowRequest' => ':followerName 请求关注您',

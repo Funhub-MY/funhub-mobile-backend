@@ -110,6 +110,8 @@ class UserResource extends JsonResource
 //            'is_following' => ($request->user()) ? $this->resource->followers->contains($request->user()->id) : false,
 //            'has_requested_follow' => ($request->user()) ? $this->resource->beingFollowedRequests->contains('user_id', $request->user()->id) : false,
             'is_profile_private' => $this->profile_is_private,
+            'account_restricted' => ($this->account_restricted == 1) ? true : false,
+            'account_restricted_until' => $this->account_restricted_until,
             'dob' => $this->when($this->isAuthUser, $this->dob),
             'gender' => $this->when($this->isAuthUser, $this->gender),
             'job_title' => $this->when($this->isAuthUser, $this->job_title),
