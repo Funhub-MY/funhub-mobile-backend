@@ -182,7 +182,7 @@ class MixpanelService
                 'source' => $source,
                 'referral_user_id' => $referralUserId,
                 'created_at' => $user->created_at->timestamp * 1000, // convert to milliseconds
-                // 'time' => $user->created_at->timestamp * 1000, // convert to milliseconds
+                'Time' => $user->created_at->timestamp * 1000, // convert to milliseconds
                 '$insert_id' => (string) $user->id // ensure it's a string
             ];
             
