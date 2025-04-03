@@ -249,13 +249,10 @@ class EditArticle extends EditRecord
 
 		if ($this->data['locations']) {
 			$location = $article->location()->first();
-			Log::info('[CreateArticle] About to dispatch CreateStoreFromLocation job', [
-				'location_id' => $location->id
-			]);
-			
+            
 			if ($location) {
 				try {
-					\App\Jobs\CreateStoreFromLocation::dispatch($location->id);
+					\App\Jobs\CreateStoreFromLocation::dispatch($location->id, $article->id);
 					Log::info('[EditArticle] Successfully dispatched CreateStoreFromLocation job for location: ' . $location->id);
 				} catch (\Exception $e) {
 					Log::error('[EditArticle] Failed to dispatch CreateStoreFromLocation job', [
@@ -264,7 +261,6 @@ class EditArticle extends EditRecord
 						'error_trace' => $e->getTraceAsString()
 					]);
 				}
-				Log::info('[EditArticle] Dispatched CreateStoreFromLocation job for location: ' . $location->id);
 			}
 		}
 
