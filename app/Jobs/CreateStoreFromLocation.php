@@ -44,11 +44,6 @@ class CreateStoreFromLocation implements ShouldQueue
      */
     public function handle()
     {
-		Log::info('[CreateStoreFromLocation] Job started processing', [
-			'location_id' => $this->locationId,
-			'article_id' => $this->articleId,
-		]);
-
 		try {
 			$location = Location::find($this->locationId);
 
@@ -58,12 +53,6 @@ class CreateStoreFromLocation implements ShouldQueue
 				]);
 				return;
 			}
-
-			Log::info('[CreateStoreFromLocation] Location found', [
-				'location_id' => $location->id,
-				'location_name' => $location->name,
-				'location_address' => $location->full_address
-			]);
 
 			// Check if a store already exists for this location
 			$existingStore = Store::whereHas('location', function ($query) use ($location) {
@@ -80,10 +69,6 @@ class CreateStoreFromLocation implements ShouldQueue
 				]);
 				$store = $existingStore;
 			} else {
-				Log::info('[CreateStoreFromLocation] No existing store found for location', [
-					'location_id' => $location->id
-				]);
-
 				// Check if a store with the same name already exists to avoid duplicates
 				$storeWithSameName = Store::where('name', $location->name)->first();
 				if ($storeWithSameName) {
@@ -117,13 +102,6 @@ class CreateStoreFromLocation implements ShouldQueue
 					}
 
 					// Create store
-					Log::info('[CreateStoreFromLocation] Attempting to create store', [
-						'location_id' => $location->id,
-						'store_name' => $location->name,
-						'address' => $location->full_address,
-						'status' => $status
-					]);
-
 					try {
 						$store = Store::create([
 							'user_id' => null,
@@ -156,11 +134,6 @@ class CreateStoreFromLocation implements ShouldQueue
 
 					// Attach the location to the store
 					try {
-						Log::info('[CreateStoreFromLocation] Attaching location to store', [
-							'store_id' => $store->id,
-							'location_id' => $location->id
-						]);
-
 						$store->location()->attach($location->id);
 
 						Log::info('[CreateStoreFromLocation] Location attached to store successfully', [
@@ -181,11 +154,6 @@ class CreateStoreFromLocation implements ShouldQueue
 
 			// If we have an article ID, process categories
 			if ($this->articleId && $store) {
-				Log::info('[CreateStoreFromLocation] Processing article categories', [
-					'store_id' => $store->id,
-					'article_id' => $this->articleId
-				]);
-
 				$article = Article::find($this->articleId);
 
 				if (!$article) {
@@ -197,7 +165,6 @@ class CreateStoreFromLocation implements ShouldQueue
 
 				Log::info('[CreateStoreFromLocation] Article found', [
 					'article_id' => $article->id,
-					'article_title' => $article->title ?? 'N/A',
 					'category_count' => $article->categories->count(),
 					'subcategory_count' => $article->subCategories->count()
 				]);
@@ -232,11 +199,6 @@ class CreateStoreFromLocation implements ShouldQueue
 								]);
 
 								$store->categories()->attach($categoryId);
-
-								Log::info('[CreateStoreFromLocation] Category attached successfully', [
-									'store_id' => $store->id,
-									'category_id' => $categoryId
-								]);
 							} catch (\Exception $e) {
 								Log::error('[CreateStoreFromLocation] Error attaching store category', [
 									'store_id' => $store->id,
@@ -260,12 +222,6 @@ class CreateStoreFromLocation implements ShouldQueue
 					]);
 				}
 			}
-
-			Log::info('[CreateStoreFromLocation] Job completed successfully', [
-				'location_id' => $this->locationId,
-				'store_id' => $store->id ?? null
-			]);
-
 		} catch (\Exception $e) {
 			Log::error('[CreateStoreFromLocation] Unhandled exception in job', [
 				'location_id' => $this->locationId,
