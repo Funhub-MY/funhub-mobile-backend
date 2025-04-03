@@ -6,6 +6,7 @@ use App\Filament\Resources\ArticleResource;
 use App\Jobs\ByteplusVODProcess;
 use App\Jobs\UpdateArticleTagArticlesCount;
 use App\Models\Article;
+use App\Models\Store;
 use Filament\Pages\Actions;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ArticleTag;
@@ -68,6 +69,19 @@ class CreateArticle extends CreateRecord
 
         if ($this->data['locations']) {
             $this->record->location()->sync($this->data['locations']);
+
+			$location = $article->location()->first();
+
+			// Process attached location to create/update store
+			if ($location) {
+				// Dispatch job to create/check store from location
+				\App\Jobs\CreateStoreFromLocation::dispatch(
+					$location->id, 
+					$article->id
+				);
+				
+				Log::info('[CreateArticle] Dispatched CreateStoreFromLocation job for location: ' . $location->id);
+			}
         }
 
         // if published
