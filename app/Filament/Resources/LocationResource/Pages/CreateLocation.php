@@ -78,8 +78,19 @@ class CreateLocation extends CreateRecord
 			]);
 		}
 
-		// Dispatch job to create store from this location if applicable
-		\App\Jobs\CreateStoreFromLocation::dispatch($location->id);
-		Log::info('[BackendCreateLocation] Dispatched CreateStoreFromLocation job for location: ' . $location->id);
+		Log::info('[BackendCreateLocation] About to dispatch CreateStoreFromLocation job', [
+			'location_id' => $location->id
+		]);
+
+		try {
+			\App\Jobs\CreateStoreFromLocation::dispatch($location->id);
+			Log::info('[BackendCreateLocation] Successfully dispatched CreateStoreFromLocation job for location: ' . $location->id);
+		} catch (\Exception $e) {
+			Log::error('[BackendCreateLocation] Failed to dispatch CreateStoreFromLocation job', [
+				'location_id' => $location->id,
+				'error_message' => $e->getMessage(),
+				'error_trace' => $e->getTraceAsString()
+			]);
+		}
 	}
 }
