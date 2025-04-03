@@ -191,7 +191,13 @@ class CreateStoreFromLocation implements ShouldQueue
 							'category_ids' => $storeCategoriesToAttach->toArray()
 						]);
 
-						foreach ($storeCategoriesToAttach as $categoryId) {
+						// Get current store categories to avoid duplicates
+						$currentStoreCategories = $store->categories->pluck('id');
+						
+						// Determine categories to add (only new ones)
+						$categoriesToAdd = $storeCategoriesToAttach->diff($currentStoreCategories);
+
+						foreach ($categoriesToAdd as $categoryId) {
 							try {
 								Log::info('[CreateStoreFromLocation] Attaching category to store', [
 									'store_id' => $store->id,
