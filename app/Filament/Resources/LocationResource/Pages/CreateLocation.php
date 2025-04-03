@@ -77,5 +77,9 @@ class CreateLocation extends CreateRecord
 				'address' => $location->full_address ?? 'Unknown'
 			]);
 		}
+
+		// Dispatch job to create store from this location if applicable
+		\App\Jobs\CreateStoreFromLocation::dispatch($location->id);
+		Log::info('[BackendCreateLocation] Dispatched CreateStoreFromLocation job for location: ' . $location->id);
 	}
 }

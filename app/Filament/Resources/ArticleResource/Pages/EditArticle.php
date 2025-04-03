@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ArticleResource\Pages;
 
 use App\Jobs\UpdateArticleTagArticlesCount;
 use App\Models\ArticleTag;
+use App\Models\Store;
 use Filament\Pages\Actions;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
@@ -246,12 +247,26 @@ class EditArticle extends EditRecord
             });
         }
 
-        // get article updated tags and final fire the job to get latest count
-        $updated_article_tags = $article->tags()->get();
-        foreach($updated_article_tags as $tag) {
-            Log::info('final fire for tags');
-            UpdateArticleTagArticlesCount::dispatch($tag);
-        }
+		if ($this->data['locations']) {
+			$location = $article->location()->first();
+
+			if ($location) {
+				// Dispatch job to create/check store from location
+				\App\Jobs\CreateStoreFromLocation::dispatch(
+					$location->id, 
+					$article->id
+				);
+				
+				Log::info('[EditArticle] Dispatched CreateStoreFromLocation job for location: ' . $location->id);
+			}
+		}
+
+		// get article updated tags and final fire the job to get latest count
+		$updated_article_tags = $article->tags()->get();
+		foreach($updated_article_tags as $tag) {
+			Log::info('final fire for tags');
+			UpdateArticleTagArticlesCount::dispatch($tag);
+		}
 
         if (isset($this->record)) {
             // trigger searcheable to reindex
