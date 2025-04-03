@@ -30,6 +30,11 @@ class CreateStoreFromLocation implements ShouldQueue
     {
         $this->locationId = $locationId;
         $this->articleId = $articleId;
+
+		Log::info('[CreateStoreFromLocation] Job instantiated', [
+			'location_id' => $locationId,
+			'article_id' => $articleId
+		]);
     }
 
     /**
@@ -39,88 +44,234 @@ class CreateStoreFromLocation implements ShouldQueue
      */
     public function handle()
     {
-        $location = Location::find($this->locationId);
-        
-        if (!$location) {
-            Log::error('[CreateStoreFromLocation] Location not found: ' . $this->locationId);
-            return;
-        }
+		Log::info('[CreateStoreFromLocation] Job started processing', [
+			'location_id' => $this->locationId,
+			'article_id' => $this->articleId,
+			'queue' => $this->queue ?? 'default'
+		]);
 
-        // Check if a store already exists for this location
-        $store = Store::whereHas('location', function ($query) use ($location) {
-            $query->where('locations.id', $location->id);
-        })->first();
+		try {
+			$location = Location::find($this->locationId);
 
-        if ($store) {
-            Log::info('[CreateStoreFromLocation] Store already exists for location: ' . $location->id . ' with store id: ' . $store->id);
-            return;
-        }
+			if (!$location) {
+				Log::error('[CreateStoreFromLocation] Location not found', [
+					'location_id' => $this->locationId
+				]);
+				return;
+			}
 
-        // Check if a store with the same name already exists to avoid duplicates
-        if (Store::where('name', $location->name)->exists()) {
-            Log::info('[CreateStoreFromLocation] Store with same name already exists for location: ' . $location->name);
-            return;
-        }
+			Log::info('[CreateStoreFromLocation] Location found', [
+				'location_id' => $location->id,
+				'location_name' => $location->name,
+				'location_address' => $location->full_address
+			]);
 
-        Log::info('[CreateStoreFromLocation] Creating store for location: ' . $location->name);
+			// Check if a store already exists for this location
+			$existingStore = Store::whereHas('location', function ($query) use ($location) {
+				$query->where('locations.id', $location->id);
+			})->first();
 
-        // Determine store status
-        $status = Store::STATUS_ACTIVE;
-        $smallLetterAddress = trim(strtolower($location->name));
-        if (str_starts_with($smallLetterAddress, 'lorong') ||
-            str_starts_with($smallLetterAddress, 'jalan') ||
-            str_starts_with($smallLetterAddress, 'street')) {
-            $status = Store::STATUS_INACTIVE;
-        }
+			if ($existingStore) {
+				Log::info('[CreateStoreFromLocation] Store already exists for location', [
+					'location_id' => $location->id,
+					'store_id' => $existingStore->id,
+					'store_name' => $existingStore->name
+				]);
+				return;
+			}
 
-        // Create store
-        $store = Store::create([
-            'user_id' => null,
-            'name' => $location->name,
-            'manager_name' => null,
-            'business_phone_no' => null,
-            'business_hours' => null,
-            'address' => $location->full_address,
-            'address_postcode' => $location->zip_code,
-            'lat' => $location->lat,
-            'long' => $location->lng,
-            'is_hq' => false,
-            'state_id' => $location->state_id,
-            'country_id' => $location->country_id,
-            'status' => $status,
-        ]);
+			Log::info('[CreateStoreFromLocation] No existing store found for location', [
+				'location_id' => $location->id
+			]);
 
-        // Attach the location to the store
-        $store->location()->attach($location->id);
+			// Check if a store with the same name already exists to avoid duplicates
+			$storeWithSameName = Store::where('name', $location->name)->first();
+			if ($storeWithSameName) {
+				Log::info('[CreateStoreFromLocation] Store with same name already exists', [
+					'location_id' => $location->id,
+					'location_name' => $location->name,
+					'existing_store_id' => $storeWithSameName->id
+				]);
+				return;
+			}
 
-        Log::info('[CreateStoreFromLocation] Store created for location: ' . $location->id . ' with store id: ' . $store->id);
+			Log::info('[CreateStoreFromLocation] No store with same name exists, proceeding with creation', [
+				'location_name' => $location->name
+			]);
 
-        // If we have an article ID, process categories
-        if ($this->articleId) {
-            $article = Article::find($this->articleId);
-            
-            if ($article && ($article->categories->isNotEmpty() || $article->subCategories->isNotEmpty())) {
-                try {
-                    $articleCategoryIds = $article->categories->pluck('id');
-                    $articleSubCategoryIds = $article->subCategories->pluck('id');
-                    $allArticleCategoryIds = $articleCategoryIds->merge($articleSubCategoryIds);
+			// Determine store status
+			$status = Store::STATUS_ACTIVE;
+			$smallLetterAddress = trim(strtolower($location->name));
 
-                    $storeCategoriesToAttach = \App\Models\ArticleStoreCategory::whereIn('article_category_id', $allArticleCategoryIds)
-                        ->pluck('merchant_category_id')
-                        ->unique();
+			if (str_starts_with($smallLetterAddress, 'lorong') ||
+				str_starts_with($smallLetterAddress, 'jalan') ||
+				str_starts_with($smallLetterAddress, 'street')) {
+				$status = Store::STATUS_INACTIVE;
+				Log::info('[CreateStoreFromLocation] Setting store status to INACTIVE based on name pattern', [
+					'location_name' => $location->name,
+					'pattern_matched' => true
+				]);
+			} else {
+				Log::info('[CreateStoreFromLocation] Setting store status to ACTIVE', [
+					'location_name' => $location->name
+				]);
+			}
 
-                    foreach ($storeCategoriesToAttach as $categoryId) {
-                        try {
-                            $store->categories()->attach($categoryId);
-                            Log::info('[CreateStoreFromLocation] Store category attached: ' . $categoryId . ' to store: ' . $store->id);
-                        } catch (\Exception $e) {
-                            Log::error('[CreateStoreFromLocation] Error attaching store category: ' . $categoryId . ' to store: ' . $store->id . '. Error: ' . $e->getMessage());
-                        }
-                    }
-                } catch (\Exception $e) {
-                    Log::error('[CreateStoreFromLocation] Error processing categories for store: ' . $store->id . ' and article: ' . $article->id . '. Error: ' . $e->getMessage());
-                }
-            }
-        }
+			// Create store
+			Log::info('[CreateStoreFromLocation] Attempting to create store', [
+				'location_id' => $location->id,
+				'store_name' => $location->name,
+				'address' => $location->full_address,
+				'status' => $status
+			]);
+
+			try {
+				$store = Store::create([
+					'user_id' => null,
+					'name' => $location->name,
+					'manager_name' => null,
+					'business_phone_no' => null,
+					'business_hours' => null,
+					'address' => $location->full_address,
+					'address_postcode' => $location->zip_code,
+					'lat' => $location->lat,
+					'long' => $location->lng,
+					'is_hq' => false,
+					'state_id' => $location->state_id,
+					'country_id' => $location->country_id,
+					'status' => $status,
+				]);
+
+				Log::info('[CreateStoreFromLocation] Store created successfully', [
+					'store_id' => $store->id,
+					'store_name' => $store->name
+				]);
+			} catch (\Exception $e) {
+				Log::error('[CreateStoreFromLocation] Failed to create store', [
+					'location_id' => $location->id,
+					'error_message' => $e->getMessage(),
+					'error_trace' => $e->getTraceAsString()
+				]);
+				throw $e;
+			}
+
+			// Attach the location to the store
+			try {
+				Log::info('[CreateStoreFromLocation] Attaching location to store', [
+					'store_id' => $store->id,
+					'location_id' => $location->id
+				]);
+
+				$store->location()->attach($location->id);
+
+				Log::info('[CreateStoreFromLocation] Location attached to store successfully', [
+					'store_id' => $store->id,
+					'location_id' => $location->id
+				]);
+			} catch (\Exception $e) {
+				Log::error('[CreateStoreFromLocation] Failed to attach location to store', [
+					'store_id' => $store->id,
+					'location_id' => $location->id,
+					'error_message' => $e->getMessage(),
+					'error_trace' => $e->getTraceAsString()
+				]);
+				throw $e;
+			}
+
+			// If we have an article ID, process categories
+			if ($this->articleId) {
+				Log::info('[CreateStoreFromLocation] Processing article categories', [
+					'store_id' => $store->id,
+					'article_id' => $this->articleId
+				]);
+
+				$article = Article::find($this->articleId);
+
+				if (!$article) {
+					Log::warning('[CreateStoreFromLocation] Article not found', [
+						'article_id' => $this->articleId
+					]);
+					return;
+				}
+
+				Log::info('[CreateStoreFromLocation] Article found', [
+					'article_id' => $article->id,
+					'article_title' => $article->title ?? 'N/A',
+					'category_count' => $article->categories->count(),
+					'subcategory_count' => $article->subCategories->count()
+				]);
+
+				if ($article->categories->isNotEmpty() || $article->subCategories->isNotEmpty()) {
+					try {
+						$articleCategoryIds = $article->categories->pluck('id');
+						$articleSubCategoryIds = $article->subCategories->pluck('id');
+						$allArticleCategoryIds = $articleCategoryIds->merge($articleSubCategoryIds);
+
+						Log::info('[CreateStoreFromLocation] Article category IDs', [
+							'article_id' => $article->id,
+							'category_ids' => $articleCategoryIds->toArray(),
+							'subcategory_ids' => $articleSubCategoryIds->toArray()
+						]);
+
+						$storeCategoriesToAttach = \App\Models\ArticleStoreCategory::whereIn('article_category_id', $allArticleCategoryIds)
+							->pluck('merchant_category_id')
+							->unique();
+
+						Log::info('[CreateStoreFromLocation] Store categories to attach', [
+							'store_id' => $store->id,
+							'category_count' => $storeCategoriesToAttach->count(),
+							'category_ids' => $storeCategoriesToAttach->toArray()
+						]);
+
+						foreach ($storeCategoriesToAttach as $categoryId) {
+							try {
+								Log::info('[CreateStoreFromLocation] Attaching category to store', [
+									'store_id' => $store->id,
+									'category_id' => $categoryId
+								]);
+
+								$store->categories()->attach($categoryId);
+
+								Log::info('[CreateStoreFromLocation] Category attached successfully', [
+									'store_id' => $store->id,
+									'category_id' => $categoryId
+								]);
+							} catch (\Exception $e) {
+								Log::error('[CreateStoreFromLocation] Error attaching store category', [
+									'store_id' => $store->id,
+									'category_id' => $categoryId,
+									'error_message' => $e->getMessage(),
+									'error_trace' => $e->getTraceAsString()
+								]);
+							}
+						}
+					} catch (\Exception $e) {
+						Log::error('[CreateStoreFromLocation] Error processing categories', [
+							'store_id' => $store->id,
+							'article_id' => $article->id,
+							'error_message' => $e->getMessage(),
+							'error_trace' => $e->getTraceAsString()
+						]);
+					}
+				} else {
+					Log::info('[CreateStoreFromLocation] No categories found for article', [
+						'article_id' => $article->id
+					]);
+				}
+			}
+
+			Log::info('[CreateStoreFromLocation] Job completed successfully', [
+				'location_id' => $this->locationId,
+				'store_id' => $store->id ?? null
+			]);
+
+		} catch (\Exception $e) {
+			Log::error('[CreateStoreFromLocation] Unhandled exception in job', [
+				'location_id' => $this->locationId,
+				'article_id' => $this->articleId,
+				'error_message' => $e->getMessage(),
+				'error_trace' => $e->getTraceAsString()
+			]);
+		}
     }
 }

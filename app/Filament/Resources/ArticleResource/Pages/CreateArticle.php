@@ -71,15 +71,22 @@ class CreateArticle extends CreateRecord
             $this->record->location()->sync($this->data['locations']);
 
 			$location = $article->location()->first();
+			Log::info('[CreateArticle] About to dispatch CreateStoreFromLocation job', [
+				'location_id' => $location->id
+			]);
 
 			// Process attached location to create/update store
 			if ($location) {
-				// Dispatch job to create/check store from location
-				\App\Jobs\CreateStoreFromLocation::dispatch(
-					$location->id, 
-					$article->id
-				);
-				
+				try {
+					\App\Jobs\CreateStoreFromLocation::dispatch($location->id);
+					Log::info('[BackendCreateLocation] Successfully dispatched CreateStoreFromLocation job for location: ' . $location->id);
+				} catch (\Exception $e) {
+					Log::error('[BackendCreateLocation] Failed to dispatch CreateStoreFromLocation job', [
+						'location_id' => $location->id,
+						'error_message' => $e->getMessage(),
+						'error_trace' => $e->getTraceAsString()
+					]);
+				}
 				Log::info('[CreateArticle] Dispatched CreateStoreFromLocation job for location: ' . $location->id);
 			}
         }
