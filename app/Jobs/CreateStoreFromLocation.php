@@ -47,7 +47,6 @@ class CreateStoreFromLocation implements ShouldQueue
 		Log::info('[CreateStoreFromLocation] Job started processing', [
 			'location_id' => $this->locationId,
 			'article_id' => $this->articleId,
-			'queue' => $this->queue ?? 'default'
 		]);
 
 		try {
