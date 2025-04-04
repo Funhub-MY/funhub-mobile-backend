@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
 use Illuminate\Support\HtmlString;
+use App\Models\SupportRequestMessage;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class MessagesRelationManager extends RelationManager
 {
@@ -31,6 +33,20 @@ class MessagesRelationManager extends RelationManager
                 Forms\Components\TextInput::make('message')
                     ->required()
                     ->maxLength(255),
+                    
+                SpatieMediaLibraryFileUpload::make('media')
+                    ->label('Image/Video Attachments')
+                    ->collection(SupportRequestMessage::MEDIA_COLLECTION_NAME)
+                    ->multiple()
+                    ->enableReordering()
+                    ->acceptedFileTypes(['image/*', 'video/*'])
+                    ->disk(function () {
+                        if (config('filesystems.default') === 's3') {
+                            return 's3_public';
+                        }
+                        return config('filesystems.default');
+                    })
+                    ->directory('filament-support-request-uploads'),
             ]);
     }
 
