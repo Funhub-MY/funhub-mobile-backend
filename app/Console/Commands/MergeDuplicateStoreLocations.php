@@ -10,6 +10,7 @@ use App\Models\Article;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Collection;
 
 class MergeDuplicateStoreLocations extends Command
 {
@@ -18,7 +19,12 @@ class MergeDuplicateStoreLocations extends Command
      *
      * @var string
      */
-    protected $signature = 'locations:merge-duplicates {--dry-run : Run without making any changes to the database} {--store_id= : Process a specific store ID} {--similarity=80 : Minimum name similarity percentage to consider stores as duplicates}';
+    protected $signature = 'locations:merge-duplicates 
+                            {--dry-run : Run without making any changes to the database} 
+                            {--store_id= : Process specific store IDs (comma-separated)} 
+                            {--store_name= : Process only stores with these names (comma-separated, partial matching)}
+                            {--location_id= : Process only specific location IDs (comma-separated)}
+                            {--similarity=80 : Minimum name similarity percentage to consider stores as duplicates}';
 
     /**
      * The console command description.
@@ -28,7 +34,7 @@ class MergeDuplicateStoreLocations extends Command
     protected $description = 'Find and merge duplicate store locations, keeping the ones with onboarded stores (stores with user_id)';
 
     /**
-     * Calculate similarity between two strings (using Levenshtein distance)
+     * Calculate similarity between two strings with support for multi-byte characters (including Chinese)
      * 
      * @param string $str1
      * @param string $str2
@@ -36,8 +42,9 @@ class MergeDuplicateStoreLocations extends Command
      */
     private function calculateStringSimilarity(string $str1, string $str2): float
     {
-        $str1 = strtolower(trim($str1));
-        $str2 = strtolower(trim($str2));
+        // Normalize and clean strings
+        $str1 = mb_strtolower(trim($str1), 'UTF-8');
+        $str2 = mb_strtolower(trim($str2), 'UTF-8');
         
         if (empty($str1) && empty($str2)) {
             return 100.0;
@@ -47,14 +54,25 @@ class MergeDuplicateStoreLocations extends Command
             return 0.0;
         }
         
+        // For multi-byte strings (like Chinese), use similar_text which works better than levenshtein
+        // for non-Latin character sets
+        $similarPercent = 0;
+        similar_text($str1, $str2, $similarPercent);
+        
+        // If strings contain multi-byte characters, use similar_text result
+        if (mb_strlen($str1, 'UTF-8') !== strlen($str1) || mb_strlen($str2, 'UTF-8') !== strlen($str2)) {
+            return $similarPercent;
+        }
+        
+        // For ASCII strings, levenshtein often gives better results
         $levenshtein = levenshtein($str1, $str2);
-        $maxLength = max(strlen($str1), strlen($str2));
+        $maxLength = max(mb_strlen($str1, 'UTF-8'), mb_strlen($str2, 'UTF-8'));
         
         return (1 - ($levenshtein / $maxLength)) * 100;
     }
     
     /**
-     * Check if coordinates are equal (within a small margin of error)
+     * Check if coordinates are equal (exact match with no margin of error)
      * 
      * @param float $lat1
      * @param float $lng1
@@ -64,10 +82,8 @@ class MergeDuplicateStoreLocations extends Command
      */
     private function coordinatesMatch(float $lat1, float $lng1, float $lat2, float $lng2): bool
     {
-        // Allow for a small margin of error (approximately 10 meters)
-        $precision = 0.0001;
-        
-        return (abs($lat1 - $lat2) < $precision && abs($lng1 - $lng2) < $precision);
+        // Exact match with no margin of error
+        return ($lat1 === $lat2 && $lng1 === $lng2);
     }
 
     /**
@@ -76,7 +92,10 @@ class MergeDuplicateStoreLocations extends Command
     public function handle()
     {
         $isDryRun = $this->option('dry-run');
-        $specificStoreId = $this->option('store_id');
+        $storeIds = $this->option('store_id');
+        $locationIds = $this->option('location_id');
+        $storeNames = $this->option('store_name');
+        // $ignoreMalls = $this->option('ignore_malls');
         $minSimilarity = (int) $this->option('similarity') ?: 80;
 
         if ($isDryRun) {
@@ -86,15 +105,18 @@ class MergeDuplicateStoreLocations extends Command
         $this->info('Starting to find and merge duplicate store locations...');
         Log::info('[MergeDuplicateStoreLocations] Command started', [
             'dry_run' => $isDryRun,
-            'store_id' => $specificStoreId
+            'store_ids' => $storeIds,
+            'location_ids' => $locationIds,
+            'store_names' => $storeNames,
+            // 'ignore_malls' => $ignoreMalls
         ]);
 
         try {
             // Step 1: Get all locations with stores
             $this->info('Step 1: Getting all locations with stores...');
             
-            // Get all locations with their attached stores
-            $locationsWithStores = DB::table('locations')
+            // Get all locations with their attached stores - using chunking for memory efficiency
+            $query = DB::table('locations')
                 ->leftJoin('locatables', function ($join) {
                     $join->on('locations.id', '=', 'locatables.location_id')
                         ->where('locatables.locatable_type', '=', Store::class);
@@ -106,26 +128,82 @@ class MergeDuplicateStoreLocations extends Command
                     'locations.lng', 
                     'locations.google_id',
                     'locations.name as location_name',
+                    'locations.is_mall',
                     'stores.id as store_id', 
                     'stores.user_id', 
                     'stores.name as store_name'
                 );
                 
-            if ($specificStoreId) {
-                $store = Store::find($specificStoreId);
-                if (!$store) {
-                    $this->error("Store with ID {$specificStoreId} not found.");
-                    return Command::FAILURE;
+            // Apply store ID filter if provided
+            if ($storeIds) {
+                $storeIdArray = array_map('trim', explode(',', $storeIds));
+                $this->info("Filtering by store IDs: " . implode(', ', $storeIdArray));
+                
+                // Verify all store IDs exist
+                $foundStores = Store::whereIn('id', $storeIdArray)->pluck('id')->toArray();
+                $missingStores = array_diff($storeIdArray, $foundStores);
+                
+                if (!empty($missingStores)) {
+                    $this->warn("Some store IDs were not found: " . implode(', ', $missingStores));
                 }
-                $locationsWithStores->where('stores.id', $specificStoreId);
+                
+                $query->whereIn('stores.id', $storeIdArray);
             }
             
-            $locationsData = $locationsWithStores->get();
+            // Apply location ID filter if provided
+            if ($locationIds) {
+                $locationIdArray = array_map('trim', explode(',', $locationIds));
+                $this->info("Filtering by location IDs: " . implode(', ', $locationIdArray));
+                $query->whereIn('locations.id', $locationIdArray);
+            }
             
-            $this->info("Found {$locationsData->count()} location records to analyze.");
+            // Apply store name filter if provided
+            if ($storeNames) {
+                $storeNameArray = array_map('trim', explode(',', $storeNames));
+                $this->info("Filtering by store names containing: " . implode(', ', $storeNameArray));
+                
+                $query->where(function($q) use ($storeNameArray) {
+                    foreach ($storeNameArray as $index => $name) {
+                        if ($index === 0) {
+                            $q->where(function($subQ) use ($name) {
+                                $subQ->where('stores.name', 'like', "%{$name}%")
+                                    ->orWhere('locations.name', 'like', "%{$name}%");
+                            });
+                        } else {
+                            $q->orWhere(function($subQ) use ($name) {
+                                $subQ->where('stores.name', 'like', "%{$name}%")
+                                    ->orWhere('locations.name', 'like', "%{$name}%");
+                            });
+                        }
+                    }
+                });
+            }
+            
+            // Ignore mall locations if option is set
+            if ($ignoreMalls) {
+                $this->info("Ignoring mall locations");
+                $query->where(function($q) {
+                    $q->where('locations.is_mall', 0)
+                      ->orWhereNull('locations.is_mall');
+                });
+            }
+            
+            // Count total records for logging
+            $totalCount = $query->count();
+            $this->info("Found {$totalCount} location records to analyze.");
             Log::info('[MergeDuplicateStoreLocations] Found locations with stores', [
-                'count' => $locationsData->count()
+                'count' => $totalCount
             ]);
+            
+            // Use a generator approach to process locations in chunks to reduce memory usage
+            $locationsData = collect();
+            $chunkSize = 100; // Process 100 records at a time
+            
+            $query->orderBy('locations.id')->chunk($chunkSize, function ($chunk) use (&$locationsData) {
+                foreach ($chunk as $location) {
+                    $locationsData->push($location);
+                }
+            });
 
             // Step 2: Find potential duplicates based on name similarity and matching coordinates
             $this->info("Step 2: Finding potential duplicates based on name similarity (min {$minSimilarity}%) and matching coordinates...");
@@ -133,76 +211,82 @@ class MergeDuplicateStoreLocations extends Command
             $locationGroups = [];
             $processedLocationIds = [];
             
-            foreach ($locationsData as $location) {
-                if (in_array($location->id, $processedLocationIds)) {
-                    continue; // Skip already processed locations
-                }
-                
-                // Get the full location object for more details
-                $fullLocation = Location::find($location->id);
-                if (!$fullLocation) {
-                    continue; // Skip if location not found
-                }
-                
-                $group = [$location];
-                $processedLocationIds[] = $location->id;
-                
-                // Find potential duplicates
-                foreach ($locationsData as $potentialDuplicate) {
-                    if ($location->id === $potentialDuplicate->id || in_array($potentialDuplicate->id, $processedLocationIds)) {
-                        continue; // Skip self or already processed
+            // Process locations in chunks to reduce memory usage
+            foreach ($locationsData->chunk(100) as $chunk) {
+                foreach ($chunk as $location) {
+                    if (in_array($location->id, $processedLocationIds)) {
+                        continue; // Skip already processed locations
                     }
                     
-                    // Check if coordinates match
-                    $coordinatesMatch = $this->coordinatesMatch(
-                        $location->lat, 
-                        $location->lng, 
-                        $potentialDuplicate->lat, 
-                        $potentialDuplicate->lng
-                    );
-                    
-                    if (!$coordinatesMatch) {
-                        continue; // Skip if coordinates don't match
+                    // Get the full location object for more details - use eager loading to reduce queries
+                    $fullLocation = Location::with(['articles', 'ratings'])->find($location->id);
+                    if (!$fullLocation) {
+                        continue; // Skip if location not found
                     }
                     
-                    // Check name similarity
-                    $nameSimilarity = 0;
+                    $group = [$location];
+                    $processedLocationIds[] = $location->id;
                     
-                    // Try to compare store names first if available
-                    if (!empty($location->store_name) && !empty($potentialDuplicate->store_name)) {
-                        $nameSimilarity = $this->calculateStringSimilarity(
-                            $location->store_name,
-                            $potentialDuplicate->store_name
-                        );
-                    } 
-                    // Fall back to location names if store names aren't available
-                    else if (!empty($location->location_name) && !empty($potentialDuplicate->location_name)) {
-                        $nameSimilarity = $this->calculateStringSimilarity(
-                            $location->location_name,
-                            $potentialDuplicate->location_name
-                        );
-                    }
+                    // Compare with all other locations - but only process 100 at a time
+                    $potentialMatches = $this->getPotentialMatches($location, $locationsData, $processedLocationIds);
                     
-                    // Check if google_id is different (if both have google_id)
-                    $differentGoogleId = false;
-                    if (!empty($location->google_id) && !empty($potentialDuplicate->google_id)) {
-                        $differentGoogleId = ($location->google_id !== $potentialDuplicate->google_id);
-                    }
-                    
-                    // Add to group if meets criteria: coordinates match AND (name similarity >= threshold OR different google_id)
-                    if ($coordinatesMatch && ($nameSimilarity >= $minSimilarity || $differentGoogleId)) {
-                        $group[] = $potentialDuplicate;
-                        $processedLocationIds[] = $potentialDuplicate->id;
+                    foreach ($potentialMatches as $potentialDuplicate) {
+                        // First check name similarity as it precedes all conditions
+                        $nameSimilarity = 0;
                         
-                        $this->info("Found potential duplicate: Location {$potentialDuplicate->id} matches Location {$location->id} "
-                            . "(Name similarity: {$nameSimilarity}%, Coordinates match: Yes, Different Google ID: "
-                            . ($differentGoogleId ? 'Yes' : 'No') . ")");
+                        // Try to compare store names first if available
+                        if (!empty($location->store_name) && !empty($potentialDuplicate->store_name)) {
+                            $nameSimilarity = $this->calculateStringSimilarity(
+                                $location->store_name,
+                                $potentialDuplicate->store_name
+                            );
+                        } 
+                        // Fall back to location names if store names aren't available
+                        else if (!empty($location->location_name) && !empty($potentialDuplicate->location_name)) {
+                            $nameSimilarity = $this->calculateStringSimilarity(
+                                $location->location_name,
+                                $potentialDuplicate->location_name
+                            );
+                        }
+                        
+                        // Skip if name similarity is below threshold
+                        if ($nameSimilarity < $minSimilarity) {
+                            continue;
+                        }
+                        
+                        // Now check if coordinates match exactly
+                        $coordinatesMatch = $this->coordinatesMatch(
+                            $location->lat, 
+                            $location->lng, 
+                            $potentialDuplicate->lat, 
+                            $potentialDuplicate->lng
+                        );
+                        
+                        // Check if google_id is different (if both have google_id)
+                        $differentGoogleId = false;
+                        if (!empty($location->google_id) && !empty($potentialDuplicate->google_id)) {
+                            $differentGoogleId = ($location->google_id !== $potentialDuplicate->google_id);
+                        }
+                        
+                        // Add to group if name similarity is good AND coordinates match
+                        if ($coordinatesMatch) {
+                            $group[] = $potentialDuplicate;
+                            $processedLocationIds[] = $potentialDuplicate->id;
+                            
+                            $this->info("Found potential duplicate: Location {$potentialDuplicate->id} matches Location {$location->id} "
+                                . "(Name similarity: {$nameSimilarity}%, Coordinates match: Yes, Different Google ID: "
+                                . ($differentGoogleId ? 'Yes' : 'No') . ")");
+                        }
                     }
-                }
-                
-                // Only add groups with more than one location (potential duplicates)
-                if (count($group) > 1) {
-                    $locationGroups[] = $group;
+                    
+                    // Only add groups with more than one location (potential duplicates)
+                    if (count($group) > 1) {
+                        $locationGroups[] = $group;
+                    }
+                    
+                    // Free memory
+                    unset($fullLocation);
+                    unset($potentialMatches);
                 }
             }
             
@@ -319,8 +403,8 @@ class MergeDuplicateStoreLocations extends Command
      */
     private function moveArticles(Location $fromLocation, Location $toLocation, bool $isDryRun): int
     {
-        $articles = $fromLocation->articles()->get();
-        $count = $articles->count();
+        // Get count without loading all articles into memory
+        $count = $fromLocation->articles()->count();
         
         $this->info("Found {$count} articles to move from location {$fromLocation->id} to {$toLocation->id}");
         
@@ -329,28 +413,31 @@ class MergeDuplicateStoreLocations extends Command
         }
         
         if (!$isDryRun) {
-            foreach ($articles as $article) {
-                // Check if article is already attached to the target location
-                $isAlreadyAttached = DB::table('locatables')
-                    ->where('location_id', $toLocation->id)
-                    ->where('locatable_type', Article::class)
-                    ->where('locatable_id', $article->id)
-                    ->exists();
-                
-                if (!$isAlreadyAttached) {
-                    // Attach article to the new location
-                    $toLocation->articles()->attach($article->id);
+            // Process in chunks to reduce memory usage
+            $fromLocation->articles()->chunk(50, function ($articles) use ($toLocation, $fromLocation) {
+                foreach ($articles as $article) {
+                    // Check if article is already attached to the target location
+                    $isAlreadyAttached = DB::table('locatables')
+                        ->where('location_id', $toLocation->id)
+                        ->where('locatable_type', Article::class)
+                        ->where('locatable_id', $article->id)
+                        ->exists();
                     
-                    $this->info("Moved article (ID: {$article->id}) to location (ID: {$toLocation->id})");
-                    Log::info('[MergeDuplicateStoreLocations] Moved article', [
-                        'article_id' => $article->id,
-                        'from_location_id' => $fromLocation->id,
-                        'to_location_id' => $toLocation->id
-                    ]);
-                } else {
-                    $this->info("Article (ID: {$article->id}) is already attached to location (ID: {$toLocation->id})");
+                    if (!$isAlreadyAttached) {
+                        // Attach article to the new location
+                        $toLocation->articles()->attach($article->id);
+                        
+                        $this->info("Moved article (ID: {$article->id}) to location (ID: {$toLocation->id})");
+                        Log::info('[MergeDuplicateStoreLocations] Moved article', [
+                            'article_id' => $article->id,
+                            'from_location_id' => $fromLocation->id,
+                            'to_location_id' => $toLocation->id
+                        ]);
+                    } else {
+                        $this->info("Article (ID: {$article->id}) is already attached to location (ID: {$toLocation->id})");
+                    }
                 }
-            }
+            });
         } else {
             $this->info("[DRY RUN] Would move {$count} articles from location {$fromLocation->id} to {$toLocation->id}");
         }
@@ -368,8 +455,8 @@ class MergeDuplicateStoreLocations extends Command
      */
     private function moveLocationRatings(Location $fromLocation, Location $toLocation, bool $isDryRun): int
     {
-        $ratings = $fromLocation->ratings()->get();
-        $count = $ratings->count();
+        // Get count without loading all ratings into memory
+        $count = $fromLocation->ratings()->count();
         
         $this->info("Found {$count} ratings to move from location {$fromLocation->id} to {$toLocation->id}");
         
@@ -378,43 +465,49 @@ class MergeDuplicateStoreLocations extends Command
         }
         
         if (!$isDryRun) {
-            foreach ($ratings as $rating) {
-                // Check if a rating from the same user already exists in the target location
-                $existingRating = $toLocation->ratings()
-                    ->where('user_id', $rating->user_id)
-                    ->first();
-                
-                if (!$existingRating) {
-                    // Create a new rating in the target location
-                    $newRating = new LocationRating([
-                        'location_id' => $toLocation->id,
-                        'user_id' => $rating->user_id,
-                        'rating' => $rating->rating,
-                        'created_at' => $rating->created_at,
-                        'updated_at' => $rating->updated_at
-                    ]);
+            // Process in chunks to reduce memory usage
+            $fromLocation->ratings()->chunk(50, function ($ratings) use ($toLocation, $fromLocation) {
+                foreach ($ratings as $rating) {
+                    // Check if a rating from the same user already exists in the target location
+                    $existingRating = $toLocation->ratings()
+                        ->where('user_id', $rating->user_id)
+                        ->first();
                     
-                    $newRating->save();
+                    if (!$existingRating) {
+                        // Create a new rating in the target location using insert instead of create+save
+                        DB::table('location_ratings')->insert([
+                            'location_id' => $toLocation->id,
+                            'user_id' => $rating->user_id,
+                            'rating' => $rating->rating,
+                            'created_at' => $rating->created_at,
+                            'updated_at' => $rating->updated_at
+                        ]);
+                        
+                        $this->info("Moved rating (ID: {$rating->id}) to location (ID: {$toLocation->id})");
+                        Log::info('[MergeDuplicateStoreLocations] Moved rating', [
+                            'rating_id' => $rating->id,
+                            'from_location_id' => $fromLocation->id,
+                            'to_location_id' => $toLocation->id
+                        ]);
+                    } else {
+                        $this->info("Rating from user (ID: {$rating->user_id}) already exists in location (ID: {$toLocation->id})");
+                    }
                     
-                    $this->info("Moved rating (ID: {$rating->id}) to location (ID: {$toLocation->id})");
-                    Log::info('[MergeDuplicateStoreLocations] Moved rating', [
-                        'rating_id' => $rating->id,
-                        'from_location_id' => $fromLocation->id,
-                        'to_location_id' => $toLocation->id
-                    ]);
-                } else {
-                    $this->info("Rating from user (ID: {$rating->user_id}) already exists in location (ID: {$toLocation->id})");
+                    // Delete the old rating
+                    $rating->delete();
                 }
+            });
+            
+            // Update the average rating of the target location using direct query for efficiency
+            $avgRating = DB::table('location_ratings')
+                ->where('location_id', $toLocation->id)
+                ->avg('rating') ?? 0;
                 
-                // Delete the old rating
-                $rating->delete();
-            }
+            DB::table('locations')
+                ->where('id', $toLocation->id)
+                ->update(['average_ratings' => $avgRating]);
             
-            // Update the average rating of the target location
-            $toLocation->average_ratings = $toLocation->ratings()->avg('rating') ?? 0;
-            $toLocation->save();
-            
-            $this->info("Updated average rating for location (ID: {$toLocation->id}) to {$toLocation->average_ratings}");
+            $this->info("Updated average rating for location (ID: {$toLocation->id}) to {$avgRating}");
         } else {
             $this->info("[DRY RUN] Would move {$count} ratings from location {$fromLocation->id} to {$toLocation->id}");
         }
@@ -448,5 +541,31 @@ class MergeDuplicateStoreLocations extends Command
         } else {
             $this->info("[DRY RUN] Would update ratings for store (ID: {$store->id})");
         }
+    }
+    
+    /**
+     * Get potential matches for a location (memory efficient)
+     * 
+     * @param object $location
+     * @param Collection $allLocations
+     * @param array $processedLocationIds
+     * @return array
+     */
+    private function getPotentialMatches(object $location, Collection $allLocations, array $processedLocationIds): array
+    {
+        $potentialMatches = [];
+        
+        // Process in smaller batches to reduce memory usage
+        foreach ($allLocations->chunk(50) as $chunk) {
+            foreach ($chunk as $potentialDuplicate) {
+                if ($location->id === $potentialDuplicate->id || in_array($potentialDuplicate->id, $processedLocationIds)) {
+                    continue; // Skip self or already processed
+                }
+                
+                $potentialMatches[] = $potentialDuplicate;
+            }
+        }
+        
+        return $potentialMatches;
     }
 }
