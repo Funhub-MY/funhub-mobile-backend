@@ -344,16 +344,28 @@ class MerchantOfferController extends Controller
         }
 
         if ($request->has('is_expired')) {
-            if ($request->get('is_expired') == 1) { // true
-                $query->where(function ($query) {
-                    $query->whereHas('merchantOffer', function ($query) {
-                        $query->whereRaw('DATE_ADD(DATE(merchant_offer_user.created_at), INTERVAL merchant_offers.expiry_days + 1 DAY) < CURDATE()');
+            if ($request->get('is_expired') == 1) { // true - expired offers
+                $query->whereHas('merchantOffer', function ($query) {
+                    $query->whereHas('claims', function ($claimQuery) {
+                        $claimQuery->whereColumn('merchant_offer_user.id', 'merchant_offer_claims.id')
+                            ->where(function ($q) {
+                                $q->whereRaw('DATE(merchant_offer_user.created_at) IS NOT NULL')
+                                  ->whereRaw('merchant_offers.expiry_days IS NOT NULL')
+                                  ->whereRaw('merchant_offers.expiry_days > 0')
+                                  ->whereRaw('CONCAT(DATE_ADD(DATE(merchant_offer_user.created_at), INTERVAL merchant_offers.expiry_days DAY), " 23:59:59") < NOW()');
+                            });
                     });
                 });
-            } else if ($request->get('is_expired') == 0) { // false
-                $query->where(function ($query) {
-                    $query->whereHas('merchantOffer', function ($query) {
-                        $query->whereRaw('DATE_ADD(DATE(merchant_offer_user.created_at), INTERVAL merchant_offers.expiry_days + 1 DAY) >= CURDATE()');
+            } else if ($request->get('is_expired') == 0) { // false - non-expired offers
+                $query->whereHas('merchantOffer', function ($query) {
+                    $query->whereHas('claims', function ($claimQuery) {
+                        $claimQuery->whereColumn('merchant_offer_user.id', 'merchant_offer_claims.id')
+                            ->where(function ($q) {
+                                $q->whereRaw('DATE(merchant_offer_user.created_at) IS NOT NULL')
+                                  ->whereRaw('merchant_offers.expiry_days IS NOT NULL')
+                                  ->whereRaw('merchant_offers.expiry_days > 0')
+                                  ->whereRaw('CONCAT(DATE_ADD(DATE(merchant_offer_user.created_at), INTERVAL merchant_offers.expiry_days DAY), " 23:59:59") >= NOW()');
+                            });
                     });
                 });
             }
