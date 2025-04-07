@@ -257,6 +257,14 @@ class ArticleController extends Controller
         if ($request->filled('following_only') && $request->following_only == 1) {
             $followingIds = auth()->user()->followings()->pluck('users.id')->toArray();
             $query->whereIn('articles.user_id', $followingIds);
+
+            // Reset cache when explicitly requesting page 1
+            if ($request->has('page') && $request->page == 1) {
+                $requestParams = $request->except(['page']);
+                ksort($requestParams);
+                $cacheKey = 'seen_articles_' . auth()->id() . '_' . md5(json_encode($requestParams));
+                Cache::forget($cacheKey);
+            }
         }
 
         // visibility filter
@@ -313,10 +321,66 @@ class ArticleController extends Controller
         $limit = $request->input('limit', config('app.paginate_per_page', 10));
         $chunkSize = min($limit, 50);
 
-        // get paginated results with proper ordering
-        $data = $query->distinct()
-                      ->latest('articles.published_at')
-                      ->paginate($chunkSize);
+        // Handle following feed with duplicate prevention
+        if ($request->filled('following_only') && $request->following_only == 1) {
+            // Create cache key for seen articles
+            $requestParams = $request->except(['page']);
+            ksort($requestParams);
+            $cacheKey = 'seen_articles_' . auth()->id() . '_' . md5(json_encode($requestParams));
+            
+            // Get previously seen article IDs from cache
+            $seenArticleIds = Cache::get($cacheKey, []);
+            
+            // Get the current page
+            $page = $request->input('page', 1);
+            
+            // First, get the total count of articles (for pagination metadata)
+            $totalCount = $query->count();
+            
+            // Get all articles for the current page plus enough extras to fill gaps from filtered items
+            // We'll fetch 3x the page size to ensure we have enough articles after filtering
+            $extraArticlesMultiplier = 3;
+            $extendedLimit = $chunkSize * $extraArticlesMultiplier;
+            $offset = ($page - 1) * $chunkSize;
+            
+            // Get articles with pagination but with extended limit
+            $allArticles = $query->distinct()
+                                ->latest('articles.published_at')
+                                ->skip($offset)
+                                ->take($extendedLimit)
+                                ->get();
+            
+            // Filter out seen articles if not on page 1
+            if ($page > 1 && !empty($seenArticleIds)) {
+                $allArticles = $allArticles->filter(function($article) use ($seenArticleIds) {
+                    return !in_array($article->id, $seenArticleIds);
+                });
+            }
+            
+            // Take just what we need for the current page
+            $currentPageArticles = $allArticles->take($chunkSize);
+            
+            // Create a custom paginator
+            $data = new \Illuminate\Pagination\LengthAwarePaginator(
+                $currentPageArticles,
+                $totalCount,
+                $chunkSize,
+                $page,
+                ['path' => \Illuminate\Support\Facades\Request::url(), 'query' => $request->query()]
+            );
+            
+            // Store current page article IDs in cache
+            if ($currentPageArticles->count() > 0) {
+                $currentArticleIds = $currentPageArticles->pluck('id')->toArray();
+                $updatedSeenArticleIds = array_merge($seenArticleIds, $currentArticleIds);
+                Cache::put($cacheKey, $updatedSeenArticleIds, now()->addMinutes(30));
+            }
+        } else {
+            // For non-following feeds, use standard pagination
+            $data = $query->distinct()
+                         ->latest('articles.published_at')
+                         ->paginate($chunkSize);
+        }
 
         // handle merchant offers - optimized version with caching
         $locationIds = $data->pluck('location.0.id')->filter()->unique()->toArray();
