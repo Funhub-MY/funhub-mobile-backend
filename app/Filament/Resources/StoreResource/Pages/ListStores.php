@@ -5,12 +5,15 @@ namespace App\Filament\Resources\StoreResource\Pages;
 use App\Filament\Actions\CustomImportStoresAction;
 use App\Filament\Resources\StoreResource;
 use App\Models\Country;
+use App\Models\Location;
 use App\Models\MerchantCategory;
 use App\Models\State;
 use App\Models\Store;
+use App\Models\User;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Konnco\FilamentImport\Actions\ImportField;
 use Konnco\FilamentImport\Actions\ImportAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
@@ -40,6 +43,9 @@ class ListStores extends ListRecords
 						->required(),
 					ImportField::make('address_postcode')
 						->label('Postcode'),
+					ImportField::make('city')
+						->label('City Name')
+						->required(),
 					// Allow user to upload state and country name in csv and convert to id by logic
 					ImportField::make('state_name')
 						->label('State Name')
@@ -61,6 +67,80 @@ class ListStores extends ListRecords
 							}
 							return $country->id;
 						}),
+					ImportField::make('user_id')
+						->label('User ID')
+						->mutateBeforeCreate(function ($value) {
+							if (empty($value)) return null;
+							
+							$user = User::find($value);
+							if (!$user) {
+								throw new \Exception("User not found with ID: {$value}");
+							}
+							return $user->id;
+						}),
+					ImportField::make('parent_categories')
+						->label('Parent Categories (comma separated)')
+						->helperText('Enter parent category names separated by commas'),
+					ImportField::make('sub_categories')
+						->label('Sub Categories (comma separated)')
+						->helperText('Enter sub category names separated by commas'),
+					ImportField::make('business_phone_no')
+						->label('Phone Number')
+						->mutateBeforeCreate(function ($value) {
+							if (empty($value)) return null;
+							// Remove leading 0 or +60 from phone number
+							return preg_replace('/^(0|\+60)/', '', $value);
+						}),
+					ImportField::make('business_hours')
+						->label('Business Hours')
+						->helperText('Format: day:openTime-closeTime (e.g., 1:8AM-6PM,2:8AM-6PM)')
+						->mutateBeforeCreate(function ($value) {
+							if (empty($value)) return null;
+							
+							$formattedHours = [];
+							$hoursPairs = explode(',', $value);
+							
+							foreach ($hoursPairs as $pair) {
+								$parts = explode(':', $pair);
+								if (count($parts) !== 2) continue;
+								
+								$day = trim($parts[0]);
+								$times = explode('-', $parts[1]);
+								if (count($times) !== 2) continue;
+								
+								$formattedHours[$day] = [
+									'open_time' => trim($times[0]),
+									'close_time' => trim($times[1])
+								];
+							}
+							
+							return json_encode($formattedHours);
+						}),
+					ImportField::make('rest_hours')
+						->label('Rest Hours')
+						->helperText('Format: day:startTime-endTime (e.g., 1:12PM-2PM,2:12PM-2PM)')
+						->mutateBeforeCreate(function ($value) {
+							if (empty($value)) return null;
+							
+							$formattedHours = [];
+							$hoursPairs = explode(',', $value);
+							
+							foreach ($hoursPairs as $pair) {
+								$parts = explode(':', $pair);
+								if (count($parts) !== 2) continue;
+								
+								$day = trim($parts[0]);
+								$times = explode('-', $parts[1]);
+								if (count($times) !== 2) continue;
+								
+								$formattedHours[$day] = [
+									'open_time' => trim($times[0]),
+									'close_time' => trim($times[1])
+								];
+							}
+							
+							return json_encode($formattedHours);
+						}),
 					ImportField::make('is_hq')
 						->label('Is HQ?')
 						->mutateBeforeCreate(function ($value) {
@@ -68,16 +148,108 @@ class ListStores extends ListRecords
 							$truthyValues = ['yes', 'true', '1', 'active'];
 							return in_array($value, $truthyValues) ? 1 : 0;
 						}),
+					ImportField::make('lang')
+						->label('Latitude')
+						->mutateBeforeCreate(function ($value) {
+							return !empty($value) ? $value : null;
+						}),
+					ImportField::make('long')
+						->label('Longitude')
+						->mutateBeforeCreate(function ($value) {
+							return !empty($value) ? $value : null;
+						}),
 				])
 				->mutateBeforeCreate(function ($data) {
-					return [
+					$storeData = [
 						'name' => $data['name'],
 						'address' => $data['address'],
 						'address_postcode' => $data['address_postcode'] ?? null,
 						'state_id' => $data['state_name'],
 						'country_id' => $data['country_name'],
 						'is_hq' => $data['is_hq'],
+						'business_phone_no' => $data['business_phone_no'] ?? null,
+						'business_hours' => $data['business_hours'] ?? null,
+						'rest_hours' => $data['rest_hours'] ?? null,
+						'user_id' => $data['user_id'] ?? null,
+						'lang' => $data['lang'] ?? null,
+						'long' => $data['long'] ?? null,
 					];
+					
+					return $storeData;
+				})
+				->afterCreate(function ($record, $data) {
+					// Process parent categories
+					if (!empty($data['parent_categories'])) {
+						$parentCategoryNames = array_map('trim', explode(',', $data['parent_categories']));
+						foreach ($parentCategoryNames as $categoryName) {
+							$category = MerchantCategory::whereNull('parent_id')
+								->where('name', $categoryName)
+								->first();
+								
+							if ($category) {
+								$record->categories()->attach($category->id);
+							} else {
+								Log::warning("Parent category not found: {$categoryName}");
+							}
+						}
+					}
+					
+					// Process sub categories
+					if (!empty($data['sub_categories'])) {
+						$subCategoryNames = array_map('trim', explode(',', $data['sub_categories']));
+						foreach ($subCategoryNames as $categoryName) {
+							$category = MerchantCategory::whereNotNull('parent_id')
+								->where('name', $categoryName)
+								->first();
+								
+							if ($category) {
+								$record->categories()->attach($category->id);
+							} else {
+								Log::warning("Sub category not found: {$categoryName}");
+							}
+						}
+					}
+					
+					// Create or link location
+					if (!empty($data['lang']) && !empty($data['long'])) {
+						$existingLocation = Location::where('lat', $data['lang'])
+							->where('lng', $data['long'])
+							->first();
+							
+						if ($existingLocation) {
+							// Update existing location
+							$existingLocation->update([
+								'name' => $data['name'],
+								'address' => $data['address'] ?? '',
+								'zip_code' => $data['address_postcode'] ?? '',
+								'city' => $data['city'] ?? '',
+								'state_id' => $data['state_name'],
+								'country_id' => $data['country_name'],
+							]);
+							
+							$location = $existingLocation;
+						} else {
+							// Create new location
+							$location = Location::create([
+								'name' => $data['name'],
+								'lat' => $data['lang'],
+								'lng' => $data['long'],
+								'address' => $data['address'] ?? '',
+								'zip_code' => $data['address_postcode'] ?? '',
+								'city' => $data['city'] ?? '',
+								'state_id' => $data['state_name'],
+								'country_id' => $data['country_name'],
+								'is_mall' => 0,
+							]);
+						}
+						
+						// Attach location to store
+						$record->location()->attach($location->id);
+						Log::info("Store {$record->id} attached to location: {$location->id}");
+					}
+					
+					// Make store searchable
+					$record->searchable();
 				}),
 
 			// Sync Stores Categories csv
@@ -91,9 +263,53 @@ class ListStores extends ListRecords
                         ->withColumns([
                             Column::make('id')->heading('store_id'),
                             Column::make('name')->heading('store_name'),
-                            Column::make('categories.name')
-                                ->heading('category_names')
-                                ->getStateUsing(fn ($record) => $record->categories->pluck('name')->join(',')),
+                            Column::make('user_id')->heading('user_id'),
+                            Column::make('business_phone_no')->heading('phone_number'),
+                            Column::make('address')->heading('address'),
+                            Column::make('address_postcode')->heading('postcode'),
+                            Column::make('city')
+                                ->heading('city')
+                                ->getStateUsing(fn ($record) => $record->location->first()->city ?? ''),
+                            Column::make('state_name')
+                                ->heading('state_name')
+                                ->getStateUsing(fn ($record) => $record->state->name ?? ''),
+                            Column::make('country_name')
+                                ->heading('country_name')
+                                ->getStateUsing(fn ($record) => $record->country->name ?? ''),
+                            Column::make('parent_categories')
+                                ->heading('parent_categories')
+                                ->getStateUsing(fn ($record) => $record->parentCategories->pluck('name')->join(',')),
+                            Column::make('sub_categories')
+                                ->heading('sub_categories')
+                                ->getStateUsing(fn ($record) => $record->childCategories->pluck('name')->join(',')),
+                            Column::make('business_hours')
+                                ->heading('business_hours')
+                                ->getStateUsing(function ($record) {
+                                    if (empty($record->business_hours)) return '';
+                                    $hours = json_decode($record->business_hours, true);
+                                    if (!$hours) return '';
+                                    
+                                    $formatted = [];
+                                    foreach ($hours as $day => $time) {
+                                        $formatted[] = $day . ':' . $time['open_time'] . '-' . $time['close_time'];
+                                    }
+                                    return implode(',', $formatted);
+                                }),
+                            Column::make('rest_hours')
+                                ->heading('rest_hours')
+                                ->getStateUsing(function ($record) {
+                                    if (empty($record->rest_hours)) return '';
+                                    $hours = json_decode($record->rest_hours, true);
+                                    if (!$hours) return '';
+                                    
+                                    $formatted = [];
+                                    foreach ($hours as $day => $time) {
+                                        $formatted[] = $day . ':' . $time['open_time'] . '-' . $time['close_time'];
+                                    }
+                                    return implode(',', $formatted);
+                                }),
+                            Column::make('lang')->heading('latitude'),
+                            Column::make('long')->heading('longitude'),
                             Column::make('status')
                                 ->heading('status')
                                 ->getStateUsing(fn ($record) => Store::STATUS[$record->status]),
