@@ -6,6 +6,7 @@ use App\Events\InteractionCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InteractionResource;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\SimpleUserResource;
 use App\Models\Article;
 use App\Models\Comment;
 use App\Models\Interaction;
@@ -397,14 +398,16 @@ class InteractionController extends Controller
                 break;
         }
 
-        $users = User::whereHas('interactions', function ($query) use ($request) {
-            $query->where('interactable_type', $request->interactable)
-                ->where('interactable_id', $request->id)
-                ->where('type', $request->type);
-        })
-        ->where('status', User::STATUS_ACTIVE) // only active users
+        $users = User::join('interactions', 'users.id', '=', 'interactions.user_id')
+        ->where('interactions.interactable_type', $request->interactable)
+        ->where('interactions.interactable_id', $request->id)
+        ->where('interactions.type', $request->type)
+        ->where('users.status', User::STATUS_ACTIVE) // only active users
+        ->select('users.*') // Make sure we only select from the users table
+        ->distinct() // Ensure unique users
+        ->with('media')
         ->paginate(config('app.paginate_per_page'));
 
-        return UserResource::collection($users);
+        return SimpleUserResource::collection($users);
     }
 }

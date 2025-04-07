@@ -14,6 +14,7 @@ use App\Http\Resources\MerchantOfferResource;
 use App\Http\Resources\PublicArticleResource;
 use App\Http\Resources\PublicMerchantOfferResource;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\SimpleUserResource;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\ArticleTag;
@@ -755,7 +756,7 @@ class ArticleController extends Controller
      * Get Tagged users of article
      *
      * @param Request $request
-     * @return UserResource
+     * @return SimpleUserResource
      *
      * @group Article
      * @bodyParam article_id integer required Article Id. Example: 1
@@ -775,31 +776,42 @@ class ArticleController extends Controller
             'article_id' => 'required',
         ]);
 
-        // ensure user has access to this articles to load tagged users
-        $query = Article::published()->where('id', $request->article_id)
-            ->whereDoesntHave('hiddenUsers', function ($query) {
-                $query->where('user_id', auth()->user()->id);
-            });
-
-        // ensure user is not blocked by auth()->user()
+        $articleId = $request->article_id;
+        $authUserId = auth()->user()->id;
+        
+        // Get blocked user IDs
         $myBlockedUserIds = auth()->user()->usersBlocked()->pluck('blockable_id')->toArray();
         $peopleWhoBlockedMeIds = auth()->user()->blockedBy()->pluck('user_id')->toArray();
-
-        $article = $query->first();
-
-        if (!$article) {
+        $blockedUserIds = array_unique(array_merge($myBlockedUserIds, $peopleWhoBlockedMeIds));
+        
+        // Check if article exists and is accessible
+        $articleExists = Article::published()
+            ->where('id', $articleId)
+            ->whereNotExists(function ($query) use ($articleId, $authUserId) {
+                $query->select(DB::raw(1))
+                    ->from('articles_hidden_users')
+                    ->whereRaw('articles_hidden_users.article_id = ' . $articleId)
+                    ->where('articles_hidden_users.user_id', $authUserId);
+            })
+            ->exists();
+        
+        if (!$articleExists) {
             return response()->json([
                 'message' => 'Article not found'
             ], 404);
         }
-
-        $taggedUsers = $article->taggedUsers()
-            // where not suspended
-            ->where('status', User::STATUS_ACTIVE)
-            ->whereNotIn('users.id', array_unique(array_merge($myBlockedUserIds, $peopleWhoBlockedMeIds)))
+        
+        // Get tagged users with optimized query using joins
+        $taggedUsers = User::join('articles_tagged_users', 'users.id', '=', 'articles_tagged_users.user_id')
+            ->where('articles_tagged_users.article_id', $articleId)
+            ->where('users.status', User::STATUS_ACTIVE)
+            ->whereNotIn('users.id', $blockedUserIds)
+            ->select('users.*')
+            ->with('media')
+            ->distinct()
             ->paginate(config('app.paginate_per_page'));
-
-        return UserResource::collection($taggedUsers);
+        
+        return SimpleUserResource::collection($taggedUsers);
     }
 
     /**
