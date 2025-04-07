@@ -159,7 +159,22 @@ class ListStores extends ListRecords
 							return !empty($value) ? $value : null;
 						}),
 				])
-				->mutateBeforeCreate(function ($data) {
+				->handleRecordCreation(function ($data) {
+					// Format phone number: remove spaces, dashes and ensure it starts with 60
+					$businessPhoneNo = null;
+					if (!empty($data['business_phone_no'])) {
+						// Remove all non-numeric characters
+						$phoneNumber = preg_replace('/[^0-9]/', '', $data['business_phone_no']);
+						
+						// Remove leading 0 if present
+						if (substr($phoneNumber, 0, 1) === '0') {
+							$phoneNumber = substr($phoneNumber, 1);
+						}
+						
+						$businessPhoneNo = $phoneNumber;
+					}
+					
+					// Create the store record
 					$storeData = [
 						'name' => $data['name'],
 						'address' => $data['address'],
@@ -167,7 +182,7 @@ class ListStores extends ListRecords
 						'state_id' => $data['state_name'],
 						'country_id' => $data['country_name'],
 						'is_hq' => $data['is_hq'],
-						'business_phone_no' => $data['business_phone_no'] ?? null,
+						'business_phone_no' => $businessPhoneNo,
 						'business_hours' => $data['business_hours'] ?? null,
 						'rest_hours' => $data['rest_hours'] ?? null,
 						'user_id' => $data['user_id'] ?? null,
@@ -175,9 +190,16 @@ class ListStores extends ListRecords
 						'long' => $data['long'] ?? null,
 					];
 					
-					return $storeData;
-				})
-				->afterCreate(function ($record, $data) {
+					// Get merchant_id from user_id if available
+					if (!empty($data['user_id'])) {
+						$user = User::find($data['user_id']);
+						if ($user && $user->merchant) {
+							$storeData['merchant_id'] = $user->merchant->id;
+						}
+					}
+					
+					// Create the store
+					$store = Store::create($storeData);
 					// Process parent categories
 					if (!empty($data['parent_categories'])) {
 						$parentCategoryNames = array_map('trim', explode(',', $data['parent_categories']));
@@ -187,7 +209,7 @@ class ListStores extends ListRecords
 								->first();
 								
 							if ($category) {
-								$record->categories()->attach($category->id);
+								$store->categories()->attach($category->id);
 							} else {
 								Log::warning("Parent category not found: {$categoryName}");
 							}
@@ -203,7 +225,7 @@ class ListStores extends ListRecords
 								->first();
 								
 							if ($category) {
-								$record->categories()->attach($category->id);
+								$store->categories()->attach($category->id);
 							} else {
 								Log::warning("Sub category not found: {$categoryName}");
 							}
@@ -244,12 +266,14 @@ class ListStores extends ListRecords
 						}
 						
 						// Attach location to store
-						$record->location()->attach($location->id);
-						Log::info("Store {$record->id} attached to location: {$location->id}");
+						$store->location()->attach($location->id);
+						Log::info("Store {$store->id} attached to location: {$location->id}");
 					}
 					
 					// Make store searchable
-					$record->searchable();
+					$store->searchable();
+					
+					return $store;
 				}),
 
 			// Sync Stores Categories csv
