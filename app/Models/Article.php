@@ -125,7 +125,7 @@ class Article extends BaseModel implements HasMedia, Auditable
                 ];
             }) : null,
             'hastags' => $this->tags->pluck('name'),
-            'status' => $this->status,
+            'status' => (int) $this->status,
             'published_at' => $this->published_at,
             'created_at' => $this->created_at,
             'created_at_unix' => Carbon::parse($this->created_at)->timestamp,
