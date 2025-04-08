@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
 
         // Every Fifteen Minutes
         $schedule->command('merchant-offers:release')->everyFifteenMinutes()->onOneServer();
-        $schedule->command('articles:sync-ratings-to-store-ratings')->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
+        // $schedule->command('articles:sync-ratings-to-store-ratings')->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
         if (config('services.bubble.status') == true) {
             $schedule->command('bubble:sync-user-store-ratings')->everyFifteenMinutes()->onOneServer();
         }

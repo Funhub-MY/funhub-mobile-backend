@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Jobs\SyncLocationRatingAsStoreRating;
+
 use App\Console\Commands\UpdateArticleTagsArticlesCount;
 use App\Events\ArticleCreated;
 use App\Events\RatedLocation;
@@ -1360,6 +1362,9 @@ class ArticleController extends Controller
                     'user_id' => auth()->id(),
                     'rating' => $locationData['rating'],
                 ]);
+
+                // sync ratings to store ratings
+                dispatch(new SyncLocationRatingAsStoreRating($location, auth()->id(), $article->id));
 
                 // fire event
                 event(new RatedLocation($location, auth()->user(), $locationData['rating'], $article->id));
