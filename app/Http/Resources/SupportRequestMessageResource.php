@@ -15,6 +15,8 @@ class SupportRequestMessageResource extends JsonResource
      */
     public function toArray($request)
     {
+		$mediaCollection = $this->getMedia(SupportRequestMessage::MEDIA_COLLECTION_NAME);
+
         return [
             'id' => $this->id,
             'user' => new UserResource($this->user),
@@ -22,8 +24,13 @@ class SupportRequestMessageResource extends JsonResource
             'is_self' => $this->user_id === auth()->id(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'media' => MediaResource::collection($this->getMedia(SupportRequestMessage::MEDIA_COLLECTION_NAME)),
-            'created_at_for_humans' => $this->created_at->diffForHumans(),
+			'media' => MediaResource::collection($mediaCollection)->map(function ($media) use ($request) {
+				$baseData = $media->toArray($request);
+				$baseData['type'] = str_starts_with($media->mime_type, 'video') ? 'video' :
+					(str_starts_with($media->mime_type, 'image') ? 'image' : 'unknown');
+				return $baseData;
+			}),
+			'created_at_for_humans' => $this->created_at->diffForHumans(),
             'updated_at_for_humans' => $this->updated_at->diffForHumans(),
         ];
     }
