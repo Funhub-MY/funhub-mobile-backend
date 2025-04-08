@@ -53,6 +53,7 @@ class SimpleUserResource extends JsonResource
             'username' => $username,
             'avatar' => $avatar_url,
             'avatar_thumb' => $avatar_thumb_url,
+            'has_avatar' => ($avatar_url || $avatar_thumb_url) ? true : false,
             'is_following' => $isFollowing,
             'has_requested_follow' => $hasRequestedFollow,
             'is_profile_private' => $this->profile_is_private,
