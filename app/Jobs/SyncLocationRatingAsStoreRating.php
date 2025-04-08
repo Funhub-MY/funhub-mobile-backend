@@ -85,11 +85,39 @@ class SyncLocationRatingAsStoreRating implements ShouldQueue
         $syncedCount = 0;
 
         foreach ($stores as $store) {
-            // Check if store rating already exists for this user
-            $existingRating = DB::table('store_ratings')
+            // Check if store rating already exists for this user and article (if article is provided)
+            $query = DB::table('store_ratings')
                 ->where('store_id', $store->id)
-                ->where('user_id', $this->userId)
-                ->first();
+                ->where('user_id', $this->userId);
+                
+            // If article ID is provided, include it in the check to prevent duplicates
+            if ($this->articleId) {
+                $existingArticleRating = clone $query;
+                $existingArticleRating = $existingArticleRating->where('article_id', $this->articleId)->first();
+                
+                // If we already have a rating for this store, user, and article, use that one
+                if ($existingArticleRating) {
+                    $existingRating = $existingArticleRating;
+                    
+                    Log::info('SyncLocationRatingAsStoreRating: Found existing rating with matching article_id', [
+                        'store_id' => $store->id,
+                        'user_id' => $this->userId,
+                        'article_id' => $this->articleId,
+                        'rating_id' => $existingRating->id
+                    ]);
+                } else {
+                    // Otherwise check if there's a rating without article_id that we can update
+                    $existingRating = $query->whereNull('article_id')->first();
+                    
+                    // If no rating without article_id, check for any rating by this user for this store
+                    if (!$existingRating) {
+                        $existingRating = $query->first();
+                    }
+                }
+            } else {
+                // If no article ID provided, just check for any rating by this user for this store
+                $existingRating = $query->first();
+            }
 
             // Format dates properly for MySQL timestamp format
             $createdAt = $locationRating->created_at instanceof \DateTime 
@@ -109,7 +137,32 @@ class SyncLocationRatingAsStoreRating implements ShouldQueue
                         'article_id' => $this->articleId,
                         'updated_at' => $updatedAt
                     ]);
+                
+                Log::info('SyncLocationRatingAsStoreRating: Updated existing rating', [
+                    'rating_id' => $existingRating->id,
+                    'store_id' => $store->id,
+                    'user_id' => $this->userId,
+                    'article_id' => $this->articleId
+                ]);
             } else {
+                // Before creating, do one final check to prevent race conditions
+                $finalCheck = DB::table('store_ratings')
+                    ->where('store_id', $store->id)
+                    ->where('user_id', $this->userId);
+                    
+                if ($this->articleId) {
+                    $finalCheck = $finalCheck->where('article_id', $this->articleId);
+                }
+                
+                if ($finalCheck->exists()) {
+                    Log::info('SyncLocationRatingAsStoreRating: Prevented duplicate creation due to race condition', [
+                        'store_id' => $store->id,
+                        'user_id' => $this->userId,
+                        'article_id' => $this->articleId
+                    ]);
+                    continue;
+                }
+                
                 // Create new rating
                 DB::table('store_ratings')->insert([
                     'store_id' => $store->id,
