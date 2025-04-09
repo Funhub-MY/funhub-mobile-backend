@@ -75,6 +75,7 @@ class MerchantOfferCampaignObserver
         try {
             // Check if there's a media item in the imported_codes collection
             $media = $merchantOfferCampaign->getMedia('imported_codes')->last();
+            Log::info('Imported codes media: ' . $media->id);
             
             if (!$media) {
                 return;
@@ -114,10 +115,16 @@ class MerchantOfferCampaignObserver
                         'code' => $code,
                         'is_used' => false
                     ]);
+
+                    // Log the creation of the voucher code
+                    Log::info('[Imported Voucher Code] Created Import voucher code: ' . $code);
+                } else {
+                    // Log the creation of the voucher code
+                    Log::info('[Imported Voucher Code] Voucher code already exists: ' . $code);
                 }
             }
         } catch (\Exception $e) {
-            Log::error('Error processing imported voucher codes: ' . $e->getMessage(), [
+            Log::error('[Imported Voucher Code] Error processing imported voucher codes: ' . $e->getMessage(), [
                 'merchant_offer_campaign_id' => $merchantOfferCampaign->id,
                 'exception' => $e
             ]);
