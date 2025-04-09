@@ -29,9 +29,9 @@ return new class extends Migration
             $table->boolean('is_used')->default(false);
             $table->timestamps();
             
-            $table->index('merchant_offer_campaign_id');
-            $table->index('voucher_id');
-            $table->index('code');
+            $table->index('merchant_offer_campaign_id', 'mocc_campaign_id_idx');
+            $table->index('voucher_id', 'mocc_voucher_id_idx');
+            $table->index('code', 'mocc_code_idx');
         });
     }
 
