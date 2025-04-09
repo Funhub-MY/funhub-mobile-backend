@@ -74,7 +74,32 @@ class CreateMerchantOfferJob implements ShouldQueue
 
         // Create vouchers
         $voucherData = [];
-        for ($i = 0; $i < $schedule->quantity; $i++) {
+        
+        // Get imported voucher codes for this campaign
+        $importedCodes = $campaign->voucherCodes()
+            ->where('is_used', false)
+            ->take($schedule->quantity)
+            ->get();
+        
+        $importedCodesCount = $importedCodes->count();
+        $remainingCount = $schedule->quantity - $importedCodesCount;
+        
+        // First use imported codes if available
+        foreach ($importedCodes as $importedCode) {
+            $voucherData[] = [
+                'merchant_offer_id' => $offer->id,
+                'code' => $importedCode->code,
+                'imported_code' => $importedCode->code,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+            
+            // Mark the imported code as used
+            $importedCode->update(['is_used' => true]);
+        }
+        
+        // Generate remaining codes if needed
+        for ($i = 0; $i < $remainingCount; $i++) {
             $voucherData[] = [
                 'merchant_offer_id' => $offer->id,
                 'code' => MerchantOfferVoucher::generateCode(),
@@ -82,6 +107,8 @@ class CreateMerchantOfferJob implements ShouldQueue
                 'updated_at' => now(),
             ];
         }
+        
+        // Insert all vouchers
         MerchantOfferVoucher::insert($voucherData);
 
         // sync algolia

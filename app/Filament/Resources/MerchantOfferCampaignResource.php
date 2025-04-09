@@ -147,6 +147,18 @@ class MerchantOfferCampaignResource extends Resource
                                     ->label('Flash Deal')
                                     ->helperText('If enabled, this offer will be shown in Flash Deal section in the app. Use Available At & Until to set the Flash deals countdown')
                                     ->default(false),
+                                    
+                                Forms\Components\SpatieMediaLibraryFileUpload::make('imported_codes')
+                                    ->label('Import Voucher Codes (CSV)')
+                                    ->helperText('Upload a CSV file with voucher codes. Each code should be on a new line with no header.')
+                                    ->collection('imported_codes')
+                                    ->acceptedFileTypes(['text/csv', 'application/vnd.ms-excel'])
+                                    ->maxFiles(1)
+                                    ->disk(function () {
+                                        if (config('filesystems.default') === 's3') {
+                                            return 's3_public';
+                                        }
+                                    }),
 
 								Repeater::make('highlight_messages')
 									->label('Highlight Message')
