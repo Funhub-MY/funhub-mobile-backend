@@ -15,8 +15,16 @@ return new class extends Migration
     {
         Schema::create('merchant_offer_campaign_voucher_codes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('merchant_offer_campaign_id')->constrained()->onDelete('cascade');
-            $table->foreignId('voucher_id')->nullable()->constrained('merchant_offer_vouchers')->onDelete('set null');
+            $table->foreignId('merchant_offer_campaign_id');
+            $table->foreign('merchant_offer_campaign_id', 'mocc_campaign_id_foreign')
+                ->references('id')
+                ->on('merchant_offer_campaigns')
+                ->onDelete('cascade');
+            $table->foreignId('voucher_id')->nullable();
+            $table->foreign('voucher_id', 'mocc_voucher_id_foreign')
+                ->references('id')
+                ->on('merchant_offer_vouchers')
+                ->onDelete('set null');
             $table->string('code');
             $table->boolean('is_used')->default(false);
             $table->timestamps();
