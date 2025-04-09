@@ -81,13 +81,26 @@ class MerchantOfferCampaignObserver
                 return;
             }
             
-            // Get the file path
-            $filePath = $media->getPath();
-            
-            // Read the file content
-            $fileContent = file_get_contents($filePath);
+            // Handle file reading based on storage driver
+            try {
+                // Try to get a temporary URL (works for S3 and other cloud storage)
+                if (method_exists($media, 'getTemporaryUrl')) {
+                    $fileUrl = $media->getTemporaryUrl(now()->addMinutes(5));
+                    Log::info('[Imported Voucher Code] File URL: ' . $fileUrl);
+                    $fileContent = file_get_contents($fileUrl);
+                } else {
+                    // Fallback to local path for local storage
+                    $filePath = $media->getPath();
+                    Log::info('[Imported Voucher Code] File path: ' . $filePath);
+                    $fileContent = file_get_contents($filePath);
+                }
+            } catch (\Exception $e) {
+                Log::error('[Imported Voucher Code] Error reading file: ' . $e->getMessage());
+                return;
+            }
             
             if (empty($fileContent)) {
+                Log::info('[Imported Voucher Code] File content is empty');
                 return;
             }
             
