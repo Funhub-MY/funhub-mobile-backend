@@ -88,7 +88,7 @@ class CreateMerchantOfferJob implements ShouldQueue
         foreach ($importedCodes as $importedCode) {
             $voucherData[] = [
                 'merchant_offer_id' => $offer->id,
-                'code' => $importedCode->code,
+                'code' => MerchantOfferVoucher::generateCode(),
                 'imported_code' => $importedCode->code,
                 'created_at' => now(),
                 'updated_at' => now(),
