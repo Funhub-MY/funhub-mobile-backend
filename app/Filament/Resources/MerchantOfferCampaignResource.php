@@ -486,7 +486,27 @@ class MerchantOfferCampaignResource extends Resource
                                         $query->where('user_id', $get('user_id'));
                                     })
                                     ->hidden(fn (Closure $get) => $get('user_id') === null),
-                            ])->columns(1),
+								Placeholder::make('merchant_is_closed')
+									->label('Merchant Operation Status')
+									->content(function (Closure $get) {
+										$userId = $get('user_id');
+										if (!$userId) {
+											return '';
+										}
+
+										$user = User::find($userId);
+										if (!$user || !$user->merchant) {
+											return '';
+										}
+
+										$status = $user->merchant->is_closed ? 'Closed' : 'Open';
+
+										return new HtmlString(
+											"<span class='font-bold'>{$status}</span>"
+										);
+									}),
+
+							])->columns(1),
 
                             Forms\Components\Section::make('Categories')->schema([
                                 Forms\Components\Select::make('categories')
