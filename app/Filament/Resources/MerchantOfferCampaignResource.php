@@ -620,6 +620,14 @@ class MerchantOfferCampaignResource extends Resource
                 Tables\Columns\TextColumn::make('store.name')
                     ->default('-')
                     ->label('By Store'),
+                Tables\Columns\TextColumn::make('merchant_status')
+                    ->label('Merchant Status')
+                    ->getStateUsing(function ($record) {
+                        if (!$record->user || !$record->user->merchant) {
+                            return 'No Merchant';
+                        }
+                        return $record->user->merchant->is_closed ? 'Closed' : 'Open';
+                    }),
                 // toggle column for auto move vouchers
                 Tables\Columns\ToggleColumn::make('auto_move_vouchers')
                     ->label('Auto Move Vouchers'),
