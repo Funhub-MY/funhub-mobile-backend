@@ -80,7 +80,7 @@ class MixpanelService
             }
             
             // format the purchase date time as required
-            $formattedDateTime = $purchaseDateTime->timezone('UTC')->format('d/m/Y H:i:s');
+            $formattedDateTime = $purchaseDateTime->timezone('UTC')->format('m/d/Y H:i:s');
             
             // get user information safely
             $userEmail = null;
