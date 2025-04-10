@@ -179,6 +179,7 @@ class ListStores extends ListRecords
 					$storeData = [
 						'name' => $data['name'],
 						'address' => $data['address'],
+						'slug' => Str::slug($data['name']).rand(1000, 9999),
 						'address_postcode' => $data['address_postcode'] ?? null,
 						'state_id' => $data['state_name'],
 						'country_id' => $data['country_name'],
