@@ -347,7 +347,8 @@ class MerchantResource extends Resource
                 Tables\Columns\TextColumn::make('pic_name'),
                 Tables\Columns\TextColumn::make('pic_phone_no'),
                 Tables\Columns\TextColumn::make('pic_email'),
-            ])
+				Tables\Columns\ToggleColumn::make('is_closed'),
+			])
             ->filters([
                 //
             ])
