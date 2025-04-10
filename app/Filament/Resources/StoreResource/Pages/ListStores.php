@@ -12,6 +12,7 @@ use App\Models\Store;
 use App\Models\User;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Konnco\FilamentImport\Actions\ImportField;
@@ -233,14 +234,55 @@ class ListStores extends ListRecords
 					}
 					
 					// Create or link location
-					if (!empty($data['lang']) && !empty($data['long'])) {
-						$existingLocation = Location::where('lat', $data['lang'])
-							->where('lng', $data['long'])
-							->first();
+					$lang = !empty($data['lang']) ? $data['lang'] : null;
+					$long = !empty($data['long']) ? $data['long'] : null;
+					
+					// If lat/long not provided, use Google Maps API to get coordinates
+					if (!$lang || !$long) {
+						$state = State::find($data['state_name']);
+						$country = Country::find($data['country_name']);
+						$address = $data['address'] . ', ' . ($data['address_postcode'] ?? '') . ', ' . $state->name . ', ' . $country->name;
+						
+						$client = new Client();
+						$response = $client->get('https://maps.googleapis.com/maps/api/geocode/json', [
+							'query' => [
+								'address' => $address,
+								'key' => config('filament-google-maps.key'),
+							]
+						]);
+						
+						$locationFromGoogle = null;
+						if ($response->getStatusCode() === 200) {
+							$locationFromGoogle = json_decode($response->getBody(), true);
 							
-						if ($existingLocation) {
+							if (isset($locationFromGoogle['results']) && !empty($locationFromGoogle['results'])) {
+								$lang = $locationFromGoogle['results'][0]['geometry']['location']['lat'];
+								$long = $locationFromGoogle['results'][0]['geometry']['location']['lng'];
+								$locationFromGoogle = $locationFromGoogle['results'][0] ?? null;
+							}
+						}
+					}
+					
+					if ($lang && $long) {
+						$location = null;
+						$googleId = null;
+						
+						// If we have Google data, check for existing location by Google ID
+						if (isset($locationFromGoogle) && isset($locationFromGoogle['place_id']) && $locationFromGoogle['place_id'] != 0) {
+							$googleId = $locationFromGoogle['place_id'];
+							$location = Location::where('google_id', $googleId)->first();
+						}
+						
+						// If no location found by Google ID, check by lat/lng
+						if (!$location) {
+							$location = Location::where('lat', $lang)
+								->where('lng', $long)
+								->first();
+						}
+						
+						if ($location) {
 							// Update existing location
-							$existingLocation->update([
+							$location->update([
 								'name' => $data['name'],
 								'address' => $data['address'] ?? '',
 								'zip_code' => $data['address_postcode'] ?? '',
@@ -248,21 +290,38 @@ class ListStores extends ListRecords
 								'state_id' => $data['state_name'],
 								'country_id' => $data['country_name'],
 							]);
-							
-							$location = $existingLocation;
 						} else {
-							// Create new location
-							$location = Location::create([
+							// Create new location with Google data if available
+							$locationData = [
 								'name' => $data['name'],
-								'lat' => $data['lang'],
-								'lng' => $data['long'],
+								'lat' => $lang,
+								'lng' => $long,
 								'address' => $data['address'] ?? '',
 								'zip_code' => $data['address_postcode'] ?? '',
 								'city' => $data['city'] ?? '',
 								'state_id' => $data['state_name'],
 								'country_id' => $data['country_name'],
 								'is_mall' => 0,
-							]);
+							];
+							
+							// Add Google ID if available
+							if ($googleId) {
+								$locationData['google_id'] = $googleId;
+							}
+							
+							// Add city from Google if available
+							if (isset($locationFromGoogle) && isset($locationFromGoogle['address_components'])) {
+								$addressComponents = collect($locationFromGoogle['address_components']);
+								$city = $addressComponents->filter(function ($component) {
+									return in_array('locality', $component['types']);
+								})->first();
+								
+								if ($city) {
+									$locationData['city'] = $city['long_name'];
+								}
+							}
+							
+							$location = Location::create($locationData);
 						}
 						
 						// Attach location to store
