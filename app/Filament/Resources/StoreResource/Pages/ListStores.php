@@ -291,6 +291,12 @@ class ListStores extends ListRecords
 								'state_id' => $data['state_name'],
 								'country_id' => $data['country_name'],
 							]);
+
+							// update lang long of store
+							$store->update([
+								'lang' => $lang,
+								'long' => $long
+							]);
 						} else {
 							// Create new location with Google data if available
 							$locationData = [
@@ -323,6 +329,12 @@ class ListStores extends ListRecords
 							}
 							
 							$location = Location::create($locationData);
+
+							// update lang long of store
+							$store->update([
+								'lang' => $lang,
+								'long' => $long
+							]);
 						}
 						
 						// Attach location to store
