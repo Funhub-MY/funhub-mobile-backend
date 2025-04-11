@@ -4,6 +4,7 @@ namespace App\Filament\Resources\StoreResource\Pages;
 
 use App\Filament\Actions\CustomImportStoresAction;
 use App\Filament\Resources\StoreResource;
+use App\Jobs\CreateLocationFromStoreImport;
 use App\Models\Country;
 use App\Models\Location;
 use App\Models\MerchantCategory;
@@ -94,12 +95,12 @@ class ListStores extends ListRecords
 						}),
 					ImportField::make('business_hours')
 						->label('Business Hours')
-						->helperText('Format: day:openTime-closeTime (e.g., 1:8AM-6PM,2:8AM-6PM)')
+						->helperText('Format: day:openTime-closeTime (e.g., 1:09:00-18:00|2:09:00-18:00)')
 						->mutateBeforeCreate(function ($value) {
 							if (empty($value)) return null;
 							
 							$formattedHours = [];
-							$hoursPairs = explode(',', $value);
+							$hoursPairs = explode('|', $value); // Using pipe as separator for CSV compatibility
 							
 							foreach ($hoursPairs as $pair) {
 								$parts = explode(':', $pair);
@@ -119,12 +120,12 @@ class ListStores extends ListRecords
 						}),
 					ImportField::make('rest_hours')
 						->label('Rest Hours')
-						->helperText('Format: day:startTime-endTime (e.g., 1:12PM-2PM,2:12PM-2PM)')
+						->helperText('Format: day:startTime-endTime (e.g., 1:12:00-14:00|2:12:00-14:00)')
 						->mutateBeforeCreate(function ($value) {
 							if (empty($value)) return null;
 							
 							$formattedHours = [];
-							$hoursPairs = explode(',', $value);
+							$hoursPairs = explode('|', $value); // Using pipe as separator for CSV compatibility
 							
 							foreach ($hoursPairs as $pair) {
 								$parts = explode(':', $pair);
@@ -234,116 +235,28 @@ class ListStores extends ListRecords
 						}
 					}
 					
-					// Create or link location
-					$lang = !empty($data['lang']) ? $data['lang'] : null;
-					$long = !empty($data['long']) ? $data['long'] : null;
-					
-					// If lat/long not provided, use Google Maps API to get coordinates
-					if (!$lang || !$long) {
-						$state = State::find($data['state_name']);
-						$country = Country::find($data['country_name']);
-						$address = $data['address'] . ', ' . ($data['address_postcode'] ?? '') . ', ' . $state->name . ', ' . $country->name;
-						
-						$client = new Client();
-						$response = $client->get('https://maps.googleapis.com/maps/api/geocode/json', [
-							'query' => [
-								'address' => $address,
-								'key' => config('filament-google-maps.key'),
-							]
+					// Store the lat/long if provided directly in the import
+					if (!empty($data['lang']) && !empty($data['long'])) {
+						$store->update([
+							'lang' => $data['lang'],
+							'long' => $data['long']
 						]);
-						
-						$locationFromGoogle = null;
-						if ($response->getStatusCode() === 200) {
-							$locationFromGoogle = json_decode($response->getBody(), true);
-							
-							if (isset($locationFromGoogle['results']) && !empty($locationFromGoogle['results'])) {
-								$lang = $locationFromGoogle['results'][0]['geometry']['location']['lat'];
-								$long = $locationFromGoogle['results'][0]['geometry']['location']['lng'];
-								$locationFromGoogle = $locationFromGoogle['results'][0] ?? null;
-							}
-						}
 					}
 					
-					if ($lang && $long) {
-						$location = null;
-						$googleId = null;
-						
-						// If we have Google data, check for existing location by Google ID
-						if (isset($locationFromGoogle) && isset($locationFromGoogle['place_id']) && $locationFromGoogle['place_id'] != 0) {
-							$googleId = $locationFromGoogle['place_id'];
-							$location = Location::where('google_id', $googleId)->first();
-						}
-						
-						// If no location found by Google ID, check by lat/lng
-						if (!$location) {
-							$location = Location::where('lat', $lang)
-								->where('lng', $long)
-								->first();
-						}
-						
-						if ($location) {
-							// Update existing location
-							$location->update([
-								'name' => $data['name'],
-								'address' => $data['address'] ?? '',
-								'zip_code' => $data['address_postcode'] ?? '',
-								'city' => $data['city'] ?? '',
-								'state_id' => $data['state_name'],
-								'country_id' => $data['country_name'],
-							]);
-
-							// update lang long of store
-							$store->update([
-								'lang' => $lang,
-								'long' => $long
-							]);
-						} else {
-							// Create new location with Google data if available
-							$locationData = [
-								'name' => $data['name'],
-								'lat' => $lang,
-								'lng' => $long,
-								'address' => $data['address'] ?? '',
-								'zip_code' => $data['address_postcode'] ?? '',
-								'city' => $data['city'] ?? '',
-								'state_id' => $data['state_name'],
-								'country_id' => $data['country_name'],
-								'is_mall' => 0,
-							];
-							
-							// Add Google ID if available
-							if ($googleId) {
-								$locationData['google_id'] = $googleId;
-							}
-							
-							// Add city from Google if available
-							if (isset($locationFromGoogle) && isset($locationFromGoogle['address_components'])) {
-								$addressComponents = collect($locationFromGoogle['address_components']);
-								$city = $addressComponents->filter(function ($component) {
-									return in_array('locality', $component['types']);
-								})->first();
-								
-								if ($city) {
-									$locationData['city'] = $city['long_name'];
-								}
-							}
-							
-							$location = Location::create($locationData);
-
-							// update lang long of store
-							$store->update([
-								'lang' => $lang,
-								'long' => $long
-							]);
-						}
-						
-						// Attach location to store
-						$store->location()->attach($location->id);
-						Log::info("Store {$store->id} attached to location: {$location->id}");
-					}
+					// Dispatch job to create or link location asynchronously
+					// This prevents timeout during large imports
+					CreateLocationFromStoreImport::dispatch($store->id, [
+						'name' => $data['name'],
+						'address' => $data['address'],
+						'address_postcode' => $data['address_postcode'] ?? null,
+						'city' => $data['city'] ?? null,
+						'state_id' => $data['state_name'],
+						'country_id' => $data['country_name'],
+						'lang' => $data['lang'] ?? null,
+						'long' => $data['long'] ?? null,
+					]);
 					
-					// Make store searchable
-					$store->searchable();
+					Log::info("CreateLocationFromStoreImport job dispatched for store: {$store->id}");
 					
 					return $store;
 				}),
@@ -389,7 +302,7 @@ class ListStores extends ListRecords
                                     foreach ($hours as $day => $time) {
                                         $formatted[] = $day . ':' . $time['open_time'] . '-' . $time['close_time'];
                                     }
-                                    return implode(',', $formatted);
+                                    return implode('|', $formatted); // Using pipe as separator for CSV compatibility
                                 }),
                             Column::make('rest_hours')
                                 ->heading('rest_hours')
@@ -402,7 +315,7 @@ class ListStores extends ListRecords
                                     foreach ($hours as $day => $time) {
                                         $formatted[] = $day . ':' . $time['open_time'] . '-' . $time['close_time'];
                                     }
-                                    return implode(',', $formatted);
+                                    return implode('|', $formatted); // Using pipe as separator for CSV compatibility
                                 }),
                             Column::make('lang')->heading('latitude'),
                             Column::make('long')->heading('longitude'),
