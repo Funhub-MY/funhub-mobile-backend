@@ -64,6 +64,8 @@ public function index(Request $request)
 ### `postRaiseSupportRequest()`
 Creates a new support request with initial message and optional attachments.
 
+![Raise Support Request Sequence Diagram](images/help_center_raise_request_sequence.png)
+
 **Implementation Details:**
 - Validates required input fields (category, title, message)
 - Supports linking the request to specific content (e.g., articles)

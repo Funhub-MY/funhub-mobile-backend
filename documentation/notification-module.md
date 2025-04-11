@@ -15,8 +15,9 @@ The Notification module is a core component of the FunHub Mobile Backend, provid
 ## Key Methods and Logic Flow
 
 ### `getNotifications()`
-The main method for retrieving a user's notifications with pagination.
+![Get Notifications Sequence Diagram](images/notification_get_sequence.png)
 
+The main method for retrieving a user's notifications with pagination.
 **Implementation Details:**
 - Retrieves the authenticated user's notifications from the database
 - Orders notifications by creation date in descending order (newest first)

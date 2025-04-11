@@ -61,6 +61,8 @@ Retrieves detailed information about a specific merchant offer.
 ### `postClaimOffer()`
 Handles the claiming of merchant offers by users.
 
+![Claim Offer Sequence Diagram](images/merchant_offer_claim_sequence.png)
+
 **Implementation Details:**
 - Validates input data for required fields (offer ID, quantity, payment method)
 - Retrieves the offer and validates its availability

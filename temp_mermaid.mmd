@@ -1,0 +1,63 @@
+sequenceDiagram
+    participant Client
+    participant ProductController as Controller
+    participant Request
+    participant User as AuthUser (Model)
+    participant Product as Product (Model)
+    participant UserCard as Card (Model)
+    participant TransactionService
+    participant MpayService
+    participant Database as DB
+    participant Log
+
+    Client->>+Controller: POST /api/products/checkout (data)
+    Controller->>+Request: validate(data)
+    Request-->>-Controller: Validation OK
+    Controller->>+AuthUser: Get authenticated user
+    AuthUser-->>-Controller: User object
+    Controller->>AuthUser: hasVerifiedEmail()?
+    alt Email Not Verified
+        Controller-->>-Client: JSON Error Response (Verify email first)
+    end
+    Controller->>+Product: find(product_id)->published()->first()
+    Product->>+DB: Query Product table
+    DB-->>-Product: Product object or null
+    Product-->>-Controller: Product object or null
+    alt Product Not Found or Not Published
+        Controller-->>-Client: JSON Error Response (Product not valid)
+    end
+
+    opt Product has limited supply (unlimited_supply == 0)
+        Controller->>Product: Check quantity >= request.quantity
+        alt Insufficient Quantity
+            Controller-->>-Client: JSON Error Response (Product sold out)
+        end
+    end
+
+    Controller->>Controller: Calculate net_amount
+    Controller->>Controller: Determine walletType
+    opt fiat_payment_method == 'card' AND card_id provided
+        Controller->>+Card: find(card_id, user_id)
+        Card->>+DB: Query UserCard table
+        DB-->>-Card: Card object or null
+        Card-->>-Controller: selectedCard object or null
+    end
+
+    Controller->>+TransactionService: create(product, net_amount, gateway, user_id, ...)
+    TransactionService-->>-Controller: New Transaction object (status=PENDING)
+
+    alt transaction.gateway == 'mpay'
+        Controller->>+MpayService: new MpayService(...)
+        MpayService-->>-Controller: MpayService instance
+        Controller->>+MpayService: createTransaction(transaction_no, net_amount, ..., card_token?)
+        MpayService-->>-Controller: MPAY Gateway Data ($mpayData)
+        opt Product has limited supply (unlimited_supply == 0)
+            Controller->>+Product: decrement quantity, save()
+            Product->>+DB: Update Product quantity
+            DB-->>-Product: Confirmation
+            Product-->>-Controller: Confirmation
+        end
+        Controller-->>-Client: JSON Response (Redirect to Gateway, gateway_data)
+    else Other Gateway (Not Implemented in Snippet)
+        Controller-->>-Client: JSON Error Response (Gateway not supported?)
+    end

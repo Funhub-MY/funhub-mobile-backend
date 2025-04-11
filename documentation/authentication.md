@@ -31,6 +31,9 @@ The Authentication module provides functionality for user registration, login, a
    - Returns status indicating if the number is registered and if the user has a password set
 
 2. **Send OTP (`sendOtp`)**
+
+![Send OTP Sequence Diagram](images/auth_send_otp_sequence.png)
+
    - Validates country code and phone number
    - Generates a 6-digit OTP
    - If user doesn't exist, creates a new user record with the phone number and OTP

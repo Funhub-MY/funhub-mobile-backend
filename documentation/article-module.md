@@ -17,6 +17,8 @@ The Article module is a core component of the FunHub Mobile Backend, providing f
 ### `index()`
 The main method for retrieving articles with complex filtering and sorting capabilities.
 
+![Article Index Sequence Diagram](images/article_index_sequence.png)
+
 **Implementation Details:**
 - Constructs a sophisticated query to fetch published articles with optimized performance
 - Uses eager loading to preload related data (users, categories, media, tags, locations, interactions)

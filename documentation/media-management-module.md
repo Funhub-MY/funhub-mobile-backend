@@ -28,6 +28,8 @@ Generates a secure, temporary URL for uploading media directly to S3 storage.
 ### `postUploadMediaComplete()`
 Completes the media upload process after the client has uploaded to the signed URL.
 
+![Upload Media Complete Sequence Diagram](images/media_complete_upload_sequence.png)
+
 **Implementation Details:**
 - Validates the upload IDs provided by the client
 - Retrieves filenames from cache using the upload IDs

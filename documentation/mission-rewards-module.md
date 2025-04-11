@@ -91,6 +91,8 @@ Determines which missions are eligible for progress based on event type and user
 #### `processMissionProgress()`
 Updates mission progress when an event occurs.
 
+![Process Mission Progress Sequence Diagram](images/mission_process_progress_sequence.png)
+
 **Implementation Details:**
 - Gets or creates a user mission participation record
 - Handles special cases for accumulated missions:
