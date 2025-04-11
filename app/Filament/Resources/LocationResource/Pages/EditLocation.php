@@ -84,5 +84,42 @@ class EditLocation extends EditRecord
 				]);
 			}
 		}
+
+		// Sync lat/lng to attached stores if lat or lng has changed
+		if ($location->wasChanged('lat') || $location->wasChanged('lng')) {
+			try {
+				$stores = $location->stores;
+
+				Log::info('[BackendEditLocation] Syncing location coordinates to attached stores', [
+					'location_id' => $location->id,
+					'lat' => $location->lat,
+					'lng' => $location->lng,
+					'store_count' => $stores->count()
+				]);
+
+				foreach ($stores as $store) {
+					$store->update([
+						'lat' => $location->lat,
+						'long' => $location->lng
+					]);
+
+					Log::info('[BackendEditLocation] Updated store coordinates', [
+						'store_id' => $store->id,
+						'store_name' => $store->name,
+						'new_lat' => $location->lat,
+						'new_long' => $location->lng
+					]);
+
+					// Make the store searchable after updating coordinates
+					\App\Jobs\IndexStore::dispatch($store->id);
+				}
+			} catch (\Exception $e) {
+				Log::error('[BackendEditLocation] Error syncing location coordinates to stores', [
+					'location_id' => $location->id,
+					'error_message' => $e->getMessage(),
+					'error_trace' => $e->getTraceAsString()
+				]);
+			}
+		}
 	}
 }

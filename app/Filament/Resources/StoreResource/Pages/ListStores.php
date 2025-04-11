@@ -186,12 +186,60 @@ class ListStores extends ListRecords
 						'country_id' => $data['country_name'],
 						'is_hq' => $data['is_hq'],
 						'business_phone_no' => $businessPhoneNo,
-						'business_hours' => $data['business_hours'] ?? null,
-						'rest_hours' => $data['rest_hours'] ?? null,
+						'business_hours' => null,
+						'rest_hours' => null,
 						'user_id' => $data['user_id'] ?? null,
 						'lang' => $data['lang'] ?? null,
 						'long' => $data['long'] ?? null,
 					];
+					
+					// Process business hours
+					if (!empty($data['business_hours'])) {
+						$formattedHours = [];
+						$hoursPairs = explode('|', $data['business_hours']);
+						
+						foreach ($hoursPairs as $pair) {
+							$parts = explode(':', $pair);
+							if (count($parts) !== 2) continue;
+							
+							$day = trim($parts[0]);
+							$times = explode('-', $parts[1]);
+							if (count($times) !== 2) continue;
+							
+							$formattedHours[$day] = [
+								'open_time' => trim($times[0]),
+								'close_time' => trim($times[1])
+							];
+						}
+						
+						if (!empty($formattedHours)) {
+							$storeData['business_hours'] = json_encode($formattedHours);
+						}
+					}
+					
+					// Process rest hours
+					if (!empty($data['rest_hours'])) {
+						$formattedHours = [];
+						$hoursPairs = explode('|', $data['rest_hours']);
+						
+						foreach ($hoursPairs as $pair) {
+							$parts = explode(':', $pair);
+							if (count($parts) !== 2) continue;
+							
+							$day = trim($parts[0]);
+							$times = explode('-', $parts[1]);
+							if (count($times) !== 2) continue;
+							
+							$formattedHours[$day] = [
+								'open_time' => trim($times[0]),
+								'close_time' => trim($times[1])
+							];
+						}
+						
+						if (!empty($formattedHours)) {
+							$storeData['rest_hours'] = json_encode($formattedHours);
+						}
+					}
 					
 					// Get merchant_id from user_id if available
 					if (!empty($data['user_id'])) {
