@@ -97,51 +97,87 @@ class ListStores extends ListRecords
 						->label('Business Hours')
 						->helperText('Format: day:openTime-closeTime (e.g., 1:09:00-18:00|2:09:00-18:00)')
 						->mutateBeforeCreate(function ($value) {
-							if (empty($value)) return null;
+							// Check if value is empty or appears to be a JSON string already
+							if (empty($value) || $value === '[]') {
+								Log::warning('Empty business hours or already JSON', ['value' => $value]);
+								return null;
+							}
 							
 							$formattedHours = [];
 							$hoursPairs = explode('|', $value); // Using pipe as separator for CSV compatibility
 							
 							foreach ($hoursPairs as $pair) {
-								$parts = explode(':', $pair);
-								if (count($parts) !== 2) continue;
+								// Check if the pair contains both a day and time information
+								if (strpos($pair, ':') === false || strpos($pair, '-') === false) {
+									Log::warning('Invalid business hours format (missing : or -)', ['pair' => $pair]);
+									continue;
+								}
 								
-								$day = trim($parts[0]);
-								$times = explode('-', $parts[1]);
-								if (count($times) !== 2) continue;
+								// Extract the day (everything before the first colon)
+								$day = trim(substr($pair, 0, strpos($pair, ':')));
 								
+								// Extract the time part (everything after the first colon)
+								$timePart = substr($pair, strpos($pair, ':') + 1);
+								
+								// Split the time part by the dash to get open and close times
+								$times = explode('-', $timePart);
+								if (count($times) !== 2) {
+									Log::warning('Invalid time format in business hours', ['times' => $timePart]);
+									continue;
+								}
+								
+								// Add to formatted hours
 								$formattedHours[$day] = [
 									'open_time' => trim($times[0]),
 									'close_time' => trim($times[1])
 								];
 							}
 							
-							return json_encode($formattedHours);
+							$jsonResult = json_encode($formattedHours);
+							return $jsonResult;
 						}),
 					ImportField::make('rest_hours')
 						->label('Rest Hours')
 						->helperText('Format: day:startTime-endTime (e.g., 1:12:00-14:00|2:12:00-14:00)')
 						->mutateBeforeCreate(function ($value) {
-							if (empty($value)) return null;
+							// Check if value is empty or appears to be a JSON string already
+							if (empty($value) || $value === '[]') {
+								Log::warning('Empty rest hours or already JSON', ['value' => $value]);
+								return null;
+							}
 							
 							$formattedHours = [];
 							$hoursPairs = explode('|', $value); // Using pipe as separator for CSV compatibility
 							
 							foreach ($hoursPairs as $pair) {
-								$parts = explode(':', $pair);
-								if (count($parts) !== 2) continue;
+								// Check if the pair contains both a day and time information
+								if (strpos($pair, ':') === false || strpos($pair, '-') === false) {
+									Log::warning('Invalid rest hours format (missing : or -)', ['pair' => $pair]);
+									continue;
+								}
 								
-								$day = trim($parts[0]);
-								$times = explode('-', $parts[1]);
-								if (count($times) !== 2) continue;
+								// Extract the day (everything before the first colon)
+								$day = trim(substr($pair, 0, strpos($pair, ':')));
 								
+								// Extract the time part (everything after the first colon)
+								$timePart = substr($pair, strpos($pair, ':') + 1);
+								
+								// Split the time part by the dash to get open and close times
+								$times = explode('-', $timePart);
+								if (count($times) !== 2) {
+									Log::warning('Invalid time format in rest hours', ['times' => $timePart]);
+									continue;
+								}
+								
+								// Add to formatted hours
 								$formattedHours[$day] = [
 									'open_time' => trim($times[0]),
 									'close_time' => trim($times[1])
 								];
 							}
 							
-							return json_encode($formattedHours);
+							$jsonResult = json_encode($formattedHours);
+							return $jsonResult;
 						}),
 					ImportField::make('is_hq')
 						->label('Is HQ?')
@@ -186,60 +222,12 @@ class ListStores extends ListRecords
 						'country_id' => $data['country_name'],
 						'is_hq' => $data['is_hq'],
 						'business_phone_no' => $businessPhoneNo,
-						'business_hours' => null,
-						'rest_hours' => null,
+						'business_hours' => $data['business_hours'] ?? null,
+						'rest_hours' => $data['rest_hours'] ?? null,
 						'user_id' => $data['user_id'] ?? null,
 						'lang' => $data['lang'] ?? null,
 						'long' => $data['long'] ?? null,
 					];
-					
-					// Process business hours
-					if (!empty($data['business_hours'])) {
-						$formattedHours = [];
-						$hoursPairs = explode('|', $data['business_hours']);
-						
-						foreach ($hoursPairs as $pair) {
-							$parts = explode(':', $pair);
-							if (count($parts) !== 2) continue;
-							
-							$day = trim($parts[0]);
-							$times = explode('-', $parts[1]);
-							if (count($times) !== 2) continue;
-							
-							$formattedHours[$day] = [
-								'open_time' => trim($times[0]),
-								'close_time' => trim($times[1])
-							];
-						}
-						
-						if (!empty($formattedHours)) {
-							$storeData['business_hours'] = json_encode($formattedHours);
-						}
-					}
-					
-					// Process rest hours
-					if (!empty($data['rest_hours'])) {
-						$formattedHours = [];
-						$hoursPairs = explode('|', $data['rest_hours']);
-						
-						foreach ($hoursPairs as $pair) {
-							$parts = explode(':', $pair);
-							if (count($parts) !== 2) continue;
-							
-							$day = trim($parts[0]);
-							$times = explode('-', $parts[1]);
-							if (count($times) !== 2) continue;
-							
-							$formattedHours[$day] = [
-								'open_time' => trim($times[0]),
-								'close_time' => trim($times[1])
-							];
-						}
-						
-						if (!empty($formattedHours)) {
-							$storeData['rest_hours'] = json_encode($formattedHours);
-						}
-					}
 					
 					// Get merchant_id from user_id if available
 					if (!empty($data['user_id'])) {
