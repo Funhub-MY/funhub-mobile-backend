@@ -1,0 +1,61 @@
+sequenceDiagram
+    participant Client
+    participant MediaController as Controller
+    participant Request
+    participant Config
+    participant User as AuthUser (Model)
+    participant Cache
+    participant Media as Media (Model/Lib)
+    participant Storage as S3
+    participant Database as DB
+    participant Log
+
+    Client->>Controller: POST /api/media/complete (upload_ids, is_cover?)
+    Controller->>Config: Get filesystems.default
+    Config-->>Controller: 's3' (or other)
+    alt Filesystem is not 's3'
+        Controller-->>Client: JSON Error Response ("Only applicable for S3 Storage")
+    end
+    Controller->>Request: validate(upload_ids)
+    Request-->>Controller: Validation OK
+    Controller->>Request: user()
+    Request-->>Controller: Authenticated User object
+    Controller->>Controller: Split upload_ids string into array
+    loop For each uploadId in uploadIds
+        Controller->>Cache: get(uploadId)
+        Cache-->>Controller: filename or null
+        alt filename found in Cache
+            Controller->>Controller: Construct fullPath (signed_uploads/filename)
+            Controller->>Controller: Set is_cover default if needed
+            Controller->>AuthUser: addMediaFromDisk(fullPath, 's3')
+            AuthUser->>Media: Create Media record, copy file from S3 temp path
+            Media->>DB: Insert Media record
+            DB-->>Media: New Media record with ID
+            Media-->>AuthUser: New Media object ($file)
+            AuthUser-->>Controller: New Media object ($file)
+
+            opt Media is an image
+                Controller->>Media: setCustomProperty('is_cover', ...)
+                Media->>DB: Update Media record (no events)
+                DB-->>Media: Confirmation
+                Media-->>Controller: Confirmation
+                Controller->>Controller: getimagesize(file->getFullUrl())
+                alt getimagesize success
+                    Controller->>Media: setCustomProperty('width', ...), setCustomProperty('height', ...)
+                    Media->>DB: Update Media record (no events)
+                    DB-->>Media: Confirmation
+                    Media-->>Controller: Confirmation
+                else getimagesize failed
+                    Controller->>Log: error("Error getting image size", ...)
+                    Log-->>Controller: Logged
+                end
+            end
+            Controller->>Controller: Add media info to results array
+            Controller->>S3: delete(fullPath)
+            S3-->>Controller: Deletion confirmation
+        else filename not found in Cache
+            Controller->>Log: error("Filename not found from uploadId", ...)
+            Log-->>Controller: Logged
+        end
+    end
+    Controller-->>Client: JSON Response (Success, uploaded medias array)

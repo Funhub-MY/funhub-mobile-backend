@@ -1,0 +1,118 @@
+sequenceDiagram
+    participant Client
+    participant MerchantOfferController as Controller
+    participant Request
+    participant User as AuthUser (Model)
+    participant MerchantOffer as Offer (Model)
+    participant MerchantOfferVoucher as Voucher (Model)
+    participant MerchantOfferClaim as Claim (Model)
+    participant OfferLimitWhitelist as Whitelist (Model)
+    participant PointService
+    participant TransactionService
+    participant MpayService
+    participant Database as DB
+    participant Event
+    participant Notification
+    participant Log
+
+    Client->>+Controller: POST /api/merchant-offers/claim (data)
+    Controller->>+Request: validate(data)
+    Request-->>Controller: Validation OK
+    Controller->>+AuthUser: Get authenticated user
+    AuthUser-->>Controller: User object
+    Controller->>+Offer: findOrFail(offer_id)
+    Offer->>+DB: Query MerchantOffer table
+    DB-->>Offer: Offer object
+    Offer-->>Controller: Offer object
+    Controller->>Offer: Check published, available dates
+    Controller->>Offer: unclaimedVouchers()->count() >= quantity?
+    Offer->>+DB: Query Voucher table
+    DB-->>Offer: Count
+    Offer-->>Controller: Availability status
+    alt Offer Not Valid or Not Available
+        Controller-->>Client: JSON Error Response
+    end
+
+    Controller->>+Whitelist: exists(user_id)?
+    Whitelist->>+DB: Query Whitelist table
+    DB-->>Whitelist: Whitelist status
+    Whitelist-->>Controller: isWhitelisted
+    opt Not Whitelisted
+        Controller->>Controller: getUserPurchasedBeforeFromMerchantIds(user)
+        Controller->>+Claim: Query Claim table for recent purchases
+        Claim->>+DB: Query Claim table
+        DB-->>Claim: Recent merchant IDs
+        Claim-->>Controller: purchasedMerchantIds
+        Controller->>Controller: Check if offer.user_id in purchasedMerchantIds
+        alt User Purchased Recently
+            Controller-->>Client: JSON Error Response (Purchase limit)
+        end
+    end
+
+    alt payment_method == 'points'
+        Controller->>Controller: Calculate required points
+        Controller->>+PointService: getBalanceOfUser(user)
+        PointService-->>Controller: User balance
+        alt Insufficient Points
+            Controller-->>Client: JSON Error Response (Insufficient points)
+        end
+        Controller->>+DB: Begin Transaction
+        Controller->>+Voucher: Find available voucher for offer
+        Voucher->>DB: Query Voucher table
+        DB-->>Voucher: Voucher object or null
+        alt No Voucher Available
+            Controller->>+DB: Rollback Transaction
+            Controller-->>Client: JSON Error Response (Sold out)
+        end
+        Controller->>+Claim: create(user_id, offer_id, ..., status=SUCCESS)
+        Claim->>DB: Insert Claim record
+        DB-->>Claim: New Claim object
+        Claim-->>Controller: New Claim object
+        Controller->>+Voucher: update(owned_by_id=user_id)
+        Voucher->>DB: Update Voucher record
+        DB-->>Voucher: Confirmation
+        Voucher-->>Controller: Confirmation
+        Controller->>+PointService: debit(user, points, ...)
+        PointService-->>Controller: Debit confirmation
+        Controller->>+DB: Commit Transaction
+        Controller->>+Event: dispatch(new MerchantOfferClaimed(...))
+        Controller->>+Notification: user->notify(new OfferClaimed(...))
+        Controller-->>Client: JSON Success Response (Offer Claimed)
+    else payment_method == 'fiat'
+        Controller->>Controller: Calculate net_amount (consider point discount?)
+        opt use_point_discount
+            Controller->>Controller: Validate points_to_use
+            Controller->>+PointService: getBalanceOfUser(user)
+            PointService-->>Controller: User balance
+            alt Insufficient Points for Discount
+                 Controller-->>Client: JSON Error Response (Insufficient points for discount)
+            end
+            Controller->>Controller: Calculate discount_amount
+        end
+        Controller->>+DB: Begin Transaction
+        Controller->>+Voucher: Find available voucher for offer
+        Voucher->>DB: Query Voucher table
+        DB-->>Voucher: Voucher object or null
+        alt No Voucher Available
+            Controller->>+DB: Rollback Transaction
+            Controller-->>Client: JSON Error Response (Sold out)
+        end
+        Controller->>+Claim: create(user_id, offer_id, ..., status=AWAIT_PAYMENT)
+        Claim->>DB: Insert Claim record
+        DB-->>Claim: New Claim object
+        Claim-->>Controller: New Claim object
+        Controller->>+Voucher: update(owned_by_id=user_id) # Temporarily assign
+        Voucher->>DB: Update Voucher record
+        DB-->>Voucher: Confirmation
+        Voucher-->>Controller: Confirmation
+        opt use_point_discount
+            Controller->>+PointService: debit(user, points_to_use, ...)
+            PointService-->>Controller: Debit confirmation
+        end
+        Controller->>+TransactionService: create(offer, amount, ...)
+        TransactionService-->>Controller: New Transaction object
+        Controller->>+DB: Commit Transaction
+        Controller->>+MpayService: createTransaction(transaction_no, amount, ...)
+        MpayService-->>Controller: MPAY Gateway Data
+        Controller-->>Client: JSON Response (Redirect to gateway, gateway_data)
+    end

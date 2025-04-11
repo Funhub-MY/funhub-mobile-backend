@@ -20,6 +20,9 @@ The Payment module handles all payment-related operations in the FunHub Mobile B
 ### 1. Initiating Payment
 
 #### ProductController.postCheckout
+
+![Product Checkout Sequence Diagram](images/payment_product_checkout_sequence.svg)
+
 This method handles the checkout process for purchasing FUNCARDs:
 
 1. **Validation**: Validates input parameters (product_id, payment_method, quantity).

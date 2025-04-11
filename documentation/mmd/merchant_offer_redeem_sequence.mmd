@@ -1,0 +1,90 @@
+sequenceDiagram
+    participant Client
+    participant MerchantOfferController as Controller
+    participant Request
+    participant User as AuthUser (Model)
+    participant MerchantOfferClaim as Claim (Model)
+    participant MerchantOffer as Offer (Model)
+    participant Merchant as Merchant (Model)
+    participant MerchantOfferClaimRedemption as Redemption (Model)
+    participant Database as DB
+    participant Notification
+    participant Event
+    participant Log
+
+    Client->>+Controller: POST /api/merchant-offers/redeem (data)
+
+    Controller->>+Request: validate(claim_id, offer_id, quantity, redeem_code)
+    Request-->>Controller: Validation OK
+
+    Controller->>+AuthUser: Get authenticated user
+    AuthUser-->>Controller: User object
+
+    Controller->>+Claim: find(claim_id) where user_id=auth_id, status=SUCCESS
+    Claim->>+DB: Query MerchantOfferClaim table
+    DB-->>Claim: Claim object or null
+    Claim-->>Controller: $claim
+
+    alt Claim Not Found or Invalid
+        Controller-->>-Client: JSON Error Response (Claim not found/valid)
+    else # Claim Found and Valid
+
+        Controller->>+Offer: find(offer_id)
+        Offer->>+DB: Query MerchantOffer table
+        DB-->>Offer: Offer object or null
+        Offer-->>Controller: $offer
+
+        alt Offer Not Found
+            Controller-->>-Client: JSON Error Response (Offer not found)
+        else # Offer Found
+
+            Controller->>+Claim: Check if already redeemed (redeem()->exists())
+            Claim->>+DB: Query MerchantOfferClaimRedemption table
+            DB-->>Claim: Exists (true/false)
+            Claim-->>Controller: isRedeemed
+
+            alt Already Redeemed
+                Controller-->>-Client: JSON Error Response (Already redeemed)
+            else # Not Redeemed
+
+                opt Offer has expiry_days
+                    Controller->>Controller: Calculate expiry date (claim.created_at + offer.expiry_days)
+                    Controller->>Controller: Check if current date > expiry date
+                    alt Expired
+                        Controller-->>-Client: JSON Error Response (Offer expired)
+                    end # End Expired alt
+                end # End opt
+
+                # Continue only if not expired (or no expiry)
+                Controller->>+Offer: merchant()->first()
+                Offer->>+DB: Query Merchant table (via relationship)
+                DB-->>Offer: Merchant object
+                Offer-->>Controller: $merchant
+
+                Controller->>Controller: Check request.redeem_code == merchant.redemption_code
+                alt Invalid Redemption Code
+                    Controller-->>-Client: JSON Error Response (Invalid code)
+                else # Code is Valid
+
+                    Controller->>+Claim: redeem()->create(user_id, offer_id, quantity)
+                    Claim->>+Redemption: new MerchantOfferClaimRedemption(...)
+                    Redemption->>+DB: Insert Redemption record
+                    DB-->>Redemption: New Redemption object
+                    Redemption-->>Claim: New Redemption object
+                    Claim-->>Controller: New Redemption object
+
+                    Controller->>+Notification: user->notify(new OfferRedeemed(...))
+                    Notification-->>Controller: # OK
+
+                    Controller->>+Notification: merchant->notify(new VoucherRedeemedNotification(...))
+                    Notification-->>Controller: # OK
+
+                    Controller->>+Event: dispatch(new MerchantOfferClaimed(...)) # Note: Event name might need review
+                    Event-->>Controller: # OK
+
+                    Controller-->>-Client: JSON Success Response (Offer Redeemed)
+
+                end # End Invalid Redemption Code alt
+            end # End Already Redeemed alt
+        end # End Offer Not Found alt
+    end # End Claim Not Found alt

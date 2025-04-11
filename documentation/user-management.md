@@ -17,6 +17,8 @@ The User Management module handles all aspects of user profile management, setti
 | Registered User | View and manage my notifications | - Users can view all notifications<br>- Users can mark notifications as read<br>- Users can mark all notifications as read at once |
 | Registered User | Manage my device settings | - Users can update FCM token for push notifications<br>- Users can update OneSignal subscription for notifications<br>- Users can set preferred language |
 | Registered User | Participate in the referral program | - Users can view their referral code<br>- Users can enter someone else's referral code<br>- System validates referral codes and prevents self-referrals |
+![Update Password Sequence Diagram](images/user_update_password_sequence.svg)
+
 
 ## Logic Flow
 

@@ -1,0 +1,53 @@
+sequenceDiagram
+    participant Client
+    participant StoreController as Controller
+    participant Request
+    participant Store as Store (Model)
+    participant StoreRating as Rating (Model)
+    participant User as AuthUser (Model)
+    participant Database as DB
+    participant Event
+    participant StoreRatingResource as Resource
+
+    Client->>+Controller: POST /api/stores/{store}/ratings (data)
+    Controller->>+Request: validate(rating, comment?, rating_category_ids?)
+    Request-->>-Controller: Validation OK
+    Controller->>+Store: storeRatings()->create(user_id, rating, comment)
+    Store->>+Rating: new StoreRating(...)
+    Rating->>+DB: Insert StoreRating record
+    DB-->>-Rating: New Rating object with ID
+    Rating-->>-Store: New Rating object
+    Store-->>-Controller: New Rating object ($rating)
+
+    opt rating_category_ids provided
+        Controller->>Controller: Explode category IDs
+        Controller->>+Rating: ratingCategories()->attach(category_ids, [user_id])
+        Rating->>+DB: Insert records into pivot table (rating_category_store_rating)
+        DB-->>-Rating: Confirmation
+        Rating-->>-Controller: Confirmation
+    end
+
+    Controller->>+Store: storeRatings()->avg('rating')
+    Store->>+DB: Calculate average rating from StoreRating table
+    DB-->>-Store: Average rating value
+    Store-->>-Controller: Average rating value
+    Controller->>+Store: update(ratings = avg_rating)
+    Store->>+DB: Update Store record
+    DB-->>-Store: Confirmation
+    Store-->>-Controller: Confirmation
+
+    Controller->>+Rating: loadCount(['likes', 'dislikes'])
+    Rating->>+DB: Query Interaction table for counts
+    DB-->>-Rating: Counts loaded
+    Rating-->>-Controller: Rating with counts
+    Controller->>+Rating: load('user', 'ratingCategories')
+    Rating->>+DB: Query User and RatingCategory tables
+    DB-->>-Rating: Relationships loaded
+    Rating-->>-Controller: Rating with relationships
+
+    Controller->>+Event: dispatch(new RatedStore(store, user))
+    Event-->>-Controller: Dispatched
+
+    Controller->>+Resource: new StoreRatingResource($rating)
+    Resource-->>-Controller: Formatted JSON data
+    Controller-->>-Client: JSON Response (StoreRatingResource)

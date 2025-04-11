@@ -34,6 +34,9 @@ This document provides a comprehensive overview of all scheduled commands in the
 
 #### `article:publish`
 - **Description**: Publishes articles that are scheduled to be published
+
+![Article Publish Command Sequence Diagram](images/schedule_article_publish_sequence.svg)
+
 - **Implementation**: Finds draft articles with a published_at date in the past, excluding articles from media partners and mobile sources
 - **Purpose**: Enables content scheduling for better publication timing and workflow management
 

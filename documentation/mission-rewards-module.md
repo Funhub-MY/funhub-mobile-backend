@@ -91,7 +91,7 @@ Determines which missions are eligible for progress based on event type and user
 #### `processMissionProgress()`
 Updates mission progress when an event occurs.
 
-![Process Mission Progress Sequence Diagram](images/mission_process_progress_sequence.png)
+![Process Mission Progress Sequence Diagram](images/mission_process_progress_sequence.svg)
 
 **Implementation Details:**
 - Gets or creates a user mission participation record
@@ -102,6 +102,8 @@ Updates mission progress when an event occurs.
 - Triggers completion logic when requirements are met
 
 #### `disburseReward()`
+![Disburse Reward Sequence Diagram](images/mission_disburse_reward_sequence.svg)
+
 Handles the distribution of rewards to users upon mission completion.
 
 **Implementation Details:**

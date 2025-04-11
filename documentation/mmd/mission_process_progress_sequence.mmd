@@ -1,0 +1,113 @@
+sequenceDiagram
+    participant Caller as Event Listener/Controller
+    participant MissionService
+    participant User as User (Model)
+    participant Mission as Mission (Model)
+    participant UserMissionPivot as Pivot (DB Table: missions_users)
+    participant Database as DB
+    participant Log
+    participant NotificationService as Notifier
+
+    Caller->>+MissionService: processMissionProgress(mission, user, eventType)
+    MissionService->>MissionService: Set currentUser = user
+    MissionService->>+Log: info("Processing mission progress", ...)
+    Log-->>MissionService: Logged
+    MissionService->>MissionService: getOrCreateUserMission(mission, user, eventType)
+    MissionService->>+User: missionsParticipating()->where(...)->first()
+    User->>+DB: Query missions_users table
+    DB-->>-User: Pivot record or null
+    User-->>MissionService: userMission (with pivot) or null
+    opt userMission is null (needs creation)
+        MissionService->>+Log: info("Creating new mission progress", ...)
+        Log-->>MissionService: Logged
+        MissionService->>+DB: Begin Transaction
+        opt frequency is daily/monthly
+             MissionService->>+User: missionsParticipating()->where(...)->update(...) # Mark old incomplete as completed
+             User->>+DB: Update old pivot records
+             DB-->>-User: Confirmation
+        end
+        MissionService->>MissionService: Prepare initialValues JSON
+        MissionService->>+User: missionsParticipating()->attach(mission.id, initialData)
+        User->>+DB: Insert new pivot record
+        DB-->>-User: Confirmation
+        MissionService->>+DB: Commit Transaction
+        MissionService->>+User: missionsParticipating()->where(...)->first() # Re-fetch new record
+        User->>+DB: Query missions_users table
+        DB-->>-User: New userMission object
+        User-->>MissionService: New userMission object
+        MissionService->>+Log: info("New mission progress created", ...)
+        Log-->>MissionService: Logged
+        MissionService->>+Notifier: sendMissionStartedNotification(mission, user)
+        Notifier-->>MissionService: Sent
+    end
+    opt userMission or pivot is null (Error case)
+        MissionService->>+Log: error("Failed to get/create or pivot not found", ...)
+        Log-->>MissionService: Logged
+        MissionService-->>Caller: Return void
+    end
+
+    opt mission.frequency == 'accumulated' AND pivot.is_completed AND pivot.claimed_at
+        MissionService->>+Log: info("Creating new accumulated instance", ...)
+        Log-->>MissionService: Logged
+        MissionService->>MissionService: Prepare initialValues JSON
+        MissionService->>+User: missionsParticipating()->attach(mission.id, initialData)
+        User->>+DB: Insert new pivot record
+        DB-->>-User: Confirmation
+        MissionService->>+User: missionsParticipating()->where(...)->first() # Re-fetch new record
+        User->>+DB: Query missions_users table
+        DB-->>-User: New userMission object
+        User-->>MissionService: New userMission object
+        MissionService->>+Log: info("New accumulated instance created", ...)
+        Log-->>MissionService: Logged
+    end
+
+    MissionService->>MissionService: Determine if update is needed (shouldUpdate?)
+    alt shouldUpdate is true
+        MissionService->>MissionService: updateProgress(userMission, mission, eventType) # Internal call
+        MissionService->>+Log: info("Starting progress update", ...)
+        Log-->>MissionService: Logged
+        MissionService->>MissionService: Decode current_values JSON
+        MissionService->>MissionService: Increment eventType count
+        MissionService->>+DB: Begin Transaction
+        MissionService->>+UserMissionPivot: update(current_values = newJSON)
+        UserMissionPivot->>DB: Update pivot record
+        DB-->>-UserMissionPivot: Confirmation
+        MissionService->>+Log: info("Progress updated", ...)
+        Log-->>MissionService: Logged
+        MissionService->>MissionService: checkMissionCompletion(mission, currentValues)
+        alt Mission Completed
+            MissionService->>+Log: info("Mission completion check passed", ...)
+            Log-->>MissionService: Logged
+            opt NOT (pivot.is_completed AND pivot.claimed_at) # Avoid re-completing claimed
+                MissionService->>MissionService: Prepare updateData (is_completed=true, completed_at=now())
+                opt mission.auto_disburse_rewards
+                    MissionService->>MissionService: Add claimed_at=now() to updateData
+                end
+                MissionService->>+UserMissionPivot: update(updateData)
+                UserMissionPivot->>DB: Update pivot record
+                DB-->>-UserMissionPivot: Confirmation
+                MissionService->>+Log: info("Mission completed", ...)
+                Log-->>MissionService: Logged
+                MissionService->>+Notifier: sendMissionCompletedNotification(mission, user)
+                Notifier-->>MissionService: Sent
+                opt mission.auto_disburse_rewards
+                    MissionService->>MissionService: disburseReward(mission, user) # Internal call, details omitted
+                    opt mission.frequency == 'accumulated'
+                        MissionService->>+Log: info("Creating new accumulated instance after completion", ...)
+                        Log-->>MissionService: Logged
+                        MissionService->>MissionService: Prepare initialValues JSON
+                        MissionService->>+User: missionsParticipating()->attach(mission.id, initialData)
+                        User->>+DB: Insert new pivot record
+                        DB-->>-User: Confirmation
+                    end
+                end
+            end
+        end
+        MissionService->>+DB: Commit Transaction
+        MissionService->>+Log: info("Mission status after update", ...)
+        Log-->>MissionService: Logged
+    else shouldUpdate is false
+        MissionService->>+Log: info("Skipping progress update", ...)
+        Log-->>MissionService: Logged
+    end
+    MissionService-->>-Caller: Return void

@@ -1,0 +1,68 @@
+sequenceDiagram
+    participant Client
+    participant SupportRequestController as Controller
+    participant Request
+    participant User as AuthUser (Model)
+    participant SupportRequest as SR (Model)
+    participant SupportRequestMessage as SRM (Model)
+    participant Media as Media (Model/Lib)
+    participant SupportUser as SupportUser (Model)
+    participant Database as DB
+    participant Log
+    participant SRMResource as SRM Res
+    participant SRResource as SR Res
+
+    Client->>+Controller: POST /api/support-requests (data)
+    Controller->>+Request: validate(data)
+    Request-->>-Controller: Validation OK
+    Controller->>Controller: Map 'supportable' string to Class?
+    Controller->>+AuthUser: supportRequests()->create(...)
+    AuthUser->>+SR: new SupportRequest(...)
+    SR->>+DB: Insert SupportRequest record
+    DB-->>-SR: New SR record with ID
+    SR-->>-AuthUser: New SR object
+    AuthUser-->>-Controller: New SR object
+    Controller->>+SR: messages()->create(...)
+    SR->>+SRM: new SupportRequestMessage(...)
+    SRM->>+DB: Insert SRM record
+    DB-->>-SRM: New SRM record with ID
+    SRM-->>-SR: New SRM object
+    SR-->>-Controller: New SRM object (user message)
+
+    opt Media IDs provided
+        Controller->>+AuthUser: getMedia(TEMP_COLLECTION).whereIn(...)
+        AuthUser->>+Media: Query Media library/DB
+        Media-->>-AuthUser: Media items
+        AuthUser-->>-Controller: Media items
+        loop For each Media item
+            Controller->>+Media: move(newMessage, TARGET_COLLECTION)
+            Media-->>-Controller: Moved Media item
+        end
+    end
+
+    Controller->>+SupportUser: Find User whereHas('roles', 'Support')
+    SupportUser->>+DB: Query User table
+    DB-->>-SupportUser: Support User record or null
+    SupportUser-->>-Controller: Support User object or null
+
+    alt Support User Found
+        Controller->>+SR: messages()->create(support_user_id, system_message)
+        SR->>+SRM: new SupportRequestMessage(...)
+        SRM->>+DB: Insert system SRM record
+        DB-->>-SRM: New SRM record with ID
+        SRM-->>-SR: New SRM object
+        SR-->>-Controller: New SRM object (system message)
+    else Support User Not Found
+        Controller->>+Log: error("No user with support role...")
+        Log-->>-Controller: Logged
+    end
+
+    Controller->>+SR: load('messages')
+    SR->>+DB: Query SRM table for related messages
+    DB-->>-SR: Related SRM records
+    SR-->>-Controller: SR object with loaded messages
+    Controller->>+SRMResource: new(user_message)
+    SRMResource-->>-Controller: Formatted user message
+    Controller->>+SRResource: new(support_request)
+    SRResource-->>-Controller: Formatted support request
+    Controller-->>-Client: JSON Response { message: ..., request: ... }

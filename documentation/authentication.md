@@ -32,7 +32,7 @@ The Authentication module provides functionality for user registration, login, a
 
 2. **Send OTP (`sendOtp`)**
 
-![Send OTP Sequence Diagram](images/auth_send_otp_sequence.png)
+![Send OTP Sequence Diagram](images/auth_send_otp_sequence.svg)
 
    - Validates country code and phone number
    - Generates a 6-digit OTP

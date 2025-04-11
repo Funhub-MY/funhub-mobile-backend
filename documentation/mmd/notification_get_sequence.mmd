@@ -1,0 +1,36 @@
+sequenceDiagram
+    participant Client
+    participant NotificationController as Controller
+    participant Request
+    participant User as AuthUser (Model)
+    participant Notification as Notification (Model/DB)
+    participant User as FromUser (Model)
+    participant Database as DB
+    participant NotificationResource as Resource
+
+    Client->>+Controller: GET /api/notifications (per_page?)
+    Controller->>+AuthUser: Get authenticated user
+    AuthUser-->>-Controller: User object
+    Controller->>+AuthUser: notifications()
+    AuthUser->>+Notification: Query notifications table (user_id = auth()->id())
+    Notification->>Notification: orderBy('created_at', 'desc')
+    Notification->>Notification: paginate(per_page)
+    Notification->>+DB: Execute query
+    DB-->>-Notification: Paginated Notification Collection
+    Notification-->>-Controller: Paginated Notifications ($notifications)
+    Controller->>Controller: Extract unique 'data.from_id' from $notifications
+    Controller->>+FromUser: whereIn('id', userIds)->get()
+    FromUser->>+DB: Query User table
+    DB-->>-FromUser: Collection of User objects ($users)
+    FromUser-->>-Controller: Collection of User objects ($users)
+    Controller->>Controller: transform($notifications):
+    loop For each notification in $notifications
+        Controller->>Controller: Find user in $users where id == notification.data.from_id
+        Controller->>Controller: Set notification.from_user = found user
+        opt notification.data.extra exists
+            Controller->>Controller: Set notification.extra = notification.data.extra
+        end
+    end
+    Controller->>+Resource: collection($notifications)
+    Resource-->>-Controller: Formatted JSON data
+    Controller-->>-Client: JSON Response (Paginated Notifications)

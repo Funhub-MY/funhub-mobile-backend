@@ -17,6 +17,9 @@ Laravel Scout provides a driver-based solution for adding full-text search to El
 The following key models in the FunHub Mobile Backend implement Scout for search capabilities:
 
 ### 1. Article Model
+![Article toSearchableArray Sequence Diagram](images/scout_article_toSearchableArray_sequence.svg)
+
+
 
 Articles are a core content type that users can search for based on various criteria including title, body content, location, categories, and tags.
 

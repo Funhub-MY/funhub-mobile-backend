@@ -1,0 +1,72 @@
+sequenceDiagram
+    participant Client
+    participant ArticleController
+    participant ArticleModel as Article (Model)
+    participant User as User (Model)
+    participant ArticleRecommendation as ArticleRec (Model)
+    participant Location as Location (Model)
+    participant MerchantOffer as MOffer (DB/Model)
+    participant Cache
+    participant Database
+    participant ArticleResource
+
+    Client->>+ArticleController: GET /api/articles (filters?)
+    ArticleController->>+ArticleModel: query()
+    ArticleController->>ArticleModel: select([...]), with([...]), withCount([...])
+    ArticleController->>ArticleModel: where('status', PUBLISHED), whereDoesntHave('hiddenUsers', ...)
+    ArticleController->>ArticleModel: Apply Base Filters (exclude own?)
+
+    opt Optional Filters
+        ArticleController->>ArticleModel: Apply video_only filter?
+        ArticleController->>ArticleModel: Apply category_ids filter (JOIN)?
+        ArticleController->>ArticleModel: Apply tag_ids filter (JOIN)?
+        ArticleController->>ArticleModel: Apply following_only filter?
+        ArticleController->>ArticleModel: Apply visibility filter?
+        ArticleController->>ArticleModel: Apply location filters (city, city_id, location_id)?
+        ArticleController->>ArticleModel: Apply home conditions (whitelist/hidden)?
+        ArticleController->>ArticleModel: Apply pinned_only filter?
+    end
+
+    opt Recommendations Enabled
+        ArticleController->>+User: Check has_article_personalization
+        User-->>-ArticleController: Personalization status
+        ArticleController->>+ArticleRec: query()
+        ArticleController->>ArticleRec: Apply filters (e.g., video joins)
+        ArticleController->>ArticleRec: orderBy(...), limit(...)
+        ArticleController->>+Database: Fetch Recommended Article IDs
+        Database-->>-ArticleRec: Recommended IDs
+        ArticleRec-->>-ArticleController: Recommended IDs
+        alt Recommendations Found
+            ArticleController->>ArticleModel: whereIn('id', recommended_ids)
+            ArticleController->>ArticleModel: orderByRaw(FIELD(...))
+        else No Recommendations or Fallback
+            ArticleController->>ArticleModel: whereIn('id', request_article_ids)?
+        end
+    end
+
+    opt No Recommendation Ordering
+        ArticleController->>ArticleModel: Apply Default Sorting (latest, latest('published_at'))
+    end
+
+    ArticleController->>ArticleModel: distinct()
+    ArticleController->>ArticleModel: paginate(limit)
+    ArticleController->>+Database: Execute Final Query
+    Database-->>-ArticleController: Paginated Article Results
+
+    ArticleController->>ArticleController: Extract Location IDs from results
+    opt Locations Found
+        ArticleController->>+Cache: Check 'store_offers_locations_...' key
+        alt Cache Hit
+            Cache-->>-ArticleController: Cached Location IDs with Offers
+        else Cache Miss
+            ArticleController->>+Database: Query Locatables, MOfferStores, MOffers for active offers by location
+            Database-->>-ArticleController: Location IDs with Offers
+            ArticleController->>+Cache: Store Location IDs with Offers
+            Cache-->>-ArticleController: Confirmation
+        end
+        ArticleController->>ArticleController: Iterate results, set 'has_merchant_offer' flag
+    end
+
+    ArticleController->>+ArticleResource: collection(results)
+    ArticleResource-->>-ArticleController: Formatted JSON data
+    ArticleController-->>-Client: JSON Response (Paginated Articles)

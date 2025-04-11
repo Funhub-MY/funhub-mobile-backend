@@ -1,0 +1,51 @@
+sequenceDiagram
+    participant Client
+    participant AuthController
+    participant Request
+    participant Config
+    participant User as User (Model)
+    participant SmsService
+    participant Database
+    participant Log
+
+    Client->>+AuthController: POST /api/auth/send-otp (country_code, phone_no)
+    AuthController->>+Request: validate(country_code, phone_no)
+    Request-->>-AuthController: Validation OK
+    AuthController->>+Config: Get allowed country codes
+    Config-->>-AuthController: Allowed codes
+    AuthController->>AuthController: Check if country_code is allowed
+    AuthController->>AuthController: Normalize phone_no
+    AuthController->>+User: Find user by phone_no, country_code
+    User->>+Database: Query User table
+    Database-->>-User: User record or null
+    User-->>-AuthController: User record or null
+    AuthController->>AuthController: Generate 6-digit OTP
+    alt User Not Found
+        AuthController->>+User: Create new User(phone_details, otp, expiry)
+        User->>+Database: Insert new User record
+        Database-->>-User: New User record
+        User-->>-AuthController: New User object
+    else User Found
+        AuthController->>+User: Update User(otp, expiry)
+        User->>+Database: Update User record
+        Database-->>-User: Confirmation
+        User-->>-AuthController: Updated User object
+    end
+    AuthController->>SmsService: new SmsService(...)
+    SmsService-->>AuthController: SmsService instance
+    AuthController->>SmsService: sendSms(full_phone_no, otp_message)
+    alt SMS Sent Successfully
+        SmsService-->>AuthController: Success
+        # Ensure AuthController is active for response
+        activate AuthController
+        AuthController-->>-Client: JSON Response (Success: OTP sent)
+    else SMS Sending Failed
+        SmsService-->>AuthController: Exception
+        AuthController->>+Log: error("Failed to send OTP", ...)
+        Log-->>-AuthController: Logged
+        # Ensure AuthController is active for response
+        activate AuthController
+        AuthController-->>-Client: JSON Response (Error: Failed to send OTP)
+    end
+    # Explicitly deactivate after alt block
+    deactivate AuthController

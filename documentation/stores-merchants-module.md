@@ -70,6 +70,8 @@ Retrieves ratings for a specific store with filtering options.
 #### `postRatings()`
 Handles the creation or updating of store ratings by users.
 
+![Post Store Rating Sequence Diagram](images/store_post_ratings_sequence.svg)
+
 **Implementation Details:**
 - Validates input data for required fields (rating value, comment)
 - Finds the store by ID and validates its existence

@@ -1,0 +1,74 @@
+sequenceDiagram
+    participant ScoutEngine
+    participant ArticleModel as Article
+    participant Location as Location (Model)
+    participant City as City (Model)
+    participant CityName as CityName (Model)
+    participant Store as Store (Model)
+    participant MerchantOffer as MOffer (Model)
+    participant Media as Media (Model/Lib)
+    participant Interaction as Interaction (Model)
+    participant View as View (Model)
+    participant ArticleFeedWhitelistUser as Whitelist (Model)
+    participant Database as DB
+
+    ScoutEngine->>+Article: toSearchableArray()
+    Article->>+Location: location()->first()
+    Location->>+DB: Query Location table (via relationship)
+    DB-->>-Location: Location object or null
+    Location-->>-Article: $location
+    opt $location exists
+        Article->>+City: $location->cityLinked->name?
+        City->>+DB: Query City table (via relationship)
+        DB-->>-City: City object or null
+        City-->>-Article: City name or null
+        Article->>Article: Set $city variable
+        alt $location->cityLinked exists
+            Article->>+CityName: where('city_id', $location->city_id)->get()
+            CityName->>+DB: Query CityName table
+            DB-->>-CityName: Collection of CityName objects
+            CityName-->>-Article: $cityNames collection
+            Article->>Article: Extract names to array
+        else cityLinked does not exist
+            Article->>Article: Set $cityNames = [$location->city]
+        end
+        Article->>+Store: whereHas('location', id=$location->id)->with(...)->get()
+        Store->>+DB: Query Store table (with joins/subqueries)
+        DB-->>-Store: Collection of Store objects ($stores)
+        Store-->>-Article: $stores
+        opt $stores exists
+            loop For each store in $stores
+                Article->>+MOffer: store->availableMerchantOffers()
+                MOffer->>+DB: Query MerchantOffer table (via relationship)
+                DB-->>-MOffer: Collection of MOffer objects
+                MOffer-->>-Article: Offers for the store
+                loop For each offer in offers
+                    Article->>Article: Add offer details to $merchantOffers array
+                end
+            end
+        end
+    end
+    Article->>+Whitelist: where('user_id', this->user_id)->exists()
+    Whitelist->>+DB: Query Whitelist table
+    DB-->>-Whitelist: Exists (true/false)
+    Whitelist-->>-Article: $owner_whitelisted
+    Article->>Article: Prepare body (strip tags, remove emojis, truncate)
+    Article->>+Media: getMedia(COLLECTION_NAME)
+    Media->>+DB: Query Media table
+    DB-->>-Media: Collection of Media objects
+    Media-->>-Article: Media collection
+    Article->>Article: Map media URLs
+    Article->>+Interaction: interactions()->where('type', LIKE)->count()
+    Interaction->>+DB: Query Interaction table
+    DB-->>-Interaction: Like count
+    Interaction-->>-Article: $likes_count
+    Article->>+Interaction: interactions()->where('type', BOOKMARK)->count()
+    Interaction->>+DB: Query Interaction table
+    DB-->>-Interaction: Bookmark count
+    Interaction-->>-Article: $bookmarks_count
+    Article->>+View: views()->count()
+    View->>+DB: Query View table
+    DB-->>-View: View count
+    View-->>-Article: $views_count
+    Article->>Article: Assemble final searchable array (id, title, body, categories, tags, counts, location, _geoloc, etc.)
+    Article-->>-ScoutEngine: Searchable Array Data

@@ -1,0 +1,57 @@
+sequenceDiagram
+    participant Caller as MissionService/Controller
+    participant MissionService
+    participant Mission as Mission (Model)
+    participant User as User (Model)
+    participant MissionRewardDisbursement as Disbursement (Model)
+    participant PointService
+    participant PointComponentService
+    participant Database as DB
+    participant Log
+    participant NotificationService as Notifier
+
+    Caller->>+MissionService: disburseReward(mission, user) // Activate MissionService
+    MissionService->>MissionService: Set currentUser = user (if needed)
+    MissionService->>MissionService: hasReachedRewardLimit(mission)?
+    MissionService->>+Mission: disbursements()->count() // Activate Mission
+    Mission->>+DB: Query MissionRewardDisbursement table // Activate DB
+    DB-->>-Mission: Count // Deactivate DB
+    Mission-->>-MissionService: Disbursement count // Deactivate Mission
+    MissionService->>Mission: Check count >= reward_limit // No activation needed
+
+    alt Reward Limit Reached
+        MissionService->>+Log: info("Mission reward limit reached", ...) // Activate Log
+        Log-->>-MissionService: Logged // Deactivate Log
+        MissionService-->>Caller: Return void // REMOVED explicit deactivation (-)
+    else Reward Limit NOT Reached // Main flow happens only here
+        MissionService->>+DB: Begin Transaction // Activate DB (MissionService is still active)
+        DB-->>MissionService: Transaction Started // Deactivate DB
+        MissionService->>+Disbursement: create(mission_id, user_id, reward_type, reward_quantity) // Activate Disbursement
+        Disbursement->>+DB: Insert Disbursement record // Activate DB
+        DB-->>-Disbursement: New Disbursement object // Deactivate DB
+        Disbursement-->>-MissionService: $disbursement // Deactivate Disbursement
+        MissionService->>MissionService: processReward(mission, user)
+        MissionService->>+Mission: Get reward type (missionable_type) // Activate Mission
+        Mission-->>MissionService: Reward Type // Deactivate Mission
+        alt Reward Type is Point
+            MissionService->>+PointService: credit(user, quantity, description) // Activate PointService
+            PointService-->>-MissionService: Credit confirmation // Deactivate PointService
+        else Reward Type is PointComponent
+            MissionService->>+PointComponentService: credit(user, component_id, quantity, description) // Activate PointComponentService
+            PointComponentService-->>-MissionService: Credit confirmation // Deactivate PointComponentService
+        end
+        opt Mission is NOT auto-disburse
+            MissionService->>MissionService: updateClaimedStatus(mission, user)
+            MissionService->>+User: missionsParticipating()->updateExistingPivot(mission.id, [claimed_at=now()]) // Activate User
+            User->>+DB: Update missions_users pivot table // Activate DB
+            DB-->>-User: Confirmation // Deactivate DB
+            User-->>-MissionService: Confirmation // Deactivate User
+        end
+        MissionService->>+DB: Commit Transaction // Activate DB
+        DB-->>MissionService: Transaction Committed // Deactivate DB
+
+        MissionService->>+Notifier: sendRewardReceivedNotification(mission, user, disbursement) // Activate Notifier
+        Notifier-->>-MissionService: Sent // Deactivate Notifier
+
+        MissionService-->>-Caller: Return void (or confirmation) // Deactivate MissionService for this path
+    end

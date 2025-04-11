@@ -61,7 +61,7 @@ Retrieves detailed information about a specific merchant offer.
 ### `postClaimOffer()`
 Handles the claiming of merchant offers by users.
 
-![Claim Offer Sequence Diagram](images/merchant_offer_claim_sequence.png)
+![Claim Offer Sequence Diagram](images/merchant_offer_claim_sequence.svg)
 
 **Implementation Details:**
 - Validates input data for required fields (offer ID, quantity, payment method)
@@ -82,6 +82,8 @@ Handles the claiming of merchant offers by users.
 
 ### `postRedeemOffer()`
 Manages the redemption of claimed offers in-store.
+
+![Redeem Offer Sequence Diagram](images/merchant_offer_redeem_sequence.svg)
 
 **Implementation Details:**
 - Validates input data including redemption code

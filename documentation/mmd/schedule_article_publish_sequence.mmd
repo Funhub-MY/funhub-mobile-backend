@@ -1,0 +1,29 @@
+sequenceDiagram
+    participant Scheduler
+    participant PublishArticleCommand as Command
+    participant Article as Article (Model)
+    participant Database as DB
+    participant Console
+    participant Log
+
+    Scheduler->>+Command: handle()
+    Command->>+Article: Query articles (status=DRAFT, published_at <= now(), no imports, source != 'mobile')
+    Article->>+DB: Execute SELECT query on articles table (with joins/subqueries for imports)
+    DB-->>-Article: Collection of Article objects ($articles)
+    Article-->>-Command: Collection of Article objects ($articles)
+    Command->>Command: Check if $articles is not empty
+    alt Articles Found
+        loop For each article in $articles
+            Command->>+Console: info("Publishing article: " + article.id)
+            Console-->>-Command: Output message
+            Command->>+Article: update(['status' => PUBLISHED])
+            Article->>+DB: Execute UPDATE query on articles table
+            DB-->>-Article: Confirmation
+            Article-->>-Command: Confirmation
+            Command->>+Console: info("Article published: " + article.id)
+            Console-->>-Command: Output message
+        end
+        Command->>+Log: info("[PublishArticle] Articles published", article_ids)
+        Log-->>-Command: Logged
+    end
+    Command-->>-Scheduler: Return Command::SUCCESS
