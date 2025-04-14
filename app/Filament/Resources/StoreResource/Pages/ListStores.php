@@ -93,6 +93,14 @@ class ListStores extends ListRecords
 							// Remove leading 0 or +60 from phone number
 							return preg_replace('/^(0|\+60)/', '', $value);
 						}),
+					ImportField::make('is_appointment_only')
+						->label('Appointment Only')
+						->helperText('Enter true/1/yes if appointment only, otherwise false/0/no or leave empty')
+						->mutateBeforeCreate(function ($value) {
+							// Convert common truthy string values to boolean 1, default to 0 (false)
+							$trueValues = ['true', '1', 'yes'];
+							return in_array(strtolower(trim($value)), $trueValues) ? 1 : 0;
+						}),
 					ImportField::make('business_hours')
 						->label('Business Hours')
 						->helperText('Format: day:openTime-closeTime (e.g., 1:09:00-18:00|2:09:00-18:00)')
@@ -224,6 +232,7 @@ class ListStores extends ListRecords
 						'business_phone_no' => $businessPhoneNo,
 						'business_hours' => $data['business_hours'] ?? null,
 						'rest_hours' => $data['rest_hours'] ?? null,
+						'is_appointment_only' => $data['is_appointment_only'] ?? null,
 						'user_id' => $data['user_id'] ?? null,
 						'lang' => $data['lang'] ?? null,
 						'long' => $data['long'] ?? null,
@@ -358,6 +367,9 @@ class ListStores extends ListRecords
                             Column::make('status')
                                 ->heading('status')
                                 ->getStateUsing(fn ($record) => Store::STATUS[$record->status]),
+                            Column::make('is_appointment_only')
+                                ->heading('is_appointment_only')
+                                ->getStateUsing(fn ($record) => $record->is_appointment_only),
                         ])
                         ->withFilename(fn ($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
                         ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
