@@ -73,19 +73,19 @@ class AccountRestrictedNotification extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'title' => (string) $this->getTitleAndContent()['title'],
-            'message' => (string) $this->getTitleAndContent()['content'],
-            'redirect' => '#',
-            'object' => (string) $notifiable->id,
-            'object_id' => (string) $notifiable->id,
+            'object' => get_class($notifiable),
+            'object_id' => $notifiable->id,
             'link_to_url' => false,
-            'link_to' => '#',
-            'link_to_object' => (string) $notifiable->id,
+            'link_to' => $notifiable->id, // if link to url false, means get link_to_object
+            'link_to_object' => null,
             'action' => 'account_restricted',
-            'restricted_until' => (string) $this->restrictedUntil,
-            'schedule_time' => '',
             'from_name' => 'Funhub',
             'from_id' => '',
+            'title' => $this->getTitleAndContent()['title'],
+            'message' => $this->getTitleAndContent()['content'],
+            'extra' => [
+                'account_restricted' => true
+            ]
         ];
     }
 }
