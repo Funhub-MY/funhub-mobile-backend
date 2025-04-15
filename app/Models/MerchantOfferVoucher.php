@@ -21,6 +21,14 @@ class MerchantOfferVoucher extends BaseModel implements Auditable
 
     protected $guarded = ['id'];
 
+    protected $fillable = [
+        'merchant_offer_id',
+        'owned_by_id',
+        'code',
+        'imported_code',
+        'voided'
+    ];
+
     protected $appends = ['voucher_redeemed'];
 
     public function merchant_offer()

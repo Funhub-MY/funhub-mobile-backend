@@ -147,6 +147,18 @@ class MerchantOfferCampaignResource extends Resource
                                     ->label('Flash Deal')
                                     ->helperText('If enabled, this offer will be shown in Flash Deal section in the app. Use Available At & Until to set the Flash deals countdown')
                                     ->default(false),
+                                    
+                                Forms\Components\SpatieMediaLibraryFileUpload::make('imported_codes')
+                                    ->label('Import Voucher Codes (CSV)')
+                                    ->helperText('Upload a CSV file with voucher codes. Each code should be on a new line with no header.')
+                                    ->collection('imported_codes')
+                                    ->acceptedFileTypes(['text/csv', 'application/vnd.ms-excel'])
+                                    ->maxFiles(1)
+                                    ->disk(function () {
+                                        if (config('filesystems.default') === 's3') {
+                                            return 's3_public';
+                                        }
+                                    }),
 
 								Repeater::make('highlight_messages')
 									->label('Highlight Message')
@@ -474,7 +486,27 @@ class MerchantOfferCampaignResource extends Resource
                                         $query->where('user_id', $get('user_id'));
                                     })
                                     ->hidden(fn (Closure $get) => $get('user_id') === null),
-                            ])->columns(1),
+								Placeholder::make('merchant_is_closed')
+									->label('Merchant Operation Status')
+									->content(function (Closure $get) {
+										$userId = $get('user_id');
+										if (!$userId) {
+											return '';
+										}
+
+										$user = User::find($userId);
+										if (!$user || !$user->merchant) {
+											return '';
+										}
+
+										$status = $user->merchant->is_closed ? 'Closed' : 'Open';
+
+										return new HtmlString(
+											"<span class='font-bold'>{$status}</span>"
+										);
+									}),
+
+							])->columns(1),
 
                             Forms\Components\Section::make('Categories')->schema([
                                 Forms\Components\Select::make('categories')
@@ -588,6 +620,14 @@ class MerchantOfferCampaignResource extends Resource
                 Tables\Columns\TextColumn::make('store.name')
                     ->default('-')
                     ->label('By Store'),
+                Tables\Columns\TextColumn::make('merchant_status')
+                    ->label('Merchant Status')
+                    ->getStateUsing(function ($record) {
+                        if (!$record->user || !$record->user->merchant) {
+                            return 'No Merchant';
+                        }
+                        return $record->user->merchant->is_closed ? 'Closed' : 'Open';
+                    }),
                 // toggle column for auto move vouchers
                 Tables\Columns\ToggleColumn::make('auto_move_vouchers')
                     ->label('Auto Move Vouchers'),
@@ -707,7 +747,7 @@ class MerchantOfferCampaignResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\VoucherCodesRelationManager::class,
         ];
     }
 

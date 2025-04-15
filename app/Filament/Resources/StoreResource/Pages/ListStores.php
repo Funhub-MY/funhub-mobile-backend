@@ -4,6 +4,7 @@ namespace App\Filament\Resources\StoreResource\Pages;
 
 use App\Filament\Actions\CustomImportStoresAction;
 use App\Filament\Resources\StoreResource;
+use App\Jobs\CreateLocationFromStoreImport;
 use App\Models\Country;
 use App\Models\Location;
 use App\Models\MerchantCategory;
@@ -12,6 +13,7 @@ use App\Models\Store;
 use App\Models\User;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Konnco\FilamentImport\Actions\ImportField;
@@ -91,55 +93,99 @@ class ListStores extends ListRecords
 							// Remove leading 0 or +60 from phone number
 							return preg_replace('/^(0|\+60)/', '', $value);
 						}),
+					ImportField::make('is_appointment_only')
+						->label('Appointment Only')
+						->helperText('Enter true/1/yes if appointment only, otherwise false/0/no or leave empty')
+						->mutateBeforeCreate(function ($value) {
+							// Convert common truthy string values to boolean 1, default to 0 (false)
+							$trueValues = ['true', '1', 'yes'];
+							return in_array(strtolower(trim($value)), $trueValues) ? 1 : 0;
+						}),
 					ImportField::make('business_hours')
 						->label('Business Hours')
-						->helperText('Format: day:openTime-closeTime (e.g., 1:8AM-6PM,2:8AM-6PM)')
+						->helperText('Format: day:openTime-closeTime (e.g., 1:09:00-18:00|2:09:00-18:00)')
 						->mutateBeforeCreate(function ($value) {
-							if (empty($value)) return null;
+							// Check if value is empty or appears to be a JSON string already
+							if (empty($value) || $value === '[]') {
+								Log::warning('Empty business hours or already JSON', ['value' => $value]);
+								return null;
+							}
 							
 							$formattedHours = [];
-							$hoursPairs = explode(',', $value);
+							$hoursPairs = explode('|', $value); // Using pipe as separator for CSV compatibility
 							
 							foreach ($hoursPairs as $pair) {
-								$parts = explode(':', $pair);
-								if (count($parts) !== 2) continue;
+								// Check if the pair contains both a day and time information
+								if (strpos($pair, ':') === false || strpos($pair, '-') === false) {
+									Log::warning('Invalid business hours format (missing : or -)', ['pair' => $pair]);
+									continue;
+								}
 								
-								$day = trim($parts[0]);
-								$times = explode('-', $parts[1]);
-								if (count($times) !== 2) continue;
+								// Extract the day (everything before the first colon)
+								$day = trim(substr($pair, 0, strpos($pair, ':')));
 								
+								// Extract the time part (everything after the first colon)
+								$timePart = substr($pair, strpos($pair, ':') + 1);
+								
+								// Split the time part by the dash to get open and close times
+								$times = explode('-', $timePart);
+								if (count($times) !== 2) {
+									Log::warning('Invalid time format in business hours', ['times' => $timePart]);
+									continue;
+								}
+								
+								// Add to formatted hours
 								$formattedHours[$day] = [
 									'open_time' => trim($times[0]),
 									'close_time' => trim($times[1])
 								];
 							}
 							
-							return json_encode($formattedHours);
+							$jsonResult = json_encode($formattedHours);
+							return $jsonResult;
 						}),
 					ImportField::make('rest_hours')
 						->label('Rest Hours')
-						->helperText('Format: day:startTime-endTime (e.g., 1:12PM-2PM,2:12PM-2PM)')
+						->helperText('Format: day:startTime-endTime (e.g., 1:12:00-14:00|2:12:00-14:00)')
 						->mutateBeforeCreate(function ($value) {
-							if (empty($value)) return null;
+							// Check if value is empty or appears to be a JSON string already
+							if (empty($value) || $value === '[]') {
+								Log::warning('Empty rest hours or already JSON', ['value' => $value]);
+								return null;
+							}
 							
 							$formattedHours = [];
-							$hoursPairs = explode(',', $value);
+							$hoursPairs = explode('|', $value); // Using pipe as separator for CSV compatibility
 							
 							foreach ($hoursPairs as $pair) {
-								$parts = explode(':', $pair);
-								if (count($parts) !== 2) continue;
+								// Check if the pair contains both a day and time information
+								if (strpos($pair, ':') === false || strpos($pair, '-') === false) {
+									Log::warning('Invalid rest hours format (missing : or -)', ['pair' => $pair]);
+									continue;
+								}
 								
-								$day = trim($parts[0]);
-								$times = explode('-', $parts[1]);
-								if (count($times) !== 2) continue;
+								// Extract the day (everything before the first colon)
+								$day = trim(substr($pair, 0, strpos($pair, ':')));
 								
+								// Extract the time part (everything after the first colon)
+								$timePart = substr($pair, strpos($pair, ':') + 1);
+								
+								// Split the time part by the dash to get open and close times
+								$times = explode('-', $timePart);
+								if (count($times) !== 2) {
+									Log::warning('Invalid time format in rest hours', ['times' => $timePart]);
+									continue;
+								}
+								
+								// Add to formatted hours
 								$formattedHours[$day] = [
 									'open_time' => trim($times[0]),
 									'close_time' => trim($times[1])
 								];
 							}
 							
-							return json_encode($formattedHours);
+							$jsonResult = json_encode($formattedHours);
+							return $jsonResult;
 						}),
 					ImportField::make('is_hq')
 						->label('Is HQ?')
@@ -178,6 +224,7 @@ class ListStores extends ListRecords
 					$storeData = [
 						'name' => $data['name'],
 						'address' => $data['address'],
+						'slug' => Str::slug($data['name']).rand(1000, 9999),
 						'address_postcode' => $data['address_postcode'] ?? null,
 						'state_id' => $data['state_name'],
 						'country_id' => $data['country_name'],
@@ -185,6 +232,7 @@ class ListStores extends ListRecords
 						'business_phone_no' => $businessPhoneNo,
 						'business_hours' => $data['business_hours'] ?? null,
 						'rest_hours' => $data['rest_hours'] ?? null,
+						'is_appointment_only' => $data['is_appointment_only'] ?? null,
 						'user_id' => $data['user_id'] ?? null,
 						'lang' => $data['lang'] ?? null,
 						'long' => $data['long'] ?? null,
@@ -232,46 +280,28 @@ class ListStores extends ListRecords
 						}
 					}
 					
-					// Create or link location
+					// Store the lat/long if provided directly in the import
 					if (!empty($data['lang']) && !empty($data['long'])) {
-						$existingLocation = Location::where('lat', $data['lang'])
-							->where('lng', $data['long'])
-							->first();
-							
-						if ($existingLocation) {
-							// Update existing location
-							$existingLocation->update([
-								'name' => $data['name'],
-								'address' => $data['address'] ?? '',
-								'zip_code' => $data['address_postcode'] ?? '',
-								'city' => $data['city'] ?? '',
-								'state_id' => $data['state_name'],
-								'country_id' => $data['country_name'],
-							]);
-							
-							$location = $existingLocation;
-						} else {
-							// Create new location
-							$location = Location::create([
-								'name' => $data['name'],
-								'lat' => $data['lang'],
-								'lng' => $data['long'],
-								'address' => $data['address'] ?? '',
-								'zip_code' => $data['address_postcode'] ?? '',
-								'city' => $data['city'] ?? '',
-								'state_id' => $data['state_name'],
-								'country_id' => $data['country_name'],
-								'is_mall' => 0,
-							]);
-						}
-						
-						// Attach location to store
-						$store->location()->attach($location->id);
-						Log::info("Store {$store->id} attached to location: {$location->id}");
+						$store->update([
+							'lang' => $data['lang'],
+							'long' => $data['long']
+						]);
 					}
 					
-					// Make store searchable
-					$store->searchable();
+					// Dispatch job to create or link location asynchronously
+					// This prevents timeout during large imports
+					CreateLocationFromStoreImport::dispatch($store->id, [
+						'name' => $data['name'],
+						'address' => $data['address'],
+						'address_postcode' => $data['address_postcode'] ?? null,
+						'city' => $data['city'] ?? null,
+						'state_id' => $data['state_name'],
+						'country_id' => $data['country_name'],
+						'lang' => $data['lang'] ?? null,
+						'long' => $data['long'] ?? null,
+					]);
+					
+					Log::info("CreateLocationFromStoreImport job dispatched for store: {$store->id}");
 					
 					return $store;
 				}),
@@ -317,7 +347,7 @@ class ListStores extends ListRecords
                                     foreach ($hours as $day => $time) {
                                         $formatted[] = $day . ':' . $time['open_time'] . '-' . $time['close_time'];
                                     }
-                                    return implode(',', $formatted);
+                                    return implode('|', $formatted); // Using pipe as separator for CSV compatibility
                                 }),
                             Column::make('rest_hours')
                                 ->heading('rest_hours')
@@ -330,13 +360,16 @@ class ListStores extends ListRecords
                                     foreach ($hours as $day => $time) {
                                         $formatted[] = $day . ':' . $time['open_time'] . '-' . $time['close_time'];
                                     }
-                                    return implode(',', $formatted);
+                                    return implode('|', $formatted); // Using pipe as separator for CSV compatibility
                                 }),
                             Column::make('lang')->heading('latitude'),
                             Column::make('long')->heading('longitude'),
                             Column::make('status')
                                 ->heading('status')
                                 ->getStateUsing(fn ($record) => Store::STATUS[$record->status]),
+                            Column::make('is_appointment_only')
+                                ->heading('is_appointment_only')
+                                ->getStateUsing(fn ($record) => $record->is_appointment_only),
                         ])
                         ->withFilename(fn ($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
                         ->withWriterType(\Maatwebsite\Excel\Excel::CSV)

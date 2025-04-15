@@ -310,6 +310,11 @@ return [
             'NewOfferListedBody' => ':brandName has listed a new offer, check it out',
             'RedemptioReviewReminderTitle' => 'Review Reminder',
             'RedemptioReviewReminder' => 'Remember to review the store you redeemed from',
+            // Account restriction notifications
+            'AccountRestrictedTitle' => 'Purchase/Redemption/Referral Functions Restricted',
+            'AccountRestrictedBody' => 'Dear user, your account has been found by our system to be in violation of FUNHUB’s community guidelines. Due to serious misconduct, your access to purchase, redemption, and referral functions has been restricted. This restriction will remain in effect until :date',
+            'AccountUnrestrictedTitle' => 'Purchase/Redemption/Referral Functions Reactivated!',
+            'AccountUnrestrictedBody' => 'Your purchase, redemption, and referral functions have been reactivated. You can now buy FUNCARDs, redeem vouchers, and refer new users again!',
         ],
         'database' => [
             'ArticleInteracted' => 'Liked your post, it is really interesting!',
@@ -353,6 +358,11 @@ return [
             'NewOfferListedBody' => ':brandName has listed a new offer, check it out',
             'RedemptioReviewReminderTitle' => 'Review Reminder',
             'RedemptioReviewReminder' => 'Remember to review the store you redeemed from',
+            // Account restriction notifications
+            'AccountRestrictedTitle' => 'Purchase/Redemption/Referral Functions Restricted',
+            'AccountRestrictedBody' => 'Dear user, your account has been found by our system to be in violation of FUNHUB’s community guidelines. Due to serious misconduct, your access to purchase, redemption, and referral functions has been restricted. This restriction will remain in effect until :date',
+            'AccountUnrestrictedTitle' => 'Purchase/Redemption/Referral Functions Reactivated!',
+            'AccountUnrestrictedBody' => 'Your purchase, redemption, and referral functions have been reactivated. You can now buy FUNCARDs, redeem vouchers, and refer new users again!',
         ]
     ]
 ];

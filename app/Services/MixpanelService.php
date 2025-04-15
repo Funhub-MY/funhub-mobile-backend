@@ -80,7 +80,7 @@ class MixpanelService
             }
             
             // format the purchase date time as required
-            $formattedDateTime = $purchaseDateTime->timezone('UTC')->format('d/m/Y H:i:s');
+            $formattedDateTime = $purchaseDateTime->timezone('UTC')->format('m/d/Y H:i:s');
             
             // get user information safely
             $userEmail = null;
@@ -173,7 +173,7 @@ class MixpanelService
                 'user_id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'date_of_birth' => $user->dob ? (is_string($user->dob) ? $user->dob : $user->dob->format('Y-m-d')) : null,
+                'date_of_birth' => $user->dob ? (is_string($user->dob) ? Carbon::parse($user->dob)->format('m/d/Y') : $user->dob->format('m/d/Y')) : null,
                 'age' => $age,
                 'gender' => $user->gender,
                 'status' => $status,

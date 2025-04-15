@@ -143,6 +143,7 @@ class SyncUserDataToMixpanel extends Command
                     
                     try {
                         $result = $this->mixpanelService->trackUserData($user, $dryRun);
+                        sleep(1);
                         
                         if ($result) {
                             $successful++;

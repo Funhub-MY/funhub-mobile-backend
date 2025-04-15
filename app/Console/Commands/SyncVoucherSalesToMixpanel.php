@@ -110,6 +110,7 @@ class SyncVoucherSalesToMixpanel extends Command
                     
                     try {
                         $result = $this->mixpanelService->trackVoucherSale($voucher, $dryRun);
+                        sleep(1);
                         
                         if ($result) {
                             $successful++;

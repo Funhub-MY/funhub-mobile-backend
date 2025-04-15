@@ -57,6 +57,11 @@ class VouchersRelationManager extends RelationManager
                 ->sortable()
                 ->searchable(),
 
+                Tables\Columns\TextColumn::make('imported_code')
+                    ->label('Imported Code')
+                    ->sortable()
+                    ->searchable(),
+
                 Tables\Columns\BadgeColumn::make('latestSuccessfulClaim.status')
                     ->label('Financial Status')
                     ->default(0)
