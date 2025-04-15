@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -19,7 +20,7 @@ class AccountRestrictedNotification extends Notification implements ShouldQueue
 
     public function __construct($restrictedUntil, $locale = 'en')
     {
-        $this->restrictedUntil = $restrictedUntil;
+        $this->restrictedUntil = Carbon::parse($restrictedUntil)->format('d/m/Y');
         $this->locale = $locale;
         $this->onQueue('notifications');
     }
