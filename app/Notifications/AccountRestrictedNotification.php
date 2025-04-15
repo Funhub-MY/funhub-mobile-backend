@@ -14,8 +14,8 @@ class AccountRestrictedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $restrictedUntil;
-    protected $locale;
+    public $restrictedUntil;
+    public $locale;
 
     public function __construct($restrictedUntil, $locale = 'en')
     {

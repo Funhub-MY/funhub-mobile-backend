@@ -26,8 +26,5 @@ class HandleAccountRestricted
         } else {
             $user->notify(new \App\Notifications\AccountUnrestrictedNotification($locale));
         }
-
-        // Clear user cache (customize this as per cache keys used)
-        Cache::forget('user_' . $user->id);
     }
 }
