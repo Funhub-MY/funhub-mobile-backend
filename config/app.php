@@ -277,6 +277,7 @@ return [
         'completed_profile_setup' => 'Completed profile setup & uploaded avatar',
         'purchased_merchant_offer_cash' => 'Purchase a merchant offer with cash',
         'purchased_merchant_offer_points' => 'Purchase a merchant offer with points',
+        'purchased_merchant_offer' => 'Purchase a merchant offer',
         'sign_in' => 'Signed in',
         'purchase_gift_card' => 'Purchase a gift card',
         'reviewed_store' => 'Reviewed a store',

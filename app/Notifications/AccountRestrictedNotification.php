@@ -1,0 +1,92 @@
+<?php
+
+namespace App\Notifications;
+
+use Carbon\Carbon;
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use NotificationChannels\Fcm\FcmChannel;
+use NotificationChannels\Fcm\FcmMessage;
+use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Notifications\Messages\MailMessage;
+
+class AccountRestrictedNotification extends Notification implements ShouldQueue
+{
+    use Queueable;
+
+    public $restrictedUntil;
+    public $locale;
+
+    public function __construct($restrictedUntil, $locale = 'en')
+    {
+        $this->restrictedUntil = Carbon::parse($restrictedUntil)->format('d/m/Y');
+        $this->locale = $locale;
+        $this->onQueue('notifications');
+    }
+
+    public function via($notifiable)
+    {
+        return [FcmChannel::class, 'database'];
+    }
+
+    public function getTitleAndContent()
+    {
+        $title = [
+            'en' => __('messages.notification.fcm.AccountRestrictedTitle', ['date' => $this->restrictedUntil], 'en'),
+            'zh' => __('messages.notification.fcm.AccountRestrictedTitle', ['date' => $this->restrictedUntil], 'zh'),
+        ];
+        $content = [
+            'en' => __('messages.notification.fcm.AccountRestrictedBody', ['date' => $this->restrictedUntil], 'en'),
+            'zh' => __('messages.notification.fcm.AccountRestrictedBody', ['date' => $this->restrictedUntil], 'zh'),
+        ];
+        return [
+            'title' => $title[$this->locale] ?? $title['en'],
+            'content' => $content[$this->locale] ?? $content['en'],
+        ];
+    }
+
+    public function toFcm($notifiable)
+    {
+        $data = [
+            'title' => (string) $this->getTitleAndContent()['title'],
+            'message' => (string) $this->getTitleAndContent()['content'],
+            'redirect' => '#',
+            'object' => (string) $notifiable->id,
+            'object_id' => (string) $notifiable->id,
+            'link_to_url' => 'false',
+            'link_to' => '#',
+            'link_to_object' => (string) $notifiable->id,
+            'action' => 'account_restricted',
+            'restricted_until' => (string) $this->restrictedUntil,
+            'schedule_time' => '',
+            'from_name' => 'Funhub',
+            'from_id' => '',
+        ];
+        return FcmMessage::create()
+            ->setData($data)
+            ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
+                ->setTitle($this->getTitleAndContent()['title'])
+                ->setBody($this->getTitleAndContent()['content'])
+            );
+    }
+
+    public function toArray($notifiable)
+    {
+        return [
+            'object' => get_class($notifiable),
+            'object_id' => $notifiable->id,
+            'link_to_url' => false,
+            'link_to' => $notifiable->id, // if link to url false, means get link_to_object
+            'link_to_object' => null,
+            'action' => 'account_restricted',
+            'from_name' => 'Funhub',
+            'from_id' => '',
+            'title' => $this->getTitleAndContent()['title'],
+            'message' => $this->getTitleAndContent()['content'],
+            'extra' => [
+                'account_restricted' => true
+            ]
+        ];
+    }
+}

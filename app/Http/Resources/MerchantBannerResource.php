@@ -20,6 +20,7 @@ class MerchantBannerResource extends JsonResource
             'title' => $this->title,
             'link_to' => $this->link_to,
             'banner_url' => $this->getFirstMediaUrl(MerchantBanner::MEDIA_COLLECTION_NAME),
+            'order' => $this->order,
             'created_at' => $this->created_at
         ];
     }

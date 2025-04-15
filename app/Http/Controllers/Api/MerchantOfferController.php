@@ -344,16 +344,22 @@ class MerchantOfferController extends Controller
         }
 
         if ($request->has('is_expired')) {
-            if ($request->get('is_expired') == 1) { // true
-                $query->where(function ($query) {
-                    $query->whereHas('merchantOffer', function ($query) {
-                        $query->whereRaw('DATE_ADD(DATE(merchant_offer_user.created_at), INTERVAL merchant_offers.expiry_days + 1 DAY) < CURDATE()');
+            if ($request->get('is_expired') == 1) { // true - expired offers
+                $query->whereHas('merchantOffer', function ($query) {
+                    $query->where(function ($q) {
+                        $q->whereRaw('DATE(merchant_offer_user.created_at) IS NOT NULL')
+                          ->whereRaw('merchant_offers.expiry_days IS NOT NULL')
+                          ->whereRaw('merchant_offers.expiry_days > 0')
+                          ->whereRaw('CONCAT(DATE_ADD(DATE(merchant_offer_user.created_at), INTERVAL merchant_offers.expiry_days DAY), " 23:59:59") < NOW()');
                     });
                 });
-            } else if ($request->get('is_expired') == 0) { // false
-                $query->where(function ($query) {
-                    $query->whereHas('merchantOffer', function ($query) {
-                        $query->whereRaw('DATE_ADD(DATE(merchant_offer_user.created_at), INTERVAL merchant_offers.expiry_days + 1 DAY) >= CURDATE()');
+            } else if ($request->get('is_expired') == 0) { // false - non-expired offers
+                $query->whereHas('merchantOffer', function ($query) {
+                    $query->where(function ($q) {
+                        $q->whereRaw('DATE(merchant_offer_user.created_at) IS NOT NULL')
+                          ->whereRaw('merchant_offers.expiry_days IS NOT NULL')
+                          ->whereRaw('merchant_offers.expiry_days > 0')
+                          ->whereRaw('CONCAT(DATE_ADD(DATE(merchant_offer_user.created_at), INTERVAL merchant_offers.expiry_days DAY), " 23:59:59") >= NOW()');
                     });
                 });
             }
@@ -949,7 +955,7 @@ class MerchantOfferController extends Controller
      * @bodyParam claim_id integer required Claim ID. Example: 1
      * @bodyParam offer_id integer required Merchant Offer ID. Example: 1
      * @bodyParam quantity integer required Quantity to Redeem. Example: 1
-     * @bodyParam redeem_code string required Redemption Code Provided by Merchant. Example: 123456
+     * @bodyParam redeem_code string Redemption Code Provided by Merchant, required if voucher dont have imported_code. Example: 123456
      *
      * @response scenario=success {
      * "message": "Redeemed successfully",
@@ -963,7 +969,7 @@ class MerchantOfferController extends Controller
             'claim_id' => 'required',
             'offer_id' => 'required|exists:merchant_offers,id',
             'quantity' => 'required|integer|min:1',
-            'redeem_code' => 'required'
+            // 'redeem_code' => 'required'
         ]);
 
         // check if user has claimed this merchant offer or not
@@ -1017,18 +1023,35 @@ class MerchantOfferController extends Controller
             ], 422);
         }
 
-        // check if merchant code is valid
-        // note merchant is hasOneThrough user as we only attach merhcnat offer direct to user
-        $merchant = $offer->whereHas('user.merchant', function ($query) use ($request) {
-            $query->where('redeem_code', $request->redeem_code);
-        })->exists();
+        try {
+            // if voucher dont have imported code, must provide redeem_code
+            if (empty($claim->voucher->imported_code)) {
+                $this->validate($request, [
+                    'redeem_code' => 'required'
+                ]);
 
-        if (!$merchant) {
+                // check if merchant code is valid
+                // note merchant is hasOneThrough user as we only attach merhcnat offer direct to user
+                $merchant = $offer->whereHas('user.merchant', function ($query) use ($request) {
+                    $query->where('redeem_code', $request->redeem_code);
+                })->exists();
+
+                if (!$merchant) {
+                    return response()->json([
+                        'message' => __('messages.error.merchant_offer_controller.Invalid_merchant_redeem_code')
+                    ], 422);
+                }
+            } else {
+                // voucher has imported code, no need to provide redeem_code
+            }
+        } catch (\Exception $e) {
+            Log::error('[MerchantOfferController] postRedeemOffer: Error validating voucher code', [$e->getMessage()]);
             return response()->json([
-                'message' => __('messages.error.merchant_offer_controller.Invalid_merchant_redeem_code')
+                'message' => __('messages.error.merchant_offer_controller.You_do_not_have_enough_to_redeem')
             ], 422);
         }
 
+        // proceed redemption
         // merchant code validated proceed create redeems
         $redeem = $offer->redeems()->attach(auth()->user()->id, [
             'claim_id' => $request->claim_id,

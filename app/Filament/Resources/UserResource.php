@@ -70,6 +70,7 @@ class UserResource extends Resource
                         // username
                         Forms\Components\TextInput::make('username')
                             ->required()
+							->unique()
                             // transform lowercaser and remove spaces
                             ->afterStateHydrated(function ($component, $state) {
                                 $component->state(Str::slug($state));
@@ -449,9 +450,20 @@ class UserResource extends Resource
                     ->label('Toggle Account Restricted')
                     ->action(function (Collection $records, array $data): void {
                         foreach ($records as $record) {
+                            $previousRestricted = $record->account_restricted;
+                            $previousRestrictedUntil = $record->account_restricted_until;
                             $record->account_restricted = $data['account_restricted'];
                             $record->account_restricted_until = $data['account_restricted_until'];
                             $record->save();
+
+                            // Dispatch event for notification & cache clearing
+                            event(new \App\Events\OnAccountRestricted(
+                                $record,
+                                $previousRestricted,
+                                $previousRestrictedUntil,
+                                $record->account_restricted,
+                                $record->account_restricted_until
+                            ));
                         }
                     })
                     ->form([
@@ -510,6 +522,9 @@ class UserResource extends Resource
                         $resetCount = 0;
                         foreach ($records as $record) {
                             $missionIds = $record->missionsParticipating()->pluck('mission_id')->toArray();
+
+                            $record->newbie_missions_completed_at = null;
+                            $record->save();
                             
                             Log::info('[UserResource] Resetting mission progress for user: ' . $record->id, [
                                 'missions' => $missionIds,

@@ -133,6 +133,11 @@ class MerchantOfferVoucherResource extends Resource
                     ->label('Voucher Code')
                     ->copyable()
                     ->searchable(),
+                
+                // imported voucher code
+                Tables\Columns\TextColumn::make('imported_code')
+                    ->label('Imported Code')
+                    ->searchable(),
 
 				(!auth()->user()->hasRole('merchant')) ?  TextColumn::make('campaign.name')
 					->label('Campaign')

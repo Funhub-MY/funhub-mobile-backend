@@ -58,7 +58,16 @@ class SendRedeemReviewReminder extends Command
 					// 	]);
 					// }
 
-					$user->notify(new RedeemReview($redemption->claim, $user, $redemption->claim->merchantOffer, $redemption->claim->merchant_offer_id));
+                    if ($redemption->claim && $redemption->claim->merchantOffer) {
+                        $user->notify(new RedeemReview(
+                            $redemption->claim,
+                            $user,
+						$redemption->claim->merchantOffer,
+                            $redemption->claim->merchant_offer_id
+                        ));
+                    } else {
+						Log::info('[SendRedeemReviewReminder] User ' . $user->id . ' has no merchant offer claim');
+					}
 
 					$redemption->update(['reminder_sent_at' => now()]);
 

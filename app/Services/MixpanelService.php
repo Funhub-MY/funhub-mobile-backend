@@ -2,49 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\User;
+use Carbon\Carbon;
 use GeneaLabs\LaravelMixpanel\Facades\Mixpanel;
 use Illuminate\Support\Facades\Log;
 
 class MixpanelService
 {
-    /**
-     * track an event in Mixpanel with environment prefix
-     *
-     * @param string $event event name
-     * @param array $properties event properties
-     * @param string|null $distinctId distinct ID for the event
-     * @return bool
-     */
-    public function track(string $event, array $properties = [], ?string $distinctId = null): bool
-    {
-        try {
-            // add environment to the event name to differentiate between environments
-            $envPrefix = app()->environment('production') ? 'prod' : 'dev';
-            $eventName = "{$envPrefix}_{$event}";
-            
-            // add environment to properties as well for additional filtering capability
-            $properties['environment'] = app()->environment();
-            
-            // track the event in Mixpanel
-            if ($distinctId) {
-                // for tracking with distinct ID, we need to use the Mixpanel facade directly
-                $mixpanel = Mixpanel::getFacadeRoot();
-                $mixpanel->track($eventName, $properties, $distinctId);
-                return true; // assume success unless exception is thrown
-            } else {
-                Mixpanel::track($eventName, $properties);
-                return true; // assume success unless exception is thrown
-            }
-        } catch (\Exception $e) {
-            Log::error('mixpanel tracking error: ' . $e->getMessage(), [
-                'event' => $event,
-                'properties' => $properties,
-                'distinctId' => $distinctId
-            ]);
-            return false;
-        }
-    }
-
     /**
      * track voucher sale data in Mixpanel
      *
@@ -78,7 +42,7 @@ class MixpanelService
             // get merchant/brand name
             $brandName = 'Unknown';
             if ($merchantOffer->user && $merchantOffer->user->merchant) {
-                $brandName = $merchantOffer->user->merchant->business_name ?? 'Unknown';
+                $brandName = $merchantOffer->user->merchant->brand_name ?? 'Unknown';
             }
             
             // get payment method from transaction data
@@ -116,7 +80,7 @@ class MixpanelService
             }
             
             // format the purchase date time as required
-            $formattedDateTime = $purchaseDateTime->format('d/m/Y H:i:s');
+            $formattedDateTime = $purchaseDateTime->timezone('UTC')->format('m/d/Y H:i:s');
             
             // get user information safely
             $userEmail = null;
@@ -141,6 +105,7 @@ class MixpanelService
                 'sku' => $voucher->code,
                 '$insert_id' => (string) $voucher->id, // ensure it's a string
                 'merchant_offer_id' => $merchantOffer->id,
+                'Time' => $purchaseDateTime->timestamp * 1000,
                 'timestamp' => $purchaseDateTime->timestamp * 1000 // convert to milliseconds
             ];
             
@@ -151,13 +116,97 @@ class MixpanelService
                 Log::info('dry run - would track the following properties:', $properties);
                 return true;
             }
+            $mixpanel = Mixpanel::getFacadeRoot();
+            // Create a user profile first to ensure our distinct ID is used as canonical
+            $mixpanel->identify($distinctId);
+            $envPrefix = app()->environment('production') ? 'prod' : 'dev';
+            $eventName = "{$envPrefix}_voucher_sale_data";
+            // Now track the event
+            $mixpanel->track($eventName, $properties, $distinctId);
             
-            // track the event
-            return $this->track('voucher_sale_data', $properties, $distinctId);
-            
+            return true;
         } catch (\Exception $e) {
             Log::error('error tracking voucher sale: ' . $e->getMessage(), [
                 'voucher_id' => $voucher->id ?? null,
+                'exception' => $e
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Track user data in Mixpanel
+     *
+     * @param \App\Models\User $user The user to track
+     * @param bool $dryRun Whether to run in dry-run mode (no actual tracking)
+     * @return bool Success or failure
+     */
+    public function trackUserData(User $user, bool $dryRun = false): bool
+    {
+        try {
+            if (!$user->relationLoaded('referredBy')) {
+                $user->load('referredBy');
+            }
+
+            // calculate age from date of birth if available
+            $age = null;
+            if ($user->dob) {
+                $age = Carbon::parse($user->dob)->age;
+            }
+
+            $status = 'active';
+            if ($user->account_restricted && $user->account_restricted_until && $user->account_restricted_until > now()) {
+                $status = 'restricted';
+            } elseif ($user->status == User::STATUS_SUSPENDED || 
+                      ($user->suspended_until && $user->suspended_until > now())) {
+                $status = 'suspended';
+            }
+
+            // determine source (organic vs referral)
+            $source = 'organic';
+            $referralUserId = null;
+            if ($user->referred_by_id && $user->referredBy) {
+                $source = 'referral';
+                $referralUserId = $user->referred_by_id;
+            }
+            $properties = [
+                'user_id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'date_of_birth' => $user->dob ? (is_string($user->dob) ? Carbon::parse($user->dob)->format('m/d/Y') : $user->dob->format('m/d/Y')) : null,
+                'age' => $age,
+                'gender' => $user->gender,
+                'status' => $status,
+                'phone_number' => $user->full_phone_no,
+                'funbox_balance' => (float) $user->point_balance,
+                'source' => $source,
+                'referral_user_id' => $referralUserId,
+                'created_at' => $user->created_at->timestamp * 1000, // convert to milliseconds
+                'Time' => $user->created_at->timestamp * 1000, // convert to milliseconds
+                '$insert_id' => (string) $user->id // ensure it's a string
+            ];
+            
+            // use user ID as the distinct ID for proper user tracking
+            $distinctId = (string) 'funhub-mobile-users-' . $user->id; // ensure it's a string
+
+            if ($dryRun) {
+                Log::info('dry run - would track the following user data:', $properties);
+                return true;
+            }
+
+            $mixpanel = Mixpanel::getFacadeRoot();
+            
+            $mixpanel->identify($distinctId);
+            $mixpanel->people->set($distinctId, $properties);
+            
+            $envPrefix = app()->environment('production') ? 'prod' : 'dev';
+            $eventName = "{$envPrefix}_user_data";
+            $mixpanel->track($eventName, $properties, $distinctId);
+            
+            return true;
+        } catch (\Exception $e) {
+            Log::error('error tracking user data: ' . $e->getMessage(), [
+                'user_id' => $user->id ?? null,
                 'exception' => $e
             ]);
             return false;

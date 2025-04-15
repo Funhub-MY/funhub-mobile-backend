@@ -4,12 +4,14 @@ namespace App\Jobs;
 
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferCampaign;
+use App\Models\MerchantOfferCampaignVoucherCode;
 use App\Models\MerchantOfferVoucher;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CreateMerchantOfferJob implements ShouldQueue
@@ -73,16 +75,75 @@ class CreateMerchantOfferJob implements ShouldQueue
         $offer->stores()->sync($campaign->stores->pluck('id'));
 
         // Create vouchers
-        $voucherData = [];
-        for ($i = 0; $i < $schedule->quantity; $i++) {
-            $voucherData[] = [
-                'merchant_offer_id' => $offer->id,
-                'code' => MerchantOfferVoucher::generateCode(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
+        try {
+            DB::beginTransaction();
+            
+            // Get imported voucher codes for this campaign
+            $importedCodes = $campaign->voucherCodes()
+                ->where('is_used', false)
+                ->whereNull('voucher_id')
+                ->orderBy('id', 'asc')
+                ->take($schedule->quantity)
+                ->get();
+            
+            $importedCodesCount = $importedCodes->count();
+            $remainingCount = $schedule->quantity - $importedCodesCount;
+            
+            Log::info('[CreateMerchantOfferJob] Processing vouchers', [
+                'campaign_id' => $campaign->id,
+                'offer_id' => $offer->id,
+                'imported_codes_count' => $importedCodesCount,
+                'remaining_count' => $remainingCount,
+                'total_quantity' => $schedule->quantity
+            ]);
+            
+            // First use imported codes if available
+            foreach ($importedCodes as $importedCode) {
+                // Create voucher with imported code
+                $voucher = MerchantOfferVoucher::create([
+                    'merchant_offer_id' => $offer->id,
+                    'code' => MerchantOfferVoucher::generateCode(),
+                    'imported_code' => $importedCode->code,
+                ]);
+                
+                // Link the voucher to the imported code
+                $importedCode->update([
+                    'is_used' => true,
+                    'voucher_id' => $voucher->id
+                ]);
+                
+                Log::info('[CreateMerchantOfferJob] Linked imported code to voucher', [
+                    'imported_code_id' => $importedCode->id,
+                    'imported_code' => $importedCode->code,
+                    'voucher_id' => $voucher->id
+                ]);
+            }
+            
+            // Generate remaining codes if needed
+            $voucherData = [];
+            for ($i = 0; $i < $remainingCount; $i++) {
+                $voucherData[] = [
+                    'merchant_offer_id' => $offer->id,
+                    'code' => MerchantOfferVoucher::generateCode(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+            
+            // Bulk insert remaining vouchers if any
+            if (!empty($voucherData)) {
+                MerchantOfferVoucher::insert($voucherData);
+            }
+            
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('[CreateMerchantOfferJob] Error creating vouchers', [
+                'error' => $e->getMessage(),
+                'campaign_id' => $campaign->id,
+                'offer_id' => $offer->id
+            ]);
         }
-        MerchantOfferVoucher::insert($voucherData);
 
         // sync algolia
         try {

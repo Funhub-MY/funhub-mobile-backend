@@ -60,7 +60,7 @@ class IndexStore implements ShouldQueue
             $avgRating = $store->storeRatings()->avg('rating');
             
             // Update the store's ratings field
-            $store->ratings = $avgRating;
+            $store->ratings = (empty($avgRating)) ? 0 : $avgRating;
             $store->save();
             
             // Make the store searchable (or update its searchable status)

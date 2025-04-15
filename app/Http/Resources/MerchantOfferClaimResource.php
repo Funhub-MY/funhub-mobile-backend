@@ -41,6 +41,7 @@ class MerchantOfferClaimResource extends JsonResource
                 'name' => $this->user->name,
             ],
             'voucher_code' => ($this->voucher) ? $this->voucher->code : null,
+            'imported_code' => ($this->voucher && $this->voucher->imported_code) ? $this->voucher->imported_code : null,
             'merchant_offer' => new MerchantOfferResource($this->merchantOffer),
             'unit_price' => $this->unit_price,
             'quantity' => $this->quantity,

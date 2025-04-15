@@ -2,79 +2,54 @@
 
 namespace App\Exports;
 
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
+use Illuminate\Support\Collection;
 use App\Models\PromotionCode;
-use App\Models\PromotionCodeGroup;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
-use pxlrbt\FilamentExcel\Columns\Column;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 
-class PromotionCodesExport extends ExcelExport
+class PromotionCodesExport implements FromCollection, WithHeadings, WithMapping
 {
-    protected $promotionCodeGroup;
+	protected $promotionCodeGroup;
+	protected $promotionCodeIds;
 
-    public function getModelClass(): string
-    {
-        return PromotionCode::class;
-    }
+	public function __construct($promotionCodeGroup = null, array $promotionCodeIds = [])
+	{
+		$this->promotionCodeGroup = $promotionCodeGroup;
+		$this->promotionCodeIds = $promotionCodeIds;
+	}
 
-    public function setUp()
-    {
-        $this
-            ->withColumns([
-                Column::make('code'),
-                Column::make('promotionCodeGroup.name')
-                    ->heading('Group Name'),
-                Column::make('reward_name')
-                    ->heading('Reward')
-                    ->getStateUsing(function ($record) {
-                        return $record->reward->first() 
-                            ? $record->reward->first()->name 
-                            : $record->rewardComponent->first()?->name;
-                    }),
-                Column::make('reward_quantity')
-                    ->heading('Quantity')
-                    ->getStateUsing(function ($record) {
-                        return $record->reward->first() 
-                            ? $record->reward->first()->pivot->quantity 
-                            : $record->rewardComponent->first()?->pivot?->quantity;
-                    }),
-                Column::make('is_redeemed')
-                    ->heading('Status')
-                    ->formatStateUsing(fn ($state) => $state ? 'Redeemed' : 'Not Redeemed'),
-                Column::make('claimedBy.name')
-                    ->heading('Claimed By'),
-                Column::make('redeemed_at')
-                    ->heading('Redeemed At')
-                    ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('Y-m-d H:i:s') : ''),
-                Column::make('tags')
-                    ->heading('Tags')
-                    ->formatStateUsing(fn ($state) => is_array($state) ? implode(', ', $state) : ''),
-            ])
-            ->withFilename(fn () => 'promotion-codes-' . date('Y-m-d'))
-            ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
-            ->queue()
-            ->withChunkSize(500);
-    }
+	public function collection(): Collection
+	{
+		$query = PromotionCode::query()->with(['reward', 'rewardComponent', 'claimedBy', 'promotionCodeGroup']);
 
-    public function record($record)
-    {
-        $this->promotionCodeGroup = $record;
-        return $this;
-    }
+		if (!empty($this->promotionCodeIds)) {
+			return $query->whereIn('id', $this->promotionCodeIds)->get();
+		}
 
-    public function getRows(): array
-    {
-        // if a specific promotion code group is provided, use that
-        if ($this->promotionCodeGroup) {
-            return PromotionCode::query()
-                ->where('promotion_code_group_id', $this->promotionCodeGroup->id)
-                ->with(['reward', 'rewardComponent', 'claimedBy', 'promotionCodeGroup'])
-                ->get()
-                ->toArray();
-        }
-        
-        // otherwise, use the parent implementation
-        return parent::getRows();
-    }
+		if ($this->promotionCodeGroup) {
+			return $query->where('promotion_code_group_id', $this->promotionCodeGroup->id)->get();
+		}
+
+		return collect();
+	}
+
+	public function headings(): array
+	{
+		return ['Code', 'Group Name', 'Reward', 'Quantity', 'Status', 'Claimed By', 'Redeemed At', 'Tags'];
+	}
+
+	public function map($row): array
+	{
+		return [
+			$row->code,
+			optional($row->promotionCodeGroup)->name,
+			optional($row->reward->first())->name ?? optional($row->rewardComponent->first())->name,
+			optional($row->reward->first())->pivot->quantity ?? optional($row->rewardComponent->first())->pivot->quantity,
+			$row->is_redeemed ? 'Redeemed' : 'Not Redeemed',
+			optional($row->claimedBy)->name,
+			$row->redeemed_at ? $row->redeemed_at->format('Y-m-d H:i:s') : '',
+			is_array($row->tags) ? implode(', ', $row->tags) : '',
+		];
+	}
 }

@@ -26,7 +26,29 @@ class ParticipantsRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'user_id';
 
-    public static function form(Form $form): Form
+	protected function getTableQuery(): Builder
+	{
+		$query = parent::getTableQuery();
+
+		// Dont show deleted accounts records
+		$query = $query->whereDoesntHave('userAccountDeletion');
+
+		// Get the latest record for each user based on updated_at or completed_at
+		$latestUserRecords = DB::table('missions_users')
+			->select('user_id', DB::raw('MAX(id) as latest_id'))
+			->where('mission_id', $this->ownerRecord->id)
+			->groupBy('user_id');
+
+		// Only get latest records
+		$query->joinSub($latestUserRecords, 'latest_records', function ($join) {
+			$join->on('missions_users.id', '=', 'latest_records.latest_id')
+				->on('users.id', '=', 'latest_records.user_id');
+		});
+
+		return $query;
+	}
+
+	public static function form(Form $form): Form
     {
         return $form
             ->schema([]);

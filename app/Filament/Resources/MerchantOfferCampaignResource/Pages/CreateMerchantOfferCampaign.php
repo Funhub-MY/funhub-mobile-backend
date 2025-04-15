@@ -13,6 +13,7 @@ use Filament\Pages\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Log;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use App\Services\MerchantOfferCampaignCodeImporter; // <-- added import
 use Illuminate\Database\Eloquent\Model;
 
 class CreateMerchantOfferCampaign extends CreateRecord
@@ -72,6 +73,9 @@ class CreateMerchantOfferCampaign extends CreateRecord
         }, $schedules);
 
         $model->schedules()->insert($schedulesWithCampaignId);
+
+        // Directly process imported codes (create voucher codes from imported file, if any) before dispatching jobs
+        app(MerchantOfferCampaignCodeImporter::class)->processImportedCodes($model);
 
         // notification
         Notification::make()

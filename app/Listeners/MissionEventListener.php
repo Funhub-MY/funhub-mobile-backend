@@ -228,6 +228,9 @@ class MissionEventListener
             ? 'purchased_merchant_offer_points'
             : 'purchased_merchant_offer_cash';
 
+        // override
+        $eventType = 'purchased_merchant_offer';
+
         $this->missionService->handleEvent($eventType, $event->user);
     }
 

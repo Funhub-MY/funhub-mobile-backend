@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PromotionCodeResource\Pages;
+use App\Jobs\ExportPromotionCodesJob;
 use App\Models\PromotionCode;
 use App\Models\PromotionCodeGroup;
 use App\Models\Reward;
@@ -12,6 +13,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -235,10 +237,20 @@ class PromotionCodeResource extends Resource
                     })
                     ->requiresConfirmation()
                     ->deselectRecordsAfterCompletion(),
-                ExportBulkAction::make()
-                    ->exports([
-                        PromotionCodesExport::make()->fromTable()
-                    ]),
+				BulkAction::make('export')
+					->label('Export Selected Codes')
+					->icon('heroicon-o-download')
+					->action(function ($records) {
+						$promotionCodeIds = $records->pluck('id')->toArray();
+
+						ExportPromotionCodesJob::dispatch(null, $promotionCodeIds, auth()->id());
+
+						Notification::make()
+							->title('Export Started')
+							->success()
+							->body('Your selected promotion codes are being exported. You will receive a notification when it is ready.')
+							->send();
+					}),
             ]);
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Jobs\SyncLocationRatingAsStoreRating;
+
 use App\Console\Commands\UpdateArticleTagsArticlesCount;
 use App\Events\ArticleCreated;
 use App\Events\RatedLocation;
@@ -175,7 +177,10 @@ class ArticleController extends Controller
 			->withCount(['userFollowings' => function ($query) {
 				$query->where('status', User::STATUS_ACTIVE);
 			}])
-            ->where('status', Article::STATUS_PUBLISHED);
+            ->where('status', Article::STATUS_PUBLISHED)
+			->whereDoesntHave('hiddenUsers', function ($query) use ($request) {
+				$query->where('user_id', $request->user()->id);
+			});
 
         // exclude own articles unless specified
         if (!$request->has('include_own_article') || $request->include_own_article == 0) {
@@ -1358,6 +1363,9 @@ class ArticleController extends Controller
                     'rating' => $locationData['rating'],
                 ]);
 
+                // sync ratings to store ratings
+                dispatch(new SyncLocationRatingAsStoreRating($location, auth()->id(), $article->id));
+
                 // fire event
                 event(new RatedLocation($location, auth()->user(), $locationData['rating'], $article->id));
             }
@@ -1369,6 +1377,87 @@ class ArticleController extends Controller
                 $location->save();
             }
         }
+        
+        // Create or find store for this location, similar to postRateLocation
+        $store = Store::whereHas('location', function ($query) use ($location) {
+            $query->where('locations.id', $location->id);
+        })->first();
+        
+        if (!$store) {
+            // Check if a store with the same name already exists to avoid duplicates
+            if (!Store::where('name', $location->name)->exists()) {
+                Log::info('[ArticleController] Creating store for location: ' . $location->name);
+                
+                $status = Store::STATUS_ACTIVE;
+                // If full address starts with Lorong, Jalan or Street then set to inactive first
+                $smallLetterAddress = trim(strtolower($location->name));
+                if (str_starts_with($smallLetterAddress, 'lorong') || str_starts_with($smallLetterAddress, 'jalan') || str_starts_with($smallLetterAddress, 'street')) {
+                    $status = Store::STATUS_INACTIVE;
+                }
+                
+                // Create store
+                $store = Store::create([
+                    'user_id' => null,
+                    'name' => $location->name,
+                    'manager_name' => null,
+                    'business_phone_no' => null,
+                    'business_hours' => null,
+                    'address' => $location->full_address,
+                    'address_postcode' => $location->zip_code,
+                    'lang' => $location->lat,
+                    'long' => $location->lng,
+                    'is_hq' => false,
+                    'state_id' => $location->state_id,
+                    'country_id' => $location->country_id,
+                    'status' => $status,
+                ]);
+                
+                // Attach the location to the store
+                $store->location()->attach($location->id);
+                
+                Log::info('[ArticleController] Store created for location: ' . $location->id . ' with store id: ' . $store->id);
+                
+                // If there's a rating, update the store's ratings field
+                if (isset($locationData['rating']) && $locationData['rating'] != 0) {
+                    $store->ratings = $locationData['rating'];
+                    $store->save();
+                    
+                    // Dispatch job to index the store in search
+                    dispatch(new \App\Jobs\IndexStore($store->id));
+                }
+                
+                // If article has categories, try to map them to store categories
+                if ($article->categories->isNotEmpty() || $article->subCategories->isNotEmpty()) {
+                    try {
+                        // Get article category IDs
+                        $articleCategoryIds = $article->categories->pluck('id');
+                        $articleSubCategoryIds = $article->subCategories->pluck('id');
+                        
+                        $allArticleCategoryIds = $articleCategoryIds->merge($articleSubCategoryIds);
+                        
+                        // Find mapped merchant categories from ArticleStoreCategory
+                        $storeCategoriesToAttach = \App\Models\ArticleStoreCategory::whereIn('article_category_id', $allArticleCategoryIds)
+                            ->pluck('merchant_category_id')
+                            ->unique();
+                        
+                        // Attach categories to store
+                        foreach ($storeCategoriesToAttach as $categoryId) {
+                            try {
+                                $store->categories()->attach($categoryId);
+                                Log::info('[ArticleController] Store category attached: ' . $categoryId . ' to store: ' . $store->id);
+                            } catch (\Exception $e) {
+                                Log::error('[ArticleController] Error attaching store category: ' . $categoryId . ' to store: ' . $store->id . '. Error: ' . $e->getMessage());
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('[ArticleController] Error processing categories for store: ' . $store->id . ' and article: ' . $article->id . '. Error: ' . $e->getMessage());
+                    }
+                }
+            } else {
+                Log::info('[ArticleController] Store with same name already exists for location: ' . $location->name);
+            }
+        }
+        
         return $location;
     }
 
