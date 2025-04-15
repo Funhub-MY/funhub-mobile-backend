@@ -450,9 +450,20 @@ class UserResource extends Resource
                     ->label('Toggle Account Restricted')
                     ->action(function (Collection $records, array $data): void {
                         foreach ($records as $record) {
+                            $previousRestricted = $record->account_restricted;
+                            $previousRestrictedUntil = $record->account_restricted_until;
                             $record->account_restricted = $data['account_restricted'];
                             $record->account_restricted_until = $data['account_restricted_until'];
                             $record->save();
+
+                            // Dispatch event for notification & cache clearing
+                            event(new \App\Events\OnAccountRestricted(
+                                $record,
+                                $previousRestricted,
+                                $previousRestrictedUntil,
+                                $record->account_restricted,
+                                $record->account_restricted_until
+                            ));
                         }
                     })
                     ->form([

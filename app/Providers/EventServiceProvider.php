@@ -125,6 +125,10 @@ class EventServiceProvider extends ServiceProvider
         MissionCompletedEvent::class => [
             CheckNewbieMissionsCompletedListener::class,
         ],
+
+        \App\Events\OnAccountRestricted::class => [
+            \App\Listeners\HandleAccountRestricted::class,
+        ],
     ];
 
     /**
