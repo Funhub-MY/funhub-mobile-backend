@@ -14,7 +14,7 @@ class AccountUnrestrictedNotification extends Notification implements ShouldQueu
 {
     use Queueable;
 
-    protected $locale;
+    public $locale;
 
     public function __construct($locale = 'en')
     {
