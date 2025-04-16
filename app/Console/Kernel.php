@@ -59,6 +59,7 @@ class Kernel extends ConsoleKernel
             $schedule->command('campaign:redistribute-quantities')->dailyAt('00:45')->onOneServer();
         }
 		$schedule->command('articles:check-expired')->dailyAt('01:00')->onOneServer();
+		$schedule->command('user:check-account-restrictions')->dailyAt('00:15')->onOneServer();
 
         // Every Two Hours
         $schedule->command('generate:article-views')->everyTwoHours()->onOneServer();
