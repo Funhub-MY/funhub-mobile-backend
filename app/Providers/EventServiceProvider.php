@@ -36,9 +36,7 @@ use App\Listeners\UserReferredListener;
 use App\Listeners\UserSettingsSavedListener;
 use App\Models\ArticleTag;
 use App\Models\MerchantOffer;
-use App\Models\MerchantOfferCampaign;
 use App\Observers\ArticleTagObserver;
-use App\Observers\MerchantOfferCampaignObserver;
 use App\Observers\SupportRequestMessageObserver;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAdded;
@@ -141,7 +139,6 @@ class EventServiceProvider extends ServiceProvider
         SupportRequestMessage::observe(SupportRequestMessageObserver::class);
         Approval::observe(ApprovalObserver::class);
         ArticleTag::observe(ArticleTagObserver::class);
-        MerchantOfferCampaign::observe(MerchantOfferCampaignObserver::class);
     }
 
     /**
