@@ -223,7 +223,7 @@ class UserSettingsController extends Controller
     public function postSaveUsername(Request $request)
     {
         $request->validate([
-            'username' => 'required|string|max:9|unique:users,username,' . auth()->user()->id,
+            'username' => 'required|string|max:9',
         ]);
 
         $user = auth()->user();
@@ -231,6 +231,18 @@ class UserSettingsController extends Controller
         // disable username changes if user changed before
         if ($user->usernameChanges()->count() > 0) {
             return response()->json(['message' => __('messages.error.user_settings_controller.Username_already_changed_before')], 422);
+        }
+
+        // Check if username already exists
+        $usernameExists = \App\Models\User::where('username', $request->username)
+            ->where('id', '!=', $user->id)
+            ->exists();
+
+        if ($usernameExists) {
+            return response()->json([
+                'message' => 'The username has already been taken.',
+                'is_username_existed' => true
+            ], 422);
         }
 
         // save usernameChange record
