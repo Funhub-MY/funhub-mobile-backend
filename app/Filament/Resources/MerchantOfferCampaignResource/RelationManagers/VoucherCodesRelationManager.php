@@ -57,6 +57,7 @@ class VoucherCodesRelationManager extends RelationManager
                     ->searchable()
                     ->sortable(),
                 IconColumn::make('is_used')
+                    ->label('Is Linked with Voucher')
                     ->boolean()
                     ->sortable(),
                 //linked voucher
