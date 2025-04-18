@@ -74,8 +74,8 @@ class CreateMerchantOfferCampaign extends CreateRecord
 
         $model->schedules()->insert($schedulesWithCampaignId);
 
-        // Directly process imported codes (create voucher codes from imported file, if any) before dispatching jobs
-        app(MerchantOfferCampaignCodeImporter::class)->processImportedCodes($model);
+        // // Directly process imported codes (create voucher codes from imported file, if any) before dispatching jobs
+        // app(MerchantOfferCampaignCodeImporter::class)->processImportedCodes($model);
 
         // notification
         Notification::make()
