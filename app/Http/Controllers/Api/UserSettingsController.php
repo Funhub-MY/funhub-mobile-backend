@@ -241,7 +241,7 @@ class UserSettingsController extends Controller
         if ($usernameExists) {
             return response()->json([
                 'message' => 'The username has already been taken.',
-                'is_username_existed' => true
+                'is_username_exist' => true
             ], 422);
         }
 
