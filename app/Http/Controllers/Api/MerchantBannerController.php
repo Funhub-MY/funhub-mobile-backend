@@ -33,8 +33,9 @@ class MerchantBannerController extends Controller
      */
     public function getBanners()
     {
-        $banners = MerchantBanner::where('status', MerchantBanner::STATUS_PUBLISHED)
-            ->latest()
+        $banners = MerchantBanner::query()
+            ->where('status', MerchantBanner::STATUS_PUBLISHED)
+            ->orderBy('order', 'asc')
             ->get();
 
         return response()->json([

@@ -771,7 +771,7 @@ class MerchantOfferController extends Controller
                 $offer->save();
 
                 // fire event
-                event(new PurchasedMerchantOffer($user, $offer, 'fiat'));
+                // event(new PurchasedMerchantOffer($user, $offer, 'fiat')); // Removed: Dispatch moved to PaymentController after success
 
                 // Claim is not successful yet, return mpay data for app to redirect (post)
                 return response()->json([

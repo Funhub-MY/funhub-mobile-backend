@@ -67,32 +67,100 @@ class CreateLocationFromStoreImport implements ShouldQueue
             
             // If lat/long not provided, use Google Maps API to get coordinates
             if (!$lang || !$long) {
-                $state = State::find($data['state_id']);
-                $country = Country::find($data['country_id']);
-                $address = $data['address'] . ', ' . ($data['address_postcode'] ?? '') . ', ' . $state->name . ', ' . $country->name;
-                
                 $client = new Client();
-                $response = $client->get('https://maps.googleapis.com/maps/api/geocode/json', [
-                    'query' => [
-                        'address' => $address,
-                        'key' => config('filament-google-maps.key'),
-                    ]
-                ]);
-                
-                if ($response->getStatusCode() === 200) {
-                    $locationFromGoogle = json_decode($response->getBody(), true);
-                    
-                    if (isset($locationFromGoogle['results']) && !empty($locationFromGoogle['results'])) {
-                        $lang = $locationFromGoogle['results'][0]['geometry']['location']['lat'];
-                        $long = $locationFromGoogle['results'][0]['geometry']['location']['lng'];
-                        $locationFromGoogle = $locationFromGoogle['results'][0] ?? null;
-                        
+                $googleApiKey = config('filament-google-maps.key');
+                $locationFromGoogle = null;
+                $searchResult = null;
+
+                // --- First Attempt: Search by Store Name (Malaysia only) ---
+                $queryByName = [
+                    'address' => $store->name, // Use store name for the first search
+                    'components' => 'country:MY', // Restrict to Malaysia
+                    'key' => $googleApiKey,
+                ];
+
+                Log::info("Attempting geocode by name for store: {$store->name}", ['query' => $queryByName]);
+                try {
+                    $responseByName = $client->get('https://maps.googleapis.com/maps/api/geocode/json', ['query' => $queryByName]);
+                    if ($responseByName->getStatusCode() === 200) {
+                        $searchResult = json_decode($responseByName->getBody(), true);
+                        Log::info("Geocode by name result", ['status' => $searchResult['status'] ?? 'N/A', 'count' => count($searchResult['results'] ?? [])]);
+                        // Check if results are valid and not ZERO_RESULTS
+                        if (isset($searchResult['results']) && !empty($searchResult['results']) && $searchResult['status'] !== 'ZERO_RESULTS') {
+                             $locationFromGoogle = $searchResult['results'][0] ?? null;
+                        } else {
+                             Log::warning("Geocode by name failed or returned no results for store: {$store->name}");
+                             $searchResult = null; // Reset searchResult if first attempt failed
+                        }
+                    } else {
+                        Log::error("Geocode by name API request failed", ['status_code' => $responseByName->getStatusCode()]);
+                    }
+                } catch (\Exception $e) {
+                    Log::error("Exception during geocode by name", ['error' => $e->getMessage()]);
+                }
+
+
+                // --- Second Attempt: Search by Address (if name search failed or yielded no results) ---
+                if (!$locationFromGoogle) {
+                    $state = State::find($data['state_id']);
+                    $country = Country::find($data['country_id']); // Ensure country is MY or handle appropriately
+                    // Construct address string carefully
+                    $addressParts = array_filter([
+                        $data['address'] ?? null,
+                        $data['address_postcode'] ?? null,
+                        $data['city'] ?? null, // Added City
+                        $state->name ?? null,
+                       // $country->name ?? null // Country name is handled by components filter
+                    ]);
+                    $addressString = implode(', ', $addressParts);
+
+                    if (!empty($addressString)) {
+                        $queryByAddress = [
+                            'address' => $addressString,
+                            'components' => 'country:MY', // Restrict to Malaysia
+                            'key' => $googleApiKey,
+                        ];
+
+                        Log::info("Attempting geocode by address for store: {$store->name}", ['query' => $queryByAddress]);
+                         try {
+                            $responseByAddress = $client->get('https://maps.googleapis.com/maps/api/geocode/json', ['query' => $queryByAddress]);
+                            if ($responseByAddress->getStatusCode() === 200) {
+                                $searchResult = json_decode($responseByAddress->getBody(), true);
+                                Log::info("Geocode by address result", ['status' => $searchResult['status'] ?? 'N/A', 'count' => count($searchResult['results'] ?? [])]);
+                                // Check if results are valid and not ZERO_RESULTS
+                                if (isset($searchResult['results']) && !empty($searchResult['results']) && $searchResult['status'] !== 'ZERO_RESULTS') {
+                                     $locationFromGoogle = $searchResult['results'][0] ?? null;
+                                } else {
+                                     Log::warning("Geocode by address also failed or returned no results for store: {$store->name}");
+                                }
+                            } else {
+                                Log::error("Geocode by address API request failed", ['status_code' => $responseByAddress->getStatusCode()]);
+                            }
+                        } catch (\Exception $e) {
+                            Log::error("Exception during geocode by address", ['error' => $e->getMessage()]);
+                        }
+                    } else {
+                         Log::warning("Address string is empty, skipping geocode by address for store: {$store->name}");
+                    }
+                }
+
+                // --- Process results if found ---
+                if ($locationFromGoogle) {
+                    $lang = $locationFromGoogle['geometry']['location']['lat'] ?? null;
+                    $long = $locationFromGoogle['geometry']['location']['lng'] ?? null;
+
+                    if ($lang && $long) {
                         // Update store with lat/long
+                        Log::info("Updating store {$store->id} with coordinates: lat={$lang}, lng={$long}");
                         $store->update([
                             'lang' => $lang,
                             'long' => $long
                         ]);
+                    } else {
+                         Log::warning("Extracted lat/lng are invalid from geocode result for store: {$store->id}", ['result' => $locationFromGoogle]);
                     }
+                } else {
+                    Log::error("Failed to geocode store: {$store->id} ({$store->name}) after both attempts.");
                 }
             }
             

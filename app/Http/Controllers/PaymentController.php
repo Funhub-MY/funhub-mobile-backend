@@ -218,7 +218,7 @@ class PaymentController extends Controller
                 $transactionUpdateData = [
                     'status' => \App\Models\Transaction::STATUS_SUCCESS,
                     'gateway_transaction_id' => ($request->has('mpay_ref_no')) ? $request->mpay_ref_no : $request->authCode,
-				];
+                ];
 
                 // update transaction status to success first with gateway transaction id
                 $transaction->update($transactionUpdateData);
@@ -273,6 +273,9 @@ class PaymentController extends Controller
                         }
                     }
 
+                    // Dispatch event only after successful fiat payment
+                    event(new \App\Events\PurchasedMerchantOffer($transaction->user, $merchantOffer, 'fiat'));
+
                 } else if ($transaction->transactionable_type == Product::class) {
                     $this->updateProductTransaction($request, $transaction);
 
@@ -284,7 +287,6 @@ class PaymentController extends Controller
                             $quantity = $transaction->amount / (($product->discount_price) ?? $product->unit_price);
 
                             $transaction->user->notify(new PurchasedGiftCardNotification($transaction->transaction_no, $transaction->updated_at, $product->name, $quantity, $transaction->amount));
-                            
                             // fire event for mission progress
                             event(new GiftCardPurchased($transaction->user, $product));
                         } catch (\Exception $e) {
@@ -374,7 +376,7 @@ class PaymentController extends Controller
                 $transaction->update([
                     'status' => \App\Models\Transaction::STATUS_FAILED,
                     'gateway_transaction_id' => $gatewayId,
-				]);
+                ]);
 
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
