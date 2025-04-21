@@ -6,6 +6,7 @@ use App\Models\MerchantOffer;
 use App\Models\MerchantOfferCampaign;
 use App\Models\MerchantOfferCampaignSchedule;
 use App\Models\MerchantOfferVoucher;
+use App\Jobs\SyncMerchantOfferStores;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -41,6 +42,9 @@ class ProcessMerchantOfferCampaignAfterSave implements ShouldQueue
 		Log::info("[Process Merchant offer campaign] after save start Dispatch");
 
 		$record = $this->record; // campaign
+
+		// Get campaign store IDs once to avoid repeated queries
+		$campaignStoreIds = $record->stores->pluck('id')->toArray();
 
 		// update relevant MerchantOffer records
 		$offers = MerchantOffer::where('merchant_offer_campaign_id', $record->id)->get();
@@ -97,11 +101,8 @@ class ProcessMerchantOfferCampaignAfterSave implements ShouldQueue
 			// sync latest merchant offer categories
 			$offer->allOfferCategories()->sync($record->allOfferCategories->pluck('id'));
 
-			// clear all stores
-			$offer->stores()->detach();
-
-			// sync latest campaign stores to offer stores
-			$offer->stores()->sync($record->stores->pluck('id'));
+			// Dispatch a separate job to handle store synchronization
+			SyncMerchantOfferStores::dispatch($offer->id, $campaignStoreIds);
 
 			// sync algolia
 			try {
@@ -205,8 +206,9 @@ class ProcessMerchantOfferCampaignAfterSave implements ShouldQueue
 				}
 				// sync merchant offer campaign categories to similar merchant offer
 				$offer->allOfferCategories()->sync($record->allOfferCategories->pluck('id'));
-				// sync merchant offer campaign stores to similar merchant offer
-				$offer->stores()->sync($record->stores->pluck('id'));
+				
+				// Dispatch a separate job to handle store synchronization for the new offer
+				SyncMerchantOfferStores::dispatch($offer->id, $campaignStoreIds);
 
 				// create vouchers per offer
 				$quantity = $schedule->quantity;
