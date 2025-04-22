@@ -51,7 +51,7 @@ class ArticleEngagementResource extends Resource
                             return User::query()
                                 ->where('name', 'like', "%{$search}%")
                                 ->where('for_engagement', true)
-                                ->where('status', User::STATUS_ACTIVE) // Add your custom where condition here
+                                ->where('status', User::STATUS_ACTIVE)
                                 ->limit(50)
                                 ->pluck('name', 'id');
                         })
@@ -62,6 +62,20 @@ class ArticleEngagementResource extends Resource
                     Select::make('article_id')
                         ->label('Article')
                         ->relationship('article', 'title')
+                        ->getSearchResultsUsing(function (string $search) {
+                            $articles = \App\Models\Article::query()
+                                ->where(function ($query) use ($search) {
+                                    if (is_numeric($search)) {
+                                        $query->where('id', $search);
+                                    }
+                                    $query->orWhere('title', 'like', "%{$search}%");
+                                })
+                                ->limit(50)
+                                ->get();
+                            return $articles->mapWithKeys(function ($article) {
+                                return [$article->id => 'ID:' . $article->id . ' (' . $article->title . ')'];
+                            })->toArray();
+                        })
                         ->getOptionLabelFromRecordUsing(fn ($record) => 'ID:'. $record->id.' ('.$record->title.')')
                         ->searchable()
                         ->required(),
