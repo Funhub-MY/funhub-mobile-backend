@@ -62,6 +62,24 @@ class ArticleEngagementResource extends Resource
                     Select::make('article_id')
                         ->label('Article')
                         ->relationship('article', 'title')
+                        ->getSearchResultsUsing(function (string $search) {
+                            $articles = \App\Models\Article::query()
+                                ->where(function ($query) use ($search) {
+                                    // Search by ID (exact match)
+                                    if (is_numeric($search)) {
+                                        $query->where('id', $search);
+                                    }
+                                    // Search by title (partial match)
+                                    $query->orWhere('title', 'like', "%{$search}%");
+                                })
+                                ->limit(50)
+                                ->get();
+                            
+                            return $articles->mapWithKeys(function ($article) {
+                                // Format: ID:123 (Article Title)
+                                return [$article->id => 'ID:' . $article->id . ' (' . $article->title . ')'];
+                            })->toArray();
+                        })
                         ->getOptionLabelFromRecordUsing(fn ($record) => 'ID:'. $record->id.' ('.$record->title.')')
                         ->searchable()
                         ->required(),
