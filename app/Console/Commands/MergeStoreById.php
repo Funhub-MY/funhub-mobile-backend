@@ -137,8 +137,25 @@ class MergeStoreById extends Command
                 'duplicate_store_id' => $duplicateId,
                 'target_store_id' => $targetId
             ]);
+            
+            // Check if anything else is still attached to the duplicate location
+            $remainingAttachments = DB::table('locatables')
+                ->where('location_id', $duplicateLocation->location_id)
+                ->count();
+                
+            if ($remainingAttachments == 0) {
+                // If nothing is attached to the location, delete it
+                $duplicateLocationModel->delete();
+                $this->info("Deleted duplicate location ID {$duplicateLocation->location_id} as it has no more attachments");
+                Log::info('[MergeStores] Deleted duplicate location', [
+                    'location_id' => $duplicateLocation->location_id
+                ]);
+            } else {
+                $this->info("Duplicate location ID {$duplicateLocation->location_id} still has {$remainingAttachments} attachments, not deleting");
+            }
         } else {
             $this->info("[DRY RUN] Would delete duplicate store ID {$duplicateId}");
+            $this->info("[DRY RUN] Would check if duplicate location ID {$duplicateLocation->location_id} can be deleted");
         }
         
         $this->info("Command completed. Successfully merged store ID {$duplicateId} into store ID {$targetId}.");
