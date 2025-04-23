@@ -245,7 +245,30 @@ class SystemNotificationResource extends Resource
                                     ->titleColumnName('title'),
                                 MorphToSelect\Type::make(MerchantOffer::class)
                                     ->label('Deal')
-                                    ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->name} " . "(" . (Carbon::parse($record->available_at)->format('Y-m-d')) . " - " . (Carbon::parse($record->available_until)->format('Y-m-d')) . ")" )
+                                    ->getSearchResultsUsing(function (string $search) {
+                                        return MerchantOffer::query()
+                                            ->where('name', 'like', "%{$search}%")
+                                            ->orWhere('sku', 'like', "%{$search}%")
+                                            ->orWhere(function ($query) use ($search) {
+                                                $query->whereHas('user.merchant', function ($query) use ($search) {
+                                                    $query->where('brand_name', 'like', "%{$search}%");
+                                                });
+                                            })
+                                            ->with('user.merchant')
+                                            ->limit(20)
+                                            ->get()
+                                            ->mapWithKeys(function ($record) {
+                                                // Create a formatted display string for each record
+                                                $displayText = "{$record->id} : {$record->name} (" . 
+                                                    Carbon::parse($record->available_at)->format('d/m/Y') . " - " . 
+                                                    Carbon::parse($record->available_until)->format('d/m/Y') . ") BRAND: " . 
+                                                    $record->user->merchant->brand_name;
+                                                
+                                                return [$record->id => $displayText];
+                                            })
+                                            ->toArray();
+                                    })
+                                    ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->id} : {$record->name} " . "(" . (Carbon::parse($record->available_at)->format('Y-m-d')) . " - " . (Carbon::parse($record->available_until)->format('Y-m-d')) . ") BRAND: " . $record->user->merchant->brand_name)
                                     ->titleColumnName('name'),
                                 MorphToSelect\Type::make(User::class)
                                     ->label('User')
