@@ -118,6 +118,7 @@ class EventServiceProvider extends ServiceProvider
 
         GiftCardPurchased::class => [
             MissionEventListener::class,
+            \App\Listeners\SendProductPurchaseNotificationListener::class,
         ],
 
         MissionCompletedEvent::class => [
