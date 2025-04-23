@@ -160,7 +160,6 @@ class ProductResource extends Resource
                                             ->label('Notification URL')
                                             ->nullable()
                                             ->helperText('Optional URL to redirect users when they tap on the notification')
-                                            ->url()
                                             ->hidden(function ($get) { return !$get('enable_purchase_notification'); }),
                                     ])
                             ])
