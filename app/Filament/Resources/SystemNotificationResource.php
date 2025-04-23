@@ -245,7 +245,7 @@ class SystemNotificationResource extends Resource
                                     ->titleColumnName('title'),
                                 MorphToSelect\Type::make(MerchantOffer::class)
                                     ->label('Deal')
-                                    ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->name} " . "(" . (Carbon::parse($record->available_at)->format('Y-m-d')) . " - " . (Carbon::parse($record->available_until)->format('Y-m-d')) . ")" )
+                                    ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->id} : {$record->name} " . "(" . (Carbon::parse($record->available_at)->format('Y-m-d')) . " - " . (Carbon::parse($record->available_until)->format('Y-m-d')) . ") BRAND: " . $record->user->merchant->brand_name)
                                     ->titleColumnName('name'),
                                 MorphToSelect\Type::make(User::class)
                                     ->label('User')
