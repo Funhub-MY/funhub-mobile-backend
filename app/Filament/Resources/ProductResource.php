@@ -155,6 +155,13 @@ class ProductResource extends Resource
                                             ->label('Notification Message (Chinese)')
                                             ->required(function ($get) { return $get('enable_purchase_notification'); })
                                             ->hidden(function ($get) { return !$get('enable_purchase_notification'); }),
+                                            
+                                        TextInput::make('purchase_notification_url')
+                                            ->label('Notification URL')
+                                            ->nullable()
+                                            ->helperText('Optional URL to redirect users when they tap on the notification')
+                                            ->url()
+                                            ->hidden(function ($get) { return !$get('enable_purchase_notification'); }),
                                     ])
                             ])
                 ])->columnSpan(['lg' => 2]),

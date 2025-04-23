@@ -63,8 +63,8 @@ class ProductPurchaseNotification extends Notification implements ShouldQueue
             'message' => $this->notificationMessage,
             'object' => get_class($this->product), // App\Models\Product
             'object_id' => (string) $this->product->id,
-            'link_to_url' => 'false',
-            'link_to' => 'null',
+            'link_to_url' => !empty($this->product->purchase_notification_url) ? 'true' : 'false',
+            'link_to' => !empty($this->product->purchase_notification_url) ? $this->product->purchase_notification_url : 'null',
             'link_to_object' => (string) $this->product->id,
             'action' => 'product_purchase_notification',
             'from_name' => 'Funhub',
@@ -92,8 +92,8 @@ class ProductPurchaseNotification extends Notification implements ShouldQueue
             'message' => $this->notificationMessage,
             'object' => get_class($this->product), // App\Models\Product
             'object_id' => (string) $this->product->id,
-            'link_to_url' => false,
-            'link_to' => null,
+            'link_to_url' => !empty($this->product->purchase_notification_url),
+            'link_to' => !empty($this->product->purchase_notification_url) ? $this->product->purchase_notification_url : null,
             'link_to_object' => $this->product->id,
             'action' => 'product_purchase_notification',
             'from_name' => 'Funhub',
