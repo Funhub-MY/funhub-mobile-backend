@@ -24,10 +24,10 @@ class ProductPurchaseNotification extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Product $product, $userLocale = null)
+    public function __construct(Product $product, $user = null)
     {
         $this->product = $product;
-        $this->userLocale = $userLocale ?? config('app.locale');
+        $this->userLocale = $user->last_lang ?? config('app.locale');
         
         // use the notifications queue with specific settings
         $this->onQueue('notifications');
