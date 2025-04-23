@@ -38,7 +38,7 @@ class SendProductPurchaseNotificationListener implements ShouldQueue
         if ($product->enable_purchase_notification) {
             try {
                 // Get user's preferred locale
-                $userLocale = $user->locale ?? config('app.locale');
+                $userLocale = $user->last_lang ?? config('app.locale');
                 
                 // Check if the notification messages are set
                 if (empty($product->purchase_notification_en) && empty($product->purchase_notification_zh)) {
@@ -50,13 +50,13 @@ class SendProductPurchaseNotificationListener implements ShouldQueue
                 }
                 
                 // Send the notification to the user
-                $user->notify(new ProductPurchaseNotification($product, $userLocale));
+                $user->notify(new ProductPurchaseNotification($product, $user));
                 
                 Log::info('Product purchase notification sent', [
                     'product_id' => $product->id,
                     'product_name' => $product->name,
                     'user_id' => $user->id,
-                    'locale' => $userLocale
+                    'locale' => $user->last_lang ?? config('app.locale')
                 ]);
             } catch (\Exception $e) {
                 Log::error('Failed to send product purchase notification', [
