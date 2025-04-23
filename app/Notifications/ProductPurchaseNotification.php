@@ -17,6 +17,7 @@ class ProductPurchaseNotification extends Notification implements ShouldQueue
     protected $product;
     protected $userLocale;
     protected $notificationMessage;
+    protected $notificationTitle;
 
     /**
      * Create a new notification instance.
@@ -31,11 +32,13 @@ class ProductPurchaseNotification extends Notification implements ShouldQueue
         // use the notifications queue with specific settings
         $this->onQueue('notifications');
         
-        // Determine which notification message to use based on locale
+        // Determine which notification message and title to use based on locale
         if ($this->userLocale === 'zh') {
             $this->notificationMessage = $product->purchase_notification_zh;
+            $this->notificationTitle = $product->purchase_notification_title_zh ?: $product->name;
         } else {
             $this->notificationMessage = $product->purchase_notification_en;
+            $this->notificationTitle = $product->purchase_notification_title_en ?: $product->name;
         }
     }
 
@@ -59,7 +62,7 @@ class ProductPurchaseNotification extends Notification implements ShouldQueue
     public function toFcm($notifiable)
     {
         $data = [
-            'title' => $this->product->name,
+            'title' => $this->notificationTitle,
             'message' => $this->notificationMessage,
             'object' => get_class($this->product), // App\Models\Product
             'object_id' => (string) $this->product->id,
@@ -74,7 +77,7 @@ class ProductPurchaseNotification extends Notification implements ShouldQueue
         return FcmMessage::create()
             ->setData($data)
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle($this->product->name)
+                ->setTitle($this->notificationTitle)
                 ->setBody($this->notificationMessage)
             );
     }
@@ -88,7 +91,7 @@ class ProductPurchaseNotification extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'title' => $this->product->name,
+            'title' => $this->notificationTitle,
             'message' => $this->notificationMessage,
             'object' => get_class($this->product), // App\Models\Product
             'object_id' => (string) $this->product->id,

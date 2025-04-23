@@ -146,8 +146,18 @@ class ProductResource extends Resource
                                     
                                 Forms\Components\Group::make()
                                     ->schema([
+                                        TextInput::make('purchase_notification_title_en')
+                                            ->label('Notification Title (English)')
+                                            ->required(function ($get) { return $get('enable_purchase_notification'); })
+                                            ->hidden(function ($get) { return !$get('enable_purchase_notification'); }),
+                                            
                                         TextInput::make('purchase_notification_en')
                                             ->label('Notification Message (English)')
+                                            ->required(function ($get) { return $get('enable_purchase_notification'); })
+                                            ->hidden(function ($get) { return !$get('enable_purchase_notification'); }),
+                                            
+                                        TextInput::make('purchase_notification_title_zh')
+                                            ->label('Notification Title (Chinese)')
                                             ->required(function ($get) { return $get('enable_purchase_notification'); })
                                             ->hidden(function ($get) { return !$get('enable_purchase_notification'); }),
                                             
