@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Exports\FailedStoreImportsExport;
 use App\Filament\Resources\FailedStoreImportResource\Pages;
 use App\Filament\Resources\FailedStoreImportResource\RelationManagers;
 use App\Models\FailedStoreImport;
@@ -12,6 +13,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class FailedStoreImportResource extends Resource
 {
@@ -136,7 +138,13 @@ class FailedStoreImportResource extends Resource
                 //
             ])
             ->actions([])
-            ->bulkActions([]);
+            ->bulkActions([
+                ExportBulkAction::make()
+                    ->label('Export to CSV')
+                    ->exports([
+                        FailedStoreImportsExport::class
+                    ])
+            ]);
     }
     
     public static function getRelations(): array
