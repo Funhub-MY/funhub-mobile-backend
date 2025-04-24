@@ -262,7 +262,7 @@ class SystemNotificationResource extends Resource
                                                 $displayText = "{$record->id} : {$record->name} (" . 
                                                     Carbon::parse($record->available_at)->format('d/m/Y') . " - " . 
                                                     Carbon::parse($record->available_until)->format('d/m/Y') . ") BRAND: " . 
-                                                    $record->user->merchant->brand_name;
+                                                    ($record->user && $record->user->merchant && $record->user->merchant->brand_name ? $record->user->merchant->brand_name : '');
                                                 
                                                 return [$record->id => $displayText];
                                             })
