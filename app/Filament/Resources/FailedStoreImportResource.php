@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use App\Exports\FailedStoreImportsExport;
 use App\Filament\Resources\FailedStoreImportResource\Pages;
 use App\Filament\Resources\FailedStoreImportResource\RelationManagers;
 use App\Models\FailedStoreImport;
@@ -14,6 +13,8 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use pxlrbt\FilamentExcel\Columns\Column;
 
 class FailedStoreImportResource extends Resource
 {
@@ -142,7 +143,32 @@ class FailedStoreImportResource extends Resource
                 ExportBulkAction::make()
                     ->label('Export to CSV')
                     ->exports([
-                        FailedStoreImportsExport::class
+                        ExcelExport::make()
+                            ->withFilename('failed-store-imports-' . now()->format('Y-m-d'))
+                            ->withColumns([
+                                Column::make('id')->heading('ID'),
+                                Column::make('name')->heading('Store Name'),
+                                Column::make('address')->heading('Address'),
+                                Column::make('address_postcode')->heading('Postcode'),
+                                Column::make('city')->heading('City'),
+                                Column::make('state_id')->heading('State ID'),
+                                Column::make('country_id')->heading('Country ID'),
+                                Column::make('business_phone_no')->heading('Phone Number'),
+                                Column::make('lang')->heading('Latitude'),
+                                Column::make('long')->heading('Longitude'),
+                                Column::make('google_place_id')->heading('Google Place ID'),
+                                Column::make('merchant_id')->heading('Merchant ID'),
+                                Column::make('user_id')->heading('User ID'),
+                                Column::make('is_hq')->heading('Is HQ')
+                                    ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No'),
+                                Column::make('is_appointment_only')->heading('Is Appointment Only')
+                                    ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No'),
+                                Column::make('parent_categories')->heading('Parent Categories'),
+                                Column::make('sub_categories')->heading('Sub Categories'),
+                                Column::make('failure_reason')->heading('Failure Reason'),
+                                Column::make('created_at')->heading('Created At')
+                                    ->formatStateUsing(fn ($state) => $state ? $state->format('Y-m-d H:i:s') : ''),
+                            ])
                     ])
             ]);
     }

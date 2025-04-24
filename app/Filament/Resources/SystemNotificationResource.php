@@ -249,6 +249,7 @@ class SystemNotificationResource extends Resource
                                         return MerchantOffer::query()
                                             ->where('name', 'like', "%{$search}%")
                                             ->orWhere('sku', 'like', "%{$search}%")
+                                            ->orWhere('id', 'like', "%{$search}%")
                                             ->orWhere(function ($query) use ($search) {
                                                 $query->whereHas('user.merchant', function ($query) use ($search) {
                                                     $query->where('brand_name', 'like', "%{$search}%");

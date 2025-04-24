@@ -2,79 +2,51 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
-use Illuminate\Support\Collection;
 use App\Models\FailedStoreImport;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use pxlrbt\FilamentExcel\Columns\Column;
 
-class FailedStoreImportsExport implements FromCollection, WithHeadings, WithMapping
+class FailedStoreImportsExport extends ExcelExport
 {
-    protected $failedStoreImportIds;
-
-    public function __construct(array $failedStoreImportIds = [])
+    public function setUp(): void
     {
-        $this->failedStoreImportIds = $failedStoreImportIds;
+        $this->withFilename('failed-store-imports-' . now()->format('Y-m-d'));
+    }
+    
+    public function collection()
+    {
+        // Get records from the model directly without relying on filtered table query
+        // This will export all records if no specific records are selected
+        return FailedStoreImport::query()
+            ->when(isset($this->ids) && !empty($this->ids), fn($query) => $query->whereIn('id', $this->ids))
+            ->get();
     }
 
-    public function collection(): Collection
-    {
-        $query = FailedStoreImport::query();
-
-        if (!empty($this->failedStoreImportIds)) {
-            return $query->whereIn('id', $this->failedStoreImportIds)->get();
-        }
-
-        return $query->get();
-    }
-
-    public function headings(): array
+    public function columns(): array
     {
         return [
-            'ID',
-            'Store Name',
-            'Address',
-            'Postcode',
-            'City',
-            'State ID',
-            'Country ID',
-            'Phone Number',
-            'Latitude',
-            'Longitude',
-            'Google Place ID',
-            'Merchant ID',
-            'User ID',
-            'Is HQ',
-            'Is Appointment Only',
-            'Parent Categories',
-            'Sub Categories',
-            'Failure Reason',
-            'Created At'
-        ];
-    }
-
-    public function map($row): array
-    {
-        return [
-            $row->id,
-            $row->name,
-            $row->address,
-            $row->address_postcode,
-            $row->city,
-            $row->state_id,
-            $row->country_id,
-            $row->business_phone_no,
-            $row->lang,
-            $row->long,
-            $row->google_place_id,
-            $row->merchant_id,
-            $row->user_id,
-            $row->is_hq ? 'Yes' : 'No',
-            $row->is_appointment_only ? 'Yes' : 'No',
-            $row->parent_categories,
-            $row->sub_categories,
-            $row->failure_reason,
-            $row->created_at ? $row->created_at->format('Y-m-d H:i:s') : '',
+            Column::make('id')->heading('ID'),
+            Column::make('name')->heading('Store Name'),
+            Column::make('address')->heading('Address'),
+            Column::make('address_postcode')->heading('Postcode'),
+            Column::make('city')->heading('City'),
+            Column::make('state_id')->heading('State ID'),
+            Column::make('country_id')->heading('Country ID'),
+            Column::make('business_phone_no')->heading('Phone Number'),
+            Column::make('lang')->heading('Latitude'),
+            Column::make('long')->heading('Longitude'),
+            Column::make('google_place_id')->heading('Google Place ID'),
+            Column::make('merchant_id')->heading('Merchant ID'),
+            Column::make('user_id')->heading('User ID'),
+            Column::make('is_hq')->heading('Is HQ')
+                ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No'),
+            Column::make('is_appointment_only')->heading('Is Appointment Only')
+                ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No'),
+            Column::make('parent_categories')->heading('Parent Categories'),
+            Column::make('sub_categories')->heading('Sub Categories'),
+            Column::make('failure_reason')->heading('Failure Reason'),
+            Column::make('created_at')->heading('Created At')
+                ->formatStateUsing(fn ($state) => $state ? $state->format('Y-m-d H:i:s') : ''),
         ];
     }
 }
