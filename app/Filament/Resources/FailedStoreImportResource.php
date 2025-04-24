@@ -21,7 +21,7 @@ class FailedStoreImportResource extends Resource
     
     protected static ?string $navigationLabel = 'Failed Store Imports';
     
-    protected static ?string $navigationGroup = 'Stores';
+    protected static ?string $navigationGroup = 'Merchant';
     
     protected static ?int $navigationSort = 2;
     
@@ -135,9 +135,7 @@ class FailedStoreImportResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\ViewAction::make(),
-            ])
+            ->actions([])
             ->bulkActions([]);
     }
     
@@ -152,7 +150,7 @@ class FailedStoreImportResource extends Resource
     {
         return [
             'index' => Pages\ListFailedStoreImports::route('/'),
-            'view' => Pages\ViewFailedStoreImport::route('/{record}'),
+            // 'view' => Pages\ViewFailedStoreImport::route('/{record}'),
         ];
     }    
 }

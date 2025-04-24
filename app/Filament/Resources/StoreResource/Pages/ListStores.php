@@ -35,7 +35,6 @@ class ListStores extends ListRecords
 			// Import Stores from CSV
 			ImportAction::make('importStores')
 				->label('Import Stores (csv)')
-				->uniqueField('name')
 				->fields([
 					ImportField::make('name')
 						->label('Store Name')
@@ -254,6 +253,10 @@ class ListStores extends ListRecords
 					
 					// Create the store
 					$store = Store::create($storeData);
+					Log::info("Store created", [
+						'store_id' => $store->id,
+						'store_name' => $store->name
+					]);
 					// Process parent categories
 					if (!empty($data['parent_categories'])) {
 						$parentCategoryNames = array_map('trim', explode(',', $data['parent_categories']));
