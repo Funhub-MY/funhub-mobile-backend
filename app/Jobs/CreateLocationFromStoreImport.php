@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Jobs\IndexStore;
 use App\Models\Country;
+use App\Models\FailedStoreImport;
 use App\Models\Location;
 use App\Models\State;
 use App\Models\Store;
@@ -18,6 +19,18 @@ use Illuminate\Support\Facades\Log;
 class CreateLocationFromStoreImport implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    
+    /**
+     * Coordinates that are considered suspicious or invalid
+     * These are specific coordinates that indicate a geocoding failure
+     * or default values that don't represent actual locations
+     */
+    protected const SUSPICIOUS_COORDINATES = [
+        // Examples of suspicious coordinates
+        ['lat' => 4.210484, 'lng' => 101.975766], // Known problematic coordinates
+        ['lat' => 0, 'lng' => 0], // Null Island
+        ['lat' => 1, 'lng' => 1], // Default/placeholder coordinates
+    ];
 
     protected $storeId;
     protected $storeData;
@@ -45,6 +58,79 @@ class CreateLocationFromStoreImport implements ShouldQueue
      *
      * @return void
      */
+    /**
+     * Check if coordinates are valid
+     *
+     * @param float|null $lat
+     * @param float|null $lng
+     * @return bool
+     */
+    protected function areCoordinatesValid(?float $lat, ?float $lng): bool
+    {
+        // If coordinates are null, they're not valid
+        if ($lat === null || $lng === null) {
+            return false;
+        }
+        
+        // Check if coordinates are in suspicious list
+        foreach (self::SUSPICIOUS_COORDINATES as $suspiciousCoord) {
+            // Use a small epsilon for floating point comparison
+            $latEpsilon = abs($lat - $suspiciousCoord['lat']) < 0.000001;
+            $lngEpsilon = abs($lng - $suspiciousCoord['lng']) < 0.000001;
+            
+            if ($latEpsilon && $lngEpsilon) {
+                return false;
+            }
+        }
+        
+        // Check if coordinates are within reasonable bounds
+        if ($lat < -90 || $lat > 90 || $lng < -180 || $lng > 180) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Save failed store import
+     *
+     * @param Store $store
+     * @param array $data
+     * @param string $reason
+     * @return void
+     */
+    protected function saveFailedStoreImport(Store $store, array $data, string $reason): void
+    {
+        // Create a record in the failed_store_imports table
+        FailedStoreImport::create([
+            'name' => $store->name,
+            'address' => $store->address,
+            'address_postcode' => $store->address_postcode,
+            'city' => $store->city,
+            'state_id' => $store->state_id,
+            'country_id' => $store->country_id,
+            'business_phone_no' => $store->business_phone_no,
+            'business_hours' => $store->business_hours,
+            'rest_hours' => $store->rest_hours,
+            'is_appointment_only' => $store->is_appointment_only,
+            'user_id' => $store->user_id,
+            'merchant_id' => $store->merchant_id,
+            'google_place_id' => $data['google_place_id'] ?? null,
+            'lang' => $store->lang,
+            'long' => $store->long,
+            'parent_categories' => $data['parent_categories'] ?? null,
+            'sub_categories' => $data['sub_categories'] ?? null,
+            'is_hq' => $store->is_hq,
+            'failure_reason' => $reason,
+            'original_data' => json_encode($data),
+        ]);
+        
+        Log::warning("[CreateLocationFromStoreImport] Store import failed: {$reason}", [
+            'store_id' => $store->id,
+            'store_name' => $store->name,
+        ]);
+    }
+    
     public function handle()
     {
         try {
@@ -228,8 +314,8 @@ class CreateLocationFromStoreImport implements ShouldQueue
                 }
             }
             
-            // Now proceed with location creation/linking if we have valid coordinates
-            if ($lang && $long) {
+            // Check if coordinates are valid before proceeding
+            if ($lang && $long && $this->areCoordinatesValid($lang, $long)) {
                 $location = null;
                 
                 // Check for existing location by Google ID if available
@@ -320,9 +406,42 @@ class CreateLocationFromStoreImport implements ShouldQueue
             } else {
                 Log::warning("[CreateLocationFromStoreImport] Could not determine lat/long for store {$store->id}");
                 
-                // Dispatch IndexStore job to make the store searchable even without location
-                IndexStore::dispatch($store->id);
-                Log::info("[CreateLocationFromStoreImport] IndexStore job dispatched for store: {$store->id} (no location found)");
+                // If we have coordinates but they're invalid, reject the import
+                if ($lang && $long && !$this->areCoordinatesValid($lang, $long)) {
+                    $reason = "Invalid coordinates detected: {$lang}, {$long}";
+                    
+                    // Save to failed store imports table before deleting
+                    $this->saveFailedStoreImport($store, $data, $reason);
+                    
+                    // Delete the store
+                    $storeId = $store->id;
+                    $storeName = $store->name;
+                    $store->delete();
+                    
+                    Log::warning("[CreateLocationFromStoreImport] Store import rejected and deleted due to invalid coordinates", [
+                        'store_id' => $storeId,
+                        'store_name' => $storeName,
+                        'coordinates' => "{$lang}, {$long}"
+                    ]);
+                    
+                    return;
+                }
+                
+                // If we have no coordinates at all, reject the import
+                $reason = "No coordinates could be determined for this store";
+                
+                // Save to failed store imports table before deleting
+                $this->saveFailedStoreImport($store, $data, $reason);
+                
+                // Delete the store
+                $storeId = $store->id;
+                $storeName = $store->name;
+                $store->delete();
+                
+                Log::warning("[CreateLocationFromStoreImport] Store import rejected and deleted due to missing coordinates", [
+                    'store_id' => $storeId,
+                    'store_name' => $storeName
+                ]);
             }
             
         } catch (\Exception $e) {
