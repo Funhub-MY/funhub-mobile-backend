@@ -204,6 +204,12 @@ class ListStores extends ListRecords
 						->mutateBeforeCreate(function ($value) {
 							return !empty($value) ? $value : null;
 						}),
+					ImportField::make('google_place_id')
+						->label('Google Place ID')
+						->helperText('Optional. If provided, will be used to create location directly without geocoding')
+						->mutateBeforeCreate(function ($value) {
+							return !empty($value) ? $value : null;
+						}),
 				])
 				->handleRecordCreation(function ($data) {
 					// Format phone number: remove spaces, dashes and ensure it starts with 60
@@ -299,6 +305,7 @@ class ListStores extends ListRecords
 						'country_id' => $data['country_name'],
 						'lang' => $data['lang'] ?? null,
 						'long' => $data['long'] ?? null,
+						'google_place_id' => $data['google_place_id'] ?? null,
 					]);
 					
 					Log::info("CreateLocationFromStoreImport job dispatched for store: {$store->id}");
