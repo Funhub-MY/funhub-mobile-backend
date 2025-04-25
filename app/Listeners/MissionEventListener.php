@@ -123,14 +123,19 @@ class MissionEventListener
                 } elseif ($interaction->interactable_type === StoreRating::class && $interaction->type === Interaction::TYPE_LIKE) {
                     // handle accumulated likes for store ratings
                     $rating = $interaction->interactable;
+                    $owner = $rating->user;
+                    
+                    $contextData = [
+                        'interaction' => $interaction,
+                        'rating' => $rating
+                    ];
+                    
+                    // Add article to context if it exists
                     if ($rating->article) {
-                        $owner = $rating->user;
-                        $this->missionService->handleEvent('accumulated_likes_for_ratings', $owner, [
-                            'interaction' => $interaction,
-                            'rating' => $rating,
-                            'article' => $rating->article
-                        ]);
+                        $contextData['article'] = $rating->article;
                     }
+                    
+                    $this->missionService->handleEvent('accumulated_likes_for_ratings', $owner, $contextData);
                 }
             } catch (\Exception $e) {
                 Log::error('Error handling accumulated interaction event', [
