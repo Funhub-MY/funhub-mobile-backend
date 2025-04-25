@@ -2,9 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Article;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Console\Command;
+use App\Models\Article;
+use App\Models\ViewQueue; // Keep for potential direct use elsewhere if needed
+use App\Services\ArticleViewSchedulerService; // Added service import
+use Illuminate\Support\Facades\Log;
 
 class PublishArticle extends Command
 {
@@ -22,6 +24,20 @@ class PublishArticle extends Command
      */
     protected $description = 'Publish articles that are scheduled to be published';
 
+    protected ArticleViewSchedulerService $scheduler;
+
+    /**
+     * Create a new command instance.
+     *
+     * @param ArticleViewSchedulerService $scheduler
+     * @return void
+     */
+    public function __construct(ArticleViewSchedulerService $scheduler)
+    {
+        parent::__construct();
+        $this->scheduler = $scheduler;
+    }
+
     /**
      * Execute the console command.
      *
@@ -37,12 +53,29 @@ class PublishArticle extends Command
             ->get();
 
         if (!$articles->isEmpty()) {
+            $publishedCount = 0;
             foreach ($articles as $article) {
                 $this->info('Publishing article: '.$article->id);
-                $article->update(['status' => Article::STATUS_PUBLISHED]);
-                $this->info('Article published: '.$article->id);
+                try {
+                    $article->update(['status' => Article::STATUS_PUBLISHED]);
+                    $this->info('Article published: '.$article->id);
+                    $publishedCount++;
+
+                    // Use the service to schedule views
+                    $this->scheduler->scheduleViews($article);
+
+                } catch (\Exception $e) {
+                    Log::error('[PublishArticle] Failed to publish or schedule views for article', [
+                        'article_id' => $article->id,
+                        'error' => $e->getMessage()
+                    ]);
+                }
             }
-            Log::info('[PublishArticle] Articles published', ['article_ids' => $articles->pluck('id')]);
+            if ($publishedCount > 0) {
+                Log::info('[PublishArticle] Articles published and views scheduled', ['count' => $publishedCount, 'article_ids' => $articles->pluck('id')]);
+            }
+        } else {
+             Log::info('[PublishArticle] No articles to publish.');
         }
 
         return Command::SUCCESS;

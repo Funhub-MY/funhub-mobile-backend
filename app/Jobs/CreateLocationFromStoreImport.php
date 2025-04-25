@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Jobs\IndexStore;
 use App\Models\Country;
+use App\Models\FailedStoreImport;
 use App\Models\Location;
 use App\Models\State;
 use App\Models\Store;
@@ -18,6 +19,18 @@ use Illuminate\Support\Facades\Log;
 class CreateLocationFromStoreImport implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    
+    /**
+     * Coordinates that are considered suspicious or invalid
+     * These are specific coordinates that indicate a geocoding failure
+     * or default values that don't represent actual locations
+     */
+    protected const SUSPICIOUS_COORDINATES = [
+        // Examples of suspicious coordinates
+        ['lat' => 4.210484, 'lng' => 101.975766], // Known problematic coordinates
+        ['lat' => 0, 'lng' => 0], // Null Island
+        ['lat' => 1, 'lng' => 1], // Default/placeholder coordinates
+    ];
 
     protected $storeId;
     protected $storeData;
@@ -45,6 +58,79 @@ class CreateLocationFromStoreImport implements ShouldQueue
      *
      * @return void
      */
+    /**
+     * Check if coordinates are valid
+     *
+     * @param float|null $lat
+     * @param float|null $lng
+     * @return bool
+     */
+    protected function areCoordinatesValid(?float $lat, ?float $lng): bool
+    {
+        // If coordinates are null, they're not valid
+        if ($lat === null || $lng === null) {
+            return false;
+        }
+        
+        // Check if coordinates are in suspicious list
+        foreach (self::SUSPICIOUS_COORDINATES as $suspiciousCoord) {
+            // Use a small epsilon for floating point comparison
+            $latEpsilon = abs($lat - $suspiciousCoord['lat']) < 0.000001;
+            $lngEpsilon = abs($lng - $suspiciousCoord['lng']) < 0.000001;
+            
+            if ($latEpsilon && $lngEpsilon) {
+                return false;
+            }
+        }
+        
+        // Check if coordinates are within reasonable bounds
+        if ($lat < -90 || $lat > 90 || $lng < -180 || $lng > 180) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Save failed store import
+     *
+     * @param Store $store
+     * @param array $data
+     * @param string $reason
+     * @return void
+     */
+    protected function saveFailedStoreImport(Store $store, array $data, string $reason): void
+    {
+        // Create a record in the failed_store_imports table
+        FailedStoreImport::create([
+            'name' => $store->name,
+            'address' => $store->address,
+            'address_postcode' => $store->address_postcode,
+            'city' => $store->city,
+            'state_id' => $store->state_id,
+            'country_id' => $store->country_id,
+            'business_phone_no' => $store->business_phone_no,
+            'business_hours' => $store->business_hours,
+            'rest_hours' => $store->rest_hours,
+            'is_appointment_only' => $store->is_appointment_only,
+            'user_id' => $store->user_id,
+            'merchant_id' => $store->merchant_id,
+            'google_place_id' => $data['google_place_id'] ?? null,
+            'lang' => $store->lang,
+            'long' => $store->long,
+            'parent_categories' => $data['parent_categories'] ?? null,
+            'sub_categories' => $data['sub_categories'] ?? null,
+            'is_hq' => $store->is_hq,
+            'failure_reason' => $reason,
+            'original_data' => json_encode($data),
+        ]);
+        
+        Log::warning("[CreateLocationFromStoreImport] Store import failed: {$reason}", [
+            'store_id' => $store->id,
+            'store_name' => $store->name,
+        ]);
+    }
+    
     public function handle()
     {
         try {
@@ -59,14 +145,72 @@ class CreateLocationFromStoreImport implements ShouldQueue
 
             $data = $this->storeData;
             
-            // Get lat/long from store or from data
+            // Get lat/long and Google Place ID from store or from data
             $lang = $store->lang ?? ($data['lang'] ?? null);
             $long = $store->long ?? ($data['long'] ?? null);
+            $googlePlaceId = $data['google_place_id'] ?? null;
             
             $locationFromGoogle = null;
+            $googleId = null;
             
-            // If lat/long not provided, use Google Maps API to get coordinates
-            if (!$lang || !$long) {
+            // If Google Place ID is provided, use it directly to get place details
+            if ($googlePlaceId) {
+                $client = new Client();
+                $googleApiKey = config('filament-google-maps.key');
+                
+                try {
+                    $placeDetailsQuery = [
+                        'place_id' => $googlePlaceId,
+                        'fields' => 'geometry,name,formatted_address,address_components',
+                        'key' => $googleApiKey,
+                    ];
+                    
+                    Log::info("Fetching place details for Google Place ID: {$googlePlaceId}", ['store_id' => $store->id]);
+                    $response = $client->get('https://maps.googleapis.com/maps/api/place/details/json', ['query' => $placeDetailsQuery]);
+                    
+                    if ($response->getStatusCode() === 200) {
+                        $result = json_decode($response->getBody(), true);
+                        
+                        if (isset($result['result'])) {
+                            $placeDetails = $result['result'];
+                            $locationFromGoogle = [
+                                'geometry' => $placeDetails['geometry'],
+                                'formatted_address' => $placeDetails['formatted_address'] ?? '',
+                                'address_components' => $placeDetails['address_components'] ?? [],
+                            ];
+                            
+                            // Get coordinates from place details
+                            $lang = $placeDetails['geometry']['location']['lat'] ?? $lang;
+                            $long = $placeDetails['geometry']['location']['lng'] ?? $long;
+                            $googleId = $googlePlaceId;
+                            
+                            Log::info("Successfully retrieved place details for Google Place ID: {$googlePlaceId}", [
+                                'store_id' => $store->id,
+                                'lat' => $lang,
+                                'lng' => $long
+                            ]);
+                        } else {
+                            Log::error("Place details not found for Google Place ID: {$googlePlaceId}", [
+                                'store_id' => $store->id,
+                                'status' => $result['status'] ?? 'UNKNOWN'
+                            ]);
+                        }
+                    } else {
+                        Log::error("Failed to fetch place details for Google Place ID: {$googlePlaceId}", [
+                            'store_id' => $store->id,
+                            'status_code' => $response->getStatusCode()
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    Log::error("Exception while fetching place details for Google Place ID: {$googlePlaceId}", [
+                        'store_id' => $store->id,
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
+            
+            // If lat/long still not available or Google Place ID lookup failed, use Google Maps API to get coordinates
+            if ((!$lang || !$long) && !$locationFromGoogle) {
                 $client = new Client();
                 $googleApiKey = config('filament-google-maps.key');
                 $locationFromGoogle = null;
@@ -146,8 +290,14 @@ class CreateLocationFromStoreImport implements ShouldQueue
 
                 // --- Process results if found ---
                 if ($locationFromGoogle) {
-                    $lang = $locationFromGoogle['geometry']['location']['lat'] ?? null;
-                    $long = $locationFromGoogle['geometry']['location']['lng'] ?? null;
+                    // If we didn't already get lat/long from Google Place ID, extract them from geocoding result
+                    if (!$googlePlaceId) {
+                        $lang = $locationFromGoogle['geometry']['location']['lat'] ?? null;
+                        $long = $locationFromGoogle['geometry']['location']['lng'] ?? null;
+                        
+                        // Try to get place_id from geocoding result if available
+                        $googleId = $locationFromGoogle['place_id'] ?? null;
+                    }
 
                     if ($lang && $long) {
                         // Update store with lat/long
@@ -164,13 +314,12 @@ class CreateLocationFromStoreImport implements ShouldQueue
                 }
             }
             
-            if ($lang && $long) {
+            // Check if coordinates are valid before proceeding
+            if ($lang && $long && $this->areCoordinatesValid($lang, $long)) {
                 $location = null;
-                $googleId = null;
                 
-                // If we have Google data, check for existing location by Google ID
-                if (isset($locationFromGoogle) && isset($locationFromGoogle['place_id']) && $locationFromGoogle['place_id'] != 0) {
-                    $googleId = $locationFromGoogle['place_id'];
+                // Check for existing location by Google ID if available
+                if ($googleId) {
                     $location = Location::where('google_id', $googleId)->first();
                 }
                 
@@ -256,11 +405,44 @@ class CreateLocationFromStoreImport implements ShouldQueue
                 Log::info("[CreateLocationFromStoreImport] IndexStore job dispatched for store: {$store->id}");
             } else {
                 Log::warning("[CreateLocationFromStoreImport] Could not determine lat/long for store {$store->id}");
+                
+                // If we have coordinates but they're invalid, reject the import
+                if ($lang && $long && !$this->areCoordinatesValid($lang, $long)) {
+                    $reason = "Invalid coordinates detected: {$lang}, {$long}";
+                    
+                    // Save to failed store imports table before deleting
+                    $this->saveFailedStoreImport($store, $data, $reason);
+                    
+                    // Delete the store
+                    $storeId = $store->id;
+                    $storeName = $store->name;
+                    $store->delete();
+                    
+                    Log::warning("[CreateLocationFromStoreImport] Store import rejected and deleted due to invalid coordinates", [
+                        'store_id' => $storeId,
+                        'store_name' => $storeName,
+                        'coordinates' => "{$lang}, {$long}"
+                    ]);
+                    
+                    return;
+                }
+                
+                // If we have no coordinates at all, reject the import
+                $reason = "No coordinates could be determined for this store";
+                
+                // Save to failed store imports table before deleting
+                $this->saveFailedStoreImport($store, $data, $reason);
+                
+                // Delete the store
+                $storeId = $store->id;
+                $storeName = $store->name;
+                $store->delete();
+                
+                Log::warning("[CreateLocationFromStoreImport] Store import rejected and deleted due to missing coordinates", [
+                    'store_id' => $storeId,
+                    'store_name' => $storeName
+                ]);
             }
-            
-            // Dispatch IndexStore job to make the store searchable
-            IndexStore::dispatch($store->id);
-            Log::info("[CreateLocationFromStoreImport] IndexStore job dispatched for store: {$store->id} (no location found)");
             
         } catch (\Exception $e) {
             Log::error('[CreateLocationFromStoreImport] Error processing location', [

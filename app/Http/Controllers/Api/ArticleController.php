@@ -317,9 +317,17 @@ class ArticleController extends Controller
         $chunkSize = min($limit, 50);
 
         // get paginated results with proper ordering
-        $data = $query->distinct()
-                      ->latest('articles.published_at')
-                      ->paginate($chunkSize);
+        if ($request->filled('following_only') && $request->following_only == 1) {
+            // Add secondary ordering by ID for following posts to ensure consistent pagination
+            $data = $query->distinct()
+                          ->orderBy('articles.published_at', 'desc')
+                          ->orderBy('articles.id', 'desc')
+                          ->paginate($chunkSize);
+        } else {
+            $data = $query->distinct()
+                          ->latest('articles.published_at')
+                          ->paginate($chunkSize);
+        }
 
         // handle merchant offers - optimized version with caching
         $locationIds = $data->pluck('location.0.id')->filter()->unique()->toArray();

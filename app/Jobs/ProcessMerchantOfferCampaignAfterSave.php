@@ -6,6 +6,7 @@ use App\Models\MerchantOffer;
 use App\Models\MerchantOfferCampaign;
 use App\Models\MerchantOfferCampaignSchedule;
 use App\Models\MerchantOfferVoucher;
+use App\Jobs\SyncMerchantOfferStores;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -40,76 +41,74 @@ class ProcessMerchantOfferCampaignAfterSave implements ShouldQueue
 	{
 		Log::info("[Process Merchant offer campaign] after save start Dispatch");
 
-		$record = $this->record; // campaign
+		// Eager load all necessary relationships
+		$record = $this->record->load([
+			'stores',
+			'allOfferCategories',
+			'schedules',
+			'merchantOffers',
+			'media',
+		]);
+		$campaignStoreIds = $record->stores->pluck('id')->toArray();
+		$categoryIds = $record->allOfferCategories->pluck('id')->toArray();
+		$mediaGallery = $record->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_NAME);
+		$mediaBanner = $record->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_HORIZONTAL_BANNER);
 
-		// update relevant MerchantOffer records
-		$offers = MerchantOffer::where('merchant_offer_campaign_id', $record->id)->get();
+		// Chunk offers for memory efficiency
+		MerchantOffer::where('merchant_offer_campaign_id', $record->id)
+			->with(['allOfferCategories', 'media'])
+			->chunk(200, function ($offers) use ($record, $campaignStoreIds, $categoryIds, $mediaGallery, $mediaBanner) {
+				foreach ($offers as $offer) {
+					$isArchived = $offer->status === MerchantOffer::STATUS_ARCHIVED;
 
-		// update existent offers data first
-		foreach ($offers as $offer)
-		{
-			// Preserve the status if the offer is archived
-			$isArchived = $offer->status === MerchantOffer::STATUS_ARCHIVED;
+					$offer->update([
+						'name' => $record->name,
+						'highlight_messages' => $record->highlight_messages,
+						'description' => $record->description,
+						'fine_print' => $record->fine_print,
+						'available_for_web' => $record->available_for_web,
+						'redemption_policy' => $record->redemption_policy,
+						'cancellation_policy' => $record->cancellation_policy,
+						// 'publish_at' => $record->publish_at,
+						'purchase_method' => $record->purchase_method,
+						'unit_price' => $record->unit_price,
+						'discounted_point_fiat_price' => $record->discounted_point_fiat_price,
+						'point_fiat_price' => $record->point_fiat_price,
+						'discounted_fiat_price' => $record->discounted_fiat_price,
+						'fiat_price' => $record->fiat_price,
+						'expiry_days' => $record->expiry_days,
+						'user_id' => $record->user_id, // requires for store selection as well
+					]);
 
-			$offer->update([
-				'name' => $record->name,
-				'highlight_messages' => $record->highlight_messages,
-				'description' => $record->description,
-				'fine_print' => $record->fine_print,
-				'available_for_web' => $record->available_for_web,
-				'redemption_policy' => $record->redemption_policy,
-				'cancellation_policy' => $record->cancellation_policy,
-				// 'publish_at' => $record->publish_at,
-				'purchase_method' => $record->purchase_method,
-				'unit_price' => $record->unit_price,
-				'discounted_point_fiat_price' => $record->discounted_point_fiat_price,
-				'point_fiat_price' => $record->point_fiat_price,
-				'discounted_fiat_price' => $record->discounted_fiat_price,
-				'fiat_price' => $record->fiat_price,
-				'expiry_days' => $record->expiry_days,
-				'user_id' => $record->user_id, // requires for store selection as well
-			]);
+					// If the offer was archived, restore its status to archived
+					if ($isArchived) {
+						$offer->update(['status' => MerchantOffer::STATUS_ARCHIVED]);
+					}
 
-			// If the offer was archived, restore its status to archived
-			if ($isArchived) {
-				$offer->update(['status' => MerchantOffer::STATUS_ARCHIVED]);
-			}
+					// replace images
+					$offer->clearMediaCollection(MerchantOffer::MEDIA_COLLECTION_NAME);
+					$offer->clearMediaCollection(MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
+					foreach ($mediaGallery as $mediaItem) {
+						$mediaItem->copy($offer, MerchantOffer::MEDIA_COLLECTION_NAME);
+					}
+					foreach ($mediaBanner as $mediaItem) {
+						$mediaItem->copy($offer, MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
+					}
 
-			// replace images
-			$offer->clearMediaCollection(MerchantOffer::MEDIA_COLLECTION_NAME);
-			$offer->clearMediaCollection(MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
+					// Sync categories in bulk
+					$offer->allOfferCategories()->sync($categoryIds);
 
-			// ensure new images are synced
-			$model = MerchantOfferCampaign::find($record->id);
-			$mediaItems = $model->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_NAME);
-			foreach ($mediaItems as $mediaItem) {
-				$mediaItem->copy($offer, MerchantOffer::MEDIA_COLLECTION_NAME);
-			}
+					// Dispatch store sync job (optionally batch or delay if needed)
+					SyncMerchantOfferStores::dispatch($offer->id, $campaignStoreIds);
 
-			$mediaItems = $model->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_HORIZONTAL_BANNER);
-			foreach ($mediaItems as $mediaItem) {
-				$mediaItem->copy($offer, MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
-			}
-
-			// clear all categories
-			$offer->allOfferCategories()->detach();
-
-			// sync latest merchant offer categories
-			$offer->allOfferCategories()->sync($record->allOfferCategories->pluck('id'));
-
-			// clear all stores
-			$offer->stores()->detach();
-
-			// sync latest campaign stores to offer stores
-			$offer->stores()->sync($record->stores->pluck('id'));
-
-			// sync algolia
-			try {
-				$offer->searchable();
-			} catch (\Exception $e) {
-				Log::error('[Process Merchant offer campaign] Error syncing algolia', ['error' => $e->getMessage()]);
-			}
-		}
+					// Sync Algolia
+					try {
+						$offer->searchable();
+					} catch (\Exception $e) {
+						Log::error('[Process Merchant offer campaign] Error syncing algolia', ['error' => $e->getMessage()]);
+					}
+				}
+			});
 
 		// archieve any offer that has been removed as of latest $record schedules
 		$offers = MerchantOffer::where('merchant_offer_campaign_id', $record->id)->get();
@@ -191,30 +190,27 @@ class ProcessMerchantOfferCampaignAfterSave implements ShouldQueue
 					'quantity' => $schedule->quantity,
 					'status' => $schedule->status,
 				]);
-
-				// Copy media from MerchantOfferCampaign to MerchantOffer
-				$model = MerchantOfferCampaign::find($record->id);
-				$mediaItems = $model->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_NAME);
-				foreach ($mediaItems as $mediaItem) {
+				foreach ($mediaGallery as $mediaItem) {
 					$mediaItem->copy($offer, MerchantOffer::MEDIA_COLLECTION_NAME);
 				}
-
-				$mediaItems = $model->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_HORIZONTAL_BANNER);
-				foreach ($mediaItems as $mediaItem) {
+				foreach ($mediaBanner as $mediaItem) {
 					$mediaItem->copy($offer, MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
 				}
-				// sync merchant offer campaign categories to similar merchant offer
-				$offer->allOfferCategories()->sync($record->allOfferCategories->pluck('id'));
-				// sync merchant offer campaign stores to similar merchant offer
-				$offer->stores()->sync($record->stores->pluck('id'));
-
-				// create vouchers per offer
+				$offer->allOfferCategories()->sync($categoryIds);
+				SyncMerchantOfferStores::dispatch($offer->id, $campaignStoreIds);
+				// Bulk insert vouchers
 				$quantity = $schedule->quantity;
-				for($i = 0; $i < $quantity; $i++) {
-					MerchantOfferVoucher::create([
+				$voucherData = [];
+				for ($i = 0; $i < $quantity; $i++) {
+					$voucherData[] = [
 						'merchant_offer_id' => $offer->id,
 						'code' => MerchantOfferVoucher::generateCode(),
-					]);
+						'created_at' => now(),
+						'updated_at' => now(),
+					];
+				}
+				if (!empty($voucherData)) {
+					MerchantOfferVoucher::insert($voucherData);
 				}
 			} else {
 				// offer exists, just update the new schedule
@@ -246,11 +242,18 @@ class ProcessMerchantOfferCampaignAfterSave implements ShouldQueue
 				// if less than, destroy unclaimed vouchers
 				if ($schedule->quantity > $existingVouchers) {
 					$diff = $schedule->quantity - $existingVouchers;
-					MerchantOfferVoucher::create([
-						'merchant_offer_id' => $offer->id,
-						'code' => MerchantOfferVoucher::generateCode(),
-					]);
-
+					$voucherData = [];
+					for ($i = 0; $i < $diff; $i++) {
+						$voucherData[] = [
+							'merchant_offer_id' => $offer->id,
+							'code' => MerchantOfferVoucher::generateCode(),
+							'created_at' => now(),
+							'updated_at' => now(),
+						];
+					}
+					if (!empty($voucherData)) {
+						MerchantOfferVoucher::insert($voucherData);
+					}
 					Log::info('[Process Merchant offer campaign] Created new vouchers as adjusted in merchant campaign schedule', [
 						'offer_id' => $offer->id,
 						'schedule_id' => $schedule->id,
@@ -258,17 +261,16 @@ class ProcessMerchantOfferCampaignAfterSave implements ShouldQueue
 					]);
 				} else if ($schedule->quantity < $existingVouchers) {
 					$diff = $existingVouchers - $schedule->quantity;
-					$offer->vouchers()->whereNull('owned_by_id')->limit($diff)->get();
-
-					// log deleted vouchers
+					$unclaimed = $offer->vouchers()->whereNull('owned_by_id')->limit($diff)->get();
+					$idsToDelete = $unclaimed->pluck('id');
+					if ($idsToDelete->count() > 0) {
+						MerchantOfferVoucher::whereIn('id', $idsToDelete)->delete();
+					}
 					Log::info('[Process Merchant offer campaign] Deleted unclaimed vouchers as adjusted in merchant campaign schedule', [
 						'offer_id' => $offer->id,
 						'schedule_id' => $schedule->id,
 						'quantity' => $diff,
 					]);
-
-					// delete vouchers (unclaimed only)
-					$offer->vouchers()->whereNull('owned_by_id')->limit($diff)->delete();
 				}
 			}
 

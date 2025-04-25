@@ -147,18 +147,6 @@ class MerchantOfferCampaignResource extends Resource
                                     ->label('Flash Deal')
                                     ->helperText('If enabled, this offer will be shown in Flash Deal section in the app. Use Available At & Until to set the Flash deals countdown')
                                     ->default(false),
-                                    
-                                Forms\Components\SpatieMediaLibraryFileUpload::make('imported_codes')
-                                    ->label('Import Voucher Codes (CSV)')
-                                    ->helperText('Upload a CSV file with voucher codes. Each code should be on a new line with no header.')
-                                    ->collection('imported_codes')
-                                    ->acceptedFileTypes(['text/csv', 'application/vnd.ms-excel'])
-                                    ->maxFiles(1)
-                                    ->disk(function () {
-                                        if (config('filesystems.default') === 's3') {
-                                            return 's3_public';
-                                        }
-                                    }),
 
 								Repeater::make('highlight_messages')
 									->label('Highlight Message')
@@ -426,7 +414,7 @@ class MerchantOfferCampaignResource extends Resource
                                             ])->columns(2)
                                     ])
                             ]),
-                    ])->columnSpan(['lg' => 2]),
+                    ])->columnSpan(['lg' => 2]), // left content
 
                 Forms\Components\Group::make()
                     ->schema([
@@ -476,6 +464,32 @@ class MerchantOfferCampaignResource extends Resource
                                     ->helperText('Users who has merchant profile created.')
                                     ->required()
                                     ->reactive(),
+                              
+                                Forms\Components\Checkbox::make('select_all_stores')
+                                    ->label('Select All Stores')
+                                    ->helperText('Check this to select all stores belonging to this merchant')
+                                    ->reactive()
+                                    ->afterStateUpdated(function (Closure $set, Closure $get, $state) {
+                                        if (!$state || !$get('user_id')) {
+                                            return;
+                                        }
+
+                                        // check if uncheck,. unset stores
+                                        if (!$state) {
+                                            $set('stores', []);
+                                            return;
+                                        }
+                                        
+                                        // Get all store IDs for the selected merchant
+                                        $storeIds = Store::where('user_id', $get('user_id'))
+                                            ->pluck('id')
+                                            ->toArray();
+                                            
+                                        // Set the selected stores
+                                        $set('stores', $storeIds);
+                                    })
+                                    ->hidden(fn (Closure $get) => $get('user_id') === null),
+                                    
                                 Forms\Components\Select::make('stores')
                                     ->label('Stores')
                                     ->multiple()
@@ -485,7 +499,14 @@ class MerchantOfferCampaignResource extends Resource
                                     ->relationship('stores', 'name', function (Builder $query, Closure $get) {
                                         $query->where('user_id', $get('user_id'));
                                     })
-                                    ->hidden(fn (Closure $get) => $get('user_id') === null),
+                                    ->hidden(fn (Closure $get) => $get('user_id') === null)
+                                    ->afterStateUpdated(function (Closure $set, $state) {
+                                        // If stores are manually deselected, uncheck the "select all" checkbox
+                                        if (empty($state)) {
+                                            $set('select_all_stores', false);
+                                        }
+                                    }),
+                                    
 								Placeholder::make('merchant_is_closed')
 									->label('Merchant Operation Status')
 									->content(function (Closure $get) {
@@ -589,7 +610,7 @@ class MerchantOfferCampaignResource extends Resource
                                     })
                                     ->columnSpan(1),
                                 ])->columns(1),
-                    ])->columnSpan(['lg' => 1]),
+                    ])->columnSpan(['lg' => 1]), // right content
             ])
             ->columns(3);
     }

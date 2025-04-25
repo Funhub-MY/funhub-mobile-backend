@@ -191,16 +191,28 @@ class MerchantOfferController extends Controller
             });
         }
 
-        // location id
+        // location id - optimized with EXISTS subqueries instead of whereHas for better performance
         if ($request->has('location_id')) {
-            // where two condition merchant offer locaiton tagged same location id or merchant offer's stores tagged same location id
-            $query->where(function ($subQuery) {
-                $subQuery->whereHas('location', function ($query) {
-                    $query->where('locations.id', request()->location_id);
-                })->orWhereHas('stores', function ($query) {
-                    $query->whereHas('location', function ($query) {
-                        $query->where('locations.id', request()->location_id);
-                    });
+            $locationId = $request->location_id;
+            $query->where(function ($subQuery) use ($locationId) {
+                // First condition: merchant offer location tagged with same location id
+                $subQuery->whereExists(function ($query) use ($locationId) {
+                    $query->select(DB::raw(1))
+                        ->from('locatables')
+                        ->whereRaw('locatables.locatable_id = merchant_offers.id')
+                        ->where('locatables.locatable_type', 'App\\Models\\MerchantOffer')
+                        ->where('locatables.location_id', $locationId);
+                })
+                // Second condition: merchant offer's stores tagged with same location id
+                ->orWhereExists(function ($query) use ($locationId) {
+                    $query->select(DB::raw(1))
+                        ->from('merchant_offer_stores')
+                        ->join('locatables', function ($join) use ($locationId) {
+                            $join->on('locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+                                ->where('locatables.locatable_type', '=', 'App\\Models\\Store')
+                                ->where('locatables.location_id', '=', $locationId);
+                        })
+                        ->whereRaw('merchant_offer_stores.merchant_offer_id = merchant_offers.id');
                 });
             });
         }
@@ -771,7 +783,7 @@ class MerchantOfferController extends Controller
                 $offer->save();
 
                 // fire event
-                event(new PurchasedMerchantOffer($user, $offer, 'fiat'));
+                // event(new PurchasedMerchantOffer($user, $offer, 'fiat')); // Removed: Dispatch moved to PaymentController after success
 
                 // Claim is not successful yet, return mpay data for app to redirect (post)
                 return response()->json([

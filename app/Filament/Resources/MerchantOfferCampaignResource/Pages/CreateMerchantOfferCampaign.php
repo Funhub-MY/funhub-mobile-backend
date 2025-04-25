@@ -22,6 +22,9 @@ class CreateMerchantOfferCampaign extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
+        // unset select_all_stores
+        unset($data['select_all_stores']);
+        
         $startDate = Carbon::parse($data['start_date']);
         $endDate = isset($data['end_date']) ? Carbon::parse($data['end_date']) : null;
         $vouchersCount = (int) $data['vouchers_count'];
@@ -74,8 +77,8 @@ class CreateMerchantOfferCampaign extends CreateRecord
 
         $model->schedules()->insert($schedulesWithCampaignId);
 
-        // Directly process imported codes (create voucher codes from imported file, if any) before dispatching jobs
-        app(MerchantOfferCampaignCodeImporter::class)->processImportedCodes($model);
+        // // Directly process imported codes (create voucher codes from imported file, if any) before dispatching jobs
+        // app(MerchantOfferCampaignCodeImporter::class)->processImportedCodes($model);
 
         // notification
         Notification::make()
