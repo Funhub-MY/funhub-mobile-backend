@@ -22,6 +22,9 @@ class CreateMerchantOfferCampaign extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
+        // unset select_all_stores
+        unset($data['select_all_stores']);
+        
         $startDate = Carbon::parse($data['start_date']);
         $endDate = isset($data['end_date']) ? Carbon::parse($data['end_date']) : null;
         $vouchersCount = (int) $data['vouchers_count'];

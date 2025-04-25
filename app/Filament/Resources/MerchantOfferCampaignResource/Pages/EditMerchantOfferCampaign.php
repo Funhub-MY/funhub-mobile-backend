@@ -63,6 +63,9 @@ class EditMerchantOfferCampaign extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        // unset select_all_stores
+        unset($data['select_all_stores']);
+        
         return $data;
     }
 

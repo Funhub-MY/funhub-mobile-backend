@@ -147,20 +147,20 @@ class MerchantOfferCampaignResource extends Resource
                                     ->label('Flash Deal')
                                     ->helperText('If enabled, this offer will be shown in Flash Deal section in the app. Use Available At & Until to set the Flash deals countdown')
                                     ->default(false),
-                                    
-                                Repeater::make('highlight_messages')
-                                    ->label('Highlight Message')
-                                    ->createItemButtonLabel('Add Highlight Message')
-                                    ->schema([
-                                        TextInput::make('message')
-                                            ->label('Message')
-                                            ->maxLength(255)
+
+								Repeater::make('highlight_messages')
+									->label('Highlight Message')
+									->createItemButtonLabel('Add Highlight Message')
+									->schema([
+										TextInput::make('message')
+											->label('Message')
+											->maxLength(255)
                                             ->required()
-                                            ->placeholder('Enter a highlight message'),
-                                    ])
-                                    ->maxItems(3)
-                                    ->columnSpan('full')
-                                    ->helperText('Maximum 3 highlighted message.'),
+											->placeholder('Enter a highlight message'),
+									])
+									->maxItems(3)
+									->columnSpan('full')
+									->helperText('Maximum 3 highlighted message.'),
 
                                 Forms\Components\Toggle::make('available_for_web')
                                     ->label('Available for Web')
@@ -186,7 +186,7 @@ class MerchantOfferCampaignResource extends Resource
                                     ->columnSpan('full')
                                     ->required(),
                                 Forms\Components\Textarea::make('fine_print')
-                                    ->label('T&C')
+									->label('T&C')
                                     ->rows(5)
                                     ->cols(10)
                                     ->required()
@@ -352,7 +352,6 @@ class MerchantOfferCampaignResource extends Resource
                                                 ->columns(2),
                                     ])
                                 ])
-                            ])
                             ->columnSpan('full'),
 
                             Forms\Components\Group::make()
@@ -414,158 +413,204 @@ class MerchantOfferCampaignResource extends Resource
                                                     ->default(fn () => auth()->id()),
                                             ])->columns(2)
                                     ])
-                            ])
-                            ->columnSpan('full'),
+                            ]),
+                    ])->columnSpan(['lg' => 2]), // left content
 
-                            Forms\Components\Group::make()
+                Forms\Components\Group::make()
+                    ->schema([
+                        Forms\Components\Section::make('Merchant')
                             ->schema([
-                                Forms\Components\Section::make('Merchant')
-                                    ->schema([
-                                        Forms\Components\Select::make('user_id')
-                                            ->label('Merchant User')
-                                            ->relationship('user', 'name')
-                                            ->searchable()
-                                            ->getSearchResultsUsing(function (string $search): array {
-                                                return User::query()
-                                                    ->where(function ($q) use ($search) {
-                                                        $q->where('name', 'LIKE', "%{$search}%")
-                                                            ->orWhere('email', 'LIKE', "%{$search}%")
-                                                            ->orWhere('phone_no', 'LIKE', "%{$search}%")
-                                                            ->orWhere('username', 'LIKE', "%{$search}%");
-                                                    })
-                                                    ->whereHas('merchant', function ($q) {
-                                                        $q->where('merchants.status', Merchant::STATUS_APPROVED);
-                                                    })
-                                                    ->limit(50)
-                                                    ->get()
-                                                    ->mapWithKeys(function ($user) {
-                                                        return [
-                                                            $user->id => $user->name . ($user->username ? " (username: {$user->username}, ID: {$user->id})" : '')
-                                                        ];
-                                                    })
-                                                    ->toArray();
+                                // Forms\Components\Select::make('user_id')
+                                //     ->label('Merchant User')
+                                //     ->searchable()
+                                //     ->getSearchResultsUsing(fn (string $search) => User::whereHas(['merchant' => fn ($q) => $q->where('merchants.status', Merchant::STATUS_APPROVED)])
+                                //         ->where('name', 'like', "%{$search}%")
+                                //         ->limit(25)
+                                //     )
+                                //     ->getOptionLabelFromRecordUsing(fn ($record) => $record->name.' ('.$record->email.')')
+                                //     ->required()
+                                //     ->reactive()
+                                //     ->helperText('Users who has merchant profile created.')
+                                //     ->relationship('user', 'name'),
+
+                                Forms\Components\Select::make('user_id')
+                                    ->label('Merchant User')
+                                    ->relationship('user', 'name')
+                                    ->searchable()
+                                    ->getSearchResultsUsing(function (string $search): array {
+                                        return User::query()
+                                            ->where(function ($q) use ($search) {
+                                                $q->where('name', 'LIKE', "%{$search}%")
+                                                    ->orWhere('email', 'LIKE', "%{$search}%")
+                                                    ->orWhere('phone_no', 'LIKE', "%{$search}%")
+                                                    ->orWhere('username', 'LIKE', "%{$search}%");
                                             })
-                                            ->getOptionLabelUsing(function ($value): string {
-                                                $user = User::find($value);
-                                                return $user ? $user->name . ($user->username ? " (username: {$user->username}, ID: {$user->id})" : '') : '';
+                                            ->whereHas('merchant', function ($q) {
+                                                $q->where('merchants.status', Merchant::STATUS_APPROVED);
                                             })
-                                            ->helperText('Users who has merchant profile created.')
+                                            ->limit(50)
+                                            ->get()
+                                            ->mapWithKeys(function ($user) {
+                                                return [
+                                                    $user->id => $user->name . ($user->username ? " (username: {$user->username}, ID: {$user->id})" : '')
+                                                ];
+                                            })
+                                            ->toArray();
+                                    })
+                                    ->getOptionLabelUsing(function ($value): string {
+                                        $user = User::find($value);
+                                        return $user ? $user->name . ($user->username ? " (username: {$user->username}, ID: {$user->id})" : '') : '';
+                                    })
+                                    ->helperText('Users who has merchant profile created.')
+                                    ->required()
+                                    ->reactive(),
+                              
+                                Forms\Components\Checkbox::make('select_all_stores')
+                                    ->label('Select All Stores')
+                                    ->helperText('Check this to select all stores belonging to this merchant')
+                                    ->reactive()
+                                    ->afterStateUpdated(function (Closure $set, Closure $get, $state) {
+                                        if (!$state || !$get('user_id')) {
+                                            return;
+                                        }
+
+                                        // check if uncheck,. unset stores
+                                        if (!$state) {
+                                            $set('stores', []);
+                                            return;
+                                        }
+                                        
+                                        // Get all store IDs for the selected merchant
+                                        $storeIds = Store::where('user_id', $get('user_id'))
+                                            ->pluck('id')
+                                            ->toArray();
+                                            
+                                        // Set the selected stores
+                                        $set('stores', $storeIds);
+                                    })
+                                    ->hidden(fn (Closure $get) => $get('user_id') === null),
+                                    
+                                Forms\Components\Select::make('stores')
+                                    ->label('Stores')
+                                    ->multiple()
+                                    ->helperText('Must select store(s) else it won\'t appear in the Nearby Merchant Stores tab.')
+                                    ->preload()
+                                    ->reactive()
+                                    ->relationship('stores', 'name', function (Builder $query, Closure $get) {
+                                        $query->where('user_id', $get('user_id'));
+                                    })
+                                    ->hidden(fn (Closure $get) => $get('user_id') === null)
+                                    ->afterStateUpdated(function (Closure $set, $state) {
+                                        // If stores are manually deselected, uncheck the "select all" checkbox
+                                        if (empty($state)) {
+                                            $set('select_all_stores', false);
+                                        }
+                                    }),
+                                    
+								Placeholder::make('merchant_is_closed')
+									->label('Merchant Operation Status')
+									->content(function (Closure $get) {
+										$userId = $get('user_id');
+										if (!$userId) {
+											return '';
+										}
+
+										$user = User::find($userId);
+										if (!$user || !$user->merchant) {
+											return '';
+										}
+
+										$status = $user->merchant->is_closed ? 'Closed' : 'Open';
+
+										return new HtmlString(
+											"<span class='font-bold'>{$status}</span>"
+										);
+									}),
+
+							])->columns(1),
+
+                            Forms\Components\Section::make('Categories')->schema([
+                                Forms\Components\Select::make('categories')
+                                    ->label('Select Categories')
+                                    ->preload()
+                                    ->required()
+                                    ->relationship('allOfferCategories', 'name')->createOptionForm([
+                                        Forms\Components\TextInput::make('name')
                                             ->required()
-                                            ->reactive(),
-                                        Forms\Components\Select::make('stores')
-                                            ->label('Stores')
-                                            ->multiple()
-                                            ->helperText('Must select store(s) else it won\'t appear in the Nearby Merchant Stores tab.')
+                                            ->placeholder('Category name'),
+
+                                        Select::make('parent_id')
+                                            ->label('Parent Category')
+                                            ->relationship('parent', 'name')
                                             ->preload()
-                                            ->reactive()
-                                            ->relationship('stores', 'name', function (Builder $query, Closure $get) {
-                                                $query->where('user_id', $get('user_id'));
-                                            })
-                                            ->hidden(fn (Closure $get) => $get('user_id') === null),
-                                        Placeholder::make('merchant_is_closed')
-                                            ->label('Merchant Operation Status')
-                                            ->content(function (Closure $get) {
-                                                $userId = $get('user_id');
-                                                if (!$userId) {
-                                                    return '';
-                                                }
-
-                                                $user = User::find($userId);
-                                                if (!$user || !$user->merchant) {
-                                                    return '';
-                                                }
-
-                                                $status = $user->merchant->is_closed ? 'Closed' : 'Open';
-
-                                                return new HtmlString(
-                                                    "<span class='font-bold'>{$status}</span>"
-                                                );
-                                            }),
-
-                                    ])->columns(1),
-
-                                    Forms\Components\Section::make('Categories')->schema([
-                                        Forms\Components\Select::make('categories')
-                                            ->label('Select Categories')
-                                            ->preload()
+                                            ->nullable(),
+                                        // slug
+                                        Forms\Components\TextInput::make('slug')
                                             ->required()
-                                            ->relationship('allOfferCategories', 'name')->createOptionForm([
-                                                Forms\Components\TextInput::make('name')
-                                                    ->required()
-                                                    ->placeholder('Category name'),
+                                            ->placeholder('Category slug')
+                                            ->helperText('Must not have space, replace space with dash. eg. food-and-beverage')
+                                            ->unique(MerchantOfferCategory::class, 'slug', ignoreRecord: true),
+                                        Forms\Components\RichEditor::make('description')
+                                            ->placeholder('Category description'),
+                                        // hidden user id is logged in user
+                                        Forms\Components\Hidden::make('user_id')
+                                            ->default(fn () => auth()->id()),
+                                    ])
+                                    ->multiple()
+                                    ->searchable()
+                                    ->placeholder('Select offer categories...'),
+                            ])->columns(1),
 
-                                                Select::make('parent_id')
-                                                    ->label('Parent Category')
-                                                    ->relationship('parent', 'name')
-                                                    ->preload()
-                                                    ->nullable(),
-                                                // slug
-                                                Forms\Components\TextInput::make('slug')
-                                                    ->required()
-                                                    ->placeholder('Category slug')
-                                                    ->helperText('Must not have space, replace space with dash. eg. food-and-beverage')
-                                                    ->unique(MerchantOfferCategory::class, 'slug', ignoreRecord: true),
-                                                Forms\Components\RichEditor::make('description')
-                                                    ->placeholder('Category description'),
-                                                // hidden user id is logged in user
-                                                Forms\Components\Hidden::make('user_id')
-                                                    ->default(fn () => auth()->id()),
+                            Forms\Components\Section::make('Global Vouchers')
+                                ->schema([
+                                    Placeholder::make('available_vouchers_create')
+                                    ->reactive()
+                                    ->label('Campaign Vouchers Status')
+                                    ->content(function (Closure $get, $record) {
+                                        if (!$record) return 'Save the campaign first to see voucher status';
+                                        
+                                        $offers = \App\Models\MerchantOffer::where('merchant_offer_campaign_id', $record->id)
+                                            ->withCount([
+                                                'vouchers as available_count' => function ($query) {
+                                                    $query->whereNull('owned_by_id')
+                                                        ->where('voided', false);
+                                                },
+                                                'vouchers as sold_count' => function ($query) {
+                                                    $query->whereNotNull('owned_by_id')
+                                                        ->where('voided', false);
+                                                },
+                                                'vouchers as total_count' => function ($query) {
+                                                    $query->where('voided', false);
+                                                }
                                             ])
-                                            ->multiple()
-                                            ->searchable()
-                                            ->placeholder('Select offer categories...'),
-                                    ])->columns(1),
+                                            ->get();
 
-                                    Forms\Components\Section::make('Global Vouchers')
-                                        ->schema([
-                                            Placeholder::make('available_vouchers_create')
-                                            ->reactive()
-                                            ->label('Campaign Vouchers Status')
-                                            ->content(function (Closure $get, $record) {
-                                                if (!$record) return 'Save the campaign first to see voucher status';
-                                                
-                                                $offers = \App\Models\MerchantOffer::where('merchant_offer_campaign_id', $record->id)
-                                                    ->withCount([
-                                                        'vouchers as available_count' => function ($query) {
-                                                            $query->whereNull('owned_by_id')
-                                                                ->where('voided', false);
-                                                        },
-                                                        'vouchers as sold_count' => function ($query) {
-                                                            $query->whereNotNull('owned_by_id')
-                                                                ->where('voided', false);
-                                                        },
-                                                        'vouchers as total_count' => function ($query) {
-                                                            $query->where('voided', false);
-                                                        }
-                                                    ])
-                                                    ->get();
-
-                                                // if no offers exist yet but schedules exist, show the processing message
-                                                if ($offers->isEmpty() && $record->schedules()->exists()) {
-                                                    return new HtmlString(
-                                                        "<div style='font-size: 1.2em; font-weight: 600;'>Merchant offers and vouchers are being generated</div>
-                                                        <div style='color: #666; margin-top: 4px;'>
-                                                            Please refresh in a few minutes to see the updated status.
-                                                        </div>"
-                                                    );
-                                                }
-                                                    
-                                                $available = $offers->sum('available_count');
-                                                $sold = $offers->sum('sold_count');
-                                                $total = $offers->sum('total_count');
-                                                    
-                                                return new HtmlString(
-                                                    "<div style='font-size: 1.2em; font-weight: 600;'>
-                                                        {$sold} sold / {$available} available
-                                                    </div>
-                                                    <div style='color: #666; margin-top: 4px;'>
-                                                        Total vouchers in this campaign: {$total}
-                                                    </div>"
-                                                );
-                                            })
-                                            ->columnSpan(1),
-                                        ])->columns(1),
-                                ])->columnSpan(['lg' => 1]),
+                                        // if no offers exist yet but schedules exist, show the processing message
+                                        if ($offers->isEmpty() && $record->schedules()->exists()) {
+                                            return new HtmlString(
+                                                "<div style='font-size: 1.2em; font-weight: 600;'>Merchant offers and vouchers are being generated</div>
+                                                <div style='color: #666; margin-top: 4px;'>
+                                                    Please refresh in a few minutes to see the updated status.
+                                                </div>"
+                                            );
+                                        }
+                                            
+                                        $available = $offers->sum('available_count');
+                                        $sold = $offers->sum('sold_count');
+                                        $total = $offers->sum('total_count');
+                                            
+                                        return new HtmlString(
+                                            "<div style='font-size: 1.2em; font-weight: 600;'>
+                                                {$sold} sold / {$available} available
+                                            </div>
+                                            <div style='color: #666; margin-top: 4px;'>
+                                                Total vouchers in this campaign: {$total}
+                                            </div>"
+                                        );
+                                    })
+                                    ->columnSpan(1),
+                                ])->columns(1),
+                    ])->columnSpan(['lg' => 1]), // right content
             ])
             ->columns(3);
     }
