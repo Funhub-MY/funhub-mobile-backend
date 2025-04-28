@@ -144,7 +144,9 @@ class MissionEventListener
                     'trace' => $e->getTraceAsString()
                 ]);
             }
-        }
+        } else {
+			Log::error('[MissionEventListener] Dont have eventType.');
+		}
     }
 
     /**
@@ -157,7 +159,8 @@ class MissionEventListener
             $interaction->interactable_type === Comment::class && $interaction->type === Interaction::TYPE_LIKE => 'like_comment',
             $interaction->interactable_type === Article::class && $interaction->type === Interaction::TYPE_SHARE => 'share_article',
             $interaction->interactable_type === Article::class && $interaction->type === Interaction::TYPE_BOOKMARK => 'bookmark_an_article',
-            default => null,
+			$interaction->interactable_type === StoreRating::class && $interaction->type === Interaction::TYPE_LIKE => 'accumulated_likes_for_ratings',
+			default => null,
         };
     }
 
