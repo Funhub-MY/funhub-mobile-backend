@@ -1091,12 +1091,22 @@ class MerchantOfferController extends Controller
                 $userEmail = $user->email;
             }
 
+			Log::info('[MerchantOfferController] username : ', $username);
+			Log::info('[MerchantOfferController] user email : ', $userEmail);
+
             if ($offer->user->email) {
                 $offer->user->notify(new VoucherRedeemedNotification($username, $userEmail, $offer->user->name, $offer));
-            }
+				Log::info('[MerchantOfferController] Notification email sent to merchant.');
+			} else {
+				Log::info('[MerchantOfferController] Redeem offer voucher, dont have offer user email.');
+			}
         } catch (\Exception $e) {
-            Log::error('Error sending offer redeemed notification to merchant', [$e->getMessage()]);
-        }
+			Log::error('Error sending offer redeemed notification to merchant', [
+				'error' => $e->getMessage(),
+				'trace' => $e->getTraceAsString(),
+				'merchant_email' => $offer->user->email ?? 'null'
+			]);
+		}
 
         return response()->json([
             'message' => __('messages.success.merchant_offer_controller.Redeemed_Successfully'),
