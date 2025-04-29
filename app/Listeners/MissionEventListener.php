@@ -123,7 +123,16 @@ class MissionEventListener
                 } elseif ($interaction->interactable_type === StoreRating::class && $interaction->type === Interaction::TYPE_LIKE) {
                     // handle accumulated likes for store ratings
                     $rating = $interaction->interactable;
-                    $owner = $rating->user;
+                    $ratingOwner = $rating->user;
+                    
+                    // Skip if the user is liking their own rating
+                    if ($ratingOwner->id === $user->id) {
+                        Log::info('Skipping accumulated likes for self-liked rating', [
+                            'user_id' => $user->id,
+                            'rating_id' => $rating->id
+                        ]);
+                        return;
+                    }
                     
                     $contextData = [
                         'interaction' => $interaction,
@@ -135,7 +144,7 @@ class MissionEventListener
                         $contextData['article'] = $rating->article;
                     }
                     
-                    $this->missionService->handleEvent('accumulated_likes_for_ratings', $owner, $contextData);
+                    $this->missionService->handleEvent('accumulated_likes_for_ratings', $ratingOwner, $contextData);
                 }
             } catch (\Exception $e) {
                 Log::error('Error handling accumulated interaction event', [
@@ -159,7 +168,7 @@ class MissionEventListener
             $interaction->interactable_type === Comment::class && $interaction->type === Interaction::TYPE_LIKE => 'like_comment',
             $interaction->interactable_type === Article::class && $interaction->type === Interaction::TYPE_SHARE => 'share_article',
             $interaction->interactable_type === Article::class && $interaction->type === Interaction::TYPE_BOOKMARK => 'bookmark_an_article',
-			$interaction->interactable_type === StoreRating::class && $interaction->type === Interaction::TYPE_LIKE => 'accumulated_likes_for_ratings',
+			$interaction->interactable_type === StoreRating::class && $interaction->type === Interaction::TYPE_LIKE => 'like_store_rating',
 			default => null,
         };
     }
@@ -377,6 +386,9 @@ class MissionEventListener
         if ($event instanceof InteractionCreated) {
             $interactable = $event->interaction->interactable;
             if ($interactable instanceof Article) {
+                return $interactable->user_id === $event->interaction->user_id;
+            }
+            if ($interactable instanceof StoreRating) {
                 return $interactable->user_id === $event->interaction->user_id;
             }
         } elseif ($event instanceof CommentCreated) {
