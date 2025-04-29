@@ -79,7 +79,7 @@ class MissionEventListener
     protected function handleInteractionCreated(InteractionCreated $event): void
     {
         $interaction = $event->interaction;
-        $user = $interaction->user;
+        $user = $interaction->user; // by default based on previous missions, the users should be the one who interact.
 
         if ($this->isSpamInteraction($user, $interaction)) {
             Log::warning('Spam interaction detected', [
@@ -97,6 +97,21 @@ class MissionEventListener
         }
 
         $eventType = $this->mapInteractionToEventType($interaction);
+		// event type  = 'accumulated_likes_for_ratings'
+		if ($eventType == 'accumulated_likes_for_ratings') {
+			// but based on this mission, the one who rated the store should be the targeting user.
+			// change the $user to targeted user (user who create the store rating).
+			Log::info('Targeting Interactable', [
+				'interactable' => $interaction->interactable,
+				'interactable_id' => $interaction->interactable->id,
+				'rated_by_id' => $interaction->interactable->user_id,
+				'rated_by_username' => $interaction->interactable->user->username
+			]);
+
+			// switch to interactable user.
+			$user = $interaction->interactable->user; // done by Peng Yu.
+		}
+		
         if ($eventType) {
             $this->missionService->handleEvent($eventType, $user, ['interaction' => $interaction]);
             
@@ -123,7 +138,16 @@ class MissionEventListener
                 } elseif ($interaction->interactable_type === StoreRating::class && $interaction->type === Interaction::TYPE_LIKE) {
                     // handle accumulated likes for store ratings
                     $rating = $interaction->interactable;
-                    $owner = $rating->user;
+                    $ratingOwner = $rating->user;
+                    
+                    // Skip if the user is liking their own rating
+                    if ($ratingOwner->id === $user->id) {
+                        Log::info('Skipping accumulated likes for self-liked rating', [
+                            'user_id' => $user->id,
+                            'rating_id' => $rating->id
+                        ]);
+                        return;
+                    }
                     
                     $contextData = [
                         'interaction' => $interaction,
@@ -135,7 +159,7 @@ class MissionEventListener
                         $contextData['article'] = $rating->article;
                     }
                     
-                    $this->missionService->handleEvent('accumulated_likes_for_ratings', $owner, $contextData);
+                    $this->missionService->handleEvent('accumulated_likes_for_ratings', $ratingOwner, $contextData);
                 }
             } catch (\Exception $e) {
                 Log::error('Error handling accumulated interaction event', [
@@ -377,6 +401,9 @@ class MissionEventListener
         if ($event instanceof InteractionCreated) {
             $interactable = $event->interaction->interactable;
             if ($interactable instanceof Article) {
+                return $interactable->user_id === $event->interaction->user_id;
+            }
+            if ($interactable instanceof StoreRating) {
                 return $interactable->user_id === $event->interaction->user_id;
             }
         } elseif ($event instanceof CommentCreated) {
