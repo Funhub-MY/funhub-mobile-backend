@@ -144,14 +144,14 @@ class MissionEventListener
 					if ($eventType === 'accumulated_likes_for_ratings') {
 						// extra confirmation.
 						Log::info('Targeting Interactable', [
-							'interactable' => $rating->interactable,
-							'interactable_id' => $rating->interactable->id,
-							'rated_by_id' => $rating->interactable->user_id,
-							'rated_by_username' => $rating->interactable->user->username
+							'interactable' => $rating,
+							'interactable_id' => $rating->id,
+							'rated_by_id' => $rating->user_id,
+							'rated_by_username' => $rating->user->username
 						]);
 
 						// switch to interactable user.
-						$ratingOwner = $rating->interactable->user;
+						$ratingOwner = $rating->user;
 					}
                     
                     $contextData = [
