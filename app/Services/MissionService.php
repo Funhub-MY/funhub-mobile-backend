@@ -46,6 +46,12 @@ class MissionService
             $missions = $this->getEligibleMissions($eventType, $user);
 
             foreach ($missions as $mission) {
+
+				Log::info('Processing missions ', [
+					'mission_id' => $mission->id,
+					'mission_name' => $mission->name
+				]);
+
                 $this->processMissionProgress($mission, $user, $eventType);
             }
 
