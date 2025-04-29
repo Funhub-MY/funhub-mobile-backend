@@ -44,7 +44,13 @@ class MissionService
 
             // Spam checks are now handled in the event listener
             $missions = $this->getEligibleMissions($eventType, $user);
-
+			Log::info('Eligible missions retrieved', [
+				'event' => $eventType,
+				'user_id' => $user->id,
+				'mission_ids' => $missions->pluck('id'),
+				'mission_names' => $missions->pluck('name'),
+			]);
+			
             foreach ($missions as $mission) {
 
 				Log::info('Processing missions ', [
