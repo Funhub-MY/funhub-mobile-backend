@@ -79,7 +79,7 @@ class MissionEventListener
     protected function handleInteractionCreated(InteractionCreated $event): void
     {
         $interaction = $event->interaction;
-        $user = $interaction->user;
+        $user = $interaction->user; // by default based on previous missions, the users should be the one who interact.
 
         if ($this->isSpamInteraction($user, $interaction)) {
             Log::warning('Spam interaction detected', [
@@ -97,6 +97,21 @@ class MissionEventListener
         }
 
         $eventType = $this->mapInteractionToEventType($interaction);
+		// event type  = 'accumulated_likes_for_ratings'
+		if ($eventType == 'accumulated_likes_for_ratings') {
+			// but based on this mission, the one who rated the store should be the targeting user.
+			// change the $user to targeted user (user who create the store rating).
+			Log::info('Targeting Interactable', [
+				'interactable' => $interaction->interactable,
+				'interactable_id' => $interaction->interactable->id,
+				'rated_by_id' => $interaction->interactable->user_id,
+				'rated_by_username' => $interaction->interactable->user->username
+			]);
+
+			// switch to interactable user.
+			$user = $interaction->interactable->user; // done by Peng Yu.
+		}
+		
         if ($eventType) {
             $this->missionService->handleEvent($eventType, $user, ['interaction' => $interaction]);
             
@@ -168,7 +183,7 @@ class MissionEventListener
             $interaction->interactable_type === Comment::class && $interaction->type === Interaction::TYPE_LIKE => 'like_comment',
             $interaction->interactable_type === Article::class && $interaction->type === Interaction::TYPE_SHARE => 'share_article',
             $interaction->interactable_type === Article::class && $interaction->type === Interaction::TYPE_BOOKMARK => 'bookmark_an_article',
-			$interaction->interactable_type === StoreRating::class && $interaction->type === Interaction::TYPE_LIKE => 'like_store_rating',
+			$interaction->interactable_type === StoreRating::class && $interaction->type === Interaction::TYPE_LIKE => 'accumulated_likes_for_ratings',
 			default => null,
         };
     }
