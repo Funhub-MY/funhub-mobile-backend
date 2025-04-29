@@ -109,7 +109,7 @@ class MissionEventListener
 			]);
 
 			// switch to interactable user.
-			$user = $interaction->interactable->user; // done by Peng Yu.
+			$user = $interaction->interactable->user;
 		}
 		
         if ($eventType) {
@@ -138,16 +138,21 @@ class MissionEventListener
                 } elseif ($interaction->interactable_type === StoreRating::class && $interaction->type === Interaction::TYPE_LIKE) {
                     // handle accumulated likes for store ratings
                     $rating = $interaction->interactable;
-                    $ratingOwner = $rating->user;
-                    
-                    // Skip if the user is liking their own rating
-                    if ($ratingOwner->id === $user->id) {
-                        Log::info('Skipping accumulated likes for self-liked rating', [
-                            'user_id' => $user->id,
-                            'rating_id' => $rating->id
-                        ]);
-                        return;
-                    }
+
+					$ratingOwner = $rating->user;
+
+					if ($eventType === 'accumulated_likes_for_ratings') {
+						// extra confirmation.
+						Log::info('Targeting Interactable', [
+							'interactable' => $rating->interactable,
+							'interactable_id' => $rating->interactable->id,
+							'rated_by_id' => $rating->interactable->user_id,
+							'rated_by_username' => $rating->interactable->user->username
+						]);
+
+						// switch to interactable user.
+						$ratingOwner = $rating->interactable->user;
+					}
                     
                     $contextData = [
                         'interaction' => $interaction,
