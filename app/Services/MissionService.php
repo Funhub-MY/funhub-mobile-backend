@@ -50,7 +50,7 @@ class MissionService
 				'mission_ids' => $missions->pluck('id'),
 				'mission_names' => $missions->pluck('name'),
 			]);
-			
+
             foreach ($missions as $mission) {
 
 				Log::info('Processing missions ', [
@@ -105,6 +105,14 @@ class MissionService
             }, 'predecessors.participants' => function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             }]);
+
+		Log::info('SQL for missionsWithNoPredecessors:', [
+			'query' => $missionsWithNoPredecessors->toSql(),
+		]);
+
+		Log::info('SQL for missionsWithCompletedPredecessors:', [
+			'query' => $missionsWithCompletedPredecessors->toSql(),
+		]);
 
         // get both sets of missions
         $missionsWithNoPredecessorsResults = $missionsWithNoPredecessors->get();
