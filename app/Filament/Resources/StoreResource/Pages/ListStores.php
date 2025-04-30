@@ -6,6 +6,7 @@ use App\Filament\Actions\CustomImportStoresAction;
 use App\Filament\Resources\StoreResource;
 use App\Jobs\CreateLocationFromStoreImport;
 use App\Models\Country;
+use App\Models\FailedStoreImport;
 use App\Models\Location;
 use App\Models\MerchantCategory;
 use App\Models\State;
@@ -35,7 +36,6 @@ class ListStores extends ListRecords
 			// Import Stores from CSV
 			ImportAction::make('importStores')
 				->label('Import Stores (csv)')
-				->uniqueField('name')
 				->fields([
 					ImportField::make('name')
 						->label('Store Name')
@@ -204,8 +204,51 @@ class ListStores extends ListRecords
 						->mutateBeforeCreate(function ($value) {
 							return !empty($value) ? $value : null;
 						}),
+					ImportField::make('google_place_id')
+						->label('Google Place ID')
+						->helperText('Optional. If provided, will be used to create location directly without geocoding')
+						->mutateBeforeCreate(function ($value) {
+							return !empty($value) ? $value : null;
+						}),
 				])
 				->handleRecordCreation(function ($data) {
+					// Check if a store with the exact same name already exists (case sensitive)
+					$existingStore = Store::where('name', $data['name'])->first();
+					if ($existingStore) {
+						// Store already exists, create a failed store import record
+						$failedImport = FailedStoreImport::create([
+							'name' => $data['name'],
+							'address' => $data['address'] ?? null,
+							'address_postcode' => $data['address_postcode'] ?? null,
+							'city' => $data['city'] ?? null,
+							'state_id' => $data['state_name'] ?? null,
+							'country_id' => $data['country_name'] ?? null,
+							'business_phone_no' => $data['business_phone_no'] ?? null,
+							'business_hours' => $data['business_hours'] ?? null,
+							'rest_hours' => $data['rest_hours'] ?? null,
+							'is_appointment_only' => $data['is_appointment_only'] ?? false,
+							'user_id' => $data['user_id'] ?? null,
+							'merchant_id' => null,
+							'google_place_id' => $data['google_place_id'] ?? null,
+							'lang' => $data['lang'] ?? null,
+							'long' => $data['long'] ?? null,
+							'parent_categories' => $data['parent_categories'] ?? null,
+							'sub_categories' => $data['sub_categories'] ?? null,
+							'is_hq' => $data['is_hq'] ?? false,
+							'failure_reason' => 'Store with this name already exists (ID: ' . $existingStore->id . ')',
+							'original_data' => json_encode($data),
+						]);
+						
+						Log::info("Store import failed - duplicate name", [
+							'failed_import_id' => $failedImport->id,
+							'store_name' => $data['name'],
+							'existing_store_id' => $existingStore->id
+						]);
+						
+						// Return the existing store to prevent creating a duplicate
+						return $existingStore;
+					}
+					
 					// Format phone number: remove spaces, dashes and ensure it starts with 60
 					$businessPhoneNo = null;
 					if (!empty($data['business_phone_no'])) {
@@ -248,6 +291,10 @@ class ListStores extends ListRecords
 					
 					// Create the store
 					$store = Store::create($storeData);
+					Log::info("Store created", [
+						'store_id' => $store->id,
+						'store_name' => $store->name
+					]);
 					// Process parent categories
 					if (!empty($data['parent_categories'])) {
 						$parentCategoryNames = array_map('trim', explode(',', $data['parent_categories']));
@@ -299,6 +346,7 @@ class ListStores extends ListRecords
 						'country_id' => $data['country_name'],
 						'lang' => $data['lang'] ?? null,
 						'long' => $data['long'] ?? null,
+						'google_place_id' => $data['google_place_id'] ?? null,
 					]);
 					
 					Log::info("CreateLocationFromStoreImport job dispatched for store: {$store->id}");

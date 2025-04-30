@@ -33,7 +33,7 @@ class Product extends BaseModel implements HasMedia, Auditable
     const MEDIA_BG_COLLECTION_NAME = 'product_bg_image';
 
     protected $guarded = ['id'];
-
+    
     protected $appends = ['thumbnail'];
 
     public function transactions()

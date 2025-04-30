@@ -45,13 +45,18 @@ class VoucherRedeemedNotification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        $username = (string) $this->username;
+        $userEmail = $this->userEmail !== null ? (string) $this->userEmail : '';
+        $merchantName = (string) $this->merchantName;
+        $merchantOffer = (string) $this->merchantOffer->name;
+
         $mailMessage = (new MailMessage)
-            ->subject('A User ('.$this->username.') Has Redeemed Your Voucher')
+            ->subject('A User (' . $username . ') Has Redeemed Your Voucher')
             ->markdown('emails.voucher-redeemed', [
-                'username' => $this->username,
-                'userEmail' => $this->userEmail,
-                'merchantName' => $this->merchantName,
-                'merchantOffer' => $this->merchantOffer->name,
+                'username' => $username,
+                'userEmail' => $userEmail,
+                'merchantName' => $merchantName,
+                'merchantOffer' => $merchantOffer,
             ]);
 
         return $mailMessage;

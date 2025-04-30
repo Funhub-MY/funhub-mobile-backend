@@ -461,8 +461,12 @@ class StoreResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('name')
-                    ->sortable()
-                    ->searchable(),
+                    ->sortable() 
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query
+                            ->where('name', 'like', "%{$search}%");
+                    }),
+
                 Tables\Columns\BadgeColumn::make('status')
                     ->enum(Store::STATUS)
                     ->colors([

@@ -79,7 +79,7 @@ class MissionEventListener
     protected function handleInteractionCreated(InteractionCreated $event): void
     {
         $interaction = $event->interaction;
-        $user = $interaction->user;
+        $user = $interaction->user; // by default based on previous missions, the users should be the one who interact.
 
         if ($this->isSpamInteraction($user, $interaction)) {
             Log::warning('Spam interaction detected', [
@@ -97,6 +97,21 @@ class MissionEventListener
         }
 
         $eventType = $this->mapInteractionToEventType($interaction);
+		// event type  = 'accumulated_likes_for_ratings'
+		if ($eventType == 'accumulated_likes_for_ratings') {
+			// but based on this mission, the one who rated the store should be the targeting user.
+			// change the $user to targeted user (user who create the store rating).
+			Log::info('Targeting Interactable', [
+				'interactable' => $interaction->interactable,
+				'interactable_id' => $interaction->interactable->id,
+				'rated_by_id' => $interaction->interactable->user_id,
+				'rated_by_username' => $interaction->interactable->user->username
+			]);
+
+			// switch to interactable user.
+			$user = $interaction->interactable->user;
+		}
+		
         if ($eventType) {
             $this->missionService->handleEvent($eventType, $user, ['interaction' => $interaction]);
             
@@ -123,14 +138,33 @@ class MissionEventListener
                 } elseif ($interaction->interactable_type === StoreRating::class && $interaction->type === Interaction::TYPE_LIKE) {
                     // handle accumulated likes for store ratings
                     $rating = $interaction->interactable;
+
+					$ratingOwner = $rating->user;
+
+					if ($eventType === 'accumulated_likes_for_ratings') {
+						// extra confirmation.
+						Log::info('Targeting Interactable', [
+							'interactable' => $rating,
+							'interactable_id' => $rating->id,
+							'rated_by_id' => $rating->user_id,
+							'rated_by_username' => $rating->user->username
+						]);
+
+						// switch to interactable user.
+						$ratingOwner = $rating->user;
+					}
+                    
+                    $contextData = [
+                        'interaction' => $interaction,
+                        'rating' => $rating
+                    ];
+                    
+                    // Add article to context if it exists
                     if ($rating->article) {
-                        $owner = $rating->user;
-                        $this->missionService->handleEvent('accumulated_likes_for_ratings', $owner, [
-                            'interaction' => $interaction,
-                            'rating' => $rating,
-                            'article' => $rating->article
-                        ]);
+                        $contextData['article'] = $rating->article;
                     }
+                    
+                    $this->missionService->handleEvent('accumulated_likes_for_ratings', $ratingOwner, $contextData);
                 }
             } catch (\Exception $e) {
                 Log::error('Error handling accumulated interaction event', [
@@ -139,7 +173,9 @@ class MissionEventListener
                     'trace' => $e->getTraceAsString()
                 ]);
             }
-        }
+        } else {
+			Log::error('[MissionEventListener] Dont have eventType.');
+		}
     }
 
     /**
@@ -152,7 +188,8 @@ class MissionEventListener
             $interaction->interactable_type === Comment::class && $interaction->type === Interaction::TYPE_LIKE => 'like_comment',
             $interaction->interactable_type === Article::class && $interaction->type === Interaction::TYPE_SHARE => 'share_article',
             $interaction->interactable_type === Article::class && $interaction->type === Interaction::TYPE_BOOKMARK => 'bookmark_an_article',
-            default => null,
+			$interaction->interactable_type === StoreRating::class && $interaction->type === Interaction::TYPE_LIKE => 'accumulated_likes_for_ratings',
+			default => null,
         };
     }
 
@@ -369,6 +406,9 @@ class MissionEventListener
         if ($event instanceof InteractionCreated) {
             $interactable = $event->interaction->interactable;
             if ($interactable instanceof Article) {
+                return $interactable->user_id === $event->interaction->user_id;
+            }
+            if ($interactable instanceof StoreRating) {
                 return $interactable->user_id === $event->interaction->user_id;
             }
         } elseif ($event instanceof CommentCreated) {

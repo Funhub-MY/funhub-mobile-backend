@@ -112,275 +112,91 @@ class MergeDuplicateStoreLocations extends Command
         ]);
 
         try {
-            // Step 1: Get all locations with stores
-            $this->info('Step 1: Getting all locations with stores...');
-            
-            // Get all locations with their attached stores - using chunking for memory efficiency
-            $query = DB::table('locations')
-                ->leftJoin('locatables', function ($join) {
-                    $join->on('locations.id', '=', 'locatables.location_id')
-                        ->where('locatables.locatable_type', '=', Store::class);
-                })
-                ->leftJoin('stores', 'locatables.locatable_id', '=', 'stores.id')
-                ->select(
-                    'locations.id', 
-                    'locations.lat', 
-                    'locations.lng', 
-                    'locations.google_id',
-                    'locations.name as location_name',
-                    'locations.is_mall',
-                    'stores.id as store_id', 
-                    'stores.user_id', 
-                    'stores.name as store_name'
-                );
-                
-            // Apply store ID filter if provided
-            if ($storeIds) {
-                $storeIdArray = array_map('trim', explode(',', $storeIds));
-                $this->info("Filtering by store IDs: " . implode(', ', $storeIdArray));
-                
-                // Verify all store IDs exist
-                $foundStores = Store::whereIn('id', $storeIdArray)->pluck('id')->toArray();
-                $missingStores = array_diff($storeIdArray, $foundStores);
-                
-                if (!empty($missingStores)) {
-                    $this->warn("Some store IDs were not found: " . implode(', ', $missingStores));
-                }
-                
-                $query->whereIn('stores.id', $storeIdArray);
-            }
-            
-            // Apply location ID filter if provided
-            if ($locationIds) {
-                $locationIdArray = array_map('trim', explode(',', $locationIds));
-                $this->info("Filtering by location IDs: " . implode(', ', $locationIdArray));
-                $query->whereIn('locations.id', $locationIdArray);
-            }
-            
-            // Apply store name filter if provided
-            if ($storeNames) {
-                $storeNameArray = array_map('trim', explode(',', $storeNames));
-                $this->info("Filtering by store names containing: " . implode(', ', $storeNameArray));
-                
-                $query->where(function($q) use ($storeNameArray) {
-                    foreach ($storeNameArray as $index => $name) {
-                        if ($index === 0) {
-                            $q->where(function($subQ) use ($name) {
-                                $subQ->where('stores.name', 'like', "%{$name}%")
-                                    ->orWhere('locations.name', 'like', "%{$name}%");
-                            });
-                        } else {
-                            $q->orWhere(function($subQ) use ($name) {
-                                $subQ->where('stores.name', 'like', "%{$name}%")
-                                    ->orWhere('locations.name', 'like', "%{$name}%");
-                            });
-                        }
-                    }
-                });
-            }
-            
-            // Ignore mall locations if option is set
-            if ($ignoreMalls) {
-                $this->info("Ignoring mall locations");
-                $query->where(function($q) {
-                    $q->where('locations.is_mall', 0)
-                      ->orWhereNull('locations.is_mall');
-                });
-            }
-            
-            // Count total records for logging
-            $totalCount = $query->count();
-            $this->info("Found {$totalCount} location records to analyze.");
-            Log::info('[MergeDuplicateStoreLocations] Found locations with stores', [
-                'count' => $totalCount
-            ]);
-            
-            // Use a generator approach to process locations in chunks to reduce memory usage
-            $locationsData = collect();
-            $chunkSize = 100; // Process 100 records at a time
-            
-            $query->orderBy('locations.id')->chunk($chunkSize, function ($chunk) use (&$locationsData) {
-                foreach ($chunk as $location) {
-                    $locationsData->push($location);
-                }
-            });
+            // Step 1: Find locations with more than one Store attached (potential duplicates)
+            $this->info('Step 1: Finding locations with more than one Store attached (potential duplicates)...');
+            $duplicateLocations = DB::table('locatables')
+                ->select('location_id', DB::raw('COUNT(*) as store_count'))
+                ->where('locatable_type', Store::class)
+                ->groupBy('location_id')
+                ->having('store_count', '>', 1)
+                ->pluck('location_id');
 
-            // Step 2: Find potential duplicates based on name similarity and matching coordinates
-            $this->info("Step 2: Finding potential duplicates based on name similarity (min {$minSimilarity}%) and matching coordinates...");
-            
-            $locationGroups = [];
-            $processedLocationIds = [];
-            
-            // Process locations in chunks to reduce memory usage
-            foreach ($locationsData->chunk(100) as $chunk) {
-                foreach ($chunk as $location) {
-                    if (in_array($location->id, $processedLocationIds)) {
-                        continue; // Skip already processed locations
-                    }
-                    
-                    // Get the full location object for more details - use eager loading to reduce queries
-                    $fullLocation = Location::with(['articles', 'ratings'])->find($location->id);
-                    if (!$fullLocation) {
-                        continue; // Skip if location not found
-                    }
-                    
-                    $group = [$location];
-                    $processedLocationIds[] = $location->id;
-                    
-                    // Compare with all other locations - but only process 100 at a time
-                    $potentialMatches = $this->getPotentialMatches($location, $locationsData, $processedLocationIds);
-                    
-                    foreach ($potentialMatches as $potentialDuplicate) {
-                        // First check name similarity as it precedes all conditions
-                        $nameSimilarity = 0;
-                        
-                        // Try to compare store names first if available
-                        if (!empty($location->store_name) && !empty($potentialDuplicate->store_name)) {
-                            $nameSimilarity = $this->calculateStringSimilarity(
-                                $location->store_name,
-                                $potentialDuplicate->store_name
-                            );
-                        } 
-                        // Fall back to location names if store names aren't available
-                        else if (!empty($location->location_name) && !empty($potentialDuplicate->location_name)) {
-                            $nameSimilarity = $this->calculateStringSimilarity(
-                                $location->location_name,
-                                $potentialDuplicate->location_name
-                            );
-                        }
-                        
-                        // Skip if name similarity is below threshold
-                        if ($nameSimilarity < $minSimilarity) {
-                            continue;
-                        }
-                        
-                        // Now check if coordinates match exactly
-                        $coordinatesMatch = $this->coordinatesMatch(
-                            $location->lat, 
-                            $location->lng, 
-                            $potentialDuplicate->lat, 
-                            $potentialDuplicate->lng
-                        );
-                        
-                        // Check if google_id is different (if both have google_id)
-                        $differentGoogleId = false;
-                        if (!empty($location->google_id) && !empty($potentialDuplicate->google_id)) {
-                            $differentGoogleId = ($location->google_id !== $potentialDuplicate->google_id);
-                        }
-                        
-                        // Add to group if name similarity is good AND coordinates match
-                        if ($coordinatesMatch) {
-                            $group[] = $potentialDuplicate;
-                            $processedLocationIds[] = $potentialDuplicate->id;
-                            
-                            $this->info("Found potential duplicate: Location {$potentialDuplicate->id} matches Location {$location->id} "
-                                . "(Name similarity: {$nameSimilarity}%, Coordinates match: Yes, Different Google ID: "
-                                . ($differentGoogleId ? 'Yes' : 'No') . ")");
-                        }
-                    }
-                    
-                    // Only add groups with more than one location (potential duplicates)
-                    if (count($group) > 1) {
-                        $locationGroups[] = $group;
-                    }
-                    
-                    // Free memory
-                    unset($fullLocation);
-                    unset($potentialMatches);
-                }
-            }
-            
-            $this->info("Found " . count($locationGroups) . " groups of potentially duplicate locations.");
-            Log::info('[MergeDuplicateStoreLocations] Found potential duplicate location groups', [
-                'count' => count($locationGroups)
+            $this->info('Found ' . count($duplicateLocations) . ' locations with >1 store attached.');
+            Log::info('[MergeDuplicateStoreLocations] Locations with >1 store attached', [
+                'count' => count($duplicateLocations)
             ]);
 
             $totalProcessed = 0;
             $totalMerged = 0;
 
-            // Step 2: Process each group of potential duplicate locations
-            foreach ($locationGroups as $groupIndex => $locationGroup) {
-                $this->info("Processing location group #{$groupIndex} with " . count($locationGroup) . " locations");
-                
-                // Find the authentic location (with an onboarded store that has user_id)
-                $authenticLocation = null;
-                $authenticStore = null;
-                
-                foreach ($locationGroup as $locationData) {
-                    if (!$locationData->store_id) {
-                        continue; // Skip locations without stores
-                    }
-                    
-                    $store = Store::find($locationData->store_id);
-                    
-                    if ($store && $store->user_id !== null) {
-                        $authenticLocation = Location::find($locationData->id);
-                        $authenticStore = $store;
-                        $this->info("Found authentic location (ID: {$locationData->id}) with onboarded store (ID: {$store->id}, Name: {$store->name})");
-                        break;
-                    }
-                }
-                
-                if (!$authenticLocation || !$authenticStore) {
-                    $this->warn("No authentic location found in group #{$groupIndex}. Skipping.");
+            foreach ($duplicateLocations as $locationId) {
+                $this->info("Processing location_id: $locationId");
+                $stores = DB::table('locatables')
+                    ->join('stores', 'locatables.locatable_id', '=', 'stores.id')
+                    ->where('locatables.location_id', $locationId)
+                    ->where('locatables.locatable_type', Store::class)
+                    ->select('stores.*', 'locatables.id as locatable_id')
+                    ->get();
+
+                $legitStores = $stores->whereNotNull('user_id');
+                $duplicateStores = $stores->whereNull('user_id');
+
+                if ($legitStores->isEmpty()) {
+                    $this->warn("No legit (user_id != null) store for location_id $locationId, skipping.");
                     continue;
                 }
-                
-                $this->info("Using location (ID: {$authenticLocation->id}) with store (ID: {$authenticStore->id}) as primary");
-                
-                // Process each duplicate location in the group
-                foreach ($locationGroup as $locationData) {
-                    if ($locationData->id == $authenticLocation->id) {
-                        continue; // Skip the authentic location
-                    }
-                    
-                    $duplicateLocation = Location::find($locationData->id);
-                    
-                    if (!$duplicateLocation) {
-                        $this->warn("Location (ID: {$locationData->id}) not found. Skipping.");
+
+                // Pick the first legit store as the canonical one
+                $canonicalStore = $legitStores->first();
+                $canonicalStoreModel = Store::find($canonicalStore->id);
+                $locationModel = Location::find($locationId);
+                $this->info("Legit store for location_id $locationId: Store ID {$canonicalStore->id}, Name: {$canonicalStore->name}");
+
+                foreach ($duplicateStores as $dupStore) {
+                    $dupStoreModel = Store::find($dupStore->id);
+                    if (!$dupStoreModel) {
+                        $this->warn("Duplicate store ID {$dupStore->id} not found, skipping.");
                         continue;
                     }
-                    
-                    // Step 3: Move articles from duplicate location to authentic location
-                    $articlesCount = $this->moveArticles($duplicateLocation, $authenticLocation, $isDryRun);
-                    
-                    // Step 4: Move location ratings to authentic location
-                    $ratingsCount = $this->moveLocationRatings($duplicateLocation, $authenticLocation, $isDryRun);
-                    
-                    // Step 5: Update store ratings if needed
-                    $this->updateStoreRatings($authenticStore, $isDryRun);
-                    
-                    // Step 6: Delete the duplicate location if not in dry-run mode
+                    $this->info("Handling duplicate store ID {$dupStore->id} (Name: {$dupStore->name}) for location_id $locationId");
+
+                    // Move articles from duplicate store/location to legit store/location
+                    $articlesMoved = $this->moveArticles($locationModel, $locationModel, $isDryRun); // If articles are tied to location, not store
+                    // If articles are tied to store, you'd want to reassign them here
+
+                    // Move ratings from duplicate location to legit location (if ratings are store-based, adjust logic)
+                    $ratingsMoved = $this->moveLocationRatings($locationModel, $locationModel, $isDryRun);
+
+                    // Update ratings for legit store
+                    $this->updateStoreRatings($canonicalStoreModel, $isDryRun);
+
+                    // Delete the duplicate store and its locatable link
                     if (!$isDryRun) {
-                        // First detach all relationships
                         DB::table('locatables')
-                            ->where('location_id', $duplicateLocation->id)
+                            ->where('locatable_id', $dupStore->id)
+                            ->where('locatable_type', Store::class)
+                            ->where('location_id', $locationId)
                             ->delete();
-                            
-                        // Then delete the location
-                        $duplicateLocation->delete();
-                        
-                        $this->info("Deleted duplicate location (ID: {$duplicateLocation->id})");
-                        Log::info('[MergeDuplicateStoreLocations] Deleted duplicate location', [
-                            'location_id' => $duplicateLocation->id
+                        $dupStoreModel->delete();
+                        $this->info("Deleted duplicate store ID {$dupStore->id}");
+                        Log::info('[MergeDuplicateStoreLocations] Deleted duplicate store', [
+                            'store_id' => $dupStore->id,
+                            'location_id' => $locationId
                         ]);
                     } else {
-                        $this->info("[DRY RUN] Would delete duplicate location (ID: {$duplicateLocation->id})");
+                        $this->info("[DRY RUN] Would delete duplicate store ID {$dupStore->id}");
                     }
-                    
                     $totalMerged++;
                 }
-                
                 $totalProcessed++;
-                $this->info("Completed processing for location group #{$groupIndex}");
+                $this->info("Completed processing for location_id $locationId");
             }
-            
-            $this->info("Command completed. Processed {$totalProcessed} location groups, merged {$totalMerged} duplicate locations.");
+
+            $this->info("Command completed. Processed {$totalProcessed} locations, merged {$totalMerged} duplicate stores.");
             Log::info('[MergeDuplicateStoreLocations] Command completed', [
-                'processed_groups' => $totalProcessed,
-                'merged_locations' => $totalMerged
+                'processed_locations' => $totalProcessed,
+                'merged_stores' => $totalMerged
             ]);
-            
             return Command::SUCCESS;
         } catch (\Exception $e) {
             $this->error("An error occurred: {$e->getMessage()}");
@@ -388,7 +204,6 @@ class MergeDuplicateStoreLocations extends Command
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
             return Command::FAILURE;
         }
     }

@@ -15,6 +15,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Get;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
@@ -134,6 +135,43 @@ class ProductResource extends Resource
                                         ->label('Current Quantity Available')
                                         ->default(0)
                                         ->numeric()
+                            ]),
+                        Section::make('Purchase Notification')
+                            ->schema([
+                                Checkbox::make('enable_purchase_notification')
+                                    ->label('Enable Purchase Completion Notification')
+                                    ->helperText('When enabled, users will receive a notification when they complete a purchase of this product')
+                                    ->reactive()
+                                    ->default(false),
+                                    
+                                Forms\Components\Group::make()
+                                    ->schema([
+                                        TextInput::make('purchase_notification_title_en')
+                                            ->label('Notification Title (English)')
+                                            ->required(function ($get) { return $get('enable_purchase_notification'); })
+                                            ->hidden(function ($get) { return !$get('enable_purchase_notification'); }),
+                                            
+                                        TextInput::make('purchase_notification_en')
+                                            ->label('Notification Message (English)')
+                                            ->required(function ($get) { return $get('enable_purchase_notification'); })
+                                            ->hidden(function ($get) { return !$get('enable_purchase_notification'); }),
+                                            
+                                        TextInput::make('purchase_notification_title_zh')
+                                            ->label('Notification Title (Chinese)')
+                                            ->required(function ($get) { return $get('enable_purchase_notification'); })
+                                            ->hidden(function ($get) { return !$get('enable_purchase_notification'); }),
+                                            
+                                        TextInput::make('purchase_notification_zh')
+                                            ->label('Notification Message (Chinese)')
+                                            ->required(function ($get) { return $get('enable_purchase_notification'); })
+                                            ->hidden(function ($get) { return !$get('enable_purchase_notification'); }),
+                                            
+                                        TextInput::make('purchase_notification_url')
+                                            ->label('Notification URL')
+                                            ->nullable()
+                                            ->helperText('Optional URL to redirect users when they tap on the notification')
+                                            ->hidden(function ($get) { return !$get('enable_purchase_notification'); }),
+                                    ])
                             ])
                 ])->columnSpan(['lg' => 2]),
                 // Forms\Components\Group::make()

@@ -44,8 +44,20 @@ class MissionService
 
             // Spam checks are now handled in the event listener
             $missions = $this->getEligibleMissions($eventType, $user);
+			Log::info('Eligible missions retrieved', [
+				'event' => $eventType,
+				'user_id' => $user->id,
+				'mission_ids' => $missions->pluck('id'),
+				'mission_names' => $missions->pluck('name'),
+			]);
 
             foreach ($missions as $mission) {
+
+				Log::info('Processing missions ', [
+					'mission_id' => $mission->id,
+					'mission_name' => $mission->name
+				]);
+
                 $this->processMissionProgress($mission, $user, $eventType);
             }
 
@@ -93,6 +105,14 @@ class MissionService
             }, 'predecessors.participants' => function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             }]);
+
+		Log::info('SQL for missionsWithNoPredecessors:', [
+			'query' => $missionsWithNoPredecessors->toSql(),
+		]);
+
+		Log::info('SQL for missionsWithCompletedPredecessors:', [
+			'query' => $missionsWithCompletedPredecessors->toSql(),
+		]);
 
         // get both sets of missions
         $missionsWithNoPredecessorsResults = $missionsWithNoPredecessors->get();
