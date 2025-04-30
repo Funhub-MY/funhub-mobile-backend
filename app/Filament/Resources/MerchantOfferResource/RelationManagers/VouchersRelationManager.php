@@ -221,7 +221,7 @@ class VouchersRelationManager extends RelationManager
                         ->relationship('merchant_offer', 'name')
                         ->getOptionLabelFromRecordUsing(fn (MerchantOffer $record) => $record->name . ' (SKU:'.$record->sku .')')
                         ->searchable()
-                        ->preload()
+                        //->preload()
                         ->required(),
                     Textarea::make('remarks')
                         ->label('Remarks')
