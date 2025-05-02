@@ -113,7 +113,12 @@ class MissionEventListener
 //		}
 		
         if ($eventType) {
-            $this->missionService->handleEvent($eventType, $user, ['interaction' => $interaction]);
+			if ($eventType == 'accumulated_likes_for_ratings') {
+				// first iterations of handleEvent will be on interact-or (person who like the rating in this case).
+				$shouldHandleInteractorEvent = false;
+			}
+
+            $this->missionService->handleEvent($eventType, $user, ['interaction' => $interaction], $shouldHandleInteractorEvent);
             
             // handle accumulated events for the article owner
             try {
