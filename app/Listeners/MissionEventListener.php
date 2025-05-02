@@ -113,7 +113,7 @@ class MissionEventListener
 //		}
 		
         if ($eventType) {
-			$shouldHandleInteractorEvent = null;
+			$shouldHandleInteractorEvent = true;
 
 			if ($eventType == 'accumulated_likes_for_ratings') {
 				// first iterations of handleEvent will be on interact-or (person who like the rating in this case).
