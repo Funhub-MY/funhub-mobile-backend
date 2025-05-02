@@ -37,8 +37,14 @@ class MissionService
         $this->handleEvent('purchase_gift_card', $user);
     }
 
-    public function handleEvent(string $eventType, User $user, array $context = []): void
+    public function handleEvent(string $eventType, User $user, array $context = [], $shouldHandleInteractEvent = true): void
     {
+		if (!$shouldHandleInteractEvent) {
+			// if current handleEvent is false, mean this iteration of handling the event should exit.
+			// the reason using this architecture is to not affect the previous mission events.
+			return;
+		}
+
         try {
             DB::beginTransaction();
 
@@ -52,7 +58,6 @@ class MissionService
 			]);
 
             foreach ($missions as $mission) {
-
 				Log::info('Processing missions ', [
 					'mission_id' => $mission->id,
 					'mission_name' => $mission->name
@@ -105,14 +110,6 @@ class MissionService
             }, 'predecessors.participants' => function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             }]);
-
-		Log::info('SQL for missionsWithNoPredecessors:', [
-			'query' => $missionsWithNoPredecessors->toSql(),
-		]);
-
-		Log::info('SQL for missionsWithCompletedPredecessors:', [
-			'query' => $missionsWithCompletedPredecessors->toSql(),
-		]);
 
         // get both sets of missions
         $missionsWithNoPredecessorsResults = $missionsWithNoPredecessors->get();
