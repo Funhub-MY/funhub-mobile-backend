@@ -98,19 +98,19 @@ class MissionEventListener
 
         $eventType = $this->mapInteractionToEventType($interaction);
 		// event type  = 'accumulated_likes_for_ratings'
-		if ($eventType == 'accumulated_likes_for_ratings') {
-			// but based on this mission, the one who rated the store should be the targeting user.
-			// change the $user to targeted user (user who create the store rating).
-			Log::info('Targeting Interactable', [
-				'interactable' => $interaction->interactable,
-				'interactable_id' => $interaction->interactable->id,
-				'rated_by_id' => $interaction->interactable->user_id,
-				'rated_by_username' => $interaction->interactable->user->username
-			]);
-
-			// switch to interactable user.
-			$user = $interaction->interactable->user;
-		}
+//		if ($eventType == 'accumulated_likes_for_ratings') {
+//			// but based on this mission, the one who rated the store should be the targeting user.
+//			// change the $user to targeted user (user who create the store rating).
+//			Log::info('Targeting Interactable', [
+//				'interactable' => $interaction->interactable,
+//				'interactable_id' => $interaction->interactable->id,
+//				'rated_by_id' => $interaction->interactable->user_id,
+//				'rated_by_username' => $interaction->interactable->user->username
+//			]);
+//
+//			// switch to interactable user.
+//			$user = $interaction->interactable->user;
+//		}
 		
         if ($eventType) {
             $this->missionService->handleEvent($eventType, $user, ['interaction' => $interaction]);
