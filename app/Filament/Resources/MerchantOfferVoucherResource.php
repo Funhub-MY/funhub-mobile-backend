@@ -319,24 +319,25 @@ class MerchantOfferVoucherResource extends Resource
                         }
                         
                         if ($data['value'] === 'unclaimed') {
-                            return $query->leftJoin('merchant_offer_user', function($join) {
-                                $join->on('merchant_offer_user.voucher_id', '=', 'merchant_offer_vouchers.id')
-                                     ->where('merchant_offer_user.status', '=', 1);
-                            })->whereNull('merchant_offer_user.id');
+							return $query->whereNotExists(function ($subquery) {
+								$subquery->select(DB::raw(1))
+									->from('merchant_offer_user')
+									->whereColumn('merchant_offer_user.voucher_id', 'merchant_offer_vouchers.id')
+									->where('merchant_offer_user.status', 1)
+									->limit(1);
+							});
                         } else if ($data['value']) {
-                            return $query->whereExists(function ($subquery) use ($data) {
-                                $subquery->select(\DB::raw(1))
-                                    ->from('merchant_offer_user')
-                                    ->whereColumn('merchant_offer_user.voucher_id', 'merchant_offer_vouchers.id')
-                                    ->where('merchant_offer_user.status', $data['value'])
-                                    ->whereNotExists(function ($newerQuery) {
-                                        $newerQuery->select(\DB::raw(1))
-                                            ->from('merchant_offer_user as newer_claim')
-                                            ->whereColumn('newer_claim.voucher_id', 'merchant_offer_user.voucher_id')
-                                            ->whereRaw('newer_claim.created_at > merchant_offer_user.created_at');
-                                    })
-                                    ->limit(1);
-                            });
+							return $query->whereExists(function ($subquery) use ($data) {
+								$subquery->select(DB::raw(1))
+									->from('merchant_offer_user as mou1')
+									->whereColumn('mou1.voucher_id', 'merchant_offer_vouchers.id')
+									->where('mou1.status', $data['value'])
+									->whereRaw('mou1.created_at = (
+									SELECT MAX(mou2.created_at) 
+									FROM merchant_offer_user as mou2 
+									WHERE mou2.voucher_id = mou1.voucher_id
+								)');
+							});
                         }
                         
                         return $query;
