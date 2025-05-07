@@ -19,12 +19,7 @@ class MergeDuplicateStoreLocations extends Command
      *
      * @var string
      */
-    protected $signature = 'locations:merge-duplicates 
-                            {--dry-run : Run without making any changes to the database} 
-                            {--store_id= : Process specific store IDs (comma-separated)} 
-                            {--store_name= : Process only stores with these names (comma-separated, partial matching)}
-                            {--location_id= : Process only specific location IDs (comma-separated)}
-                            {--similarity=80 : Minimum name similarity percentage to consider stores as duplicates}';
+    protected $signature = 'locations:merge-duplicates {--dry-run} {--store-id=} {--store-name=} {--location-id=} {--similarity=80}';
 
     /**
      * The console command description.
@@ -92,9 +87,9 @@ class MergeDuplicateStoreLocations extends Command
     public function handle()
     {
         $isDryRun = $this->option('dry-run');
-        $storeIds = $this->option('store_id');
-        $locationIds = $this->option('location_id');
-        $storeNames = $this->option('store_name');
+        $storeIds = $this->option('store-id');
+        $locationIds = $this->option('location-id');
+        $storeNames = $this->option('store-name');
         // $ignoreMalls = $this->option('ignore_malls');
         $minSimilarity = (int) $this->option('similarity') ?: 80;
 
@@ -110,6 +105,30 @@ class MergeDuplicateStoreLocations extends Command
             'store_names' => $storeNames,
             // 'ignore_malls' => $ignoreMalls
         ]);
+
+        // Process specific store IDs if provided
+        if ($storeIds) {
+            $storeIdArray = array_map('trim', explode(',', $storeIds));
+            $this->info('Filtering by store IDs: ' . implode(', ', $storeIdArray));
+            
+            return $this->processSpecificStores($storeIdArray, $isDryRun);
+        }
+        
+        // Process stores by name if provided
+        if ($storeNames) {
+            $storeNameArray = array_map('trim', explode(',', $storeNames));
+            $this->info('Filtering by store names: ' . implode(', ', $storeNameArray));
+            
+            return $this->processStoresByName($storeNameArray, $isDryRun);
+        }
+        
+        // Process specific location IDs if provided
+        if ($locationIds) {
+            $locationIdArray = array_map('trim', explode(',', $locationIds));
+            $this->info('Filtering by location IDs: ' . implode(', ', $locationIdArray));
+            
+            return $this->processSpecificLocations($locationIdArray, $isDryRun);
+        }
 
         try {
             // Step 1: Find locations with more than one Store attached (potential duplicates)
@@ -204,13 +223,329 @@ class MergeDuplicateStoreLocations extends Command
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
+            $this->error("Error: {$e->getMessage()}");
             return Command::FAILURE;
         }
+    }
+    
+    /**
+     * Process specific stores by ID
+     * 
+     * @param array $storeIds
+     * @param bool $isDryRun
+     * @return int
+     */
+    private function processSpecificStores(array $storeIds, bool $isDryRun): int
+    {
+        $this->info('Processing specific stores by ID...');
+        $totalProcessed = 0;
+        $totalMerged = 0;
+        
+        // Get the stores by ID
+        $stores = Store::whereIn('id', $storeIds)->get();
+        
+        if ($stores->isEmpty()) {
+            $this->warn('No stores found with the provided IDs.');
+            return Command::SUCCESS;
+        }
+        
+        $this->info('Found ' . $stores->count() . ' stores to process.');
+        
+        foreach ($stores as $store) {
+            $this->info("Processing store ID: {$store->id}, Name: {$store->name}");
+            
+            // Find the location for this store
+            $location = DB::table('locatables')
+                ->where('locatable_id', $store->id)
+                ->where('locatable_type', Store::class)
+                ->first();
+                
+            if (!$location) {
+                $this->warn("No location found for store ID {$store->id}, skipping.");
+                continue;
+            }
+            
+            // Find other stores at the same location
+            $otherStores = DB::table('locatables')
+                ->join('stores', 'locatables.locatable_id', '=', 'stores.id')
+                ->where('locatables.location_id', $location->location_id)
+                ->where('locatables.locatable_type', Store::class)
+                ->where('stores.id', '!=', $store->id)
+                ->select('stores.*', 'locatables.id as locatable_id')
+                ->get();
+                
+            if ($otherStores->isEmpty()) {
+                $this->info("No duplicate stores found for store ID {$store->id} at location ID {$location->location_id}.");
+                continue;
+            }
+            
+            $this->info("Found " . $otherStores->count() . " potential duplicate stores at location ID {$location->location_id}.");
+            
+            // Determine which store should be kept (prefer the one with user_id)
+            $canonicalStore = $store;
+            $duplicateStores = $otherStores;
+            
+            if ($store->user_id === null && $otherStores->whereNotNull('user_id')->isNotEmpty()) {
+                $canonicalStore = $otherStores->whereNotNull('user_id')->first();
+                $duplicateStores = collect([$store])->merge($otherStores->where('id', '!=', $canonicalStore->id));
+                $this->info("Store ID {$store->id} has no user_id, using store ID {$canonicalStore->id} as canonical.");
+            } else {
+                $this->info("Using store ID {$store->id} as canonical.");
+            }
+            
+            $canonicalStoreModel = Store::find($canonicalStore->id);
+            $locationModel = Location::find($location->location_id);
+            
+            foreach ($duplicateStores as $dupStore) {
+                $dupStoreModel = Store::find($dupStore->id);
+                if (!$dupStoreModel) {
+                    $this->warn("Duplicate store ID {$dupStore->id} not found, skipping.");
+                    continue;
+                }
+                $this->info("Handling duplicate store ID {$dupStore->id} (Name: {$dupStore->name}) for location_id {$location->location_id}");
+                
+                // Move articles from duplicate store/location to legit store/location
+                $articlesMoved = $this->moveArticles($locationModel, $locationModel, $isDryRun);
+                
+                // Move ratings from duplicate location to legit location
+                $ratingsMoved = $this->moveLocationRatings($locationModel, $locationModel, $isDryRun);
+                
+                // Update ratings for legit store
+                $this->updateStoreRatings($canonicalStoreModel, $isDryRun);
+                
+                // Delete the duplicate store and its locatable link
+                if (!$isDryRun) {
+                    DB::table('locatables')
+                        ->where('locatable_id', $dupStore->id)
+                        ->where('locatable_type', Store::class)
+                        ->where('location_id', $location->location_id)
+                        ->delete();
+                    $dupStoreModel->delete();
+                    $this->info("Deleted duplicate store ID {$dupStore->id}");
+                    Log::info('[MergeDuplicateStoreLocations] Deleted duplicate store', [
+                        'store_id' => $dupStore->id,
+                        'location_id' => $location->location_id
+                    ]);
+                } else {
+                    $this->info("[DRY RUN] Would delete duplicate store ID {$dupStore->id}");
+                }
+                $totalMerged++;
+            }
+            $totalProcessed++;
+        }
+        
+        $this->info("Command completed. Processed {$totalProcessed} stores, merged {$totalMerged} duplicate stores.");
+        Log::info('[MergeDuplicateStoreLocations] Command completed', [
+            'processed_stores' => $totalProcessed,
+            'merged_stores' => $totalMerged
+        ]);
+        
+        return Command::SUCCESS;
+    }
+    
+    /**
+     * Process stores by name
+     * 
+     * @param array $storeNames
+     * @param bool $isDryRun
+     * @return int
+     */
+    private function processStoresByName(array $storeNames, bool $isDryRun): int
+    {
+        $this->info('Processing stores by name...');
+        $totalProcessed = 0;
+        $totalMerged = 0;
+        
+        foreach ($storeNames as $storeName) {
+            $this->info("Looking for stores with name like '{$storeName}'...");
+            
+            // Find stores with similar names
+            $stores = Store::where('name', 'like', "%{$storeName}%")->get();
+            
+            if ($stores->isEmpty()) {
+                $this->warn("No stores found with name like '{$storeName}'.");
+                continue;
+            }
+            
+            $this->info("Found " . $stores->count() . " stores with name like '{$storeName}'.");
+            
+            // Group stores by location
+            $storesByLocation = [];
+            
+            foreach ($stores as $store) {
+                $locations = DB::table('locatables')
+                    ->where('locatable_id', $store->id)
+                    ->where('locatable_type', Store::class)
+                    ->pluck('location_id');
+                    
+                foreach ($locations as $locationId) {
+                    if (!isset($storesByLocation[$locationId])) {
+                        $storesByLocation[$locationId] = [];
+                    }
+                    $storesByLocation[$locationId][] = $store;
+                }
+            }
+            
+            // Process each location with multiple stores
+            foreach ($storesByLocation as $locationId => $locationStores) {
+                if (count($locationStores) <= 1) {
+                    continue; // Skip locations with only one store
+                }
+                
+                $this->info("Processing location_id: {$locationId} with " . count($locationStores) . " stores.");
+                
+                // Determine which store should be kept (prefer the one with user_id)
+                $storesCollection = collect($locationStores);
+                $legitStores = $storesCollection->whereNotNull('user_id');
+                
+                if ($legitStores->isEmpty()) {
+                    $this->warn("No legit (user_id != null) store for location_id {$locationId}, skipping.");
+                    continue;
+                }
+                
+                $canonicalStore = $legitStores->first();
+                $duplicateStores = $storesCollection->where('id', '!=', $canonicalStore->id);
+                
+                $this->info("Legit store for location_id {$locationId}: Store ID {$canonicalStore->id}, Name: {$canonicalStore->name}");
+                
+                $locationModel = Location::find($locationId);
+                
+                foreach ($duplicateStores as $dupStore) {
+                    $this->info("Handling duplicate store ID {$dupStore->id} (Name: {$dupStore->name}) for location_id {$locationId}");
+                    
+                    // Move articles from duplicate store/location to legit store/location
+                    $articlesMoved = $this->moveArticles($locationModel, $locationModel, $isDryRun);
+                    
+                    // Move ratings from duplicate location to legit location
+                    $ratingsMoved = $this->moveLocationRatings($locationModel, $locationModel, $isDryRun);
+                    
+                    // Update ratings for legit store
+                    $this->updateStoreRatings($canonicalStore, $isDryRun);
+                    
+                    // Delete the duplicate store and its locatable link
+                    if (!$isDryRun) {
+                        DB::table('locatables')
+                            ->where('locatable_id', $dupStore->id)
+                            ->where('locatable_type', Store::class)
+                            ->where('location_id', $locationId)
+                            ->delete();
+                        Store::destroy($dupStore->id);
+                        $this->info("Deleted duplicate store ID {$dupStore->id}");
+                        Log::info('[MergeDuplicateStoreLocations] Deleted duplicate store', [
+                            'store_id' => $dupStore->id,
+                            'location_id' => $locationId
+                        ]);
+                    } else {
+                        $this->info("[DRY RUN] Would delete duplicate store ID {$dupStore->id}");
+                    }
+                    $totalMerged++;
+                }
+                $totalProcessed++;
+            }
+        }
+        
+        $this->info("Command completed. Processed {$totalProcessed} locations, merged {$totalMerged} duplicate stores.");
+        Log::info('[MergeDuplicateStoreLocations] Command completed', [
+            'processed_locations' => $totalProcessed,
+            'merged_stores' => $totalMerged
+        ]);
+        
+        return Command::SUCCESS;
+    }
+    
+    /**
+     * Process specific locations by ID
+     * 
+     * @param array $locationIds
+     * @param bool $isDryRun
+     * @return int
+     */
+    private function processSpecificLocations(array $locationIds, bool $isDryRun): int
+    {
+        $this->info('Processing specific locations by ID...');
+        $totalProcessed = 0;
+        $totalMerged = 0;
+        
+        foreach ($locationIds as $locationId) {
+            $this->info("Processing location_id: {$locationId}");
+            
+            $stores = DB::table('locatables')
+                ->join('stores', 'locatables.locatable_id', '=', 'stores.id')
+                ->where('locatables.location_id', $locationId)
+                ->where('locatables.locatable_type', Store::class)
+                ->select('stores.*', 'locatables.id as locatable_id')
+                ->get();
+                
+            if ($stores->count() <= 1) {
+                $this->info("Location ID {$locationId} has " . $stores->count() . " store(s), no duplicates to merge.");
+                continue;
+            }
+            
+            $legitStores = $stores->whereNotNull('user_id');
+            $duplicateStores = $stores->whereNull('user_id');
+            
+            if ($legitStores->isEmpty()) {
+                $this->warn("No legit (user_id != null) store for location_id {$locationId}, skipping.");
+                continue;
+            }
+            
+            // Pick the first legit store as the canonical one
+            $canonicalStore = $legitStores->first();
+            $canonicalStoreModel = Store::find($canonicalStore->id);
+            $locationModel = Location::find($locationId);
+            
+            $this->info("Legit store for location_id {$locationId}: Store ID {$canonicalStore->id}, Name: {$canonicalStore->name}");
+            
+            foreach ($duplicateStores as $dupStore) {
+                $dupStoreModel = Store::find($dupStore->id);
+                if (!$dupStoreModel) {
+                    $this->warn("Duplicate store ID {$dupStore->id} not found, skipping.");
+                    continue;
+                }
+                $this->info("Handling duplicate store ID {$dupStore->id} (Name: {$dupStore->name}) for location_id {$locationId}");
+                
+                // Move articles from duplicate store/location to legit store/location
+                $articlesMoved = $this->moveArticles($locationModel, $locationModel, $isDryRun);
+                
+                // Move ratings from duplicate location to legit location
+                $ratingsMoved = $this->moveLocationRatings($locationModel, $locationModel, $isDryRun);
+                
+                // Update ratings for legit store
+                $this->updateStoreRatings($canonicalStoreModel, $isDryRun);
+                
+                // Delete the duplicate store and its locatable link
+                if (!$isDryRun) {
+                    DB::table('locatables')
+                        ->where('locatable_id', $dupStore->id)
+                        ->where('locatable_type', Store::class)
+                        ->where('location_id', $locationId)
+                        ->delete();
+                    $dupStoreModel->delete();
+                    $this->info("Deleted duplicate store ID {$dupStore->id}");
+                    Log::info('[MergeDuplicateStoreLocations] Deleted duplicate store', [
+                        'store_id' => $dupStore->id,
+                        'location_id' => $locationId
+                    ]);
+                } else {
+                    $this->info("[DRY RUN] Would delete duplicate store ID {$dupStore->id}");
+                }
+                $totalMerged++;
+            }
+            $totalProcessed++;
+        }
+        
+        $this->info("Command completed. Processed {$totalProcessed} locations, merged {$totalMerged} duplicate stores.");
+        Log::info('[MergeDuplicateStoreLocations] Command completed', [
+            'processed_locations' => $totalProcessed,
+            'merged_stores' => $totalMerged
+        ]);
+        
+        return Command::SUCCESS;
     }
 
     /**
      * Move articles from one location to another
-     *
+     * 
      * @param Location $fromLocation
      * @param Location $toLocation
      * @param bool $isDryRun
@@ -218,43 +553,39 @@ class MergeDuplicateStoreLocations extends Command
      */
     private function moveArticles(Location $fromLocation, Location $toLocation, bool $isDryRun): int
     {
-        // Get count without loading all articles into memory
-        $count = $fromLocation->articles()->count();
+        // Find articles associated with the source location
+        $articles = Article::whereHas('locations', function ($query) use ($fromLocation) {
+            $query->where('locations.id', $fromLocation->id);
+        })->get();
         
-        $this->info("Found {$count} articles to move from location {$fromLocation->id} to {$toLocation->id}");
-        
-        if ($count === 0) {
+        if ($articles->isEmpty()) {
+            $this->info("No articles found for location ID {$fromLocation->id}.");
             return 0;
         }
         
-        if (!$isDryRun) {
-            // Process in chunks to reduce memory usage
-            $fromLocation->articles()->chunk(50, function ($articles) use ($toLocation, $fromLocation) {
-                foreach ($articles as $article) {
-                    // Check if article is already attached to the target location
-                    $isAlreadyAttached = DB::table('locatables')
-                        ->where('location_id', $toLocation->id)
-                        ->where('locatable_type', Article::class)
-                        ->where('locatable_id', $article->id)
-                        ->exists();
-                    
-                    if (!$isAlreadyAttached) {
-                        // Attach article to the new location
-                        $toLocation->articles()->attach($article->id);
-                        
-                        $this->info("Moved article (ID: {$article->id}) to location (ID: {$toLocation->id})");
-                        Log::info('[MergeDuplicateStoreLocations] Moved article', [
-                            'article_id' => $article->id,
-                            'from_location_id' => $fromLocation->id,
-                            'to_location_id' => $toLocation->id
-                        ]);
-                    } else {
-                        $this->info("Article (ID: {$article->id}) is already attached to location (ID: {$toLocation->id})");
-                    }
-                }
-            });
-        } else {
-            $this->info("[DRY RUN] Would move {$count} articles from location {$fromLocation->id} to {$toLocation->id}");
+        $count = 0;
+        foreach ($articles as $article) {
+            // Check if the article is already associated with the target location
+            $alreadyAssociated = $article->locations()->where('locations.id', $toLocation->id)->exists();
+            
+            if ($alreadyAssociated) {
+                $this->info("Article ID {$article->id} is already associated with location ID {$toLocation->id}.");
+                continue;
+            }
+            
+            if (!$isDryRun) {
+                // Associate the article with the target location
+                $article->locations()->attach($toLocation->id);
+                $this->info("Moved article ID {$article->id} from location ID {$fromLocation->id} to location ID {$toLocation->id}.");
+                Log::info('[MergeDuplicateStoreLocations] Moved article', [
+                    'article_id' => $article->id,
+                    'from_location_id' => $fromLocation->id,
+                    'to_location_id' => $toLocation->id
+                ]);
+            } else {
+                $this->info("[DRY RUN] Would move article ID {$article->id} from location ID {$fromLocation->id} to location ID {$toLocation->id}.");
+            }
+            $count++;
         }
         
         return $count;
@@ -262,7 +593,7 @@ class MergeDuplicateStoreLocations extends Command
 
     /**
      * Move location ratings from one location to another
-     *
+     * 
      * @param Location $fromLocation
      * @param Location $toLocation
      * @param bool $isDryRun
@@ -270,92 +601,93 @@ class MergeDuplicateStoreLocations extends Command
      */
     private function moveLocationRatings(Location $fromLocation, Location $toLocation, bool $isDryRun): int
     {
-        // Get count without loading all ratings into memory
-        $count = $fromLocation->ratings()->count();
+        // Find ratings associated with the source location
+        $ratings = LocationRating::where('location_id', $fromLocation->id)->get();
         
-        $this->info("Found {$count} ratings to move from location {$fromLocation->id} to {$toLocation->id}");
-        
-        if ($count === 0) {
+        if ($ratings->isEmpty()) {
+            $this->info("No ratings found for location ID {$fromLocation->id}.");
             return 0;
         }
         
-        if (!$isDryRun) {
-            // Process in chunks to reduce memory usage
-            $fromLocation->ratings()->chunk(50, function ($ratings) use ($toLocation, $fromLocation) {
-                foreach ($ratings as $rating) {
-                    // Check if a rating from the same user already exists in the target location
-                    $existingRating = $toLocation->ratings()
-                        ->where('user_id', $rating->user_id)
-                        ->first();
-                    
-                    if (!$existingRating) {
-                        // Create a new rating in the target location using insert instead of create+save
-                        DB::table('location_ratings')->insert([
-                            'location_id' => $toLocation->id,
-                            'user_id' => $rating->user_id,
-                            'rating' => $rating->rating,
-                            'created_at' => $rating->created_at,
-                            'updated_at' => $rating->updated_at
-                        ]);
-                        
-                        $this->info("Moved rating (ID: {$rating->id}) to location (ID: {$toLocation->id})");
-                        Log::info('[MergeDuplicateStoreLocations] Moved rating', [
-                            'rating_id' => $rating->id,
-                            'from_location_id' => $fromLocation->id,
-                            'to_location_id' => $toLocation->id
-                        ]);
-                    } else {
-                        $this->info("Rating from user (ID: {$rating->user_id}) already exists in location (ID: {$toLocation->id})");
-                    }
-                    
-                    // Delete the old rating
-                    $rating->delete();
-                }
-            });
-            
-            // Update the average rating of the target location using direct query for efficiency
-            $avgRating = DB::table('location_ratings')
-                ->where('location_id', $toLocation->id)
-                ->avg('rating') ?? 0;
+        $count = 0;
+        foreach ($ratings as $rating) {
+            // Check if a rating from the same user already exists for the target location
+            $existingRating = LocationRating::where('location_id', $toLocation->id)
+                ->where('user_id', $rating->user_id)
+                ->first();
                 
-            DB::table('locations')
-                ->where('id', $toLocation->id)
-                ->update(['average_ratings' => $avgRating]);
+            if ($existingRating) {
+                $this->info("Rating from user ID {$rating->user_id} already exists for location ID {$toLocation->id}.");
+                continue;
+            }
             
-            $this->info("Updated average rating for location (ID: {$toLocation->id}) to {$avgRating}");
-        } else {
-            $this->info("[DRY RUN] Would move {$count} ratings from location {$fromLocation->id} to {$toLocation->id}");
+            if (!$isDryRun) {
+                // Create a new rating for the target location
+                LocationRating::create([
+                    'user_id' => $rating->user_id,
+                    'location_id' => $toLocation->id,
+                    'rating' => $rating->rating,
+                    'review' => $rating->review,
+                    'created_at' => $rating->created_at,
+                    'updated_at' => now()
+                ]);
+                $this->info("Moved rating ID {$rating->id} from location ID {$fromLocation->id} to location ID {$toLocation->id}.");
+                Log::info('[MergeDuplicateStoreLocations] Moved location rating', [
+                    'rating_id' => $rating->id,
+                    'from_location_id' => $fromLocation->id,
+                    'to_location_id' => $toLocation->id
+                ]);
+            } else {
+                $this->info("[DRY RUN] Would move rating ID {$rating->id} from location ID {$fromLocation->id} to location ID {$toLocation->id}.");
+            }
+            $count++;
         }
         
         return $count;
     }
 
     /**
-     * Update store ratings based on the location ratings
-     *
+     * Update store ratings
+     * 
      * @param Store $store
      * @param bool $isDryRun
+     * @return bool Success status
      */
-    private function updateStoreRatings(Store $store, bool $isDryRun): void
+    private function updateStoreRatings(Store $store, bool $isDryRun): bool
     {
+        // Get all locations associated with this store
+        $locationIds = DB::table('locatables')
+            ->where('locatable_id', $store->id)
+            ->where('locatable_type', Store::class)
+            ->pluck('location_id');
+            
+        if ($locationIds->isEmpty()) {
+            $this->warn("No locations found for store ID {$store->id}.");
+            return false;
+        }
+        
+        // Calculate average rating from all associated locations
+        $avgRating = LocationRating::whereIn('location_id', $locationIds)->avg('rating') ?: 0;
+        $avgRating = round($avgRating, 2); // Round to 2 decimal places
+        
         if (!$isDryRun) {
-            // Recalculate the average rating for the store
-            $avgRating = $store->storeRatings()->avg('rating') ?? 0;
             
             $store->ratings = $avgRating;
             $store->save();
             
             // Update the search index
-            $store->searchable();
-            
-            $this->info("Updated ratings for store (ID: {$store->id}) to {$avgRating}");
+            $store->ratings = $avgRating;
+            $store->save();
+            $this->info("Updated ratings for store ID {$store->id} to {$avgRating}");
             Log::info('[MergeDuplicateStoreLocations] Updated store ratings', [
                 'store_id' => $store->id,
-                'ratings' => $avgRating
+                'new_rating' => $avgRating
             ]);
         } else {
-            $this->info("[DRY RUN] Would update ratings for store (ID: {$store->id})");
+            $this->info("[DRY RUN] Would update store ID {$store->id} ratings to {$avgRating}");
         }
+        
+        return true;
     }
     
     /**
