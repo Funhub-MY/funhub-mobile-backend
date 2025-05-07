@@ -107,7 +107,7 @@ class MixpanelService
                 'merchant_offer_id' => $merchantOffer->id,
                 'Time' => $purchaseDateTime->timestamp * 1000,
 				'timestamp' => $purchaseDateTime->timestamp * 1000, // convert to milliseconds
-				'time' => $purchaseDateTime->timestamp * 1000 // convert to milliseconds
+				'time' => $purchaseDateTime->timestamp
 			];
             
             // use user ID as the distinct ID for proper user tracking
