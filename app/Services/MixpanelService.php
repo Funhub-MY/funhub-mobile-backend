@@ -106,8 +106,9 @@ class MixpanelService
                 '$insert_id' => (string) $voucher->id, // ensure it's a string
                 'merchant_offer_id' => $merchantOffer->id,
                 'Time' => $purchaseDateTime->timestamp * 1000,
-                'timestamp' => $purchaseDateTime->timestamp * 1000 // convert to milliseconds
-            ];
+				'timestamp' => $purchaseDateTime->timestamp * 1000, // convert to milliseconds
+				'time' => $purchaseDateTime->timestamp * 1000 // convert to milliseconds
+			];
             
             // use user ID as the distinct ID for proper user tracking
             $distinctId = (string) 'funhub-mobile-users-' . $voucher->owned_by_id; // ensure it's a string
