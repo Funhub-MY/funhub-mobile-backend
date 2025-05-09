@@ -377,5 +377,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
         // Promotion Codes
         Route::post('/promotion-codes/redeem', [\App\Http\Controllers\Api\PromotionCodeController::class, 'redeem']);
-    });
+
+		// Global Settings
+		Route::get('/getSettingSwitch', [\App\Http\Controllers\Api\SettingsController::class, 'getSettingSwitch']);
+		Route::post('/postSettingsSwitch', [\App\Http\Controllers\Api\SettingsController::class, 'postSettingsSwitch']);
+	});
 });
