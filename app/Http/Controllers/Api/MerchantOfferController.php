@@ -15,6 +15,7 @@ use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
 use App\Models\ShareableLink;
+use App\Models\Store;
 use App\Models\Transaction;
 use App\Models\UserCard;
 use App\Notifications\OfferClaimed;
@@ -436,7 +437,9 @@ class MerchantOfferController extends Controller
                 'user.merchant.media',
                 'claims',
                 'categories',
-                'stores',
+                'stores' => function ($query) {
+                    $query->where('status', Store::STATUS_ACTIVE);
+                },
                 'stores.location',
                 'stores.storeRatings',
                 'claims',
