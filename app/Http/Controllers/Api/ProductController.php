@@ -232,7 +232,8 @@ class ProductController extends Controller
             'fiat_payment_method' => 'required_if:payment_method,fiat,in:fpx,card',
             'card_id' => 'exists:user_cards,id',
             'quantity' => 'required|integer|min:1',
-			'referral_code' => 'nullable|string'
+			'referral_code' => 'nullable|string',
+            'promotion_code' => 'nullable|string|exists:promotion_codes,code'
         ]);
 
        // check if user has verified email address
@@ -294,6 +295,24 @@ class ProductController extends Controller
             ($request->has('name') ? $request->name : null),
             ($request->has('referral_code') ? $request->referral_code : null),
         );
+
+        // Associate promotion code with transaction if provided
+        if ($request->has('promotion_code')) {
+            $promotionCode = \App\Models\PromotionCode::where('code', $request->promotion_code)
+                ->where('claimed_by_id', null)
+                ->where('is_redeemed', false)
+                ->first();
+            
+            if ($promotionCode) {
+                $transaction->promotionCodes()->attach($promotionCode->id);
+                
+                Log::info('[ProductController] Promotion code associated with transaction', [
+                    'promotion_code_id' => $promotionCode->id,
+                    'transaction_id' => $transaction->id,
+                    'user_id' => $user->id
+                ]);
+            }
+        }
 
         // if gateway is mpay call mpay service generate Hash for frontend form
         if ($transaction->gateway == 'mpay') {

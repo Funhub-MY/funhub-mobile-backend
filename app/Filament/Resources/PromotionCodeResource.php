@@ -102,7 +102,7 @@ class PromotionCodeResource extends Resource
 
                 Tables\Columns\TextColumn::make('promotionCodeGroup.name')
                     ->label('Group Name')
-                    ->url(fn ($record): string => route('filament.resources.promotion-code-groups.edit', $record->promotionCodeGroup))
+                    ->url(fn ($record): string => route('filament.resources.promotion-code-groups.edit', $record->promotionCodeGroup ?? ''))
                     ->searchable(),
                     
                 Tables\Columns\TextColumn::make('reward_name')
