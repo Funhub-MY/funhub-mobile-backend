@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Reward;
 use App\Models\RewardComponent;
 use App\Models\PromotionCodeGroup;
+use App\Models\Transaction;
 
 class PromotionCode extends BaseModel implements Auditable
 {
@@ -57,6 +58,12 @@ class PromotionCode extends BaseModel implements Auditable
     public function isActive(): bool
     {
         return $this->status && ($this->promotionCodeGroup === null || $this->promotionCodeGroup->isActive());
+    }
+    
+    public function transactions()
+    {
+        return $this->belongsToMany(Transaction::class, 'promotion_code_transaction')
+            ->withTimestamps();
     }
 
     public static function generateUniqueCode(): string

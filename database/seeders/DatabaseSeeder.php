@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call([
             RssChannelSeeder::class,
+            PaymentMethodSeeder::class,
             // CountriesTableSeeder::class,
             // StatesTableSeeder::class,
         ]);

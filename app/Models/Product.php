@@ -62,6 +62,12 @@ class Product extends BaseModel implements HasMedia, Auditable
             ->withPivot('quantity');
     }
 
+	public function promotionCodeGroups()
+	{
+		return $this->belongsToMany(PromotionCodeGroup::class, 'promotion_code_group_product')
+			->withTimestamps();
+	}
+
     /**
      * Scope a query to only include published offers.
      */

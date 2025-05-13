@@ -14,6 +14,7 @@ use App\Models\MerchantOfferVoucher;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\UserCard;
+use App\Models\PromotionCode;
 use App\Events\GiftCardPurchased;
 use App\Notifications\PurchasedGiftCardNotification;
 use App\Notifications\PurchasedOfferNotification;
@@ -278,6 +279,7 @@ class PaymentController extends Controller
 
                 } else if ($transaction->transactionable_type == Product::class) {
                     $this->updateProductTransaction($request, $transaction);
+					$this->processPromotionCodes($transaction);
 
                     if ($transaction->user->email) {
                         try {
@@ -880,6 +882,52 @@ class PaymentController extends Controller
         }
     }
 
+    /**
+     * Process promotion codes associated with a transaction
+     * Mark them as redeemed when transaction is successful
+     *
+     * @param Transaction $transaction
+     * @return void
+     */
+    protected function processPromotionCodes($transaction)
+    {
+        try {
+            // Get all promotion codes associated with this transaction
+            $promotionCodes = $transaction->promotionCodes;
+            
+            if ($promotionCodes->count() > 0) {
+                foreach ($promotionCodes as $promotionCode) {
+                    // Mark the promotion code as redeemed
+                    $promotionCode->update([
+                        'claimed_by_id' => $transaction->user_id,
+                        'is_redeemed' => true,
+                        'redeemed_at' => now()
+                    ]);
+                    
+                    Log::info('[PaymentController] Promotion code marked as redeemed', [
+                        'promotion_code_id' => $promotionCode->id,
+                        'transaction_id' => $transaction->id,
+                        'user_id' => $transaction->user_id
+                    ]);
+                }
+            } else {
+                // Transaction doesn't have any promotion codes attached
+                Log::info('[PaymentController] No promotion codes to process for transaction', [
+                    'transaction_id' => $transaction->id,
+                    'transaction_no' => $transaction->transaction_no
+                ]);
+                
+                // Transaction completed successfully without using any promotion codes
+                return;
+            }
+        } catch (\Exception $e) {
+            Log::error('[PaymentController] Error processing promotion codes', [
+                'error' => $e->getMessage(),
+                'transaction_id' => $transaction->id
+            ]);
+        }
+    }
+    
     public function processEncrypt($data)
     {
 

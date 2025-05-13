@@ -378,6 +378,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
         // Promotion Codes
         Route::post('/promotion-codes/redeem', [\App\Http\Controllers\Api\PromotionCodeController::class, 'redeem']);
+        Route::post('/promotion-codes/check_promo_code', [\App\Http\Controllers\Api\PromotionCodeController::class, 'postCheckPromoCode']);
         
         // Global Settings
         Route::get('/getSettingSwitch', [\App\Http\Controllers\Api\SettingsController::class, 'getSettingSwitch']);
