@@ -265,6 +265,36 @@ class ProductController extends Controller
         //proceed to transaction
         $user = request()->user();
         $net_amount = (($product->discount_price) ?? $product->unit_price)  * $request->quantity;
+        
+        // Handle promotion code if provided
+        $promotionDiscount = 0;
+        $appliedPromotionCode = null;
+        
+        if ($request->has('promotion_code')) {
+            $promotionCode = \App\Models\PromotionCode::where('code', $request->promotion_code)
+                ->where('is_redeemed', false)
+                ->where('status', true)
+                ->first();
+            
+            if ($promotionCode && $promotionCode->isActive()) {
+                $promotionCodeGroup = $promotionCode->promotionCodeGroup;
+                
+                if ($promotionCodeGroup && $promotionCodeGroup->use_fix_amount_discount && $promotionCodeGroup->discount_amount > 0) {
+                    $promotionDiscount = $promotionCodeGroup->discount_amount;
+                    $appliedPromotionCode = $promotionCode;
+
+                    // Apply the discount
+                    $net_amount = $net_amount - $promotionDiscount;
+                    
+                    Log::info('[ProductController] Promotion code discount applied', [
+                        'promotion_code' => $request->promotion_code,
+                        'discount_amount' => $promotionDiscount,
+                        'original_amount' => (($product->discount_price) ?? $product->unit_price) * $request->quantity,
+                        'final_amount' => $net_amount
+                    ]);
+                }
+            }
+        }
 
         $walletType = null;
         // if request has payment type, then use it
@@ -297,21 +327,15 @@ class ProductController extends Controller
         );
 
         // Associate promotion code with transaction if provided
-        if ($request->has('promotion_code')) {
-            $promotionCode = \App\Models\PromotionCode::where('code', $request->promotion_code)
-                ->where('claimed_by_id', null)
-                ->where('is_redeemed', false)
-                ->first();
+        if ($appliedPromotionCode) {
+            $transaction->promotionCodes()->attach($appliedPromotionCode->id);
             
-            if ($promotionCode) {
-                $transaction->promotionCodes()->attach($promotionCode->id);
-                
-                Log::info('[ProductController] Promotion code associated with transaction', [
-                    'promotion_code_id' => $promotionCode->id,
-                    'transaction_id' => $transaction->id,
-                    'user_id' => $user->id
-                ]);
-            }
+            Log::info('[ProductController] Promotion code associated with transaction', [
+                'promotion_code_id' => $appliedPromotionCode->id,
+                'transaction_id' => $transaction->id,
+                'user_id' => $user->id,
+                'discount_amount' => $promotionDiscount
+            ]);
         }
 
         // if gateway is mpay call mpay service generate Hash for frontend form
@@ -345,7 +369,8 @@ class ProductController extends Controller
             return response()->json([
                 'message' => __('messages.success.product_controller.Redirect_to_Gateway'),
                 'transaction_no' => $transaction->transaction_no,
-                'gateway_data' => $mpayData
+                'gateway_data' => $mpayData,
+                'promotion_discount' => $promotionDiscount > 0 ? $promotionDiscount : null
             ], 200);
         }
     }
