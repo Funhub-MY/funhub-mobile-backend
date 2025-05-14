@@ -370,7 +370,6 @@ class ProductController extends Controller
                 'message' => __('messages.success.product_controller.Redirect_to_Gateway'),
                 'transaction_no' => $transaction->transaction_no,
                 'gateway_data' => $mpayData,
-                'promotion_discount' => $promotionDiscount > 0 ? $promotionDiscount : null
             ], 200);
         }
     }
