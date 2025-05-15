@@ -111,7 +111,8 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
                             return [
                                 'id' => $location->id,
                                 'name' => $location->name,
-                                'address' => $location->address,
+                                // address take the first , comma item if any
+                                'address' => $location->address ? explode(',', $location->address)[0] : null,
                                 'city' => $location->city,
                                 'lat' => $location->lat,
                                 'lng' => $location->lng,
@@ -181,17 +182,17 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             'discounted_fiat_price' => (float) $this->discounted_fiat_price,
             'available_at_unix' => Carbon::parse($this->available_at)->unix(),
             'available_until_unix' => Carbon::parse($this->available_until)->unix(),
-            'available_at' => $this->available_at,
-            'available_until' => $this->available_until,
+            // 'available_at' => $this->available_at,
+            // 'available_until' => $this->available_until,
             'quantity' => $this->quantity,
-            'claimed_quantity' => $this->claimed_quantity,
+            // 'claimed_quantity' => $this->claimed_quantity,
             'categories' => ($this->allOfferCategories?->map(function($category) {
                 return ['id' => $category->id, 'name' => $category->name];
             })->values()->toArray()) ?? [],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'created_at_diff' => $this->created_at->diffForHumans(),
-            'updated_at_diff' => $this->updated_at->diffForHumans(),
+            // 'created_at_diff' => $this->created_at->diffForHumans(),
+            // 'updated_at_diff' => $this->updated_at->diffForHumans(),
             'category_ids' => $this->categories->pluck('id')->toArray(),
             '_geoloc' => $geolocs,
             'discount_rate' => $discountRate,
