@@ -107,7 +107,17 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
                     $stores[] = [
                         'id' => $store->id,
                         'name' => $store->name,
-                        'locations' => $store->location,
+                        'locations' => $store->location->map(function ($location) {
+                            return [
+                                'id' => $location->id,
+                                'name' => $location->name,
+                                'state' => ($location->state) ? $location->state->name : null,
+                                'city' => ($location->city) ? $location->city : null,
+                                'zip_code' => $location->zip_code,
+                                'lat' => $location->lat,
+                                'lng' => $location->lng,
+                            ];
+                        }),
                     ];
                 }
                 $firstStoreLocation = $store->location->first();
