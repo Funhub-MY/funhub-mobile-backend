@@ -111,6 +111,8 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
                             return [
                                 'id' => $location->id,
                                 'name' => $location->name,
+                                'address' => $location->address,
+                                'city' => $location->city,
                                 'lat' => $location->lat,
                                 'lng' => $location->lng,
                             ];
