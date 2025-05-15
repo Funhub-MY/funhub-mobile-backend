@@ -111,7 +111,8 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
                             return [
                                 'id' => $location->id,
                                 'name' => $location->name,
-                                'address' => $location->address,
+                                // address take the first , comma item if any
+                                'address' => $location->address ? explode(',', $location->address)[0] : null,
                                 'city' => $location->city,
                                 'lat' => $location->lat,
                                 'lng' => $location->lng,
