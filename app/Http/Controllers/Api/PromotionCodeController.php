@@ -241,8 +241,8 @@ class PromotionCodeController extends Controller
 			$productId = $request->input('product_id');
 			$paymentMethod = $request->input('payment_method');
 
-			// Find the promotion code
-			$promotionCode = PromotionCode::where('code', $code)->first();
+			// Find the promotion code (case-sensitive)
+			$promotionCode = PromotionCode::whereRaw('BINARY code = ?', [$code])->first();
 
 			if (!$promotionCode) {
 				return response()->json([
@@ -344,6 +344,18 @@ class PromotionCodeController extends Controller
 				], 400);
 			}
 
+			// Check if product price is smaller than the discount amount
+			if ($codeGroup->use_fix_amount_discount) {
+				$productPrice = ($product->discount_price) ?? $product->unit_price;
+				
+				if ($productPrice < $codeGroup->discount_amount) {
+					return response()->json([
+						'success' => false,
+						'message' => __('messages.success.promotion_code_controller.Discount_exceeds_product_price'),
+					], 400);
+				}
+			}
+			
 			// If all checks pass, return success with discount information
 			$discountData = [];
 

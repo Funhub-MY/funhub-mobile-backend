@@ -73,7 +73,7 @@ class PromotionCode extends BaseModel implements Auditable
 
         do {
             // generate 4 random characters
-            $chars1 = strtoupper(Str::random(4));
+            $chars1 = strtoupper(Str::random(2));
             
             // generate 4 random numbers
             $numbers = str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);

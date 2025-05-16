@@ -78,17 +78,10 @@ class GeneratePromotionCodesJob implements ShouldQueue
             $codes = [];
             $rewardPivotData = [];
             $now = now();
-            
-            // Check if prefix or suffix should be applied
-            $prefix = $this->group->prefix ?? '';
-            $suffix = $this->group->suffix ?? '';
 
             for ($i = 0; $i < $totalCodes; $i++) {
                 // Generate the base code
-                $baseCode = PromotionCode::generateUniqueCode();
-
-                // Apply prefix and suffix if they exist
-                $code = $prefix . $baseCode . $suffix;
+                $code = PromotionCode::generateUniqueCode();
                 
                 $codes[] = [
                     'code' => $code,

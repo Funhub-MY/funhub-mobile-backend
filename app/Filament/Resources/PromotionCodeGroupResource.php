@@ -42,14 +42,6 @@ class PromotionCodeGroupResource extends Resource
                                 Forms\Components\TextInput::make('name')
                                     ->required()
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('prefix')
-                                    ->label('Code Prefix')
-                                    ->helperText('Promotion Code Prefix')
-                                    ->maxLength(10),
-                                Forms\Components\TextInput::make('suffix')
-                                    ->label('Code Suffix')
-									->helperText('Promotion Code Suffix')
-                                    ->maxLength(10),
                                 Forms\Components\Textarea::make('description')
                                     ->maxLength(65535),
                                

@@ -86,7 +86,8 @@ return [
 			'Day_restriction' => '此优惠码今天不可用',
 			'Time_restriction' => '此优惠码当前不可用',
 			'Campaign_budget_reached' => '优惠码暂时无法使用，活动已达上限',
-        ],
+			'Discount_exceeds_product_price' => '折扣金额超过了商品价格',
+		],
         'support_request_controller' => [
             'Support_request_resolved_and_closed' => '支持请求已解决并关闭',
         ],
