@@ -109,6 +109,30 @@ class PromotionCodeController extends Controller
                     ], 400);
                 }
 
+				// Check user eligibility based on user type
+				if ($promotionCode->promotionCodeGroup->user_type !== array_key_first(PromotionCodeGroup::USER_TYPES)) { // 'all' is the first key
+					$user = auth()->user();
+					$userCreatedAt = Carbon::parse($user->created_at);
+					Log::info($userCreatedAt);
+					$isNewUser = $userCreatedAt->diffInHours($now) <= 48; // New user = registered within 48 hours
+
+					// Check if user type is 'new' but user is not a new user
+					if ($promotionCode->promotionCodeGroup->user_type === array_keys(PromotionCodeGroup::USER_TYPES)[1] && !$isNewUser) { // 'new' is the second key
+						return response()->json([
+							'success' => false,
+							'message' => __('messages.success.promotion_code_controller.User_not_eligible'),
+						], 400);
+					}
+
+					// Check if user type is 'old' but user is a new user
+					if ($promotionCode->promotionCodeGroup->user_type === array_keys(PromotionCodeGroup::USER_TYPES)[2] && $isNewUser) { // 'old' is the third key
+						return response()->json([
+							'success' => false,
+							'message' => __('messages.success.promotion_code_controller.User_not_eligible'),
+						], 400);
+					}
+				}
+
                 // mark as claimed
                 $promotionCode->claimed_by_id = auth()->id();
                 $promotionCode->is_redeemed = true;

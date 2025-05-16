@@ -90,8 +90,7 @@ class PromotionCodeGroupResource extends Resource
 									->label('User Type')
 									->options(\App\Models\PromotionCodeGroup::USER_TYPES)
 									->default(array_key_first(\App\Models\PromotionCodeGroup::USER_TYPES)) // 'all'
-									->visible(fn (callable $get) => $get('use_fix_amount_discount'))
-									->required(fn (callable $get) => $get('use_fix_amount_discount')),
+									->required(),
                                 Forms\Components\Select::make('products')
                                     ->relationship('products', 'name')
                                     ->multiple()
