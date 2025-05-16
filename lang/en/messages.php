@@ -86,7 +86,8 @@ return [
 			'Day_restriction' => 'This promo code is not valid today.',
 			'Time_restriction' => 'This promo code is not valid at this time.',
 			'Campaign_budget_reached' => 'Promo code usage is temporarily disabled. Campaign limit reached.',
-        ],
+			'Discount_exceeds_product_price' => 'The discount amount exceeds the product price.',
+		],
         'support_request_controller' => [
             'Support_request_resolved_and_closed' => 'Support request resolved and closed',
         ],
