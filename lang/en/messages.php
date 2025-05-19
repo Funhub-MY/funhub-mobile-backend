@@ -73,10 +73,10 @@ return [
             'Invalid_code' => 'Invalid code',
 
 			// Validate promotion code when checkout
-			'Code_applied_successfully' => 'Promo Code applied successfully',
+			'Code_applied_successfully' => 'Promo code applied successfully.',
 			'Code_expired' => 'Promo code has expired.',
 			'Code_invalid' => 'Invalid promo code.',
-			'Code_already_used' => 'You have already used this promo code.',
+			'Code_already_used' => 'This promo code has already been used.',
 			'Redemption_limit_reached' => 'Promo code redemption limit has been reached.',
 			'User_not_eligible' => 'This promo code is not available for your account.',
 			'User_condition_not_met' => 'You do not meet the requirements to use this promo code.',
