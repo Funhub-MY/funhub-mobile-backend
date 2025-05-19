@@ -279,8 +279,11 @@ class PaymentController extends Controller
 
                 } else if ($transaction->transactionable_type == Product::class) {
                     $this->updateProductTransaction($request, $transaction);
-					$this->processPromotionCodes($transaction);
-
+                    $this->processPromotionCodes($transaction);
+                    
+                    // Get promotion code data for response if any
+                    $promoResponseData = $this->getPromotionCodeResponseData($transaction);
+                    
                     if ($transaction->user->email) {
                         try {
                             $product = Product::where('id', $transaction->transactionable_id)->first();
@@ -343,6 +346,11 @@ class PaymentController extends Controller
                     'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
                     'success' => true
                 ];
+                
+                // Add promotion code data to response if this was a product transaction with promo code
+                if ($transaction->transactionable_type == Product::class && isset($promoResponseData)) {
+                    $params = array_merge($params, $promoResponseData);
+                }
 
                 if ($transaction->channel === 'app') {
                     return view('payment-return', $params);
@@ -927,7 +935,67 @@ class PaymentController extends Controller
             ]);
         }
     }
-    
+
+    /**
+     * Get promotion code response data for a transaction
+     * 
+     * @param Transaction $transaction
+     * @return array|null
+     */
+    protected function getPromotionCodeResponseData($transaction)
+    {
+        try {
+            // Get the first promotion code associated with this transaction
+            $promotionCode = $transaction->promotionCodes->first();
+            
+            if (!$promotionCode) {
+                return null;
+            }
+            
+            // Get the promotion code group
+            $codeGroup = $promotionCode->promotionCodeGroup;
+            
+            if (!$codeGroup) {
+                return null;
+            }
+            
+            // Prepare response data
+            $responseData = [
+                'promotion_code' => $promotionCode->only(['id', 'code']),
+                'promotion_code_group' => $codeGroup->only(['id', 'name', 'description', 'use_fix_amount_discount', 'discount_amount']),
+            ];
+            
+            // Prepare discount data
+            $discountData = [];
+            if ($codeGroup->use_fix_amount_discount) {
+                $discountData = [
+                    'type' => 'fixed',
+                    'amount' => $codeGroup->discount_amount,
+                ];
+            } else {
+                // For reward-based promo codes, we'll return the rewards
+                $rewards = $promotionCode->reward;
+                $rewardComponents = $promotionCode->rewardComponent;
+                
+                $discountData = [
+                    'type' => 'reward',
+                    'rewards' => $rewards,
+                    'reward_components' => $rewardComponents,
+                ];
+            }
+            
+            $responseData['discount'] = $discountData;
+            
+            return $responseData;
+        } catch (\Exception $e) {
+            Log::error('[PaymentController] Error getting promotion code response data', [
+                'error' => $e->getMessage(),
+                'transaction_id' => $transaction->id
+            ]);
+            return null;
+        }
+    }
+
     public function processEncrypt($data)
     {
 

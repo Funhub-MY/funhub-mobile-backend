@@ -254,111 +254,14 @@ class PromotionCodeController extends Controller
 			// Get the promotion code group
 			$codeGroup = $promotionCode->promotionCodeGroup;
 
-			// Check if the code has been redeemed
-			if ($promotionCode->claimed_by_id) {
-				return response()->json([
-					'success' => false,
-					'message' => __('messages.success.promotion_code_controller.Code_already_used'),
-				], 400);
-			}
+			// Prepare basic response data that will be included in all responses
+			$responseData = [
+				'promotion_code' => $promotionCode->only(['id', 'code']),
+				'promotion_code_group' => $codeGroup->only(['id', 'name', 'description', 'use_fix_amount_discount', 'discount_amount']),
+			];
 
-			// Check if the promotion code group is active
-			if (!$codeGroup->status) {
-				return response()->json([
-					'success' => false,
-					'message' => __('messages.success.promotion_code_controller.Campaign_disabled'),
-				], 400);
-			}
-
-			// Check expired date (campaign_until)
-			$now = now();
-			if ($codeGroup->campaign_until && $now->gt($codeGroup->campaign_until)) {
-				return response()->json([
-					'success' => false,
-					'message' => __('messages.success.promotion_code_controller.Code_expired'),
-				], 400);
-			}
-
-			// Check if campaign has started
-			if ($codeGroup->campaign_from && $now->lt($codeGroup->campaign_from)) {
-				return response()->json([
-					'success' => false,
-					'message' => __('messages.success.promotion_code_controller.Campaign_not_started'),
-				], 400);
-			}
-
-			// Check user eligibility based on user type
-			if ($codeGroup->use_fix_amount_discount && $codeGroup->user_type !== array_key_first(PromotionCodeGroup::USER_TYPES)) { // 'all' is the first key
-				$user = auth()->user();
-				$userCreatedAt = Carbon::parse($user->created_at);
-				Log::info($userCreatedAt);
-				$isNewUser = $userCreatedAt->diffInHours($now) <= 48; // New user = registered within 48 hours
-
-				// Check if user type is 'new' but user is not a new user
-				if ($codeGroup->user_type === array_keys(PromotionCodeGroup::USER_TYPES)[1] && !$isNewUser) { // 'new' is the second key
-					return response()->json([
-						'success' => false,
-						'message' => __('messages.success.promotion_code_controller.User_not_eligible'),
-					], 400);
-				}
-
-				// Check if user type is 'old' but user is a new user
-				if ($codeGroup->user_type === array_keys(PromotionCodeGroup::USER_TYPES)[2] && $isNewUser) { // 'old' is the third key
-					return response()->json([
-						'success' => false,
-						'message' => __('messages.success.promotion_code_controller.User_not_eligible'),
-					], 400);
-				}
-			}
-
-			// Check if the product exists in the database
-			$product = \App\Models\Product::find($productId);
-			if (!$product) {
-				return response()->json([
-					'success' => false,
-					'message' => __('messages.success.promotion_code_controller.Product_not_eligible'),
-				], 400);
-			}
-
-			// Check if the product_id is attached to the promotion code group
-			$eligibleProductIds = $codeGroup->products()->pluck('products.id')->toArray();
-
-			// Only check product eligibility if the promotion code group has specific products attached
-			// If eligibleProductIds is empty, then skip the product checking process
-			if (!empty($eligibleProductIds) && !in_array($productId, $eligibleProductIds)) {
-				return response()->json([
-					'success' => false,
-					'message' => __('messages.success.promotion_code_controller.Product_not_eligible'),
-				], 400);
-			}
-
-			// Check if the payment_method is attached to the promotion code group
-			$eligiblePaymentMethods = $codeGroup->paymentMethods()->pluck('payment_methods.code')->toArray();
-
-			// Only check payment method eligibility if the promotion code group has specific payment methods attached
-			// If eligiblePaymentMethods is empty, then skip the payment method checking process
-			if (!empty($eligiblePaymentMethods) && !in_array($paymentMethod, $eligiblePaymentMethods)) {
-				return response()->json([
-					'success' => false,
-					'message' => __('messages.success.promotion_code_controller.Payment_method_not_eligible'),
-				], 400);
-			}
-
-			// Check if product price is smaller than the discount amount
-			if ($codeGroup->use_fix_amount_discount) {
-				$productPrice = ($product->discount_price) ?? $product->unit_price;
-				
-				if ($productPrice < $codeGroup->discount_amount) {
-					return response()->json([
-						'success' => false,
-						'message' => __('messages.success.promotion_code_controller.Discount_exceeds_product_price'),
-					], 400);
-				}
-			}
-			
-			// If all checks pass, return success with discount information
+			// Prepare discount data
 			$discountData = [];
-
 			if ($codeGroup->use_fix_amount_discount) {
 				$discountData = [
 					'type' => 'fixed',
@@ -375,14 +278,115 @@ class PromotionCodeController extends Controller
 					'reward_components' => $rewardComponents,
 				];
 			}
+			$responseData['discount'] = $discountData;
 
-			return response()->json([
+			// Check if the code has been redeemed
+			if ($promotionCode->claimed_by_id) {
+				return response()->json(array_merge([
+					'success' => false,
+					'message' => __('messages.success.promotion_code_controller.Code_already_used'),
+				], $responseData), 400);
+			}
+
+			// Check if the promotion code group is active
+			if (!$codeGroup->status) {
+				return response()->json(array_merge([
+					'success' => false,
+					'message' => __('messages.success.promotion_code_controller.Campaign_disabled'),
+				], $responseData), 400);
+			}
+
+			// Check expired date (campaign_until)
+			$now = now();
+			if ($codeGroup->campaign_until && $now->gt($codeGroup->campaign_until)) {
+				return response()->json(array_merge([
+					'success' => false,
+					'message' => __('messages.success.promotion_code_controller.Code_expired'),
+				], $responseData), 400);
+			}
+
+			// Check if campaign has started
+			if ($codeGroup->campaign_from && $now->lt($codeGroup->campaign_from)) {
+				return response()->json(array_merge([
+					'success' => false,
+					'message' => __('messages.success.promotion_code_controller.Campaign_not_started'),
+				], $responseData), 400);
+			}
+
+			// Check user eligibility based on user type
+			if ($codeGroup->user_type !== array_key_first(PromotionCodeGroup::USER_TYPES)) { // 'all' is the first key
+				$user = auth()->user();
+				$userCreatedAt = Carbon::parse($user->created_at);
+				Log::info($userCreatedAt);
+				$isNewUser = $userCreatedAt->diffInHours($now) <= 48; // New user = registered within 48 hours
+
+				// Check if user type is 'new' but user is not a new user
+				if ($codeGroup->user_type === array_keys(PromotionCodeGroup::USER_TYPES)[1] && !$isNewUser) { // 'new' is the second key
+					return response()->json(array_merge([
+						'success' => false,
+						'message' => __('messages.success.promotion_code_controller.User_not_eligible'),
+					], $responseData), 400);
+				}
+
+				// Check if user type is 'old' but user is a new user
+				if ($codeGroup->user_type === array_keys(PromotionCodeGroup::USER_TYPES)[2] && $isNewUser) { // 'old' is the third key
+					return response()->json(array_merge([
+						'success' => false,
+						'message' => __('messages.success.promotion_code_controller.User_not_eligible'),
+					], $responseData), 400);
+				}
+			}
+
+			// Check if the product exists in the database
+			$product = \App\Models\Product::find($productId);
+			if (!$product) {
+				return response()->json(array_merge([
+					'success' => false,
+					'message' => __('messages.success.promotion_code_controller.Product_not_eligible'),
+				], $responseData), 400);
+			}
+
+			// Check if the product_id is attached to the promotion code group
+			$eligibleProductIds = $codeGroup->products()->pluck('products.id')->toArray();
+
+			// Only check product eligibility if the promotion code group has specific products attached
+			// If eligibleProductIds is empty, then skip the product checking process
+			if (!empty($eligibleProductIds) && !in_array($productId, $eligibleProductIds)) {
+				return response()->json(array_merge([
+					'success' => false,
+					'message' => __('messages.success.promotion_code_controller.Product_not_eligible'),
+				], $responseData), 400);
+			}
+
+			// Check if the payment_method is attached to the promotion code group
+			$eligiblePaymentMethods = $codeGroup->paymentMethods()->pluck('payment_methods.code')->toArray();
+
+			// Only check payment method eligibility if the promotion code group has specific payment methods attached
+			// If eligiblePaymentMethods is empty, then skip the payment method checking process
+			if (!empty($eligiblePaymentMethods) && !in_array($paymentMethod, $eligiblePaymentMethods)) {
+				return response()->json(array_merge([
+					'success' => false,
+					'message' => __('messages.success.promotion_code_controller.Payment_method_not_eligible'),
+				], $responseData), 400);
+			}
+
+			// Check if product price is smaller than the discount amount
+			if ($codeGroup->use_fix_amount_discount) {
+				$productPrice = ($product->discount_price) ?? $product->unit_price;
+				
+				if ($productPrice < $codeGroup->discount_amount) {
+					return response()->json(array_merge([
+						'success' => false,
+						'message' => __('messages.success.promotion_code_controller.Discount_exceeds_product_price'),
+					], $responseData), 400);
+				}
+			}
+			
+			// If all checks pass, return success with discount information
+			return response()->json(array_merge([
 				'success' => true,
 				'message' => __('messages.success.promotion_code_controller.Code_applied_successfully'),
-				'discount' => $discountData,
-				'promotion_code' => $promotionCode->only(['id', 'code']),
-				'promotion_code_group' => $codeGroup->only(['id', 'name', 'description', 'use_fix_amount_discount', 'discount_amount']),
-			]);
+			], $responseData));
 
 		} catch (Exception $e) {
 			Log::error('[PromotionCodeController] Error checking promo code', [
