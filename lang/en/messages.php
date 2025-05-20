@@ -65,7 +65,7 @@ return [
         ],
         'promotion_code_controller' => [
             'Code_not_active_or_expired' => 'This code is not active or has expired',
-            'Campaign_disabled' => 'This promotion campaign is disabled',
+            'Campaign_disabled' => 'This code is currently inactive.',
             'Campaign_ended' => 'This promotion campaign has ended',
             'Campaign_not_started' => 'This promotion campaign has not started yet',
             'Code_already_claimed' => 'This code has already been claimed',
@@ -218,7 +218,7 @@ return [
         ],
         'promotion_code_controller' => [
             'Code_not_active_or_expired' => 'This code is not active or has expired',
-            'Campaign_disabled' => 'This promotion campaign is disabled',
+            'Campaign_disabled' => 'This code is currently inactive.',
             'Campaign_ended' => 'This promotion campaign has ended',
             'Campaign_not_started' => 'This promotion campaign has not started yet',
             'Code_already_claimed' => 'Promo code has already been claimed',
