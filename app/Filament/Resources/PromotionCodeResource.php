@@ -115,7 +115,7 @@ class PromotionCodeResource extends Resource
                     }),
 
                 Tables\Columns\TextColumn::make('reward_quantity')
-                    ->label('Quantity')
+                    ->label('Value')
                     ->getStateUsing(function ($record) {
                         if ($record->reward->first()) {
                             return $record->reward->first()->pivot->quantity;
@@ -123,6 +123,10 @@ class PromotionCodeResource extends Resource
                         return $record->rewardComponent->first()?->pivot?->quantity;
                     })
                     ->sortable(),
+
+				Tables\Columns\TextColumn::make('promotionCodeGroup.discount_amount')
+					->label('Discount Amount')
+					->sortable(),
 
                 Tables\Columns\BadgeColumn::make('is_redeemed')
                     ->label('Status')
