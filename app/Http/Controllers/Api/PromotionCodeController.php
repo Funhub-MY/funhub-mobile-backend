@@ -59,54 +59,82 @@ class PromotionCodeController extends Controller
             return DB::transaction(function () use ($request) {
                 $code = $request->input('code');
 
-                $promotionCode = PromotionCode::where('code', $code)
+                // Use case-sensitive comparison for the code
+                $promotionCode = PromotionCode::whereRaw('BINARY code = ?', [$code])
                     ->first();
-
+                
+                // Initialize default response data
+                $rewards = [];
+                $rewardComponents = [];
+                $responseData = [
+                    'success' => false,
+                    'promotion_code_group' => null,
+                    'rewards' => $rewards,
+                    'reward_components' => $rewardComponents
+                ];
+                
+                if (!$promotionCode) {
+                    Log::info('[PromotionCodeController] Invalid promotion code', [
+                        'code' => $code
+                    ]);
+                    
+                    return response()->json(array_merge($responseData, [
+                        'message' => __('messages.success.promotion_code_controller.Invalid_code'),
+                    ]), 404);
+                }
+                
+                // Update response data with promotion code information
+                $responseData['promotion_code'] = $promotionCode->only(['id', 'code']);
+                $responseData['promotion_code_group'] = $promotionCode->promotionCodeGroup ? $promotionCode->promotionCodeGroup->only(['id', 'name', 'description']) : null;
+                $responseData['rewards'] = $promotionCode->reward;
+                $responseData['reward_components'] = $promotionCode->rewardComponent;
+                
                 Log::info('[PromotionCodeController] Found promotion code', [
                     'promotion_code_id' => $promotionCode->id,
                     'claimed_by_id' => $promotionCode->claimed_by_id
                 ]);
 
-                if (!$promotionCode) {
-                    return response()->json([
-                        'message' => __('messages.success.promotion_code_controller.Invalid_code'),
-                    ], 404);
-                }
-
                 // check if it's already claimed
                 if ($promotionCode->claimed_by_id) {
-                    return response()->json([
+                    return response()->json(array_merge($responseData, [
                         'message' => __('messages.success.promotion_code_controller.Code_already_claimed'),
-                    ], 400);
+                    ]), 400);
                 }
 
+                // Check if this is a discount code (should only be used at checkout, not for redeeming)
+                if ($promotionCode->promotionCodeGroup && $promotionCode->promotionCodeGroup->use_fix_amount_discount) {
+                    return response()->json(array_merge($responseData, [
+                        'message' => __('messages.success.promotion_code_controller.Code_only_can_use_when_checkout'),
+                    ]), 400);
+                }
+                
                 // check if promotion code group campaign is still active
                 if ($promotionCode->promotionCodeGroup) {
                     if (!$promotionCode->promotionCodeGroup->status) {
-                        return response()->json([
+                        return response()->json(array_merge($responseData, [
                             'message' => __('messages.success.promotion_code_controller.Campaign_disabled'),
-                        ], 400);
+                        ]), 400);
                     }
 
                     $now = now();
                     if ($promotionCode->promotionCodeGroup->campaign_until && $now->gt($promotionCode->promotionCodeGroup->campaign_until)) {
-                        return response()->json([
+                        return response()->json(array_merge($responseData, [
                             'message' => __('messages.success.promotion_code_controller.Campaign_ended'),
-                        ], 400);
+                        ]), 400);
                     }
 
                     if ($promotionCode->promotionCodeGroup->campaign_from && $now->lt($promotionCode->promotionCodeGroup->campaign_from)) {
-                        return response()->json([
+                        return response()->json(array_merge($responseData, [
                             'message' => __('messages.success.promotion_code_controller.Campaign_not_started'),
-                        ], 400);
+                        ]), 400);
                     }
                 }
 
                 // check if promotion code is active
                 if (!$promotionCode->isActive()) {
-                    return response()->json([
+                    return response()->json(array_merge($responseData, [
                         'message' => __('messages.success.promotion_code_controller.Code_not_active_or_expired'),
-                    ], 400);
+                    ]), 400);
                 }
 
 				// Check user eligibility based on user type
@@ -118,18 +146,16 @@ class PromotionCodeController extends Controller
 
 					// Check if user type is 'new' but user is not a new user
 					if ($promotionCode->promotionCodeGroup->user_type === array_keys(PromotionCodeGroup::USER_TYPES)[1] && !$isNewUser) { // 'new' is the second key
-						return response()->json([
-							'success' => false,
+						return response()->json(array_merge($responseData, [
 							'message' => __('messages.success.promotion_code_controller.User_not_eligible'),
-						], 400);
+						]), 400);
 					}
 
 					// Check if user type is 'old' but user is a new user
 					if ($promotionCode->promotionCodeGroup->user_type === array_keys(PromotionCodeGroup::USER_TYPES)[2] && $isNewUser) { // 'old' is the third key
-						return response()->json([
-							'success' => false,
+						return response()->json(array_merge($responseData, [
 							'message' => __('messages.success.promotion_code_controller.User_not_eligible'),
-						], 400);
+						]), 400);
 					}
 				}
 
@@ -176,15 +202,30 @@ class PromotionCodeController extends Controller
                     );
                 }
 
-                return response()->json([
+                // Update rewards and reward components with the actual data for success response
+                $rewards = $promotionCode->reward;
+                $rewardComponents = $promotionCode->rewardComponent;
+                
+                return response()->json(array_merge($responseData, [
+                    'success' => true,
                     'message' => __('messages.success.promotion_code_controller.Code_redeemed_successfully'),
                     'rewards' => $rewards,
                     'reward_components' => $rewardComponents,
-                ]);
+                ]));
             });
         } catch (Exception $e) {
+            Log::error('[PromotionCodeController] Error redeeming promo code', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            
+            // Default response for exceptions
             return response()->json([
+                'success' => false,
                 'message' => __('messages.success.promotion_code_controller.Invalid_code'),
+                'promotion_code_group' => null,
+                'rewards' => [],
+                'reward_components' => []
             ], 404);
         }
     }
@@ -302,6 +343,14 @@ class PromotionCodeController extends Controller
 				return response()->json(array_merge([
 					'success' => false,
 					'message' => __('messages.success.promotion_code_controller.Code_expired'),
+				], $responseData), 400);
+			}
+
+			// Check if this is a reward code (should only be used for redeeming, not at checkout)
+			if (!$codeGroup->use_fix_amount_discount) {
+				return response()->json(array_merge([
+					'success' => false,
+					'message' => __('messages.success.promotion_code_controller.Code_only_can_use_when_redeem_reward'),
 				], $responseData), 400);
 			}
 

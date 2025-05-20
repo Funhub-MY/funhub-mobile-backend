@@ -104,28 +104,39 @@ class PromotionCodeResource extends Resource
                     ->label('Group Name')
                     ->url(fn ($record): string => route('filament.resources.promotion-code-groups.edit', $record->promotionCodeGroup ?? ''))
                     ->searchable(),
-                    
-                Tables\Columns\TextColumn::make('reward_name')
-                    ->label('Reward')
-                    ->getStateUsing(function ($record) {
-                        if ($record->reward->first()) {
-                            return $record->reward->first()->name;
-                        }
-                        return $record->rewardComponent->first()?->name;
-                    }),
 
-                Tables\Columns\TextColumn::make('reward_quantity')
-                    ->label('Value')
-                    ->getStateUsing(function ($record) {
-                        if ($record->reward->first()) {
-                            return $record->reward->first()->pivot->quantity;
-                        }
-                        return $record->rewardComponent->first()?->pivot?->quantity;
-                    })
-                    ->sortable(),
+				Tables\Columns\TextColumn::make('reward_name')
+					->label('Reward')
+					->getStateUsing(function ($record) {
+						if ($record->reward->first()) {
+							return $record->reward->first()->name;
+						}
 
-				Tables\Columns\TextColumn::make('promotionCodeGroup.discount_amount')
-					->label('Discount Amount')
+						$rewardComponentName = $record->rewardComponent->first()?->name;
+						if (!empty($rewardComponentName)) {
+							return $rewardComponentName;
+						}
+
+						if ($record->promotionCodeGroup->use_fix_amount_discount ?? false) {
+							return 'Fixed Discount Amount';
+						}
+
+						return null;
+					}),
+
+				Tables\Columns\TextColumn::make('reward_quantity')
+					->label('Value')
+					->getStateUsing(function ($record) {
+						if ($record->promotionCodeGroup && $record->promotionCodeGroup->use_fix_amount_discount) {
+							return $record->promotionCodeGroup->discount_amount;
+						}
+
+						if ($record->reward->first()) {
+							return $record->reward->first()->pivot->quantity;
+						}
+
+						return $record->rewardComponent->first()?->pivot?->quantity;
+					})
 					->sortable(),
 
                 Tables\Columns\BadgeColumn::make('is_redeemed')
