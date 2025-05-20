@@ -87,6 +87,8 @@ return [
 			'Time_restriction' => 'This promo code is not valid at this time.',
 			'Campaign_budget_reached' => 'Promo code usage is temporarily disabled. Campaign limit reached.',
 			'Discount_exceeds_product_price' => 'The discount amount exceeds the product price.',
+			'Code_only_can_use_when_checkout' => 'This code can only be used at checkout.',
+			'Code_only_can_use_when_redeem_reward' => 'This code can only be used on the Funbox page.'
 		],
         'support_request_controller' => [
             'Support_request_resolved_and_closed' => 'Support request resolved and closed',
@@ -237,6 +239,8 @@ return [
 			'Day_restriction' => 'This promo code is not valid today.',
 			'Time_restriction' => 'This promo code is not valid at this time.',
 			'Campaign_budget_reached' => 'Promo code usage is temporarily disabled. Campaign limit reached.',
+			'Code_only_can_use_when_checkout' => 'This code can only be used at checkout.',
+			'Code_only_can_use_when_redeem_reward' => 'This code can only be used on the Funbox page.'
 		],
         'support_request_controller' => [
             'Invalid_status' => 'Invalid status',
