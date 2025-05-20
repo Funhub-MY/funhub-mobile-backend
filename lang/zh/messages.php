@@ -65,7 +65,7 @@ return [
         ],
         'promotion_code_controller' => [
             'Code_not_active_or_expired' => '此优惠码已失效或已过期',
-            'Campaign_disabled' => '此促销活动已被禁用',
+            'Campaign_disabled' => '该优惠码目前未启用。',
             'Campaign_ended' => '此促销活动已结束',
             'Campaign_not_started' => '此促销活动尚未开始',
             'Code_already_claimed' => '此优惠码已被使用',
