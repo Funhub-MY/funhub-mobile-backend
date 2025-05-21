@@ -95,7 +95,7 @@ class PromotionCodeController extends Controller
                 ]);
 
                 // check if it's already claimed
-                if ($promotionCode->claimed_by_id) {
+				if ($promotionCode->per_user_limit == 1 && $promotionCode->claimed_by_id) {
                     return response()->json(array_merge($responseData, [
                         'message' => __('messages.success.promotion_code_controller.Code_already_claimed'),
                     ]), 400);
@@ -298,12 +298,12 @@ class PromotionCodeController extends Controller
 			// Prepare basic response data that will be included in all responses
 			$responseData = [
 				'promotion_code' => $promotionCode->only(['id', 'code']),
-				'promotion_code_group' => $codeGroup->only(['id', 'name', 'description', 'use_fix_amount_discount', 'discount_amount']),
+				'promotion_code_group' => $codeGroup->only(['id', 'name', 'description', 'discount_amount']),
 			];
 
 			// Prepare discount data
 			$discountData = [];
-			if ($codeGroup->use_fix_amount_discount) {
+			if ($codeGroup->discount_type == 'fix_amount') {
 				$discountData = [
 					'type' => 'fixed',
 					'amount' => $codeGroup->discount_amount,
@@ -322,7 +322,7 @@ class PromotionCodeController extends Controller
 			$responseData['discount'] = $discountData;
 
 			// Check if the code has been redeemed
-			if ($promotionCode->claimed_by_id) {
+			if ($promotionCode->per_user_limit == 1 && $promotionCode->claimed_by_id) {
 				return response()->json(array_merge([
 					'success' => false,
 					'message' => __('messages.success.promotion_code_controller.Code_already_used'),
@@ -347,7 +347,7 @@ class PromotionCodeController extends Controller
 			}
 
 			// Check if this is a reward code (should only be used for redeeming, not at checkout)
-			if (!$codeGroup->use_fix_amount_discount) {
+			if (!$codeGroup->discount_type == 'fix_amount') {
 				return response()->json(array_merge([
 					'success' => false,
 					'message' => __('messages.success.promotion_code_controller.Code_only_can_use_when_redeem_reward'),
@@ -395,6 +395,15 @@ class PromotionCodeController extends Controller
 				], $responseData), 400);
 			}
 
+			$productPrice = ($product->discount_price) ?? $product->unit_price;
+
+			if ($productPrice < $codeGroup->min_spend_amount) {
+				return response()->json(array_merge([
+					'success' => false,
+					'message' => __('messages.success.promotion_code_controller.Minimum_spend_not_met'),
+				], $responseData), 400);
+			}
+
 			// Check if the product_id is attached to the promotion code group
 			$eligibleProductIds = $codeGroup->products()->pluck('products.id')->toArray();
 
@@ -420,9 +429,7 @@ class PromotionCodeController extends Controller
 			}
 
 			// Check if product price is smaller than the discount amount
-			if ($codeGroup->use_fix_amount_discount) {
-				$productPrice = ($product->discount_price) ?? $product->unit_price;
-
+			if ($codeGroup->discount_type == 'fix_amount') {
 				if ($productPrice < $codeGroup->discount_amount) {
 					return response()->json(array_merge([
 						'success' => false,

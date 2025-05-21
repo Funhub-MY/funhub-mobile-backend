@@ -117,7 +117,7 @@ class PromotionCodeResource extends Resource
 							return $rewardComponentName;
 						}
 
-						if ($record->promotionCodeGroup->use_fix_amount_discount ?? false) {
+						if ($record->promotionCodeGroup && ($record->promotionCodeGroup->use_fix_amount_discount || $record->promotionCodeGroup->discount_type === 'fix_amount')) {
 							return 'Fixed Discount Amount';
 						}
 
@@ -127,8 +127,10 @@ class PromotionCodeResource extends Resource
 				Tables\Columns\TextColumn::make('reward_quantity')
 					->label('Value')
 					->getStateUsing(function ($record) {
-						if ($record->promotionCodeGroup && $record->promotionCodeGroup->use_fix_amount_discount) {
-							return $record->promotionCodeGroup->discount_amount;
+						if ($record->promotionCodeGroup->use_fix_amount_discount || $record->promotionCodeGroup->discount_type === 'fix_amount') {
+							if ($record->promotionCodeGroup) {
+								return $record->promotionCodeGroup->discount_amount;
+							}
 						}
 
 						if ($record->reward->first()) {
@@ -136,6 +138,30 @@ class PromotionCodeResource extends Resource
 						}
 
 						return $record->rewardComponent->first()?->pivot?->quantity;
+					})
+					->sortable(),
+
+				Tables\Columns\TextColumn::make('per_user_limit')
+					->label('Per User Limit')
+					->getStateUsing(function ($record) {
+						if ($record->promotionCodeGroup) {
+							$perUserLimit = $record->promotionCodeGroup->per_user_limit;
+							return PromotionCodeGroup::PER_USER_LIMIT[$perUserLimit] ?? $perUserLimit;
+						}
+
+						return null;
+					})
+					->sortable(),
+
+				Tables\Columns\TextColumn::make('min_spend_amount')
+					->label('Min Spend Amount')
+					->getStateUsing(function ($record) {
+						if ($record->promotionCodeGroup && $record->promotionCodeGroup->discount_type === 'fix_amount') {
+							$minSpend = $record->promotionCodeGroup->min_spend_amount;
+							return $minSpend !== null ? number_format($minSpend, 2) : '';
+						}
+
+						return null;
 					})
 					->sortable(),
 

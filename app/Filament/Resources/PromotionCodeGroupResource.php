@@ -80,7 +80,8 @@ class PromotionCodeGroupResource extends Resource
                                     ->label('Code')->helperText('Custom Code')
                                     ->hiddenOn('edit')
                                     ->visible(fn(callable $get) => $get('code_type') === 'static')
-                                    ->required(fn(callable $get) => $get('code_type') === 'static'),
+                                    ->required(fn(callable $get) => $get('code_type') === 'static')
+                                    ->unique(table: \App\Models\PromotionCode::class, column: 'code', ignoreRecord: true),
                                 Forms\Components\Select::make('discount_type')
                                     ->label('Discount Type')
                                     ->options(PromotionCodeGroup::DISCOUNT_TYPES)
@@ -142,14 +143,22 @@ class PromotionCodeGroupResource extends Resource
                                     ->required(fn ($livewire) => $livewire instanceof Pages\CreatePromotionCodeGroup)
                                     ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
 
-                                Forms\Components\TextInput::make('min_spend_amount')
-                                    ->label('Min Spend Amount (RM)')
-                                    ->helperText('Minimum spend amount required to redeem this code')
-                                    ->numeric()
-                                    ->visible(fn(callable $get) => $get('discount_type'))
-                                    ->required(fn(callable $get) => $get('discount_type'))
-                                    ->default(0)
-                                    ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
+								Forms\Components\TextInput::make('min_spend_amount')
+									->label('Min Spend Amount (RM)')
+									->helperText('Minimum spend amount required to redeem this code')
+									->numeric()
+									->visible(fn(callable $get) => $get('discount_type') === 'fix_amount')
+									->required(fn(callable $get) => $get('discount_type') === 'fix_amount')
+									->default(0)
+									->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup)
+									->rule(function (callable $get) {
+										return function (string $attribute, $value, $fail) use ($get) {
+											$discountAmount = $get('discount_amount');
+											if ($value < $discountAmount) {
+												$fail('Min spend must be larger than the discount amount.');
+											}
+										};
+									}),
 
                                 Forms\Components\Select::make('per_user_limit')->label('Per User Limit')
                                     ->label('Per User Limit')
@@ -157,16 +166,13 @@ class PromotionCodeGroupResource extends Resource
                                     ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup)
                                     ->visible(fn(callable $get) => $get('discount_type'))
                                     ->required(fn(callable $get) => $get('discount_type'))
-                                    ->options([
-                                        0 => 'Unlimited',
-                                        1 => 'One Time'
-                                    ]),
+									->options(PromotionCodeGroup::PER_USER_LIMIT),
                                  Forms\Components\Select::make('products')
                                      ->relationship('products', 'name')
                                      ->multiple()
                                      ->preload()
                                      ->label('Specific Products (Leave empty to apply to all products)')
-                                     ->visible(fn (callable $get) => $get('discount_type'))
+                                     ->visible(fn (callable $get) => $get('discount_type') === 'fix_amount')
                                      ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
                                 Forms\Components\Select::make('paymentMethods')
                                     ->relationship('paymentMethods', 'name')
