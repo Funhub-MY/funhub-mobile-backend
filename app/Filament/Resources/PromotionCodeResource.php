@@ -127,10 +127,8 @@ class PromotionCodeResource extends Resource
 				Tables\Columns\TextColumn::make('reward_quantity')
 					->label('Value')
 					->getStateUsing(function ($record) {
-						if ($record->promotionCodeGroup->discount_type === 'fix_amount') {
-							if ($record->promotionCodeGroup) {
-								return $record->promotionCodeGroup->discount_amount;
-							}
+						if ($record->promotionCodeGroup && $record->promotionCodeGroup->discount_type === 'fix_amount') {
+							return $record->promotionCodeGroup->discount_amount;
 						}
 
 						if ($record->reward->first()) {
