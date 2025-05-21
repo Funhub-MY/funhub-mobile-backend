@@ -44,7 +44,7 @@ class PromotionCodeGroupResource extends Resource
                                     ->maxLength(255),
                                 Forms\Components\Textarea::make('description')
                                     ->maxLength(65535),
-                               
+
                                 Forms\Components\Toggle::make('status')
                                     ->default(false)
                                     ->required(),
@@ -61,46 +61,34 @@ class PromotionCodeGroupResource extends Resource
 
                         Forms\Components\Card::make()
                             ->schema([
+                                Forms\Components\Select::make('code_type')->label('Code Type')
+                                    ->options(PromotionCodeGroup::CODE_TYPES)
+                                    ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup)
+                                    ->reactive()
+                                    ->required(),
+
                                 Forms\Components\TextInput::make('total_codes')
                                     ->label('Number of Codes to Generate')
-                                    ->required()
+                                    ->visible(fn(callable $get) => $get('code_type') === 'random')
+                                    ->required(fn(callable $get) => $get('code_type') === 'random')
                                     ->numeric()
                                     ->minValue(1)
-									->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup)
+                                    ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup)
                                     ->default(1),
-								Forms\Components\Toggle::make('use_fix_amount_discount')
-									->label('Use Fix Amount Discount')
-									->required()
-									->default(false)
-									->reactive()
-									->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
-								Forms\Components\TextInput::make('discount_amount')
-									->label('Discount Amount')
-									->numeric()
-									->minValue(0)
-									->visible(fn (callable $get) => $get('use_fix_amount_discount'))
-									->required(fn (callable $get) => $get('use_fix_amount_discount'))
-									->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
-								Forms\Components\Select::make('user_type')
-									->label('User Type')
-									->options(\App\Models\PromotionCodeGroup::USER_TYPES)
-									->default(array_key_first(\App\Models\PromotionCodeGroup::USER_TYPES)) // 'all'
-									->required()
-									->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
-                                Forms\Components\Select::make('products')
-                                    ->relationship('products', 'name')
-                                    ->multiple()
-                                    ->preload()
-                                    ->label('Specific Products (Leave empty to apply to all products)')
-                                    ->visible(fn (callable $get) => $get('use_fix_amount_discount'))
-									->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
-                                Forms\Components\Select::make('paymentMethods')
-                                    ->relationship('paymentMethods', 'name')
-                                    ->multiple()
-                                    ->preload()
-                                    ->label('Payment Methods (Leave empty to apply to all payment methods)')
-									->visible(fn (callable $get) => $get('use_fix_amount_discount'))
-									->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
+
+                                Forms\Components\TextInput::make('static_code')
+                                    ->label('Code')->helperText('Custom Code')
+                                    ->hiddenOn('edit')
+                                    ->visible(fn(callable $get) => $get('code_type') === 'static')
+                                    ->required(fn(callable $get) => $get('code_type') === 'static'),
+                                Forms\Components\Select::make('discount_type')
+                                    ->label('Discount Type')
+                                    ->options(PromotionCodeGroup::DISCOUNT_TYPES)
+                                    ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup)
+                                    ->visible(fn(callable $get) => $get('code_type'))
+                                    ->required(fn(callable $get) => $get('code_type'))
+                                    ->reactive(),
+
                                 Forms\Components\MorphToSelect::make('rewardable')
                                     ->label('Reward Type')
                                     ->types([
@@ -117,16 +105,75 @@ class PromotionCodeGroupResource extends Resource
                                         Forms\Components\MorphToSelect\Type::make(RewardComponent::class)
                                             ->titleColumnName('name'),
                                     ])
-                                    ->visible(fn (callable $get) => !$get('use_fix_amount_discount'))
+                                    ->visible(fn (callable $get) => $get('discount_type') === 'reward')
                                     ->required(fn ($livewire) => $livewire instanceof Pages\CreatePromotionCodeGroup)
                                     ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
+
+                                /*
+								Forms\Components\Toggle::make('use_fix_amount_discount')
+									->label('Use Fix Amount Discount')
+									->required()
+									->default(false)
+									->reactive()
+                                    ->visible(fn(callable $get) => $get('discount_type') === 'fix_amount_discount')
+									->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
+                                */
+
+								Forms\Components\TextInput::make('discount_amount')
+									->label('Discount Amount')
+									->numeric()
+									->minValue(0)
+									->visible(fn (callable $get) => $get('discount_type') === 'fix_amount')
+									->required(fn (callable $get) => $get('discount_type') === 'fix_amount')
+									->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
+								Forms\Components\Select::make('user_type')
+									->label('User Type')
+									->options(PromotionCodeGroup::USER_TYPES)
+									//->default(array_key_first(PromotionCodeGroup::USER_TYPES)) // 'all'
+									->required(fn(callable $get) => $get('discount_type'))
+                                    ->visible(fn(callable $get) => $get('discount_type'))
+									->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
                                 Forms\Components\TextInput::make('quantity')
                                     ->label('Reward Quantity')
                                     ->helperText('How many rewards to give when code is redeemed')
-									->visible(fn (callable $get) => !$get('use_fix_amount_discount'))
+									->visible(fn (callable $get) => $get('discount_type') === 'reward')
 									->numeric()
                                     ->default(1)
                                     ->required(fn ($livewire) => $livewire instanceof Pages\CreatePromotionCodeGroup)
+                                    ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
+
+                                Forms\Components\TextInput::make('min_spend_amount')
+                                    ->label('Min Spend Amount (RM)')
+                                    ->helperText('Minimum spend amount required to redeem this code')
+                                    ->numeric()
+                                    ->visible(fn(callable $get) => $get('discount_type'))
+                                    ->required(fn(callable $get) => $get('discount_type'))
+                                    ->default(0)
+                                    ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
+
+                                Forms\Components\Select::make('per_user_limit')->label('Per User Limit')
+                                    ->label('Per User Limit')
+                                    ->helperText('Maximum number of times a user can redeem this code')
+                                    ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup)
+                                    ->visible(fn(callable $get) => $get('discount_type'))
+                                    ->required(fn(callable $get) => $get('discount_type'))
+                                    ->options([
+                                        0 => 'Unlimited',
+                                        1 => 'One Time'
+                                    ]),
+                                 Forms\Components\Select::make('products')
+                                     ->relationship('products', 'name')
+                                     ->multiple()
+                                     ->preload()
+                                     ->label('Specific Products (Leave empty to apply to all products)')
+                                     ->visible(fn (callable $get) => $get('discount_type'))
+                                     ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
+                                Forms\Components\Select::make('paymentMethods')
+                                    ->relationship('paymentMethods', 'name')
+                                    ->multiple()
+                                    ->preload()
+                                    ->label('Payment Methods (Leave empty to apply to all payment methods)')
+                                    ->visible(fn (callable $get) => $get('discount_type') === 'fix_amount')
                                     ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
                             ])
                             ->columnSpan(1),
@@ -175,14 +222,14 @@ class PromotionCodeGroupResource extends Resource
                     ->color(fn ($record) => $record->status ? 'danger' : 'success')
                     ->action(function ($record) {
                         $newStatus = !$record->status;
-                        
+
                         $record->update([
                             'status' => $newStatus,
                         ]);
-                        
+
                         \App\Models\PromotionCode::where('promotion_code_group_id', $record->id)
                             ->update(['status' => $newStatus]);
-                        
+
                         Notification::make()
                             ->title('Status updated successfully')
                             ->body('All promotion codes in this group have been ' . ($newStatus ? 'activated' : 'deactivated'))
@@ -236,14 +283,14 @@ class PromotionCodeGroupResource extends Resource
                     ->deselectRecordsAfterCompletion(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -251,5 +298,5 @@ class PromotionCodeGroupResource extends Resource
             'create' => Pages\CreatePromotionCodeGroup::route('/create'),
             'edit' => Pages\EditPromotionCodeGroup::route('/{record}/edit'),
         ];
-    }    
+    }
 }

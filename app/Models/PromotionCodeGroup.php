@@ -11,6 +11,16 @@ class PromotionCodeGroup extends Model implements Auditable
 {
     use HasFactory, SoftDeletes, \OwenIt\Auditing\Auditable;
 
+    const CODE_TYPES = [
+        'random' => 'Random Generate',
+        'static' => 'Static Name',
+    ];
+
+    const DISCOUNT_TYPES = [
+        'fix_amount' => 'Fix Amount Discount',
+        'reward' => 'Reward',
+    ];
+
     const USER_TYPES = [
         'all' => 'All Users',
         'new' => 'New Users Only (Registered less than 48 hours)',

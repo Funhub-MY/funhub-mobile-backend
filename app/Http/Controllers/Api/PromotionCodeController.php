@@ -24,10 +24,10 @@ class PromotionCodeController extends Controller
 
     /**
      * Redeem a promotion code
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Promotion Code
      * @bodyParam code string required The code to redeem. Example: ABCD123ABCDD
      * @response scenario=success {
@@ -62,7 +62,7 @@ class PromotionCodeController extends Controller
                 // Use case-sensitive comparison for the code
                 $promotionCode = PromotionCode::whereRaw('BINARY code = ?', [$code])
                     ->first();
-                
+
                 // Initialize default response data
                 $rewards = [];
                 $rewardComponents = [];
@@ -72,23 +72,23 @@ class PromotionCodeController extends Controller
                     'rewards' => $rewards,
                     'reward_components' => $rewardComponents
                 ];
-                
+
                 if (!$promotionCode) {
                     Log::info('[PromotionCodeController] Invalid promotion code', [
                         'code' => $code
                     ]);
-                    
+
                     return response()->json(array_merge($responseData, [
                         'message' => __('messages.success.promotion_code_controller.Invalid_code'),
                     ]), 404);
                 }
-                
+
                 // Update response data with promotion code information
                 $responseData['promotion_code'] = $promotionCode->only(['id', 'code']);
                 $responseData['promotion_code_group'] = $promotionCode->promotionCodeGroup ? $promotionCode->promotionCodeGroup->only(['id', 'name', 'description']) : null;
                 $responseData['rewards'] = $promotionCode->reward;
                 $responseData['reward_components'] = $promotionCode->rewardComponent;
-                
+
                 Log::info('[PromotionCodeController] Found promotion code', [
                     'promotion_code_id' => $promotionCode->id,
                     'claimed_by_id' => $promotionCode->claimed_by_id
@@ -102,12 +102,12 @@ class PromotionCodeController extends Controller
                 }
 
                 // Check if this is a discount code (should only be used at checkout, not for redeeming)
-                if ($promotionCode->promotionCodeGroup && $promotionCode->promotionCodeGroup->use_fix_amount_discount) {
+                if ($promotionCode->promotionCodeGroup && $promotionCode->promotionCodeGroup->discount_type == 'fix_amount') {
                     return response()->json(array_merge($responseData, [
                         'message' => __('messages.success.promotion_code_controller.Code_only_can_use_when_checkout'),
                     ]), 400);
                 }
-                
+
                 // check if promotion code group campaign is still active
                 if ($promotionCode->promotionCodeGroup) {
                     if (!$promotionCode->promotionCodeGroup->status) {
@@ -205,7 +205,7 @@ class PromotionCodeController extends Controller
                 // Update rewards and reward components with the actual data for success response
                 $rewards = $promotionCode->reward;
                 $rewardComponents = $promotionCode->rewardComponent;
-                
+
                 return response()->json(array_merge($responseData, [
                     'success' => true,
                     'message' => __('messages.success.promotion_code_controller.Code_redeemed_successfully'),
@@ -218,7 +218,7 @@ class PromotionCodeController extends Controller
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            
+
             // Default response for exceptions
             return response()->json([
                 'success' => false,
@@ -422,7 +422,7 @@ class PromotionCodeController extends Controller
 			// Check if product price is smaller than the discount amount
 			if ($codeGroup->use_fix_amount_discount) {
 				$productPrice = ($product->discount_price) ?? $product->unit_price;
-				
+
 				if ($productPrice < $codeGroup->discount_amount) {
 					return response()->json(array_merge([
 						'success' => false,
@@ -430,7 +430,7 @@ class PromotionCodeController extends Controller
 					], $responseData), 400);
 				}
 			}
-			
+
 			// If all checks pass, return success with discount information
 			return response()->json(array_merge([
 				'success' => true,
