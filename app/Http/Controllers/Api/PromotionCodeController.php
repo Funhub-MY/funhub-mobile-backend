@@ -213,8 +213,16 @@ class PromotionCodeController extends Controller
                 }
                 
                 // Update the global usage counter for the promotion code
-                if ($promotionCode->code_quantity) {
+                // Only increment used_code_count for new users (first time users)
+                if ($promotionCode->code_quantity && !$userPromoCode) {
+                    // This is a new user using this code for the first time
                     $promotionCode->used_code_count = ($promotionCode->used_code_count ?? 0) + 1;
+                    
+                    Log::info('[PromotionCodeController] Incremented promotion code unique user count', [
+                        'promotion_code_id' => $promotionCode->id,
+                        'new_used_code_count' => $promotionCode->used_code_count,
+                        'code_quantity' => $promotionCode->code_quantity
+                    ]);
                 }
                 
                 // mark as claimed (for backward compatibility)

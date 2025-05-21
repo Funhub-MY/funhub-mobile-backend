@@ -272,14 +272,39 @@ class ProductController extends Controller
         
         if ($request->has('promotion_code')) {
             $promotionCode = \App\Models\PromotionCode::where('code', $request->promotion_code)
-                ->where('is_redeemed', false)
+//                ->where('is_redeemed', false)
                 ->where('status', true)
                 ->first();
             
             if ($promotionCode && $promotionCode->isActive()) {
                 $promotionCodeGroup = $promotionCode->promotionCodeGroup;
-                
-                if ($promotionCodeGroup && $promotionCodeGroup->use_fix_amount_discount && $promotionCodeGroup->discount_amount > 0) {
+
+                // Check if this is a fixed amount discount promotion code
+                if ($promotionCodeGroup && $promotionCodeGroup->discount_type == 'fix_amount' &&
+                    $promotionCodeGroup->discount_amount > 0) {
+
+                    // Check user usage limits
+                    $user = request()->user();
+                    $userPromoCode = $promotionCode->users()->where('user_id', $user->id)->first();
+                    $userUsageCount = $userPromoCode ? $userPromoCode->pivot->usage_count : 0;
+
+                    // Check if user has reached their limit
+                    if ($promotionCodeGroup->per_user_limit_count > 0 &&
+                        $userUsageCount >= $promotionCodeGroup->per_user_limit_count) {
+                        return response()->json([
+                            'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached')
+                        ], 400);
+                    }
+
+                    // Check if the code has reached its global unique user limit
+                    if ($promotionCode->code_quantity &&
+                        $promotionCode->used_code_count >= $promotionCode->code_quantity &&
+                        !$userPromoCode) {
+                        return response()->json([
+                            'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached')
+                        ], 400);
+                    }
+
                     $promotionDiscount = $promotionCodeGroup->discount_amount;
                     $appliedPromotionCode = $promotionCode;
 
@@ -290,9 +315,14 @@ class ProductController extends Controller
                         'promotion_code' => $request->promotion_code,
                         'discount_amount' => $promotionDiscount,
                         'original_amount' => (($product->discount_price) ?? $product->unit_price) * $request->quantity,
-                        'final_amount' => $net_amount
+                        'final_amount' => $net_amount,
+                        'user_usage_count' => $userUsageCount
                     ]);
                 }
+            } else {
+                return response()->json([
+                    'message' => __('messages.success.promotion_code_controller.Code_invalid')
+                ], 400);
             }
         }
 
@@ -329,7 +359,7 @@ class ProductController extends Controller
         // Associate promotion code with transaction if provided
         if ($appliedPromotionCode) {
             $transaction->promotionCodes()->attach($appliedPromotionCode->id);
-            
+
             Log::info('[ProductController] Promotion code associated with transaction', [
                 'promotion_code_id' => $appliedPromotionCode->id,
                 'transaction_id' => $transaction->id,

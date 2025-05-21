@@ -278,6 +278,7 @@ class PaymentController extends Controller
                     event(new \App\Events\PurchasedMerchantOffer($transaction->user, $merchantOffer, 'fiat'));
 
                 } else if ($transaction->transactionable_type == Product::class) {
+					Log::info('[Payment Controller success] heres product class');
                     $this->updateProductTransaction($request, $transaction);
                     $this->processPromotionCodes($transaction);
                     
@@ -901,12 +902,14 @@ class PaymentController extends Controller
     protected function processPromotionCodes($transaction)
     {
         try {
-            // Get all promotion codes associated with this transaction
+			Log::info('[Payment Controller success] processPromotionCodes start');
+			// Get all promotion codes associated with this transaction
             $promotionCodes = $transaction->promotionCodes;
             $now = now();
             $user = User::find($transaction->user_id);
-            
-            if (!$user) {
+			Log::info($promotionCodes);
+
+			if (!$user) {
                 Log::error('[PaymentController] User not found for transaction', [
                     'transaction_id' => $transaction->id,
                     'user_id' => $transaction->user_id
@@ -974,7 +977,9 @@ class PaymentController extends Controller
                         'used_code_count' => $promotionCode->used_code_count
                     ]);
                 }
-            } else {
+				Log::info('[Payment Controller success] processPromotionCodes end');
+
+			} else {
                 // Transaction doesn't have any promotion codes attached
                 Log::info('[PaymentController] No promotion codes to process for transaction', [
                     'transaction_id' => $transaction->id,
