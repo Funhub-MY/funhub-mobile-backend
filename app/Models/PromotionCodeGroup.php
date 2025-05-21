@@ -21,6 +21,11 @@ class PromotionCodeGroup extends Model implements Auditable
         'reward' => 'Reward',
     ];
 
+	const PER_USER_LIMIT = [
+		0 => 'Unlimited',
+		1 => 'One Time',
+	];
+
     const USER_TYPES = [
         'all' => 'All Users',
         'new' => 'New Users Only (Registered less than 48 hours)',
