@@ -29,6 +29,10 @@ class EditPromotionCodeGroup extends EditRecord
         $promotionCode = PromotionCode::where('promotion_code_group_id', $promotionCodeGroupId)
             ->first();
 
+		if ($this->record->code_type == 'static') {
+			$data['static_code'] = $promotionCode->code ?? '';
+		}
+
         if ($promotionCode) {
             $rewardableData = DB::table('promotion_code_rewardable')
                 ->where('promotion_code_id', $promotionCode->id)

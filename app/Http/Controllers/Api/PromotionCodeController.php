@@ -94,11 +94,44 @@ class PromotionCodeController extends Controller
                     'claimed_by_id' => $promotionCode->claimed_by_id
                 ]);
 
-                // check if it's already claimed
-				if ($promotionCode->per_user_limit == 1 && $promotionCode->claimed_by_id) {
-                    return response()->json(array_merge($responseData, [
-                        'message' => __('messages.success.promotion_code_controller.Code_already_claimed'),
-                    ]), 400);
+                // check if it's already claimed or reached usage limit
+                if ($promotionCode->promotionCodeGroup && $promotionCode->promotionCodeGroup->per_user_limit == 1) {
+                    $user = auth()->user();
+                    $codeGroup = $promotionCode->promotionCodeGroup;
+                    
+                    // Check for static codes with multiple use limit per user
+                    if ($codeGroup->code_type === 'static' && $codeGroup->total_codes > 1 && $codeGroup->per_user_limit_count > 1) {
+                        // Get the user's usage count for this promotion code
+                        $userPromoCode = $promotionCode->users()->where('user_id', $user->id)->first();
+                        $userUsageCount = $userPromoCode ? $userPromoCode->pivot->usage_count : 0;
+                        
+                        Log::info('[PromotionCodeController] User promotion code usage', [
+                            'user_id' => $user->id,
+                            'promotion_code_id' => $promotionCode->id,
+                            'usage_count' => $userUsageCount,
+                            'per_user_limit_count' => $codeGroup->per_user_limit_count
+                        ]);
+                        
+                        // Check if user has reached their personal limit
+                        if ($userUsageCount >= $codeGroup->per_user_limit_count) {
+                            return response()->json(array_merge($responseData, [
+                                'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached'),
+                            ]), 400);
+                        }
+                    }
+                    
+                    // For static codes with global quantity limit
+                    if ($promotionCode->code_quantity && $promotionCode->used_code_count >= $promotionCode->code_quantity) {
+                        return response()->json(array_merge($responseData, [
+                            'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached'),
+                        ]), 400);
+                    }
+                    // For codes without quantity tracking (backward compatibility)
+                    elseif (!$promotionCode->code_quantity && $promotionCode->claimed_by_id) {
+                        return response()->json(array_merge($responseData, [
+                            'message' => __('messages.success.promotion_code_controller.Code_already_claimed'),
+                        ]), 400);
+                    }
                 }
 
                 // Check if this is a discount code (should only be used at checkout, not for redeeming)
@@ -159,15 +192,41 @@ class PromotionCodeController extends Controller
 					}
 				}
 
-                // mark as claimed
-                $promotionCode->claimed_by_id = auth()->id();
+                $user = auth()->user();
+                $now = now();
+                
+                // Track usage in the pivot table for the many-to-many relationship
+                $userPromoCode = $promotionCode->users()->where('user_id', $user->id)->first();
+                
+                if ($userPromoCode) {
+                    // User has used this code before, increment usage count
+                    $promotionCode->users()->updateExistingPivot($user->id, [
+                        'usage_count' => $userPromoCode->pivot->usage_count + 1,
+                        'last_used_at' => $now
+                    ]);
+                } else {
+                    // First time user is using this code
+                    $promotionCode->users()->attach($user->id, [
+                        'usage_count' => 1,
+                        'last_used_at' => $now
+                    ]);
+                }
+                
+                // Update the global usage counter for the promotion code
+                if ($promotionCode->code_quantity) {
+                    $promotionCode->used_code_count = ($promotionCode->used_code_count ?? 0) + 1;
+                }
+                
+                // mark as claimed (for backward compatibility)
+                $promotionCode->claimed_by_id = $user->id;
                 $promotionCode->is_redeemed = true;
-                $promotionCode->redeemed_at = now();
+                $promotionCode->redeemed_at = $now;
                 $promotionCode->save();
 
                 Log::info('[PromotionCodeController] Marked promotion code as claimed', [
                     'promotion_code_id' => $promotionCode->id,
-                    'user_id' => auth()->id()
+                    'user_id' => $user->id,
+                    'used_code_count' => $promotionCode->used_code_count
                 ]);
 
                 // process rewards
@@ -294,6 +353,7 @@ class PromotionCodeController extends Controller
 
 			// Get the promotion code group
 			$codeGroup = $promotionCode->promotionCodeGroup;
+			Log::info($codeGroup);
 
 			// Prepare basic response data that will be included in all responses
 			$responseData = [
@@ -321,12 +381,46 @@ class PromotionCodeController extends Controller
 			}
 			$responseData['discount'] = $discountData;
 
-			// Check if the code has been redeemed
-			if ($promotionCode->per_user_limit == 1 && $promotionCode->claimed_by_id) {
-				return response()->json(array_merge([
-					'success' => false,
-					'message' => __('messages.success.promotion_code_controller.Code_already_used'),
-				], $responseData), 400);
+			// Check if the code has been redeemed or reached usage limit
+			if ($codeGroup->per_user_limit == 1) {
+				$user = auth()->user();
+				
+				// Check for static codes with multiple use limit per user
+				if ($codeGroup->code_type === 'static' && $codeGroup->total_codes > 1 && $codeGroup->per_user_limit_count > 1) {
+					// Get the user's usage count for this promotion code
+					$userPromoCode = $promotionCode->users()->where('user_id', $user->id)->first();
+					$userUsageCount = $userPromoCode ? $userPromoCode->pivot->usage_count : 0;
+					
+					Log::info('[PromotionCodeController] User promotion code usage', [
+						'user_id' => $user->id,
+						'promotion_code_id' => $promotionCode->id,
+						'usage_count' => $userUsageCount,
+						'per_user_limit_count' => $codeGroup->per_user_limit_count
+					]);
+					
+					// Check if user has reached their personal limit
+					if ($userUsageCount >= $codeGroup->per_user_limit_count) {
+						return response()->json(array_merge([
+							'success' => false,
+							'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached'),
+						], $responseData), 400);
+					}
+				}
+				
+				// For static codes with global quantity limit
+				if ($promotionCode->code_quantity && $promotionCode->used_code_count >= $promotionCode->code_quantity) {
+					return response()->json(array_merge([
+						'success' => false,
+						'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached'),
+					], $responseData), 400);
+				}
+				// For codes without quantity tracking (backward compatibility)
+				elseif (!$promotionCode->code_quantity && $promotionCode->claimed_by_id) {
+					return response()->json(array_merge([
+						'success' => false,
+						'message' => __('messages.success.promotion_code_controller.Code_already_used'),
+					], $responseData), 400);
+				}
 			}
 
 			// Check if the promotion code group is active
@@ -347,7 +441,7 @@ class PromotionCodeController extends Controller
 			}
 
 			// Check if this is a reward code (should only be used for redeeming, not at checkout)
-			if (!$codeGroup->discount_type == 'fix_amount') {
+			if ($codeGroup->discount_type != 'fix_amount') {
 				return response()->json(array_merge([
 					'success' => false,
 					'message' => __('messages.success.promotion_code_controller.Code_only_can_use_when_redeem_reward'),

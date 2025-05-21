@@ -23,7 +23,7 @@ class PromotionCodeGroup extends Model implements Auditable
 
 	const PER_USER_LIMIT = [
 		0 => 'Unlimited',
-		1 => 'One Time',
+		1 => 'Multiple Time',
 	];
 
     const USER_TYPES = [

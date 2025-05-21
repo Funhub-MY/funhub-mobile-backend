@@ -163,6 +163,14 @@ class PromotionCodeResource extends Resource
 					})
 					->sortable(),
 
+				Tables\Columns\TextColumn::make('code_quantity')
+					->label('Code Quantity')
+					->sortable(),
+
+				Tables\Columns\TextColumn::make('used_code_count')
+					->label('Used Code Count')
+					->sortable(),
+
                 Tables\Columns\BadgeColumn::make('is_redeemed')
                     ->label('Status')
                     ->enum([

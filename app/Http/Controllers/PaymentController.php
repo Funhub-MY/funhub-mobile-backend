@@ -893,6 +893,7 @@ class PaymentController extends Controller
     /**
      * Process promotion codes associated with a transaction
      * Mark them as redeemed when transaction is successful
+     * Record usage in the promotion_code_user pivot table
      *
      * @param Transaction $transaction
      * @return void
@@ -902,20 +903,75 @@ class PaymentController extends Controller
         try {
             // Get all promotion codes associated with this transaction
             $promotionCodes = $transaction->promotionCodes;
+            $now = now();
+            $user = User::find($transaction->user_id);
+            
+            if (!$user) {
+                Log::error('[PaymentController] User not found for transaction', [
+                    'transaction_id' => $transaction->id,
+                    'user_id' => $transaction->user_id
+                ]);
+                return;
+            }
             
             if ($promotionCodes->count() > 0) {
                 foreach ($promotionCodes as $promotionCode) {
-                    // Mark the promotion code as redeemed
+                    // Record usage in the pivot table for the many-to-many relationship
+                    $userPromoCode = $promotionCode->users()->where('user_id', $user->id)->first();
+                    
+                    if ($userPromoCode) {
+                        // User has used this code before, increment usage count
+                        $promotionCode->users()->updateExistingPivot($user->id, [
+                            'usage_count' => $userPromoCode->pivot->usage_count + 1,
+                            'last_used_at' => $now
+                        ]);
+                        
+                        Log::info('[PaymentController] Updated promotion code usage count', [
+                            'promotion_code_id' => $promotionCode->id,
+                            'user_id' => $user->id,
+                            'new_usage_count' => $userPromoCode->pivot->usage_count + 1
+                        ]);
+                    } else {
+                        // First time user is using this code
+                        $promotionCode->users()->attach($user->id, [
+                            'usage_count' => 1,
+                            'last_used_at' => $now
+                        ]);
+                        
+                        Log::info('[PaymentController] Created new promotion code usage record', [
+                            'promotion_code_id' => $promotionCode->id,
+                            'user_id' => $user->id,
+                            'usage_count' => 1
+                        ]);
+                    }
+                    
+                    // Update the global usage counter for the promotion code if it has a quantity limit
+                    // Only increment used_code_count for new users (first time users)
+                    if ($promotionCode->code_quantity && !$userPromoCode) {
+                        // This is a new user using this code for the first time
+                        $promotionCode->used_code_count = ($promotionCode->used_code_count ?? 0) + 1;
+                        
+                        Log::info('[PaymentController] Incremented promotion code unique user count', [
+                            'promotion_code_id' => $promotionCode->id,
+                            'new_used_code_count' => $promotionCode->used_code_count,
+                            'code_quantity' => $promotionCode->code_quantity
+                        ]);
+                    }
+                    
+                    // Mark the promotion code as redeemed (for backward compatibility)
                     $promotionCode->update([
-                        'claimed_by_id' => $transaction->user_id,
+                        'claimed_by_id' => $user->id,
                         'is_redeemed' => true,
-                        'redeemed_at' => now()
+                        'redeemed_at' => $now
                     ]);
+                    
+                    $promotionCode->save(); // Save the updated used_code_count
                     
                     Log::info('[PaymentController] Promotion code marked as redeemed', [
                         'promotion_code_id' => $promotionCode->id,
                         'transaction_id' => $transaction->id,
-                        'user_id' => $transaction->user_id
+                        'user_id' => $user->id,
+                        'used_code_count' => $promotionCode->used_code_count
                     ]);
                 }
             } else {

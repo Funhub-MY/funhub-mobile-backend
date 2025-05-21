@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Support\Str;
 use App\Models\BaseModel;
-use App\Models\User;
 use App\Models\Reward;
 use App\Models\RewardComponent;
 use App\Models\PromotionCodeGroup;
@@ -65,6 +65,13 @@ class PromotionCode extends BaseModel implements Auditable
         return $this->belongsToMany(Transaction::class, 'promotion_code_transaction')
             ->withTimestamps();
     }
+
+	public function users()
+	{
+		return $this->belongsToMany(User::class, 'promotion_code_user')
+			->withPivot('usage_count', 'last_used_at')
+			->withTimestamps();
+	}
 
     public static function generateUniqueCode(): string
     {

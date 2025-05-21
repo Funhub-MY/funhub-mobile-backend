@@ -432,6 +432,13 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         return $this->hasMany(ArticleRecommendation::class, 'user_id');
     }
 
+	public function promotionCodes()
+	{
+		return $this->belongsToMany(PromotionCode::class, 'promotion_code_user')
+			->withPivot('usage_count', 'last_used_at')
+			->withTimestamps();
+	}
+
     // /**
     //  * Get the user's point balance
     //  */
