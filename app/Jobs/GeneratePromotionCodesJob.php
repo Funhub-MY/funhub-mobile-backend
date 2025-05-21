@@ -54,13 +54,13 @@ class GeneratePromotionCodesJob implements ShouldQueue
     {
         Log::info('[GeneratePromotionCodesJob] Starting job', [
             'promotion_code_group_id' => $this->group->id,
-            'total_codes' => $this->groupData['code_type'] === 'random' ? $this->groupData['total_codes'] : 1,
+            'total_codes' => $this->groupData['total_codes'] ?? 0,
         ]);
 
         Log::info('[GeneratePromotionCodesJob] Group data', $this->groupData);
 
         DB::transaction(function () {
-            $totalCodes = $this->groupData['code_type'] === 'random' ? $this->groupData['total_codes'] : 1;
+            $totalCodes = $this->groupData['total_codes'] ?? 0;
             $batchSize = 1000; // Insert 1000 records at a time
 
             // Initialize variables
@@ -117,17 +117,21 @@ class GeneratePromotionCodesJob implements ShouldQueue
             // Generate Static code created by user
             if ($this->groupData['code_type'] === 'static') {
                 $code = $this->groupData['static_code'];
+                $codeQuantity = $this->groupData['total_codes'] ?? 1;
 
                 DB::table('promotion_codes')->insert([
-                    'code' => $code,
+                    'code' => strtoupper($code),
                     'promotion_code_group_id' => $this->group->id,
                     'status' => $this->group->status,
+                    'code_quantity' => $codeQuantity,
+                    'used_code_count' => 0,
                     'created_at' => $now,
                     'updated_at' => $now,
                 ]);
 
                 Log::info('[GeneratePromotionCodesJob] Generated static code', [
-                    'code' => $code
+                    'code' => $code,
+                    'code_quantity' => $codeQuantity
                 ]);
             }
 
