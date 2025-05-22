@@ -884,9 +884,9 @@ class ArticleController extends Controller
             $query->where('type', 'video');
         }
 
-        if ($request->has('published_only')) {
-            $query->where('status', Article::STATUS[1]);
-        }
+		if ($request->has('published_only')) {
+			$query->where('status', Article::STATUS_PUBLISHED);
+		}
 
         $this->buildQuery($query, $request);
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\PromotionCode;
 
 class Transaction extends Model implements Auditable
 {
@@ -35,5 +36,11 @@ class Transaction extends Model implements Auditable
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+    
+    public function promotionCodes()
+    {
+        return $this->belongsToMany(PromotionCode::class, 'promotion_code_transaction')
+            ->withTimestamps();
     }
 }

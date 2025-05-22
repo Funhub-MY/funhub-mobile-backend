@@ -65,13 +65,31 @@ return [
         ],
         'promotion_code_controller' => [
             'Code_not_active_or_expired' => '此优惠码已失效或已过期',
-            'Campaign_disabled' => '此促销活动已被禁用',
+            'Campaign_disabled' => '该优惠码目前未启用。',
             'Campaign_ended' => '此促销活动已结束',
             'Campaign_not_started' => '此促销活动尚未开始',
             'Code_already_claimed' => '此优惠码已被使用',
             'Code_redeemed_successfully' => '优惠码兑换成功',
-            'Invalid_code' => '无效的优惠码'
-        ],
+            'Invalid_code' => '无效的优惠码',
+
+			// Validate promotion code when checkout
+			'Code_applied_successfully' => '优惠码已成功使用。',
+			'Code_expired' => '优惠码已过期。',
+			'Code_invalid' => '无效的优惠码。',
+			'Code_already_used' => '此优惠码已被使用。',
+			'Redemption_limit_reached' => '优惠码兑换次数已达上限。',
+			'User_not_eligible' => '此优惠码不适用于您的账户。',
+			'User_condition_not_met' => '您不符合使用此优惠码的条件。',
+			'Product_not_eligible' => '此优惠码无法用于所选商品。',
+			'Minimum_spend_not_met' => '未满足使用此优惠码的最低消费金额。',
+			'Payment_method_not_eligible' => '此优惠码不适用于您选择的支付方式。',
+			'Day_restriction' => '此优惠码今天不可用。',
+			'Time_restriction' => '此优惠码当前不可用。',
+			'Campaign_budget_reached' => '优惠码暂时无法使用，活动已达上限。',
+			'Discount_exceeds_product_price' => '折扣金额超过了商品价格。',
+			'Code_only_can_use_when_checkout' => '此优惠码仅限结账使用。',
+			'Code_only_can_use_when_redeem_reward' => '此优惠码仅限领取奖励使用。'
+		],
         'support_request_controller' => [
             'Support_request_resolved_and_closed' => '支持请求已解决并关闭',
         ],

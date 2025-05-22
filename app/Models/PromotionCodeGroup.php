@@ -11,6 +11,27 @@ class PromotionCodeGroup extends Model implements Auditable
 {
     use HasFactory, SoftDeletes, \OwenIt\Auditing\Auditable;
 
+    const CODE_TYPES = [
+        'random' => 'Random Generate',
+        'static' => 'Static Name',
+    ];
+
+    const DISCOUNT_TYPES = [
+        'fix_amount' => 'Fix Amount Discount',
+        'reward' => 'Reward',
+    ];
+
+	const PER_USER_LIMIT = [
+		0 => 'Unlimited',
+		1 => 'Multiple Time',
+	];
+
+    const USER_TYPES = [
+        'all' => 'All Users',
+        'new' => 'New Users Only (Registered less than 48 hours)',
+        'old' => 'Old Users Only',
+    ];
+
     protected $guarded = ['id'];
 
     protected $casts = [
@@ -40,6 +61,18 @@ class PromotionCodeGroup extends Model implements Auditable
     {
         return $this->morphedByMany(RewardComponent::class, 'rewardable', 'promotion_code_group_rewardable')
             ->withPivot('quantity')
+            ->withTimestamps();
+    }
+
+	public function products()
+	{
+		return $this->belongsToMany(Product::class, 'promotion_code_group_product')
+			->withTimestamps();
+	}
+
+    public function paymentMethods()
+    {
+        return $this->belongsToMany(PaymentMethod::class, 'payment_method_promo_group')
             ->withTimestamps();
     }
 

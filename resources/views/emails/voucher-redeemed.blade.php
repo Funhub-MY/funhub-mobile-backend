@@ -11,7 +11,7 @@ Dear {{ $merchantName }} 您好,
 {{ $merchantOffer }}<br>
 @endif
 
-<x-mail::button :url="https://merchant.funhub.my">
+<x-mail::button :url="'https://merchant.funhub.my'">
 Click here to check redemption.
 点击这里查看兑换情况。
 </x-mail::button>

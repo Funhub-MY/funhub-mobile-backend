@@ -102,27 +102,74 @@ class PromotionCodeResource extends Resource
 
                 Tables\Columns\TextColumn::make('promotionCodeGroup.name')
                     ->label('Group Name')
-                    ->url(fn ($record): string => route('filament.resources.promotion-code-groups.edit', $record->promotionCodeGroup))
+                    ->url(fn ($record): string => route('filament.resources.promotion-code-groups.edit', $record->promotionCodeGroup ?? ''))
                     ->searchable(),
-                    
-                Tables\Columns\TextColumn::make('reward_name')
-                    ->label('Reward')
-                    ->getStateUsing(function ($record) {
-                        if ($record->reward->first()) {
-                            return $record->reward->first()->name;
-                        }
-                        return $record->rewardComponent->first()?->name;
-                    }),
 
-                Tables\Columns\TextColumn::make('reward_quantity')
-                    ->label('Quantity')
-                    ->getStateUsing(function ($record) {
-                        if ($record->reward->first()) {
-                            return $record->reward->first()->pivot->quantity;
-                        }
-                        return $record->rewardComponent->first()?->pivot?->quantity;
-                    })
-                    ->sortable(),
+				Tables\Columns\TextColumn::make('reward_name')
+					->label('Reward')
+					->getStateUsing(function ($record) {
+						if ($record->reward->first()) {
+							return $record->reward->first()->name;
+						}
+
+						$rewardComponentName = $record->rewardComponent->first()?->name;
+						if (!empty($rewardComponentName)) {
+							return $rewardComponentName;
+						}
+
+						if ($record->promotionCodeGroup && $record->promotionCodeGroup->discount_type === 'fix_amount') {
+							return 'Fixed Discount Amount';
+						}
+
+						return null;
+					}),
+
+				Tables\Columns\TextColumn::make('reward_quantity')
+					->label('Value')
+					->getStateUsing(function ($record) {
+						if ($record->promotionCodeGroup && $record->promotionCodeGroup->discount_type === 'fix_amount') {
+							return $record->promotionCodeGroup->discount_amount;
+						}
+
+						if ($record->reward->first()) {
+							return $record->reward->first()->pivot->quantity;
+						}
+
+						return $record->rewardComponent->first()?->pivot?->quantity;
+					})
+					->sortable(),
+
+				Tables\Columns\TextColumn::make('per_user_limit')
+					->label('Per User Limit')
+					->getStateUsing(function ($record) {
+						if ($record->promotionCodeGroup) {
+							$perUserLimit = $record->promotionCodeGroup->per_user_limit;
+							return PromotionCodeGroup::PER_USER_LIMIT[$perUserLimit] ?? $perUserLimit;
+						}
+
+						return null;
+					})
+					->sortable(),
+
+				Tables\Columns\TextColumn::make('min_spend_amount')
+					->label('Min Spend Amount')
+					->getStateUsing(function ($record) {
+						if ($record->promotionCodeGroup && $record->promotionCodeGroup->discount_type === 'fix_amount') {
+							$minSpend = $record->promotionCodeGroup->min_spend_amount;
+							return $minSpend !== null ? number_format($minSpend, 2) : '';
+						}
+
+						return null;
+					})
+					->sortable(),
+
+				Tables\Columns\TextColumn::make('code_quantity')
+					->label('Code Quantity')
+					->sortable(),
+
+				Tables\Columns\TextColumn::make('used_code_count')
+					->label('Used Code Count')
+					->sortable(),
 
                 Tables\Columns\BadgeColumn::make('is_redeemed')
                     ->label('Status')

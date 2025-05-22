@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\Api\MerchantOfferCategoryController;
 use App\Http\Controllers\Api\UserSettingsController;
+use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\PaymentController;
 
 /*
@@ -377,9 +378,10 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
         // Promotion Codes
         Route::post('/promotion-codes/redeem', [\App\Http\Controllers\Api\PromotionCodeController::class, 'redeem']);
-
-		// Global Settings
-		Route::get('/getSettingSwitch', [\App\Http\Controllers\Api\SettingsController::class, 'getSettingSwitch']);
-		Route::post('/postSettingsSwitch', [\App\Http\Controllers\Api\SettingsController::class, 'postSettingsSwitch']);
-	});
+        Route::post('/promotion-codes/check_promo_code', [\App\Http\Controllers\Api\PromotionCodeController::class, 'postCheckPromoCode']);
+        
+        // Global Settings
+        Route::get('/getSettingSwitch', [\App\Http\Controllers\Api\SettingsController::class, 'getSettingSwitch']);
+        Route::post('/postSettingsSwitch', [\App\Http\Controllers\Api\SettingsController::class, 'postSettingsSwitch']);
+    });
 });

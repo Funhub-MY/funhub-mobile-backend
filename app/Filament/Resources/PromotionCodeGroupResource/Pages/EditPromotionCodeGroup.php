@@ -4,9 +4,12 @@ namespace App\Filament\Resources\PromotionCodeGroupResource\Pages;
 
 use App\Filament\Resources\PromotionCodeGroupResource;
 use App\Models\PromotionCode;
+use App\Models\Reward;
+use App\Models\RewardComponent;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\DB;
 
 class EditPromotionCodeGroup extends EditRecord
 {
@@ -17,6 +20,32 @@ class EditPromotionCodeGroup extends EditRecord
         return [
             Actions\DeleteAction::make(),
         ];
+    }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $promotionCodeGroupId = $this->record->id;
+
+        $promotionCode = PromotionCode::where('promotion_code_group_id', $promotionCodeGroupId)
+            ->first();
+
+		if ($this->record->code_type == 'static') {
+			$data['static_code'] = $promotionCode->code ?? '';
+		}
+
+        if ($promotionCode) {
+            $rewardableData = DB::table('promotion_code_rewardable')
+                ->where('promotion_code_id', $promotionCode->id)
+                ->first();
+
+            if ($rewardableData) {
+                $data['rewardable_type'] = $rewardableData->rewardable_type;
+                $data['rewardable_id'] = $rewardableData->rewardable_id;
+                $data['quantity'] = $rewardableData->quantity;
+            }
+        }
+
+        return $data;
     }
 
     protected function afterSave(): void

@@ -65,13 +65,31 @@ return [
         ],
         'promotion_code_controller' => [
             'Code_not_active_or_expired' => 'This code is not active or has expired',
-            'Campaign_disabled' => 'This promotion campaign is disabled',
+            'Campaign_disabled' => 'This code is currently inactive.',
             'Campaign_ended' => 'This promotion campaign has ended',
             'Campaign_not_started' => 'This promotion campaign has not started yet',
             'Code_already_claimed' => 'This code has already been claimed',
             'Code_redeemed_successfully' => 'Code redeemed successfully',
-            'Invalid_code' => 'Invalid code'
-        ],
+            'Invalid_code' => 'Invalid code',
+
+			// Validate promotion code when checkout
+			'Code_applied_successfully' => 'Promo code applied successfully.',
+			'Code_expired' => 'Promo code has expired.',
+			'Code_invalid' => 'Invalid promo code.',
+			'Code_already_used' => 'This promo code has already been used.',
+			'Redemption_limit_reached' => 'Promo code redemption limit has been reached.',
+			'User_not_eligible' => 'This promo code is not available for your account.',
+			'User_condition_not_met' => 'You do not meet the requirements to use this promo code.',
+			'Product_not_eligible' => 'Promo code cannot be applied to selected item(s).',
+			'Minimum_spend_not_met' => 'Minimum spend not met for this promo code.',
+			'Payment_method_not_eligible' => 'This promo code is not valid with your selected payment method.',
+			'Day_restriction' => 'This promo code is not valid today.',
+			'Time_restriction' => 'This promo code is not valid at this time.',
+			'Campaign_budget_reached' => 'Promo code usage is temporarily disabled. Campaign limit reached.',
+			'Discount_exceeds_product_price' => 'The discount amount exceeds the product price.',
+			'Code_only_can_use_when_checkout' => 'This code can only be used at checkout.',
+			'Code_only_can_use_when_redeem_reward' => 'This code can only be used on the Funbox page.'
+		],
         'support_request_controller' => [
             'Support_request_resolved_and_closed' => 'Support request resolved and closed',
         ],
@@ -200,13 +218,30 @@ return [
         ],
         'promotion_code_controller' => [
             'Code_not_active_or_expired' => 'This code is not active or has expired',
-            'Campaign_disabled' => 'This promotion campaign is disabled',
+            'Campaign_disabled' => 'This code is currently inactive.',
             'Campaign_ended' => 'This promotion campaign has ended',
             'Campaign_not_started' => 'This promotion campaign has not started yet',
             'Code_already_claimed' => 'Promo code has already been claimed',
             'Code_redeemed_successfully' => 'Promo code redeemed successfully',
-            'Invalid_code' => 'Invalid code'
-        ],
+            'Invalid_code' => 'Invalid code',
+
+			// Redeem voucher when checkout
+			'Code_applied_successfully' => 'Promo Code applied successfully',
+			'Code_expired' => 'Promo code has expired.',
+			'Code_invalid' => 'Invalid promo code.',
+			'Code_already_used' => 'You have already used this promo code.',
+			'Redemption_limit_reached' => 'Promo code redemption limit has been reached.',
+			'User_not_eligible' => 'This promo code is not available for your account.',
+			'User_condition_not_met' => 'You do not meet the requirements to use this promo code.',
+			'Product_not_eligible' => 'Promo code cannot be applied to selected item(s).',
+			'Minimum_spend_not_met' => 'Minimum spend not met for this promo code.',
+			'Payment_method_not_eligible' => 'This promo code is not valid with your selected payment method.',
+			'Day_restriction' => 'This promo code is not valid today.',
+			'Time_restriction' => 'This promo code is not valid at this time.',
+			'Campaign_budget_reached' => 'Promo code usage is temporarily disabled. Campaign limit reached.',
+			'Code_only_can_use_when_checkout' => 'This code can only be used at checkout.',
+			'Code_only_can_use_when_redeem_reward' => 'This code can only be used on the Funbox page.'
+		],
         'support_request_controller' => [
             'Invalid_status' => 'Invalid status',
             'You_are_not_allowed_to_reply_to_this_support_request' => 'You are not allowed to reply to this support request',

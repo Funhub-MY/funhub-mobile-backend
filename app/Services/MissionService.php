@@ -37,15 +37,32 @@ class MissionService
         $this->handleEvent('purchase_gift_card', $user);
     }
 
-    public function handleEvent(string $eventType, User $user, array $context = []): void
+    public function handleEvent(string $eventType, User $user, array $context = [], $shouldHandleInteractEvent = true): void
     {
+		if (!$shouldHandleInteractEvent) {
+			// if current handleEvent is false, mean this iteration of handling the event should exit.
+			// the reason using this architecture is to not affect the previous mission events.
+			return;
+		}
+
         try {
             DB::beginTransaction();
 
             // Spam checks are now handled in the event listener
             $missions = $this->getEligibleMissions($eventType, $user);
+			Log::info('Eligible missions retrieved', [
+				'event' => $eventType,
+				'user_id' => $user->id,
+				'mission_ids' => $missions->pluck('id'),
+				'mission_names' => $missions->pluck('name'),
+			]);
 
             foreach ($missions as $mission) {
+				Log::info('Processing missions ', [
+					'mission_id' => $mission->id,
+					'mission_name' => $mission->name
+				]);
+
                 $this->processMissionProgress($mission, $user, $eventType);
             }
 

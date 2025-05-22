@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Support\Str;
 use App\Models\BaseModel;
-use App\Models\User;
 use App\Models\Reward;
 use App\Models\RewardComponent;
 use App\Models\PromotionCodeGroup;
+use App\Models\Transaction;
 
 class PromotionCode extends BaseModel implements Auditable
 {
@@ -58,6 +59,19 @@ class PromotionCode extends BaseModel implements Auditable
     {
         return $this->status && ($this->promotionCodeGroup === null || $this->promotionCodeGroup->isActive());
     }
+    
+    public function transactions()
+    {
+        return $this->belongsToMany(Transaction::class, 'promotion_code_transaction')
+            ->withTimestamps();
+    }
+
+	public function users()
+	{
+		return $this->belongsToMany(User::class, 'promotion_code_user')
+			->withPivot('usage_count', 'last_used_at')
+			->withTimestamps();
+	}
 
     public static function generateUniqueCode(): string
     {
@@ -66,7 +80,7 @@ class PromotionCode extends BaseModel implements Auditable
 
         do {
             // generate 4 random characters
-            $chars1 = strtoupper(Str::random(4));
+            $chars1 = strtoupper(Str::random(2));
             
             // generate 4 random numbers
             $numbers = str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);

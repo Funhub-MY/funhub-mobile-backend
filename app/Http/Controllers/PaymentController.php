@@ -14,6 +14,7 @@ use App\Models\MerchantOfferVoucher;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\UserCard;
+use App\Models\PromotionCode;
 use App\Events\GiftCardPurchased;
 use App\Notifications\PurchasedGiftCardNotification;
 use App\Notifications\PurchasedOfferNotification;
@@ -277,8 +278,13 @@ class PaymentController extends Controller
                     event(new \App\Events\PurchasedMerchantOffer($transaction->user, $merchantOffer, 'fiat'));
 
                 } else if ($transaction->transactionable_type == Product::class) {
+					Log::info('[Payment Controller success] heres product class');
                     $this->updateProductTransaction($request, $transaction);
-
+                    $this->processPromotionCodes($transaction);
+                    
+                    // Get promotion code data for response if any
+                    $promoResponseData = $this->getPromotionCodeResponseData($transaction);
+                    
                     if ($transaction->user->email) {
                         try {
                             $product = Product::where('id', $transaction->transactionable_id)->first();
@@ -341,6 +347,11 @@ class PaymentController extends Controller
                     'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
                     'success' => true
                 ];
+                
+                // Add promotion code data to response if this was a product transaction with promo code
+                if ($transaction->transactionable_type == Product::class && isset($promoResponseData)) {
+                    $params = array_merge($params, $promoResponseData);
+                }
 
                 if ($transaction->channel === 'app') {
                     return view('payment-return', $params);
@@ -877,6 +888,172 @@ class PaymentController extends Controller
         } else {
             // send notification to user for app transactions
             $transaction->user->notify($notification);
+        }
+    }
+
+    /**
+     * Process promotion codes associated with a transaction
+     * Mark them as redeemed when transaction is successful
+     * Record usage in the promotion_code_user pivot table
+     *
+     * @param Transaction $transaction
+     * @return void
+     */
+    protected function processPromotionCodes($transaction)
+    {
+        try {
+			Log::info('[Payment Controller success] processPromotionCodes start');
+			// Get all promotion codes associated with this transaction
+            $promotionCodes = $transaction->promotionCodes;
+            $now = now();
+            $user = User::find($transaction->user_id);
+			Log::info($promotionCodes);
+
+			if (!$user) {
+                Log::error('[PaymentController] User not found for transaction', [
+                    'transaction_id' => $transaction->id,
+                    'user_id' => $transaction->user_id
+                ]);
+                return;
+            }
+            
+            if ($promotionCodes->count() > 0) {
+                foreach ($promotionCodes as $promotionCode) {
+                    // Record usage in the pivot table for the many-to-many relationship
+                    $userPromoCode = $promotionCode->users()->where('user_id', $user->id)->first();
+                    
+                    if ($userPromoCode) {
+                        // User has used this code before, increment usage count
+                        $promotionCode->users()->updateExistingPivot($user->id, [
+                            'usage_count' => $userPromoCode->pivot->usage_count + 1,
+                            'last_used_at' => $now
+                        ]);
+                        
+                        Log::info('[PaymentController] Updated promotion code usage count', [
+                            'promotion_code_id' => $promotionCode->id,
+                            'user_id' => $user->id,
+                            'new_usage_count' => $userPromoCode->pivot->usage_count + 1
+                        ]);
+                    } else {
+                        // First time user is using this code
+                        $promotionCode->users()->attach($user->id, [
+                            'usage_count' => 1,
+                            'last_used_at' => $now
+                        ]);
+                        
+                        Log::info('[PaymentController] Created new promotion code usage record', [
+                            'promotion_code_id' => $promotionCode->id,
+                            'user_id' => $user->id,
+                            'usage_count' => 1
+                        ]);
+                    }
+                    
+                    // Update the global usage counter for the promotion code if it has a quantity limit
+                    // Only increment used_code_count for new users (first time users)
+                    if ($promotionCode->code_quantity && !$userPromoCode) {
+                        // This is a new user using this code for the first time
+                        $promotionCode->used_code_count = ($promotionCode->used_code_count ?? 0) + 1;
+                        
+                        Log::info('[PaymentController] Incremented promotion code unique user count', [
+                            'promotion_code_id' => $promotionCode->id,
+                            'new_used_code_count' => $promotionCode->used_code_count,
+                            'code_quantity' => $promotionCode->code_quantity
+                        ]);
+                    }
+                    
+                    // Mark the promotion code as redeemed (for backward compatibility)
+                    $promotionCode->update([
+                        'claimed_by_id' => $user->id,
+                        'is_redeemed' => true,
+                        'redeemed_at' => $now
+                    ]);
+                    
+                    $promotionCode->save(); // Save the updated used_code_count
+                    
+                    Log::info('[PaymentController] Promotion code marked as redeemed', [
+                        'promotion_code_id' => $promotionCode->id,
+                        'transaction_id' => $transaction->id,
+                        'user_id' => $user->id,
+                        'used_code_count' => $promotionCode->used_code_count
+                    ]);
+                }
+				Log::info('[Payment Controller success] processPromotionCodes end');
+
+			} else {
+                // Transaction doesn't have any promotion codes attached
+                Log::info('[PaymentController] No promotion codes to process for transaction', [
+                    'transaction_id' => $transaction->id,
+                    'transaction_no' => $transaction->transaction_no
+                ]);
+                
+                // Transaction completed successfully without using any promotion codes
+                return;
+            }
+        } catch (\Exception $e) {
+            Log::error('[PaymentController] Error processing promotion codes', [
+                'error' => $e->getMessage(),
+                'transaction_id' => $transaction->id
+            ]);
+        }
+    }
+
+    /**
+     * Get promotion code response data for a transaction
+     * 
+     * @param Transaction $transaction
+     * @return array|null
+     */
+    protected function getPromotionCodeResponseData($transaction)
+    {
+        try {
+            // Get the first promotion code associated with this transaction
+            $promotionCode = $transaction->promotionCodes->first();
+            
+            if (!$promotionCode) {
+                return null;
+            }
+            
+            // Get the promotion code group
+            $codeGroup = $promotionCode->promotionCodeGroup;
+            
+            if (!$codeGroup) {
+                return null;
+            }
+            
+            // Prepare response data
+            $responseData = [
+                'promotion_code' => $promotionCode->only(['id', 'code']),
+                'promotion_code_group' => $codeGroup->only(['id', 'name', 'description', 'use_fix_amount_discount', 'discount_amount']),
+            ];
+            
+            // Prepare discount data
+            $discountData = [];
+            if ($codeGroup->use_fix_amount_discount) {
+                $discountData = [
+                    'type' => 'fixed',
+                    'amount' => $codeGroup->discount_amount,
+                ];
+            } else {
+                // For reward-based promo codes, we'll return the rewards
+                $rewards = $promotionCode->reward;
+                $rewardComponents = $promotionCode->rewardComponent;
+                
+                $discountData = [
+                    'type' => 'reward',
+                    'rewards' => $rewards,
+                    'reward_components' => $rewardComponents,
+                ];
+            }
+            
+            $responseData['discount'] = $discountData;
+            
+            return $responseData;
+        } catch (\Exception $e) {
+            Log::error('[PaymentController] Error getting promotion code response data', [
+                'error' => $e->getMessage(),
+                'transaction_id' => $transaction->id
+            ]);
+            return null;
         }
     }
 

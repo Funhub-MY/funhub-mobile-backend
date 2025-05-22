@@ -232,7 +232,8 @@ class ProductController extends Controller
             'fiat_payment_method' => 'required_if:payment_method,fiat,in:fpx,card',
             'card_id' => 'exists:user_cards,id',
             'quantity' => 'required|integer|min:1',
-			'referral_code' => 'nullable|string'
+			'referral_code' => 'nullable|string',
+            'promotion_code' => 'nullable|string|exists:promotion_codes,code'
         ]);
 
        // check if user has verified email address
@@ -264,6 +265,48 @@ class ProductController extends Controller
         //proceed to transaction
         $user = request()->user();
         $net_amount = (($product->discount_price) ?? $product->unit_price)  * $request->quantity;
+        
+        // Handle promotion code if provided
+        $promotionDiscount = 0;
+        $appliedPromotionCode = null;
+        
+        if ($request->has('promotion_code') && $request->promotion_code != null) {
+			$promotionCode = \App\Models\PromotionCode::where('code', $request->promotion_code)
+//                ->where('is_redeemed', false)
+                ->where('status', true)
+                ->first();
+            
+            if ($promotionCode && $promotionCode->isActive()) {
+                $promotionCodeGroup = $promotionCode->promotionCodeGroup;
+
+                // Check if this is a fixed amount discount promotion code
+                if ($promotionCodeGroup && $promotionCodeGroup->discount_type == 'fix_amount' &&
+                    $promotionCodeGroup->discount_amount > 0) {
+
+                    // The promotion code has already been validated in PromotionCodeController::postCheckPromoCode
+                    // We just need to get the user's data for tracking purposes
+                    $user = request()->user();
+
+                    $promotionDiscount = $promotionCodeGroup->discount_amount;
+                    $appliedPromotionCode = $promotionCode;
+
+                    // Apply the discount
+                    $net_amount = $net_amount - $promotionDiscount;
+                    
+                    Log::info('[ProductController] Promotion code discount applied', [
+                        'promotion_code' => $request->promotion_code,
+                        'discount_amount' => $promotionDiscount,
+                        'original_amount' => (($product->discount_price) ?? $product->unit_price) * $request->quantity,
+                        'final_amount' => $net_amount,
+                    ]);
+                }
+            } else {
+				Log::info('[ProductController] Promotion code is not valid');
+                return response()->json([
+                    'message' => __('messages.success.promotion_code_controller.Code_invalid')
+                ], 400);
+            }
+        }
 
         $walletType = null;
         // if request has payment type, then use it
@@ -294,6 +337,18 @@ class ProductController extends Controller
             ($request->has('name') ? $request->name : null),
             ($request->has('referral_code') ? $request->referral_code : null),
         );
+
+        // Associate promotion code with transaction if provided
+        if ($appliedPromotionCode) {
+            $transaction->promotionCodes()->attach($appliedPromotionCode->id);
+
+            Log::info('[ProductController] Promotion code associated with transaction', [
+                'promotion_code_id' => $appliedPromotionCode->id,
+                'transaction_id' => $transaction->id,
+                'user_id' => $user->id,
+                'discount_amount' => $promotionDiscount
+            ]);
+        }
 
         // if gateway is mpay call mpay service generate Hash for frontend form
         if ($transaction->gateway == 'mpay') {
@@ -326,7 +381,7 @@ class ProductController extends Controller
             return response()->json([
                 'message' => __('messages.success.product_controller.Redirect_to_Gateway'),
                 'transaction_no' => $transaction->transaction_no,
-                'gateway_data' => $mpayData
+                'gateway_data' => $mpayData,
             ], 200);
         }
     }
