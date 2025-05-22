@@ -59,8 +59,30 @@ class PromotionCodeController extends Controller
             return DB::transaction(function () use ($request) {
                 $code = $request->input('code');
 
-                // Use case-sensitive comparison for the code
+                // Use case-sensitive comparison for the code with a lock to prevent race conditions
+                // Use sharedLock for the initial query to prevent other transactions from modifying the record
                 $promotionCode = PromotionCode::whereRaw('BINARY code = ?', [$code])
+                    ->sharedLock()
+                    ->first();
+
+                if (!$promotionCode) {
+                    Log::info('[PromotionCodeController] Invalid promotion code', [
+                        'code' => $code
+                    ]);
+
+                    return response()->json([
+                        'success' => false,
+                        'message' => __('messages.success.promotion_code_controller.Invalid_code'),
+                        'promotion_code_group' => null,
+                        'rewards' => [],
+                        'reward_components' => []
+                    ], 404);
+                }
+
+                // Now get an exclusive lock on this specific promotion code to prevent concurrent redemptions
+                // This will block other transactions trying to redeem the same code until this transaction completes
+                $promotionCode = PromotionCode::where('id', $promotionCode->id)
+                    ->lockForUpdate()
                     ->first();
 
                 // Initialize default response data
@@ -72,16 +94,6 @@ class PromotionCodeController extends Controller
                     'rewards' => $rewards,
                     'reward_components' => $rewardComponents
                 ];
-
-                if (!$promotionCode) {
-                    Log::info('[PromotionCodeController] Invalid promotion code', [
-                        'code' => $code
-                    ]);
-
-                    return response()->json(array_merge($responseData, [
-                        'message' => __('messages.success.promotion_code_controller.Invalid_code'),
-                    ]), 404);
-                }
 
                 // Update response data with promotion code information
                 $responseData['promotion_code'] = $promotionCode->only(['id', 'code']);
@@ -100,7 +112,7 @@ class PromotionCodeController extends Controller
                     $codeGroup = $promotionCode->promotionCodeGroup;
                     
                     // Check for static codes with multiple use limit per user
-                    if ($codeGroup->code_type === 'static' && $codeGroup->total_codes > 1 && $codeGroup->per_user_limit_count > 1) {
+                    if ($codeGroup->code_type === 'static' && $codeGroup->total_codes > 1 && $codeGroup->per_user_limit_count >= 1) {
                         // Get the user's usage count for this promotion code
                         $userPromoCode = $promotionCode->users()->where('user_id', $user->id)->first();
                         $userUsageCount = $userPromoCode ? $userPromoCode->pivot->usage_count : 0;
@@ -394,7 +406,7 @@ class PromotionCodeController extends Controller
 				$user = auth()->user();
 				
 				// Check for static codes with multiple use limit per user
-				if ($codeGroup->code_type === 'static' && $codeGroup->total_codes > 1 && $codeGroup->per_user_limit_count > 1) {
+				if ($codeGroup->code_type === 'static' && $codeGroup->total_codes > 1 && $codeGroup->per_user_limit_count >= 1) {
 					// Get the user's usage count for this promotion code
 					$userPromoCode = $promotionCode->users()->where('user_id', $user->id)->first();
 					$userUsageCount = $userPromoCode ? $userPromoCode->pivot->usage_count : 0;
