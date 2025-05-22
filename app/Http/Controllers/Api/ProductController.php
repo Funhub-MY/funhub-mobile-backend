@@ -283,27 +283,9 @@ class ProductController extends Controller
                 if ($promotionCodeGroup && $promotionCodeGroup->discount_type == 'fix_amount' &&
                     $promotionCodeGroup->discount_amount > 0) {
 
-                    // Check user usage limits
+                    // The promotion code has already been validated in PromotionCodeController::postCheckPromoCode
+                    // We just need to get the user's data for tracking purposes
                     $user = request()->user();
-                    $userPromoCode = $promotionCode->users()->where('user_id', $user->id)->first();
-                    $userUsageCount = $userPromoCode ? $userPromoCode->pivot->usage_count : 0;
-
-                    // Check if user has reached their limit
-                    if ($promotionCodeGroup->per_user_limit_count > 0 &&
-                        $userUsageCount >= $promotionCodeGroup->per_user_limit_count) {
-                        return response()->json([
-                            'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached')
-                        ], 400);
-                    }
-
-                    // Check if the code has reached its global unique user limit
-                    if ($promotionCode->code_quantity &&
-                        $promotionCode->used_code_count >= $promotionCode->code_quantity &&
-                        !$userPromoCode) {
-                        return response()->json([
-                            'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached')
-                        ], 400);
-                    }
 
                     $promotionDiscount = $promotionCodeGroup->discount_amount;
                     $appliedPromotionCode = $promotionCode;
@@ -316,7 +298,6 @@ class ProductController extends Controller
                         'discount_amount' => $promotionDiscount,
                         'original_amount' => (($product->discount_price) ?? $product->unit_price) * $request->quantity,
                         'final_amount' => $net_amount,
-                        'user_usage_count' => $userUsageCount
                     ]);
                 }
             } else {

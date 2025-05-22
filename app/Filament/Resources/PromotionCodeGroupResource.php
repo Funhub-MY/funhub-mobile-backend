@@ -75,7 +75,22 @@ class PromotionCodeGroupResource extends Resource
 									->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup)
 									->visible(fn(callable $get) => $get('code_type') === 'static')
 									->required(fn(callable $get) => $get('code_type') === 'static')
-									->unique(table: \App\Models\PromotionCode::class, column: 'code', ignoreRecord: true),
+									->rules([
+										fn ($livewire) => function (string $attribute, $value, \Closure $fail) use ($livewire) {
+											if (!$value) return; // Skip if empty
+
+											$query = \App\Models\PromotionCode::where('code', $value);
+
+											// If we're editing, ignore the current promotion code group's codes
+											if ($livewire instanceof Pages\EditPromotionCodeGroup && $livewire->record) {
+												$query->where('promotion_code_group_id', '!=', $livewire->record->id);
+											}
+
+											if ($query->exists()) {
+												$fail('The code has already been taken.');
+											}
+										},
+									]),
 
                                 Forms\Components\TextInput::make('total_codes')
                                     ->label('Number of Codes to Generate')
