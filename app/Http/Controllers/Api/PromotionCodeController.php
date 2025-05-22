@@ -107,12 +107,55 @@ class PromotionCodeController extends Controller
                 ]);
 
                 // check if it's already claimed or reached usage limit
-                if ($promotionCode->promotionCodeGroup && $promotionCode->promotionCodeGroup->per_user_limit == 1) {
+                // For per_user_limit = 0 (unlimited), handle based on code_type
+                if ($promotionCode->promotionCodeGroup && $promotionCode->promotionCodeGroup->per_user_limit == 0) {
                     $user = auth()->user();
                     $codeGroup = $promotionCode->promotionCodeGroup;
                     
-                    // Check for static codes with multiple use limit per user
-                    if ($codeGroup->code_type === 'static' && $codeGroup->total_codes > 1 && $codeGroup->per_user_limit_count >= 1) {
+                    // For static codes with quantity limits
+                    if ($codeGroup->code_type === 'static') {
+                        // Check if this specific code has reached its quantity limit
+                        // BUT allow the same user who has already claimed it to continue using it
+                        if ($promotionCode->code_quantity && $promotionCode->used_code_count >= $promotionCode->code_quantity 
+                            && (!$promotionCode->claimed_by_id || $promotionCode->claimed_by_id != $user->id)) {
+                            return response()->json(array_merge($responseData, [
+                                'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached'),
+                            ]), 400);
+                        }
+                        
+                        // For static codes with quantity > 1, allow multiple users to redeem
+                        if ($promotionCode->code_quantity > 1) {
+                            // This is fine - multiple users can redeem up to the code_quantity limit
+                            Log::info('[PromotionCodeController] Static code with multiple redemptions', [
+                                'promotion_code_id' => $promotionCode->id,
+                                'code_quantity' => $promotionCode->code_quantity,
+                                'used_code_count' => $promotionCode->used_code_count,
+                                'remaining' => $promotionCode->code_quantity - $promotionCode->used_code_count
+                            ]);
+                        } else {
+                            // For code_quantity = 1, only one user can redeem
+                            if ($promotionCode->claimed_by_id && $promotionCode->claimed_by_id != $user->id) {
+                                return response()->json(array_merge($responseData, [
+                                    'message' => __('messages.success.promotion_code_controller.Code_already_claimed'),
+                                ]), 400);
+                            }
+                        }
+                    } else {
+                        // For non-static codes, only the first user can use it unlimited times
+                        if ($promotionCode->claimed_by_id && $promotionCode->claimed_by_id != $user->id) {
+                            return response()->json(array_merge($responseData, [
+                                'message' => __('messages.success.promotion_code_controller.Code_already_claimed'),
+                            ]), 400);
+                        }
+                    }
+                }
+                // For per_user_limit = 1 (multiple time), check usage limits
+                else if ($promotionCode->promotionCodeGroup && $promotionCode->promotionCodeGroup->per_user_limit == 1) {
+                    $user = auth()->user();
+                    $codeGroup = $promotionCode->promotionCodeGroup;
+                    
+                    // Check for codes with multiple use limit per user (both static and random)
+                    if ($codeGroup->per_user_limit_count >= 1) {
                         // Get the user's usage count for this promotion code
                         $userPromoCode = $promotionCode->users()->where('user_id', $user->id)->first();
                         $userUsageCount = $userPromoCode ? $userPromoCode->pivot->usage_count : 0;
@@ -132,17 +175,56 @@ class PromotionCodeController extends Controller
                         }
                     }
                     
-                    // For static codes with global quantity limit
+                    // For static codes with global quantity limit - but only block new users, not existing users who haven't reached their limit
                     if ($promotionCode->code_quantity && $promotionCode->used_code_count >= $promotionCode->code_quantity) {
-                        return response()->json(array_merge($responseData, [
-                            'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached'),
-                        ]), 400);
+                        // Get the user's usage count for this promotion code
+                        $userPromoCode = $promotionCode->users()->where('user_id', $user->id)->first();
+                        
+                        // If this user has already used the code before, check against their personal limit
+                        if ($userPromoCode) {
+                            $userUsageCount = $userPromoCode->pivot->usage_count;
+                            
+                            // Only block if they've reached their personal limit
+                            if ($userUsageCount >= $codeGroup->per_user_limit_count) {
+                                return response()->json(array_merge($responseData, [
+                                    'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached'),
+                                ]), 400);
+                            }
+                            // Otherwise allow them to continue using it up to their limit
+                        } else {
+                            // This is a new user trying to use a code that has reached its global limit
+                            return response()->json(array_merge($responseData, [
+                                'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached'),
+                            ]), 400);
+                        }
                     }
                     // For codes without quantity tracking (backward compatibility)
                     elseif (!$promotionCode->code_quantity && $promotionCode->claimed_by_id) {
-                        return response()->json(array_merge($responseData, [
-                            'message' => __('messages.success.promotion_code_controller.Code_already_claimed'),
-                        ]), 400);
+                        // If this is the same user and they haven't reached their limit, allow them to use it
+                        if ($promotionCode->claimed_by_id == $user->id && $codeGroup->per_user_limit_count >= 1) {
+                            // Get the user's usage count for this promotion code
+                            $userPromoCode = $promotionCode->users()->where('user_id', $user->id)->first();
+                            $userUsageCount = $userPromoCode ? $userPromoCode->pivot->usage_count : 0;
+                            
+                            Log::info('[PromotionCodeController] User promotion code usage (backward compatibility)', [
+                                'user_id' => $user->id,
+                                'promotion_code_id' => $promotionCode->id,
+                                'usage_count' => $userUsageCount,
+                                'per_user_limit_count' => $codeGroup->per_user_limit_count
+                            ]);
+                            
+                            // Check if user has reached their personal limit
+                            if ($userUsageCount >= $codeGroup->per_user_limit_count) {
+                                return response()->json(array_merge($responseData, [
+                                    'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached'),
+                                ]), 400);
+                            }
+                        } else {
+                            // Different user trying to use the code
+                            return response()->json(array_merge($responseData, [
+                                'message' => __('messages.success.promotion_code_controller.Code_already_claimed'),
+                            ]), 400);
+                        }
                     }
                 }
 
@@ -373,7 +455,6 @@ class PromotionCodeController extends Controller
 
 			// Get the promotion code group
 			$codeGroup = $promotionCode->promotionCodeGroup;
-			Log::info($codeGroup);
 
 			// Prepare basic response data that will be included in all responses
 			$responseData = [
@@ -402,11 +483,56 @@ class PromotionCodeController extends Controller
 			$responseData['discount'] = $discountData;
 
 			// Check if the code has been redeemed or reached usage limit
-			if ($codeGroup->per_user_limit == 1) {
+			// For per_user_limit = 0 (unlimited), handle based on code_type
+			if ($codeGroup->per_user_limit == 0) {
 				$user = auth()->user();
 				
-				// Check for static codes with multiple use limit per user
-				if ($codeGroup->code_type === 'static' && $codeGroup->total_codes > 1 && $codeGroup->per_user_limit_count >= 1) {
+				// For static codes with quantity limits
+				if ($codeGroup->code_type === 'static') {
+					// Check if this specific code has reached its quantity limit
+					// BUT allow the same user who has already claimed it to continue using it
+					if ($promotionCode->code_quantity && $promotionCode->used_code_count >= $promotionCode->code_quantity 
+						&& (!$promotionCode->claimed_by_id || $promotionCode->claimed_by_id != $user->id)) {
+						return response()->json(array_merge([
+							'success' => false,
+							'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached'),
+						], $responseData), 400);
+					}
+					
+					// For static codes with quantity > 1, allow multiple users to redeem
+					if ($promotionCode->code_quantity > 1) {
+						// This is fine - multiple users can redeem up to the code_quantity limit
+						Log::info('[PromotionCodeController] Static code with multiple redemptions', [
+							'promotion_code_id' => $promotionCode->id,
+							'code_quantity' => $promotionCode->code_quantity,
+							'used_code_count' => $promotionCode->used_code_count,
+							'remaining' => $promotionCode->code_quantity - $promotionCode->used_code_count
+						]);
+					} else {
+						// For code_quantity = 1, only one user can redeem
+						if ($promotionCode->claimed_by_id && $promotionCode->claimed_by_id != $user->id) {
+							return response()->json(array_merge([
+								'success' => false,
+								'message' => __('messages.success.promotion_code_controller.Code_already_used'),
+							], $responseData), 400);
+						}
+					}
+				} else {
+					// For non-static codes, only the first user can use it unlimited times
+					if ($promotionCode->claimed_by_id && $promotionCode->claimed_by_id != $user->id) {
+						return response()->json(array_merge([
+							'success' => false,
+							'message' => __('messages.success.promotion_code_controller.Code_already_used'),
+						], $responseData), 400);
+					}
+				}
+			}
+			// For per_user_limit = 1 (multiple time), check usage limits
+			else if ($codeGroup->per_user_limit == 1) {
+				$user = auth()->user();
+				
+				// Check for codes with multiple use limit per user (both static and random)
+				if ($codeGroup->per_user_limit_count >= 1) {
 					// Get the user's usage count for this promotion code
 					$userPromoCode = $promotionCode->users()->where('user_id', $user->id)->first();
 					$userUsageCount = $userPromoCode ? $userPromoCode->pivot->usage_count : 0;
@@ -427,19 +553,60 @@ class PromotionCodeController extends Controller
 					}
 				}
 				
-				// For static codes with global quantity limit
+				// For static codes with global quantity limit - but only block new users, not existing users who haven't reached their limit
 				if ($promotionCode->code_quantity && $promotionCode->used_code_count >= $promotionCode->code_quantity) {
-					return response()->json(array_merge([
-						'success' => false,
-						'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached'),
-					], $responseData), 400);
+					// Get the user's usage count for this promotion code
+					$userPromoCode = $promotionCode->users()->where('user_id', $user->id)->first();
+					
+					// If this user has already used the code before, check against their personal limit
+					if ($userPromoCode) {
+						$userUsageCount = $userPromoCode->pivot->usage_count;
+						
+						// Only block if they've reached their personal limit
+						if ($userUsageCount >= $codeGroup->per_user_limit_count) {
+							return response()->json(array_merge([
+								'success' => false,
+								'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached'),
+							], $responseData), 400);
+						}
+						// Otherwise allow them to continue using it up to their limit
+					} else {
+						// This is a new user trying to use a code that has reached its global limit
+						return response()->json(array_merge([
+							'success' => false,
+							'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached'),
+						], $responseData), 400);
+					}
 				}
 				// For codes without quantity tracking (backward compatibility)
 				elseif (!$promotionCode->code_quantity && $promotionCode->claimed_by_id) {
-					return response()->json(array_merge([
-						'success' => false,
-						'message' => __('messages.success.promotion_code_controller.Code_already_used'),
-					], $responseData), 400);
+					// If this is the same user and they haven't reached their limit, allow them to use it
+					if ($promotionCode->claimed_by_id == $user->id && $codeGroup->per_user_limit_count >= 1) {
+						// Get the user's usage count for this promotion code
+						$userPromoCode = $promotionCode->users()->where('user_id', $user->id)->first();
+						$userUsageCount = $userPromoCode ? $userPromoCode->pivot->usage_count : 0;
+						
+						Log::info('[PromotionCodeController] User promotion code usage (backward compatibility)', [
+							'user_id' => $user->id,
+							'promotion_code_id' => $promotionCode->id,
+							'usage_count' => $userUsageCount,
+							'per_user_limit_count' => $codeGroup->per_user_limit_count
+						]);
+						
+						// Check if user has reached their personal limit
+						if ($userUsageCount >= $codeGroup->per_user_limit_count) {
+							return response()->json(array_merge([
+								'success' => false,
+								'message' => __('messages.success.promotion_code_controller.Redemption_limit_reached'),
+							], $responseData), 400);
+						}
+					} else {
+						// Different user trying to use the code
+						return response()->json(array_merge([
+							'success' => false,
+							'message' => __('messages.success.promotion_code_controller.Code_already_used'),
+						], $responseData), 400);
+					}
 				}
 			}
 
