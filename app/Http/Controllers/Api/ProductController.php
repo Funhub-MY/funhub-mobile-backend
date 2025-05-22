@@ -270,8 +270,8 @@ class ProductController extends Controller
         $promotionDiscount = 0;
         $appliedPromotionCode = null;
         
-        if ($request->has('promotion_code')) {
-            $promotionCode = \App\Models\PromotionCode::where('code', $request->promotion_code)
+        if ($request->has('promotion_code') && $request->promotion_code != null) {
+			$promotionCode = \App\Models\PromotionCode::where('code', $request->promotion_code)
 //                ->where('is_redeemed', false)
                 ->where('status', true)
                 ->first();
@@ -301,6 +301,7 @@ class ProductController extends Controller
                     ]);
                 }
             } else {
+				Log::info('[ProductController] Promotion code is not valid');
                 return response()->json([
                     'message' => __('messages.success.promotion_code_controller.Code_invalid')
                 ], 400);
