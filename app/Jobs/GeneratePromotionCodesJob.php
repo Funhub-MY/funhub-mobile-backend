@@ -136,6 +136,7 @@ class GeneratePromotionCodesJob implements ShouldQueue
             }
 
             // get all inserted promotion codes
+			// TODO: assigned too much into the variables. use 1000 per batch to get.
             $promotionCodes = PromotionCode::where('promotion_code_group_id', $this->group->id)->get();
 
             // prepare reward pivot data
