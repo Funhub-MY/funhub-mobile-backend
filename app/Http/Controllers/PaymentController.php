@@ -949,12 +949,11 @@ class PaymentController extends Controller
                     }
                     
                     // Update the global usage counter for the promotion code if it has a quantity limit
-                    // Only increment used_code_count for new users (first time users)
-                    if ($promotionCode->code_quantity && !$userPromoCode) {
-                        // This is a new user using this code for the first time
+                    // Increment used_code_count for every transaction, regardless of whether the user has used the code before
+                    if ($promotionCode->code_quantity) {
                         $promotionCode->used_code_count = ($promotionCode->used_code_count ?? 0) + 1;
                         
-                        Log::info('[PaymentController] Incremented promotion code unique user count', [
+                        Log::info('[PaymentController] Incremented promotion code usage count', [
                             'promotion_code_id' => $promotionCode->id,
                             'new_used_code_count' => $promotionCode->used_code_count,
                             'code_quantity' => $promotionCode->code_quantity
