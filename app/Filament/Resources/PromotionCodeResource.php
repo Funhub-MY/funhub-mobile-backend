@@ -162,11 +162,11 @@ class PromotionCodeResource extends Resource
 					}),
 
 				Tables\Columns\TextColumn::make('code_quantity')
-					->label('Code Quantity')
+					->label('Total Code Generated')
 					->sortable(),
 
 				Tables\Columns\TextColumn::make('used_code_count')
-					->label('Total Claimed')
+					->label('Total Code Claimed')
 					->sortable(),
 
                 Tables\Columns\BadgeColumn::make('is_redeemed')
