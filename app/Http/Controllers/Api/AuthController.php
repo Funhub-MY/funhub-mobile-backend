@@ -154,11 +154,6 @@ class AuthController extends Controller
 			$phoneNo = substr($phoneNo, 1);
 		}
 
-		// Bypass OTP validation for specific number
-		if ($phoneNo == '174761163') {
-			$request->merge(['otp' => '123456']);
-		}
-
 		// Update phone_no after normalization
 		$request->merge(['phone_no' => $phoneNo]);
 
