@@ -121,9 +121,18 @@ class PromotionCodeController extends Controller
                 $userUsageCount = $userPromoCode ? $userPromoCode->pivot->usage_count : 0;
                 
                 // NEW LOGIC:
-                // per_user_limit = 0 means user can redeem unlimited times until code_quantity is reached
-                // per_user_limit = 1 means user can redeem only per_user_limit_count times
+                // For random codes: Always enforce single-use regardless of per_user_limit
+                // For static codes with per_user_limit = 0: User can redeem unlimited times until code_quantity is reached
+                // For static codes with per_user_limit = 1: User can redeem only per_user_limit_count times
                 
+                // First check if this is a random code that's already been redeemed
+                if ($codeGroup && $codeGroup->code_type === 'random' && $promotionCode->is_redeemed) {
+                    return response()->json(array_merge($responseData, [
+                        'message' => __('messages.success.promotion_code_controller.Code_already_used'),
+                    ]), 400);
+                }
+                
+                // Then handle per-user limits for static codes or first-time use of random codes
                 if ($codeGroup && $codeGroup->per_user_limit == 1) {
                     // Multiple times (limited) redemption
                     // Check if user has reached their personal limit
@@ -142,13 +151,15 @@ class PromotionCodeController extends Controller
                     ]);
                 } else {
                     // Unlimited redemption (per_user_limit = 0)
-                    // User can redeem unlimited times until code_quantity is reached
+                    // For static codes: User can redeem unlimited times until code_quantity is reached
+                    // For random codes: Already checked above that it hasn't been redeemed yet
                     Log::info('[PromotionCodeController] User promotion code usage (unlimited)', [
                         'user_id' => $user->id,
                         'promotion_code_id' => $promotionCode->id,
                         'usage_count' => $userUsageCount,
                         'code_quantity' => $promotionCode->code_quantity,
-                        'used_code_count' => $promotionCode->used_code_count
+                        'used_code_count' => $promotionCode->used_code_count,
+                        'code_type' => $codeGroup->code_type
                     ]);
                 }
 
@@ -421,8 +432,17 @@ class PromotionCodeController extends Controller
 			$userUsageCount = $userPromoCode ? $userPromoCode->pivot->usage_count : 0;
 			
 			// NEW LOGIC:
-			// per_user_limit = 0 means user can redeem unlimited times until code_quantity is reached
-			// per_user_limit = 1 means user can redeem only per_user_limit_count times
+			// For random codes: Always enforce single-use regardless of per_user_limit
+			// For static codes with per_user_limit = 0: User can redeem unlimited times until code_quantity is reached
+			// For static codes with per_user_limit = 1: User can redeem only per_user_limit_count times
+			
+			// First check if this is a random code that's already been redeemed
+			if ($codeGroup->code_type === 'random' && $promotionCode->is_redeemed) {
+				return response()->json(array_merge([
+					'success' => false,
+					'message' => __('messages.success.promotion_code_controller.Code_already_used'),
+				], $responseData), 400);
+			}
 			
 			if ($codeGroup->per_user_limit == 1) {
 				// Multiple times (limited) redemption
@@ -443,13 +463,15 @@ class PromotionCodeController extends Controller
 				]);
 			} else {
 				// Unlimited redemption (per_user_limit = 0)
-				// User can redeem unlimited times until code_quantity is reached
+				// For static codes: User can redeem unlimited times until code_quantity is reached
+				// For random codes: Already checked above that it hasn't been redeemed yet
 				Log::info('[PromotionCodeController] User promotion code usage (unlimited)', [
 					'user_id' => $user->id,
 					'promotion_code_id' => $promotionCode->id,
 					'usage_count' => $userUsageCount,
 					'code_quantity' => $promotionCode->code_quantity,
-					'used_code_count' => $promotionCode->used_code_count
+					'used_code_count' => $promotionCode->used_code_count,
+					'code_type' => $codeGroup->code_type
 				]);
 			}
 
@@ -488,7 +510,9 @@ class PromotionCodeController extends Controller
 						}
 					}
 				} else {
-					// For non-static codes, only the first user can use it unlimited times
+					// For non-static (random) codes, we've already checked above that it hasn't been redeemed yet
+					// This additional check ensures that if it has been claimed but not marked as redeemed,
+					// only the same user can continue to use it (backward compatibility)
 					if ($promotionCode->claimed_by_id && $promotionCode->claimed_by_id != $user->id) {
 						return response()->json(array_merge([
 							'success' => false,
