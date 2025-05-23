@@ -23,6 +23,7 @@ use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use pxlrbt\FilamentExcel\Columns\Column;
 use App\Exports\PromotionCodesExport;
+use App\Filament\Resources\PromotionCodeResource\RelationManagers\UsersRelationManager;
 
 class PromotionCodeResource extends Resource
 {
@@ -136,8 +137,7 @@ class PromotionCodeResource extends Resource
 						}
 
 						return $record->rewardComponent->first()?->pivot?->quantity;
-					})
-					->sortable(),
+					}),
 
 				Tables\Columns\TextColumn::make('per_user_limit')
 					->label('Per User Limit')
@@ -148,8 +148,7 @@ class PromotionCodeResource extends Resource
 						}
 
 						return null;
-					})
-					->sortable(),
+					}),
 
 				Tables\Columns\TextColumn::make('min_spend_amount')
 					->label('Min Spend Amount')
@@ -160,15 +159,14 @@ class PromotionCodeResource extends Resource
 						}
 
 						return null;
-					})
-					->sortable(),
+					}),
 
 				Tables\Columns\TextColumn::make('code_quantity')
 					->label('Code Quantity')
 					->sortable(),
 
 				Tables\Columns\TextColumn::make('used_code_count')
-					->label('Used Code Count')
+					->label('Total Claimed')
 					->sortable(),
 
                 Tables\Columns\BadgeColumn::make('is_redeemed')
@@ -241,6 +239,7 @@ class PromotionCodeResource extends Resource
                     })
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\Action::make('toggleStatus')
                     ->label('Toggle Status')
                     ->icon('heroicon-o-check-circle')
@@ -310,6 +309,14 @@ class PromotionCodeResource extends Resource
     {
         return [
             'index' => Pages\ListPromotionCodes::route('/'),
+            'view' => Pages\ViewPromotionCode::route('/{record}'),
+        ];
+    }
+    
+    public static function getRelations(): array
+    {
+        return [
+            UsersRelationManager::class,
         ];
     }
 }
