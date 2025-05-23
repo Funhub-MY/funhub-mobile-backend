@@ -25,25 +25,6 @@ use Illuminate\Database\Eloquent\Builder;
 class ViewPromotionCode extends ViewRecord
 {
     protected static string $resource = PromotionCodeResource::class;
-    
-    protected function getHeaderActions(): array
-    {
-        return [
-            Action::make('viewGroup')
-                ->label('View Promotion Group')
-                ->icon('heroicon-o-collection')
-                ->color('secondary')
-                ->visible(function () {
-                    return $this->record->promotion_code_group_id !== null;
-                })
-                ->url(function () {
-                    // Navigate to the promotion code group view page
-                    return route('filament.resources.promotion-code-groups.view', [
-                        'record' => $this->record->promotion_code_group_id,
-                    ]);
-                })
-        ];
-    }
 
 	protected function getFormSchema(): array
 	{
@@ -51,16 +32,6 @@ class ViewPromotionCode extends ViewRecord
 			TextInput::make('code')
 				->label('Promotion Code')
 				->disabled(),
-                
-            Placeholder::make('group_name')
-                ->label('Group')
-                ->content(function ($record) {
-                    if (!$record->promotion_code_group_id) {
-                        return 'No Group';
-                    }
-                    
-                    return $record->promotionCodeGroup ? $record->promotionCodeGroup->name : 'Unknown Group';
-                }),
 		];
 	}
 }
