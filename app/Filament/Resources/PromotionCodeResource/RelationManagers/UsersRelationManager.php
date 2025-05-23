@@ -38,16 +38,24 @@ class UsersRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->sortable()
-                    ->searchable(),
+					->searchable(query: function (Builder $query, string $search): Builder {
+						return $query->where('users.id', 'like', "%{$search}%");
+					}),
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
-                    ->searchable(),
+					->searchable(query: function (Builder $query, string $search): Builder {
+						return $query->where('users.name', 'like', "%{$search}%");
+					}),
                 Tables\Columns\TextColumn::make('username')
                     ->sortable()
-                    ->searchable(),
+					->searchable(query: function (Builder $query, string $search): Builder {
+						return $query->where('users.username', 'like', "%{$search}%");
+					}),
                 Tables\Columns\TextColumn::make('email')
                     ->sortable()
-                    ->searchable(),
+					->searchable(query: function (Builder $query, string $search): Builder {
+						return $query->where('users.email', 'like', "%{$search}%");
+					}),
                 Tables\Columns\TextColumn::make('pivot.usage_count')
                     ->label('Usage Count')
                     ->sortable(),
