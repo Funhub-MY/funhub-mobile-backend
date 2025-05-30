@@ -371,7 +371,7 @@ return [
         'allowed_country_codes' => array_filter(
             explode(',', env('SMS_ALLOWED_COUNTRY_CODES', '60,65'))
         ),
-        'active_provider' => env('ACTIVE_SMS_PROVIDER', 'byteplus'),
+        'active_provider' => env('ACTIVE_SMS_PROVIDER', 'movider'),
     ],
 
     /*
