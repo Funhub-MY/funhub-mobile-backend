@@ -64,7 +64,7 @@ class PromotionCodeGroupResource extends Resource
                                 Forms\Components\Select::make('code_type')
 									->label('Code Type')
                                     ->options(PromotionCodeGroup::CODE_TYPES)
-                                    ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup)
+//                                    ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup)
                                     ->reactive()
                                     ->required(),
 
@@ -104,7 +104,7 @@ class PromotionCodeGroupResource extends Resource
                                 Forms\Components\Select::make('discount_type')
                                     ->label('Discount Type')
                                     ->options(PromotionCodeGroup::DISCOUNT_TYPES)
-                                    ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup)
+//                                    ->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup)
                                     ->visible(fn(callable $get) => $get('code_type'))
                                     ->required(fn(callable $get) => $get('code_type'))
                                     ->reactive(),
