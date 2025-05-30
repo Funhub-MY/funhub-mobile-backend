@@ -265,7 +265,6 @@ return [
     'event_matrix' => [
         'article_created' => 'Article Created',
         'comment_created' => 'Comment Created',
-        'comment_created' => 'Comment Created',
         'like_comment' => 'Liked a Comment',
         'like_article' => 'Liked an Article',
         'share_article' => 'Shared an Article',
@@ -372,6 +371,7 @@ return [
         'allowed_country_codes' => array_filter(
             explode(',', env('SMS_ALLOWED_COUNTRY_CODES', '60,65'))
         ),
+        'active_provider' => env('ACTIVE_SMS_PROVIDER', 'byteplus'),
     ],
 
     /*

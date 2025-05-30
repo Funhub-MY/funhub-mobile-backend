@@ -70,18 +70,40 @@ class Sms {
             return false;
         }
 
-        // Try sending SMS using BytePlus
-        $byteplusResponse = $this->sendBytePlusSms($to, $message);
-
-        if ($byteplusResponse !== false) {
-            return $byteplusResponse;
-        }
-
-        // If BytePlus fails, try sending SMS using Movider
-        $moviderResponse = $this->sendMoviderSms($to, $message);
-
-        if ($moviderResponse !== false) {
-            return $moviderResponse;
+        // Get the active SMS provider from config
+        $activeProvider = config('app.sms.active_provider', 'byteplus');
+        Log::info('Using SMS provider', ['provider' => $activeProvider]);
+        
+        if ($activeProvider === 'movider') {
+            // Try sending SMS using Movider first
+            $moviderResponse = $this->sendMoviderSms($to, $message);
+            
+            if ($moviderResponse !== false) {
+                return $moviderResponse;
+            }
+            
+            // If Movider fails, fallback to BytePlus
+            Log::info('Movider SMS failed, falling back to BytePlus');
+            $byteplusResponse = $this->sendBytePlusSms($to, $message);
+            
+            if ($byteplusResponse !== false) {
+                return $byteplusResponse;
+            }
+        } else {
+            // Default to BytePlus
+            $byteplusResponse = $this->sendBytePlusSms($to, $message);
+            
+            if ($byteplusResponse !== false) {
+                return $byteplusResponse;
+            }
+            
+            // If BytePlus fails, fallback to Movider
+            Log::info('BytePlus SMS failed, falling back to Movider');
+            $moviderResponse = $this->sendMoviderSms($to, $message);
+            
+            if ($moviderResponse !== false) {
+                return $moviderResponse;
+            }
         }
 
         // If both services fail, return false
