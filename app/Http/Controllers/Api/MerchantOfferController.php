@@ -1052,6 +1052,13 @@ class MerchantOfferController extends Controller
                 
                 // Load the merchant relationship if not already loaded
                 $offer->load('user.merchant');
+
+                Log::info('offer merchant', [
+                    'offer_user' => $offer->user,
+                    'merchant' => $offer->user->merchant,
+                    'merchant_redeem_code' => $offer->user->merchant->redeem_code,
+                    'request_redeem_code' => $request->redeem_code
+                ]);
                 
                 // Verify the redeem_code belongs to the merchant who owns this offer
                 if ($offer->user && $offer->user->merchant && $offer->user->merchant->redeem_code === $request->redeem_code) {
