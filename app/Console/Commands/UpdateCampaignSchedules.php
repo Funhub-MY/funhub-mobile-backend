@@ -78,7 +78,7 @@ class UpdateCampaignSchedules extends Command
         $newCount = 0;
 
         for ($i = 0; $i < $numberOfSchedules; $i++) {
-            // improved schedule date logic (no overlaps, predictable gaps)
+            // Improved schedule date logic
             $scheduleStartDate = $startDate->copy()->addDays($i * ($scheduleDays + $intervalDays));
             $availableAt = $scheduleStartDate->startOfDay();
             $availableUntil = $availableAt->copy()->addDays($scheduleDays - 1)->endOfDay();
