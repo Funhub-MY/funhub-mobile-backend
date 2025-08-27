@@ -228,6 +228,8 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make(name: 'id')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make(name: 'name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make(name: 'username')
@@ -243,8 +245,7 @@ class UserResource extends Resource
                         'success' => 1,
                         'danger' => 2,
                         'secondary' => 3,
-                    ])
-                    ->searchable(),
+                    ]),
 
                 // account restricted
                 Tables\Columns\BadgeColumn::make('account_restricted')
