@@ -171,7 +171,7 @@ class MerchantOfferCampaignResource extends Resource
                                     ->label('Expire in (Days) After Purchase')
                                     ->columnSpan(1)
                                     ->required()
-                                    ->helperText('No of days aailable until user redeemed it. Will affect all vouchers generated under this campaign.')
+                                    ->helperText('No of days available until user redeemed it. Will affect all vouchers generated under this campaign.')
                                     ->numeric(),
 
                                 Forms\Components\Toggle::make('auto_move_vouchers')

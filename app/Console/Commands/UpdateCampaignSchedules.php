@@ -61,8 +61,7 @@ class UpdateCampaignSchedules extends Command
             $this->info("Found " . $availableVouchersCount . " unsold vouchers");
 
             if ($availableVouchersCount < $totalMoveQuantity) {
-                $this->info("Not enough vouchers to move. Adding difference to total_new_quantity");
-                $totalNewQuantity += ($totalMoveQuantity - $availableVouchersCount);
+                $this->info("Not enough vouchers to move. Will only move " . $availableVouchersCount);
                 $totalMoveQuantity = $availableVouchersCount;
             }
         }
@@ -79,30 +78,29 @@ class UpdateCampaignSchedules extends Command
         $newCount = 0;
 
         for ($i = 0; $i < $numberOfSchedules; $i++) {
-            // calculate dates for this schedule
-            if ($i > 0) {
-                $availableAt = $startDate->copy()->addDay()->startOfDay(); // always start at the next day if $i > 0, since its second schedule onwards
-            } else {
-                // first schedule
-                $availableAt = $startDate->copy()->startOfDay();
-            }
-            
-            // always minus one day for last schedule as we use endOfDay
+            // Improved schedule date logic
+            $scheduleStartDate = $startDate->copy()->addDays($i * ($scheduleDays + $intervalDays));
+            $availableAt = $scheduleStartDate->startOfDay();
             $availableUntil = $availableAt->copy()->addDays($scheduleDays - 1)->endOfDay();
 
             // calculate quantity for this schedule
             $remainingTotal = $totalQuantity - ($i * $quantityPerSchedule);
             $scheduleQuantity = min($quantityPerSchedule, $remainingTotal);
 
+            // Break early if no vouchers left to process
+            if ($scheduleQuantity <= 0) {
+                break;
+            }
+
             $schedule = $campaign->schedules()->create([
-                'available_at' => $availableAt,
-                'available_until' => $availableUntil,
-                'quantity' => $scheduleQuantity,
-                'flash_deal' => $campaign->flash_deal ?? 0,
-                'expiry_days' => $campaign->expiry_days,
-                'user_id' => $campaign->user_id,
-                'publish_at' => $availableAt,
-                'status' => MerchantOfferCampaignSchedule::STATUS_DRAFT
+                'available_at'   => $availableAt,
+                'available_until'=> $availableUntil,
+                'quantity'       => $scheduleQuantity,
+                'flash_deal'     => $campaign->flash_deal ?? 0,
+                'expiry_days'    => $campaign->expiry_days,
+                'user_id'        => $campaign->user_id,
+                'publish_at'     => $availableAt,
+                'status'         => MerchantOfferCampaignSchedule::STATUS_DRAFT
             ]);
 
             $newOffer = $this->createMerchantOffer($campaign, $schedule, $scheduleQuantity, $availableAt);
@@ -115,38 +113,36 @@ class UpdateCampaignSchedules extends Command
 
             if ($moveQuantity > 0) {
                 $vouchersToMove = $unsoldVouchers->slice($movedCount, $moveQuantity);
-                foreach ($vouchersToMove as $voucher) {
-                    DB::transaction(function () use ($voucher, $newOffer, $campaign) {
-                        // update voucher
+
+                DB::transaction(function () use ($vouchersToMove, $newOffer, $campaign) {
+                    foreach ($vouchersToMove as $voucher) {
                         DB::table('merchant_offer_vouchers')
                             ->where('id', $voucher->id)
                             ->update(['merchant_offer_id' => $newOffer->id]);
 
-                        // record movement
                         MerchantOfferVoucherMovement::create([
                             'from_merchant_offer_id' => $voucher->merchant_offer_id,
-                            'to_merchant_offer_id' => $newOffer->id,
-                            'voucher_id' => $voucher->id,
-                            'user_id' => $campaign->user_id,
+                            'to_merchant_offer_id'   => $newOffer->id,
+                            'voucher_id'             => $voucher->id,
+                            'user_id'                => $campaign->user_id,
                         ]);
-                    });
-                    $movedCount++;
-                }
-                $this->info("Moved " . $vouchersToMove->count() . " vouchers to schedule " . ($i + 1));
-            }
+                    }
+                });
 
+                $movedCount += $moveQuantity;
+                $this->info("Moved " . $moveQuantity . " vouchers to schedule " . ($i + 1));
+            }
 
             // Generate new vouchers for remaining quantity
             $newQuantity = $scheduleQuantity - $moveQuantity;
             if ($newQuantity > 0) {
-                // create vouchers
                 $voucherData = [];
                 for ($j = 0; $j < $newQuantity; $j++) {
                     $voucherData[] = [
                         'merchant_offer_id' => $newOffer->id,
-                        'code' => MerchantOfferVoucher::generateCode(),
-                        'created_at' => now(),
-                        'updated_at' => now(),
+                        'code'              => MerchantOfferVoucher::generateCode(),
+                        'created_at'        => now(),
+                        'updated_at'        => now(),
                     ];
                 }
                 MerchantOfferVoucher::insert($voucherData);
@@ -157,9 +153,6 @@ class UpdateCampaignSchedules extends Command
             $this->info("Schedule " . ($i + 1) . "/" . $numberOfSchedules .
                        " - Available from " . $availableAt . " to " . $availableUntil .
                        " with " . $moveQuantity . " moved and " . $newQuantity . " new vouchers");
-
-            // move startDate for next schedule
-            $startDate->addDays($scheduleDays + $intervalDays);
         }
 
         $this->movedVouchersCount = $movedCount;
