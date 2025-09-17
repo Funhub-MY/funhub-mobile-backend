@@ -1047,14 +1047,25 @@ class MerchantOfferController extends Controller
                 $this->validate($request, [
                     'redeem_code' => 'required'
                 ]);
+                
+                $isValidMerchantCode = false;
+                
+                // Load the merchant relationship if not already loaded
+                $offer->load('user.merchant');
 
-                // check if merchant code is valid
-                // note merchant is hasOneThrough user as we only attach merhcnat offer direct to user
-                $merchant = $offer->whereHas('user.merchant', function ($query) use ($request) {
-                    $query->where('redeem_code', $request->redeem_code);
-                })->exists();
+                Log::info('Offer Redemption by User '. auth()->user()->id, [
+                    'offer_user' => $offer->user,
+                    'merchant' => $offer->user->merchant,
+                    'merchant_redeem_code' => $offer->user->merchant->redeem_code,
+                    'request_redeem_code' => $request->redeem_code
+                ]);
+                
+                // Verify the redeem_code belongs to the merchant who owns this offer
+                if ($offer->user && $offer->user->merchant && $offer->user->merchant->redeem_code === (string)$request->redeem_code) {
+                    $isValidMerchantCode = true;
+                }
 
-                if (!$merchant) {
+                if (!$isValidMerchantCode) {
                     return response()->json([
                         'message' => __('messages.error.merchant_offer_controller.Invalid_merchant_redeem_code')
                     ], 422);
