@@ -6,6 +6,7 @@ use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Models\ShareableLink;
 
 class PublicMerchantOfferResource extends JsonResource
 {
@@ -37,6 +38,10 @@ class PublicMerchantOfferResource extends JsonResource
         // horizontal banner
         $horizontalMedia = $this->getFirstMedia(MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
         $verticalBanner = $this->getFirstMedia(MerchantOffer::MEDIA_COLLECTION_NAME);
+
+        $offer_id = $this->id;
+        $share_code = $this->generateRandomString(6);
+        $this->storeShareLink($offer_id,$share_code);
 
         return [
             'id' => $this->id,
@@ -108,6 +113,29 @@ class PublicMerchantOfferResource extends JsonResource
             'updated_at' => $this->updated_at,
             'created_at_diff' => $this->created_at->diffForHumans(),
             'updated_at_diff' => $this->updated_at->diffForHumans(),
+            'share_link' => 'https://app.funhub.my/d/' . $share_code .'?external_browser',
         ];
+    }
+
+    public function generateRandomString($length = 6) {
+        $chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        $result = '';
+        $maxIndex = strlen($chars) - 1;
+
+        for ($i = 0; $i < $length; $i++) {
+            $randomIndex = random_int(0, $maxIndex);
+            $result .= $chars[$randomIndex];
+        }
+
+        return $result;
+    }
+
+    public function storeShareLink($offer_id,$share_code){
+            ShareableLink::create([
+                'link' => $share_code,
+                'user_id' => 3,
+                'model_id' => $offer_id,
+                'model_type' => 'merchant_offer',
+            ]);
     }
 }
