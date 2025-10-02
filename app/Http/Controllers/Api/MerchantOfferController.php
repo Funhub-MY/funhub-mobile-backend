@@ -309,6 +309,9 @@ class MerchantOfferController extends Controller
                     ->unique()
                     ->toArray();
 
+                $merchantUserWhitelist = [28825]; //Merchant Whitelist, user can view merchant offer after purchase
+                $userPurchasedBeforeFromMerchantIds = array_values(array_diff($userPurchasedBeforeFromMerchantIds, $merchantUserWhitelist));    
+
                 Log::info('User purchased before from merchant ids', [
                     'user_id' => $user->id,
                     'user_purchased_before_from_merchant_ids' => $userPurchasedBeforeFromMerchantIds,
