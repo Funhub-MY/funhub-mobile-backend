@@ -8,20 +8,22 @@ return new class extends Migration
 {
     public function up()
     {
-        if (!Schema::hasTable('rsvp_users')) {
-            Schema::create('rsvp_users', function (Blueprint $table) {
-                $table->id();
-                $table->string('name')->nullable();
-                $table->string('email')->unique();
-                $table->string('phone_no')->unique();
-                $table->timestamp('created_at')->useCurrent();
-            });
-        }
+        Schema::table('users', function (Blueprint $table) {
+            if (!Schema::hasColumn('users', 'rsvp')) {
+                $table->boolean('rsvp')
+                      ->default(false)
+                      ->after('newbie_missions_completed_at');
+            }
+        });
     }
 
     public function down()
     {
-        Schema::dropIfExists('rsvp_users');
+        Schema::table('users', function (Blueprint $table) {
+            if (Schema::hasColumn('users', 'rsvp')) {
+                $table->dropColumn('rsvp');
+            }
+        });
     }
 };
 
