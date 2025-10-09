@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Rsvp;
+use Carbon\Carbon;
 
 class RsvpController extends Controller
 {
@@ -30,6 +31,7 @@ class RsvpController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'phone_no' => $request->phone_no,
+            'created_at' => Carbon::now(),
         ]);
 
         return response()->json([

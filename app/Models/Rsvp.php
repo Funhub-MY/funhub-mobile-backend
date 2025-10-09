@@ -13,6 +13,7 @@ class Rsvp extends Model
         'name',
         'email',
         'phone_no',
+        'created_at',
     ];
 
     public $timestamps = false;
