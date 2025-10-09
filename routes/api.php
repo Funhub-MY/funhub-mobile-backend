@@ -35,6 +35,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
     Route::get('public_offers_single', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOferSingle']);
     Route::get('public_offer', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOfferPublicView']); // share link
 
+    Route::get('rsvp_register',[\App\Http\Controllers\Api\RsvpController::class,'postRsvpRegister']);
+
     // app to app
     Route::middleware(['application.token'])->group(function() {
         Route::group(['prefix' => 'external'], function () {

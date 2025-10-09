@@ -122,6 +122,8 @@ class UserResource extends JsonResource
             'onesignal_user_id' => $this->when($this->isAuthUser, $this->onesignal_user_id),
             'created_at' => $this->created_at,
             'tutorial_progress' => $this->when($this->isAuthUser, $tutorialProgress),
+            'account_status' => $this->status,
+            'rsvp' => $this->rsvp,
         ];
     }
 }

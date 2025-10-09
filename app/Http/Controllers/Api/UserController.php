@@ -426,12 +426,9 @@ class UserController extends Controller
         // unauthorize user
         auth()->user()->tokens()->delete();
 
-        // unset user's phone_no, phone_country_code, email, password
+        // unset user's, password
         $user->name = null;
         $user->username = null;
-        $user->phone_no = null;
-        $user->phone_country_code = null;
-        $user->email = null;
         $user->password = null;
         $user->status = User::STATUS_ARCHIVED;
 		$user->google_id = null;
