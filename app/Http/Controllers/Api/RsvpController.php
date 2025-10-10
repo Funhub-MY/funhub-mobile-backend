@@ -31,6 +31,7 @@ class RsvpController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'phone_no' => $request->phone_no,
+            'feedback' => $request->feedback,
             'created_at' => Carbon::now(),
         ]);
 
