@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -467,6 +468,14 @@ class UserController extends Controller
         }, 'followers' => function ($query) {
             $query->where('status', User::STATUS_ACTIVE);
         }, 'tutorialCompletions']);
+
+        $rsvp_user_phone_no = DB::table('rsvp_users')->where('phone_no',$user->phone_no)->first();
+        $rsvp_user_email = DB::table('rsvp_users')->where('email',$user->email)->first();
+
+        if (($user && $rsvp_user_phone_no) || ($user && $rsvp_user_email)){
+            $user->update(['rsvp' => 1]);
+            $user->rsvp = 1;
+        }
 
         $userData = new UserResource($user, true);
 

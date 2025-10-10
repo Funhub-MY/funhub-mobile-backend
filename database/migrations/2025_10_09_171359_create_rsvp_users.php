@@ -14,6 +14,7 @@ return new class extends Migration
                 $table->string('name')->nullable();
                 $table->string('email')->unique();
                 $table->string('phone_no')->unique();
+                $table->string('feedback')->nullable();
                 $table->timestamp('created_at')->useCurrent();
             });
         }
