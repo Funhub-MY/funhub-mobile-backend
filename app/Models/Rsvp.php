@@ -14,6 +14,8 @@ class Rsvp extends Model
         'email',
         'phone_no',
         'feedback',
+        'gender',
+        'dob',
         'created_at',
     ];
 
