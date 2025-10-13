@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class UserSettingsController extends Controller
 {
@@ -838,6 +839,13 @@ class UserSettingsController extends Controller
         $user->phone_country_code = $request->country_code;
         $user->phone_no = $request->phone_no;
         $user->save();
+
+        $rsvp_user = DB::table('rsvp_users')->where('phone_no',$request->phone_no)->first();
+
+        if ($user && $rsvp_user){
+            $user->rsvp = 1;
+            $user->save();
+        }
 
         return response()->json([
             'success' => true,

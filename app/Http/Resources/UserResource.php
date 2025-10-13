@@ -123,6 +123,7 @@ class UserResource extends JsonResource
             'created_at' => $this->created_at,
             'tutorial_progress' => $this->when($this->isAuthUser, $tutorialProgress),
             'account_status' => $this->status,
+            'rsvp' => $this->rsvp,
         ];
     }
 }

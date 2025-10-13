@@ -266,6 +266,7 @@ class UserResource extends Resource
 
                 Tables\Columns\TextColumn::make('full_phone_no')
                     ->label('Phone No')
+                    ->searchable(['phone_country_code','phone_no'])
                     ->sortable(['phone_country_code','phone_no']),
                 Tables\Columns\TextColumn::make(name: 'email')->searchable(),
                 Tables\Columns\TextColumn::make(name: 'email_verified_at'),
