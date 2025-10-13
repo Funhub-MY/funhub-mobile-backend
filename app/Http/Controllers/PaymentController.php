@@ -23,6 +23,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Notification;
+use App\Models\UserMission;
 
 class PaymentController extends Controller
 {
@@ -281,6 +282,7 @@ class PaymentController extends Controller
 					Log::info('[Payment Controller success] heres product class');
                     $this->updateProductTransaction($request, $transaction);
                     $this->processPromotionCodes($transaction);
+                    $this->updateExtraDrawChance($transaction);
                     
                     // Get promotion code data for response if any
                     $promoResponseData = $this->getPromotionCodeResponseData($transaction);
@@ -1053,6 +1055,12 @@ class PaymentController extends Controller
                 'transaction_id' => $transaction->id
             ]);
             return null;
+        }
+    }
+
+    public function updateExtraDrawChance($transaction){
+        if(Carbon::now() >= '2025-10-31' && in_array($transaction->transactionable_id,[])){
+            UserMission::where('user_id',$transaction->user_id)->increment(['extra_chance']);
         }
     }
 

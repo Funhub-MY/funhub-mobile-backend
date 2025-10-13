@@ -18,7 +18,8 @@ return new class extends Migration {
                 $table->tinyInteger('mission_5')->default(0);
                 $table->tinyInteger('mission_6')->default(0);
                 $table->integer('cycle')->default(0);
-                $table->integer('total_chance')->default(0);
+                $table->integer('draw_chance')->default(0);
+                $table->integer('extra_chance')->default(0);
                 $table->integer('total_drawn')->default(0);
                 $table->timestamps();
             });
