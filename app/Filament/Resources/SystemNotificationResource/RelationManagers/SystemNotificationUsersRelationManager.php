@@ -142,7 +142,7 @@ class SystemNotificationUsersRelationManager extends RelationManager
 					)
 			])
 			->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]);
+				Tables\Actions\DetachBulkAction::make(),
+			]);
     }    
 }
