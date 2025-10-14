@@ -520,7 +520,13 @@ class SystemNotificationResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make()
+                    ->before(function ($records) {
+                        // Detach all users before deleting notifications
+                        foreach ($records as $record) {
+                            $record->users()->detach();
+                        }
+                    }),
             ]);
     }
 
