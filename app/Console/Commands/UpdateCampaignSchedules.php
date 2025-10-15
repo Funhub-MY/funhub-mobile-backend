@@ -92,6 +92,15 @@ class UpdateCampaignSchedules extends Command
                 break;
             }
 
+            // calculate how many vouchers to move for this schedule
+            $moveQuantity = 0;
+            if ($movedCount < $totalMoveQuantity) {
+                $moveQuantity = min($scheduleQuantity, $totalMoveQuantity - $movedCount);
+            }
+
+            // calculate new vouchers needed after accounting for moved vouchers
+            $newQuantity = $scheduleQuantity - $moveQuantity;
+
             $schedule = $campaign->schedules()->create([
                 'available_at'   => $availableAt,
                 'available_until'=> $availableUntil,
@@ -104,12 +113,6 @@ class UpdateCampaignSchedules extends Command
             ]);
 
             $newOffer = $this->createMerchantOffer($campaign, $schedule, $scheduleQuantity, $availableAt);
-
-            // calculate how many vouchers to move for this schedule
-            $moveQuantity = 0;
-            if ($movedCount < $totalMoveQuantity) {
-                $moveQuantity = min($scheduleQuantity, $totalMoveQuantity - $movedCount);
-            }
 
             if ($moveQuantity > 0) {
                 $vouchersToMove = $unsoldVouchers->slice($movedCount, $moveQuantity);
@@ -134,7 +137,6 @@ class UpdateCampaignSchedules extends Command
             }
 
             // Generate new vouchers for remaining quantity
-            $newQuantity = $scheduleQuantity - $moveQuantity;
             if ($newQuantity > 0) {
                 $voucherData = [];
                 for ($j = 0; $j < $newQuantity; $j++) {
