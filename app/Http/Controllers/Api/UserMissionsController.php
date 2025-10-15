@@ -14,7 +14,7 @@ class UserMissionsController extends Controller
     {
         $userId = auth()->user()->id;
 
-        if ($missionNumber < UserMission::MISSION_ONE || $missionNumber > UserMission::MISSION_SIX) {
+        if ($missionNumber < UserMission::MISSION_ONE || $missionNumber > UserMission::MISSION_THREE) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid mission number.'
@@ -35,6 +35,24 @@ class UserMissionsController extends Controller
             $column => 1,
             'updated_at' => Carbon::now()
         ]);
+
+        $allCompleted = true;
+        for ($i = 1; $i <= UserMission::MISSION_THREE ; $i++) {
+            if ($mission->{'mission_'.$i} == 0) {
+                $allCompleted = false;
+                break;
+            }
+        }
+
+        if ($allCompleted) {
+            $mission->increment('draw_chance');
+
+            return response()->json([
+                'success' => true,
+                'message' => "All missions completed! You have earned a lucky draw chance.",
+                'data' => $mission
+            ]);
+        }
 
         return response()->json([
             'success' => true,
@@ -65,26 +83,59 @@ class UserMissionsController extends Controller
 
     public function getMissionProgress(){
         $userId = auth()->user()->id;
+        $luckDrawChance = 0;
 
         $mission = UserMission::firstOrCreate(['user_id' => $userId]);
 
         $progress = [];
-        for ($i = 1; $i <= UserMission::MISSION_SIX; $i++) {
+        for ($i = 1; $i <= UserMission::MISSION_THREE; $i++) {
             $progress["mission_$i"] = $mission->{'mission_'.$i};
         }
 
+        $luckDrawChance = ($mission->draw_chance ?? 0) + ($mission->extra_chance ?? 0);
+
         return response()->json([
             'success' => true,
-            'message' => 'Mission progress fetched successfully.',
+            'message' => 'Mission details fetched successfully.',
             'data' => [
                 'user_id' => $userId,
                 'missions_progress' => $progress,
-                'mission_1' => $mission->mission_1,
-                'mission_2' => $mission->mission_2,
-                'mission_3' => $mission->mission_3,
-                'mission_4' => $mission->mission_4,
-                'mission_5' => $mission->mission_5,
-                'mission_6' => $mission->mission_6,
+                'luck_draw_chance' => $luckDrawChance,
+                'total_drawn' => $mission->total_drawn ?? 0,
+            ]
+        ]);
+    }
+
+    public function collectLuckDraw(){
+        $userId = auth()->user()->id;
+        $luckDrawChance = 0;
+
+        $mission = UserMission::where('user_id',$userId)->first();
+
+        if(!$mission){
+            return response()->json([
+                'success' => false,
+                'message' => 'User Mission not found!',
+            ]);
+        }
+
+        $luckDrawChance = ($mission->draw_chance ?? 0) + ($mission->extra_chance ?? 0);
+
+        $mission->increment('total_draw',$luckDrawChance);
+        $mission->refresh();
+
+        $mission->update([
+            'draw_chance' => 0,
+            'extra_chance' => 0,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Lucky Draw redeemed succussfully',
+            'data' => [
+                'user_id' => $userId,
+                'lucky_draw_chance' => $luckDrawChance,
+                'total_drawn' =>  $mission->total_draw,
             ]
         ]);
     }

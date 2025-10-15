@@ -395,5 +395,6 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::get('/mission_6', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission6']);
 
         Route::get('/mission_progress', [\App\Http\Controllers\Api\UserMissionsController::class, 'getMissionProgress']);
+        Route::post('/mission_lucky_draw',[\App\Http\Controllers\Api\UserMissionsController::class, 'collectLuckDraw']);
     });
 });
