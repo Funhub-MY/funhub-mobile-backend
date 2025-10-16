@@ -387,12 +387,12 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::post('/postSettingsSwitch', [\App\Http\Controllers\Api\SettingsController::class, 'postSettingsSwitch']);
 
         //Mission QR Code
-        Route::get('/mission_1', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission1']);
-        Route::get('/mission_2', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission2']);
-        Route::get('/mission_3', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission3']);
-        Route::get('/mission_4', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission4']);
-        Route::get('/mission_5', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission5']);
-        Route::get('/mission_6', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission6']);
+        Route::post('/mission_1', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission1']);
+        Route::post('/mission_2', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission2']);
+        Route::post('/mission_3', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission3']);
+        Route::post('/mission_4', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission4']);
+        Route::post('/mission_5', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission5']);
+        Route::post('/mission_6', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission6']);
 
         Route::get('/mission_progress', [\App\Http\Controllers\Api\UserMissionsController::class, 'getMissionProgress']);
         Route::post('/mission_lucky_draw',[\App\Http\Controllers\Api\UserMissionsController::class, 'collectLuckDraw']);

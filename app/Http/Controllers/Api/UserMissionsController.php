@@ -45,7 +45,12 @@ class UserMissionsController extends Controller
         }
 
         if ($allCompleted) {
-            $mission->increment('draw_chance');
+            $mission->where('cycle',0)->update([
+                'draw_chance' => 1,
+                'cycle' => 1
+            ]);
+            
+            $mission->refresh();
 
             return response()->json([
                 'success' => true,
@@ -53,6 +58,8 @@ class UserMissionsController extends Controller
                 'data' => $mission
             ]);
         }
+
+        $mission->refresh();
 
         return response()->json([
             'success' => true,
