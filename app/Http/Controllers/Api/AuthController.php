@@ -19,11 +19,14 @@ use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 use Kreait\Laravel\Firebase\Facades\Firebase;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use App\Services\OneSignalSmsService;
 
 class AuthController extends Controller
 {
     protected $smsService;
-    public function __construct()
+    protected $oneSignalService;
+    
+    public function __construct(OneSignalSmsService $oneSignalService)
     {
         $this->smsService = new \App\Services\Sms(
             [
@@ -37,6 +40,8 @@ class AuthController extends Controller
                 'secret' => config('services.movider.secret'),
             ]
         );
+
+        $this->oneSignalService = $oneSignalService;
     }
 
     /**
@@ -320,6 +325,8 @@ class AuthController extends Controller
         if ($user) {
             try {
                 $this->smsService->sendSms($user->full_phone_no, config('app.name') . " - Your OTP is ".$user->otp);
+
+                $this->oneSignalService->sendOtp($user->full_phone_no,$user->otp);
             } catch (\Exception $e) {
                 Log::error($e->getMessage(), [
                     'phone_no' => $user->full_phone_no,
