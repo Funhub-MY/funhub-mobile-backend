@@ -66,7 +66,8 @@ return [
 
     'onesignal' => [
         'app_id' => env('ONESIGNAL_APP_ID'),
-        'user_token' => env('ONESIGNAL_APP_USER_TOKEN')
+        'user_token' => env('ONESIGNAL_APP_USER_TOKEN'),
+        'api_key' => env('ONESIGNAL_APP_API_KEY'),
     ],
 
     'hubspot' => [
