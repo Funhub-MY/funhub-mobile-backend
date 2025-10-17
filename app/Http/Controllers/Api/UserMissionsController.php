@@ -3,18 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Mission;
 use Illuminate\Http\Request;
 use App\Models\UserMission;
 use Carbon\Carbon;
 
 class UserMissionsController extends Controller
 {
-    public function completeMission($missionNumber)
+    public function completeMission($missionId)
     {
         $userId = auth()->user()->id;
 
-        if ($missionNumber < UserMission::MISSION_ONE || $missionNumber > UserMission::MISSION_THREE) {
+        if ($missionId < UserMission::MISSION_ONE || $missionId > UserMission::MISSION_FOUR) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid mission number.'
@@ -22,22 +21,25 @@ class UserMissionsController extends Controller
         }
 
         $mission = UserMission::firstOrCreate(['user_id' => $userId]);
-        $column = 'mission_' . $missionNumber;
+        $mission_column = 'mission_' . $missionId;
 
-        if ($mission->$column == 1) {
+        // Check if mission already completed
+        if ($mission->$mission_column == 1) {
             return response()->json([
                 'success' => false,
                 'message' => 'Mission already completed.'
             ]);
         }
 
+        // Mark mission as completed
         $mission->update([
-            $column => 1,
+            $mission_column => 1,
             'updated_at' => Carbon::now()
         ]);
 
+        // Check if all missions are completed
         $allCompleted = true;
-        for ($i = 1; $i <= UserMission::MISSION_THREE ; $i++) {
+        for ($i = 1; $i <= 4; $i++) {
             if ($mission->{'mission_'.$i} == 0) {
                 $allCompleted = false;
                 break;
@@ -45,7 +47,7 @@ class UserMissionsController extends Controller
         }
 
         if ($allCompleted) {
-            $mission->where('cycle',0)->update([
+            $mission->where('cycle', 0)->update([
                 'draw_chance' => 1,
                 'cycle' => 1
             ]);
@@ -55,7 +57,11 @@ class UserMissionsController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => "All missions completed! You have earned a lucky draw chance.",
-                'data' => $mission
+                'data' => [
+                    'mission_1' => $mission->mission_1 ?? 0,
+                    'mission_2' => $mission->mission_2 ?? 0,
+                    'mission_3_4' => ($mission->mission_3 ?? 0) + ($mission->mission_4 ?? 0),
+                ]
             ]);
         }
 
@@ -63,41 +69,19 @@ class UserMissionsController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => "Mission {$missionNumber} completed successfully!",
-            'data' => $mission
+            'message' => "Mission {$missionId} completed successfully!",
+            'data' => [
+                'mission_1' => $mission->mission_1 ?? 0,
+                'mission_2' => $mission->mission_2 ?? 0,
+                'mission_3_4' => ($mission->mission_3 ?? 0) + ($mission->mission_4 ?? 0),
+            ]
         ]);
-    }
-
-    public function mission1() {
-        return $this->completeMission(UserMission::MISSION_ONE); 
-    }
-
-    public function mission2() { 
-        return $this->completeMission(UserMission::MISSION_TWO); 
-    }
-    public function mission3() { 
-        return $this->completeMission(UserMission::MISSION_THREE); 
-    }
-    public function mission4() { 
-        return $this->completeMission(UserMission::MISSION_FOUR); 
-    }
-    public function mission5() { 
-        return $this->completeMission(UserMission::MISSION_FIVE); 
-    }
-    public function mission6() { 
-        return $this->completeMission(UserMission::MISSION_SIX); 
     }
 
     public function getMissionProgress(){
         $userId = auth()->user()->id;
-        $luckDrawChance = 0;
 
         $mission = UserMission::firstOrCreate(['user_id' => $userId]);
-
-        $progress = [];
-        for ($i = 1; $i <= UserMission::MISSION_THREE; $i++) {
-            $progress["mission_$i"] = $mission->{'mission_'.$i};
-        }
 
         $luckDrawChance = ($mission->draw_chance ?? 0) + ($mission->extra_chance ?? 0);
 
@@ -106,7 +90,9 @@ class UserMissionsController extends Controller
             'message' => 'Mission details fetched successfully.',
             'data' => [
                 'user_id' => $userId,
-                'missions_progress' => $progress,
+                'mission_1' => $mission->mission_1 ?? 0,
+                'mission_2' => $mission->mission_2 ?? 0,
+                'mission_3_4' => ($mission->mission_3 ?? 0) + ($mission->mission_4 ?? 0),
                 'luck_draw_chance' => $luckDrawChance,
                 'total_drawn' => $mission->total_drawn ?? 0,
             ]
@@ -141,8 +127,7 @@ class UserMissionsController extends Controller
             'message' => 'Lucky Draw redeemed succussfully',
             'data' => [
                 'user_id' => $userId,
-                'lucky_draw_chance' => $luckDrawChance,
-                'total_drawn' =>  $mission->total_draw,
+                'total_drawn' =>  $mission->total_draw ?? 0,
             ]
         ]);
     }

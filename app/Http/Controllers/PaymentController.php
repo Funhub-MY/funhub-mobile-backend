@@ -1059,7 +1059,8 @@ class PaymentController extends Controller
     }
 
     public function updateExtraDrawChance($transaction){
-        if(in_array($transaction->transactionable_id,[26,27,28,29])){
+        if(in_array($transaction->transactionable_id,[24,26,27,28,29])){
+            UserMission::firstOrCreate(['user_id' => $transaction->user_id]);
             UserMission::where('user_id',$transaction->user_id)->increment('extra_chance',1);
             Log::info('[Payment Controller success] Extra draw chance given to', [
                     'user_id' => $transaction->user_id,
