@@ -70,6 +70,10 @@ class Kernel extends ConsoleKernel
         
         // Mixpanel Data Sync
         // $schedule->command('mixpanel:sync-voucher-sales')->dailyAt('02:00')->onOneServer();
+
+        //Monthly 
+        //House keeping failed jobs
+        $schedule->command('failed-jobs:prune')->monthlyOn(1, '03:00')->appendOutputTo(storage_path('logs/failed-jobs-prune.log'));
     }
 
     /**
