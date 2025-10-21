@@ -16,6 +16,7 @@ class UserMissionsController extends Controller
         if ($missionId < UserMission::MISSION_ONE || $missionId > UserMission::MISSION_FOUR) {
             return response()->json([
                 'success' => false,
+                'campaign_id' => 66,
                 'message' => 'Invalid mission number.'
             ], 400);
         }
@@ -27,6 +28,7 @@ class UserMissionsController extends Controller
         if ($mission->$mission_column == 1) {
             return response()->json([
                 'success' => false,
+                'campaign_id' => 66,
                 'message' => 'Mission already completed.'
             ]);
         }
@@ -58,6 +60,7 @@ class UserMissionsController extends Controller
                 'success' => true,
                 'message' => "All missions completed! You have earned a lucky draw chance.",
                 'data' => [
+                    'campaign_id' => 66,
                     'mission_1' => $mission->mission_1 ?? 0,
                     'mission_2' => $mission->mission_2 ?? 0,
                     'mission_3_4' => ($mission->mission_3 ?? 0) + ($mission->mission_4 ?? 0),
@@ -71,6 +74,8 @@ class UserMissionsController extends Controller
             'success' => true,
             'message' => "Mission {$missionId} completed successfully!",
             'data' => [
+                'user_id' => $userId,
+                'campaign_id' => 66,
                 'mission_1' => $mission->mission_1 ?? 0,
                 'mission_2' => $mission->mission_2 ?? 0,
                 'mission_3_4' => ($mission->mission_3 ?? 0) + ($mission->mission_4 ?? 0),
@@ -90,6 +95,7 @@ class UserMissionsController extends Controller
             'message' => 'Mission details fetched successfully.',
             'data' => [
                 'user_id' => $userId,
+                'campaign_id' => 66,
                 'mission_1' => $mission->mission_1 ?? 0,
                 'mission_2' => $mission->mission_2 ?? 0,
                 'mission_3_4' => ($mission->mission_3 ?? 0) + ($mission->mission_4 ?? 0),
@@ -108,6 +114,7 @@ class UserMissionsController extends Controller
         if(!$mission){
             return response()->json([
                 'success' => false,
+                'campaign_id' => 66,
                 'message' => 'User Mission not found!',
             ]);
         }
@@ -126,6 +133,7 @@ class UserMissionsController extends Controller
             'success' => true,
             'message' => 'Lucky Draw redeemed succussfully',
             'data' => [
+                'campaign_id' => 66,
                 'user_id' => $userId,
                 'total_drawn' =>  $mission->total_draw ?? 0,
             ]
