@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 class KdccTeamResource extends JsonResource
 {
@@ -18,14 +19,11 @@ class KdccTeamResource extends JsonResource
             'vote_count' => $this->vote_count,
             'team_image_path' => $this->team_image_path,
             'image_url' => $this->image_url,
-            'created_at' => $this->created_at?->toISOString(),
-            'updated_at' => $this->updated_at?->toISOString(),
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
             
             // Include user's vote status if requested
-            'user_has_voted' => $this->when(
-                isset($this->user_has_voted),
-                $this->user_has_voted ?? false
-            ),
+            'user_has_voted' => $this->user_has_voted,
             
             // Include rank if available
             'rank' => $this->when(isset($this->rank), $this->rank),

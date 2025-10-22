@@ -16,7 +16,7 @@ class KdccVoteResource extends JsonResource
             'user_id' => $this->user_id,
             'category_id' => $this->category_id,
             'team_id' => $this->team_id,
-            'voted_at' => $this->created_at?->toISOString(),
+            'voted_at' => $this->created_at->format('Y-m-d H:i:s'),
             
             'team' => [
                 'id' => $this->team->id,

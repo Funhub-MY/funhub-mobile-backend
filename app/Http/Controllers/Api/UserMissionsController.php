@@ -119,6 +119,14 @@ class UserMissionsController extends Controller
             ]);
         }
 
+        if($mission->draw_chance == 0 && $mission->extra_chance == 0){
+            return response()->json([
+                'success' => false,
+                'campaign_id' => 66,
+                'message' => 'Complete mission or puchase more fun card to get more lucky draw chance!',
+            ]);
+        }
+
         $luckDrawChance = ($mission->draw_chance ?? 0) + ($mission->extra_chance ?? 0);
 
         $mission->increment('total_draw',$luckDrawChance);

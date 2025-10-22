@@ -81,6 +81,7 @@ class KdccController extends Controller
     public function getTeams(Request $request)
     {
         $categoryId = $request->query('category_id');
+        $userId = auth()->user()->id;
 
         $query = KdccTeams::query();
 
@@ -92,27 +93,19 @@ class KdccController extends Controller
             ->orderBy('vote_count', 'desc')
             ->get();
 
+        if ($userId) {
+            $teams->each(function ($team) use ($userId) {
+                $team->user_has_voted = $team->hasVotedBy($userId);
+            });
+        } else {
+            $teams->each(function ($team) {
+                $team->user_has_voted = false;
+            });
+        }
+
         return response()->json([
             'success' => true,
             'data' => KdccTeamResource::collection($teams)
-        ]);
-    }
-
-    /**
-     * Get user's voting history
-     */
-    public function getUserVotes()
-    {
-        $userId = auth()->user()->id;
-
-        $votes = KdccVote::where('user_id', $userId)
-            ->with('team')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => KdccVoteResource::collection($votes)
         ]);
     }
 
