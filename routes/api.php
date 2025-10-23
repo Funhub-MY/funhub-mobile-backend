@@ -36,6 +36,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
     Route::get('public_offer', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOfferPublicView']); // share link
 
     Route::get('rsvp_register',[\App\Http\Controllers\Api\RsvpController::class,'postRsvpRegister']);
+    Route::get('/kdcc/leaderboard', [\App\Http\Controllers\Api\KdccController::class, 'showLeaderboard'])->name('kdcc.leaderboard');
 
     // app to app
     Route::middleware(['application.token'])->group(function() {
@@ -392,5 +393,12 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
         Route::get('/mission_progress', [\App\Http\Controllers\Api\UserMissionsController::class, 'getMissionProgress']);
         Route::post('/mission_lucky_draw',[\App\Http\Controllers\Api\UserMissionsController::class, 'collectLuckDraw']);
+    
+        Route::prefix('/kdcc')->group(function () {
+            Route::post('/vote', [\App\Http\Controllers\Api\KdccController::class, 'vote']);
+            Route::get('/teams', [\App\Http\Controllers\Api\KdccController::class, 'getTeams']);
+
+            Route::get('/category/{categoryId}/leaderboard', [\App\Http\Controllers\Api\KdccController::class, 'getLeaderboard']);
+        });
     });
 });
