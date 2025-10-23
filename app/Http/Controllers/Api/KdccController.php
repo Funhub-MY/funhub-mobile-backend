@@ -26,6 +26,19 @@ class KdccController extends Controller
         $teamId = $request->team_id;
         $categoryId = $request->category_id;
 
+        $cutoffDates = [
+            1 => '2025-11-01 15:30:00', // Category 1: Under 17
+            2 => '2025-11-01 21:00:00', // Category 2: Open
+        ];
+
+        if (isset($cutoffDates[$categoryId]) && now() > $cutoffDates[$categoryId]) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Voting has ended for this category',
+                'cutoff_date' => $cutoffDates[$categoryId]
+            ], 403);
+        }
+
         $team = KdccTeams::where('id', $teamId)
             ->where('category_id', $categoryId)
             ->first();
