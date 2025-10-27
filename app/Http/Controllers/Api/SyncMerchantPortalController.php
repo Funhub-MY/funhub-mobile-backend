@@ -689,6 +689,8 @@ class SyncMerchantPortalController extends Controller
                         'merchant_offers.expiry_days as expiry_days',
                         DB::raw('MAX(merchant_offer_user.created_at) as purchased_at'),
                         DB::raw('ANY_VALUE(merchant_offers.fiat_price) as fiat_price'),
+                        DB::raw('ANY_VALUE(merchant_offers.unit_price) as unit_price'),
+                        DB::raw('ANY_VALUE(merchant_offers.point_fiat_price) as point_fiat_price'),
                         DB::raw('ANY_VALUE(merchant_offers.discounted_point_fiat_price) as discounted_point_fiat_price'),
                         DB::raw('ANY_VALUE(merchant_offer_user.purchase_method) as purchase_method'),
                         DB::raw('CASE WHEN merchant_offer_claims_redemptions.id IS NOT NULL THEN 1 ELSE 0 END as isRedeemed'),
