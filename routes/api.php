@@ -397,8 +397,6 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::prefix('/kdcc')->group(function () {
             Route::post('/vote', [\App\Http\Controllers\Api\KdccController::class, 'vote']);
             Route::get('/teams', [\App\Http\Controllers\Api\KdccController::class, 'getTeams']);
-
-            Route::get('/category/{categoryId}/leaderboard', [\App\Http\Controllers\Api\KdccController::class, 'getLeaderboard']);
         });
     });
 });
