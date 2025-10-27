@@ -129,7 +129,8 @@ class UserMissionsController extends Controller
 
         $luckDrawChance = ($mission->draw_chance ?? 0) + ($mission->extra_chance ?? 0);
 
-        $mission->increment('total_draw',$luckDrawChance);
+        $mission->increment('total_drawn',$luckDrawChance);
+        
         $mission->refresh();
 
         $mission->update([
@@ -143,7 +144,7 @@ class UserMissionsController extends Controller
             'data' => [
                 'campaign_id' => 66,
                 'user_id' => $userId,
-                'total_drawn' =>  $mission->total_draw ?? 0,
+                'total_drawn' =>  $mission->total_drawn ?? 0,
             ]
         ]);
     }
