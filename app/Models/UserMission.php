@@ -27,7 +27,8 @@ class UserMission extends Model
         'mission_5',
         'mission_6',
         'cycle',
-        'total_chance',
+        'draw_chance',
+        'extra_chance',
         'total_drawn',
     ];
 }

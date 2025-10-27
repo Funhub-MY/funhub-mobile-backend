@@ -309,7 +309,7 @@ class MerchantOfferController extends Controller
                     ->unique()
                     ->toArray();
 
-                $merchantUserWhitelist = [28825]; //Merchant Whitelist, user can view merchant offer after purchase
+                $merchantUserWhitelist = [28825,93716,94359,94361,94377,94515,94516,94519,94520,94521,94522]; //Merchant Whitelist, user can view merchant offer after purchase
                 $userPurchasedBeforeFromMerchantIds = array_values(array_diff($userPurchasedBeforeFromMerchantIds, $merchantUserWhitelist));    
 
                 Log::info('User purchased before from merchant ids', [

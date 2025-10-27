@@ -6,6 +6,7 @@ use App\Models\MerchantOffer;
 use App\Models\MerchantOfferVoucherMovement;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class AutoMoveVouchers extends Command
@@ -60,32 +61,48 @@ class AutoMoveVouchers extends Command
                     ->first();
 
                 if ($upcomingOffer) {
-                    $unclaimedVouchers = $offer->unclaimedVouchers()->get();
-                    $unclaimedVouchers->each(function ($voucher) use ($upcomingOffer, $offer) {
+                    DB::beginTransaction();
+                    try {
+                        $unclaimedVouchers = $offer->unclaimedVouchers()->get();
+                        $unclaimedVouchers->each(function ($voucher) use ($upcomingOffer, $offer) {
 
-                        // create voucher movements
-                           MerchantOfferVoucherMovement::create([
-                            'from_merchant_offer_id' => $offer->id,
-                            'to_merchant_offer_id' => $upcomingOffer->id,
-                            'voucher_id' => $voucher->id,
-                            'user_id' => $offer->user_id,
-                            'remarks' => 'Auto Moved',
+                            // create voucher movements
+                            MerchantOfferVoucherMovement::create([
+                                'from_merchant_offer_id' => $offer->id,
+                                'to_merchant_offer_id' => $upcomingOffer->id,
+                                'voucher_id' => $voucher->id,
+                                'user_id' => $offer->user_id,
+                                'remarks' => 'Auto Moved',
+                            ]);
+
+                            // moved voucher to upcoming offer
+                            $voucher->update([
+                                'merchant_offer_id' => $upcomingOffer->id
+                            ]);
+
+                            Log::info('[AutoMoveVouchers] Moved ', [
+                                'voucher_id' => $voucher->id,
+                                'code' => $voucher->code,
+                                'from' => $offer->id,
+                                'to' => $upcomingOffer->id
+                            ]);
+
+                            $this->info('[AutoMoveVouchers] Moved Voucher ID ' . $voucher->id . ' from ' . $offer->id . ' to ' . $upcomingOffer->id);
+                        });
+
+                        DB::commit();
+                        $this->info('[AutoMoveVouchers] Successfully moved ' . $unclaimedVouchers->count() . ' vouchers from offer ' . $offer->id . ' to ' . $upcomingOffer->id);
+
+                    } catch (\Exception $e) {
+                        DB::rollBack();
+                        $this->error('[AutoMoveVouchers] Failed to move vouchers from offer ' . $offer->id . ': ' . $e->getMessage());
+                        Log::error('[AutoMoveVouchers] Error moving vouchers', [
+                            'from_offer_id' => $offer->id,
+                            'to_offer_id' => $upcomingOffer->id,
+                            'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString()
                         ]);
-
-                        // moved voucher to upcoming offer
-                        $voucher->update([
-                            'merchant_offer_id' => $upcomingOffer->id
-                        ]);
-
-                        Log::info('[AutoMoveVouchers] Moved ', [
-                            'voucher_id' => $voucher->id,
-                            'code' => $voucher->code,
-                            'from' => $offer->id,
-                            'to' => $upcomingOffer->id
-                        ]);
-
-                        $this->info('[AutoMoveVouchers] Moved Voucher ID ' . $voucher->id . ' from ' . $offer->id . ' to ' . $upcomingOffer->id);
-                    });
+                    }
                 }
 
                 // if dont have, no action, vouchers stock remained unsold.

@@ -36,6 +36,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
     Route::get('public_offer', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOfferPublicView']); // share link
 
     Route::get('rsvp_register',[\App\Http\Controllers\Api\RsvpController::class,'postRsvpRegister']);
+    Route::get('/kdcc/leaderboard', [\App\Http\Controllers\Api\KdccController::class, 'showLeaderboard'])->name('kdcc.leaderboard');
 
     // app to app
     Route::middleware(['application.token'])->group(function() {
@@ -387,13 +388,15 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::post('/postSettingsSwitch', [\App\Http\Controllers\Api\SettingsController::class, 'postSettingsSwitch']);
 
         //Mission QR Code
-        Route::get('/mission_1', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission1']);
-        Route::get('/mission_2', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission2']);
-        Route::get('/mission_3', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission3']);
-        Route::get('/mission_4', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission4']);
-        Route::get('/mission_5', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission5']);
-        Route::get('/mission_6', [\App\Http\Controllers\Api\UserMissionsController::class, 'mission6']);
+        Route::post('/mission/{missionId}', [\App\Http\Controllers\Api\UserMissionsController::class, 'completeMission'])
+        ->where('missionId', '[1-6]');
 
         Route::get('/mission_progress', [\App\Http\Controllers\Api\UserMissionsController::class, 'getMissionProgress']);
+        Route::post('/mission_lucky_draw',[\App\Http\Controllers\Api\UserMissionsController::class, 'collectLuckDraw']);
+    
+        Route::prefix('/kdcc')->group(function () {
+            Route::post('/vote', [\App\Http\Controllers\Api\KdccController::class, 'vote']);
+            Route::get('/teams', [\App\Http\Controllers\Api\KdccController::class, 'getTeams']);
+        });
     });
 });
