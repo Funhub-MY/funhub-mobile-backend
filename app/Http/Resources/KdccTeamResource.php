@@ -16,7 +16,7 @@ class KdccTeamResource extends JsonResource
             'name' => $this->name,
             'category_id' => $this->category_id,
             'vote_count' => $this->vote_count,
-            'team_image_path' => $this->team_image_path,
+            'team_image_path' => asset('storage/' . $this->team_image_path),
             'image_url' => $this->image_url,
             
             // Include user's vote status if requested
