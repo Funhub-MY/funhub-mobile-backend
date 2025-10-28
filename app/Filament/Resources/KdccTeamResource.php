@@ -79,10 +79,10 @@ class KdccTeamResource extends Resource
                 TextColumn::make('vote_count')
                 ->sortable(),
                 TextColumn::make('team_image_path')
-                ->searchable(),
-                ImageColumn::make('team_image_path')
-                ->label('Image')
-                ->disk('public')
+                    ->label('Image')
+                    ->url(fn ($record) => asset('storage/' . $record->team_image_path))
+                    ->openUrlInNewTab()
+                    ->color('primary'),
             ])
             ->actions([
                 \Filament\Tables\Actions\EditAction::make(),
