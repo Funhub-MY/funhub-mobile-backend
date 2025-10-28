@@ -44,8 +44,8 @@ class KdccTeams extends Model
      */
     public function getImageUrlAttribute()
     {
-        return $this->team_image_path 
-            ? asset('/images/kdcc/' . $this->team_image_path)
+        return $this->team_image_path
+            ? asset('storage/' . $this->team_image_path)
             : asset('/images/kdcc/default.jpeg');
     }
 }
