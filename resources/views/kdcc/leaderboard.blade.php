@@ -333,7 +333,7 @@
                                     <td>
                                         <div class="team-info">
                                             <div class="team-image">
-                                                <img src="{{ $team->image_url }}" alt="{{ $team->name }}">
+                                                <img src="{{ asset('storage/' . $team->team_image_path) }}" alt="{{ $team->name }}" style="object-fit:contain">
                                             </div>
                                             <span class="team-name">{{ $team->name }}</span>
                                         </div>
