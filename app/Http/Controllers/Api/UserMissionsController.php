@@ -38,7 +38,7 @@ class UserMissionsController extends Controller
         }
 
         // Mark mission as completed
-        $mission->update([
+        $mission->where('user_id',$userId)->update([
             $mission_column => 1,
             'updated_at' => Carbon::now()
         ]);
@@ -53,7 +53,7 @@ class UserMissionsController extends Controller
         }
 
         if ($allCompleted) {
-            $mission->where('cycle', 0)->update([
+            $mission->where('cycle', 0)->where('user_id',$userId)->update([
                 'draw_chance' => 1,
                 'cycle' => 1
             ]);
