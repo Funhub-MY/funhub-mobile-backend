@@ -5,8 +5,8 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use Illuminate\Support\Str;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use App\Models\MerchantCategory;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,7 +20,7 @@ class MerchantCategoryResource extends Resource
 {
     protected static ?string $model = MerchantCategory::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Merchant';
     protected static ?int $navigationSort = 4;

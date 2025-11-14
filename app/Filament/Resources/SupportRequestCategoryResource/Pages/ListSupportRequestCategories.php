@@ -10,7 +10,7 @@ class ListSupportRequestCategories extends ListRecords
 {
     protected static string $resource = SupportRequestCategoryResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

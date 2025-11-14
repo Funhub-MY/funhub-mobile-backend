@@ -5,8 +5,8 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Setting;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -15,7 +15,7 @@ use App\Filament\Resources\SettingResource\Pages;
 
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SettingResource\RelationManagers;
-use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
@@ -25,18 +25,18 @@ class SettingResource extends Resource
 
     protected static ?string $navigationGroup = 'Settings';
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Card::make([
+                Section::make([
                     TextInput::make('key')
                         ->autofocus()
                         ->required()
                         // disabled if context is edit
-                        ->disabledOn('edit')
+                        ->disabled(fn ($context) => $context === 'edit')
                         ->unique(ignoreRecord:true),
                     Textarea::make('value')
                         ->required(),

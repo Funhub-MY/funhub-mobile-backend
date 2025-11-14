@@ -23,7 +23,6 @@ class ArticleRecommenderService
         Log::info('[ArticleRecommenderService] Starting Building recommendations for user ' . $this->user->id);
 
         $articles = Article::published()
-            // ->disableCache()
             // ->with(['views', 'likes', 'comments', 'categories', 'imports'])
             ->withCount(['views' => function ($query) use ($user_id) {
                 $query->where('user_id', $user_id);
@@ -131,7 +130,7 @@ class ArticleRecommenderService
         // Fetch the number of articles from the given category that the user has interacted with.
         // For simplicity, let's assume an interaction constitutes viewing, liking, or commenting on an article.
 
-        $interactions = Article::disableCache()->whereHas('categories', function ($query) use ($category) {
+        $interactions = Article::whereHas('categories', function ($query) use ($category) {
             $query->where('article_category_id', $category->id);
         })
         ->whereHas('views', function ($query) {

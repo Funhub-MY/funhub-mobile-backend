@@ -16,7 +16,7 @@
     $readyToLoad = $this->readyToLoad;
 @endphp
 <x-filament::widget class="filament-widgets-chart-widget filament-apex-charts-widget">
-    <x-filament::card class="filament-apex-charts-card" x-data="{ dropdownOpen: false }"
+    <x-filament::section class="filament-apex-charts-card" x-data="{ dropdownOpen: false }"
         @apexhcharts-dropdown.window="dropdownOpen = event.detail.open">
 
         <x-filament-apex-charts::header :$heading :$subheading :$filters :$indicatorsCount :$width
@@ -35,6 +35,6 @@
             </div>
         @endif
 
-    </x-filament::card>
+    </x-filament::section>
 
 </x-filament::widget>

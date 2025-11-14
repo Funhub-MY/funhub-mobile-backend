@@ -5,8 +5,8 @@ namespace App\Filament\Resources;
 use App\Models\Faq;
 use Filament\Forms;
 use Filament\Tables;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
@@ -33,7 +33,7 @@ class FaqResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
@@ -95,15 +95,18 @@ class FaqResource extends Resource
                 TextColumn::make('category.name')
                     ->sortable(),
 
-                BadgeColumn::make('status')
-                    ->enum([
+                TextColumn::make('status')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => match($state) {
                         0 => 'Draft',
                         1 => 'Published',
-                    ])
-                    ->colors([
-                        'secondary' => 0,
-                        'success' => 1,
-                    ])
+                        default => $state,
+                    })
+                    ->color(fn ($state) => match($state) {
+                        0 => 'secondary',
+                        1 => 'success',
+                        default => 'gray',
+                    })
                     ->sortable(),
 
                 TextColumn::make('language')
@@ -112,15 +115,18 @@ class FaqResource extends Resource
                     })
                     ->sortable(),
 
-                BadgeColumn::make('is_featured')
-                    ->enum([
+                TextColumn::make('is_featured')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => match($state) {
                         0 => 'No',
                         1 => 'Yes',
-                    ])
-                    ->colors([
-                        'secondary' => 0,
-                        'success' => 1,
-                    ])
+                        default => $state,
+                    })
+                    ->color(fn ($state) => match($state) {
+                        0 => 'secondary',
+                        1 => 'success',
+                        default => 'gray',
+                    })
                     ->sortable(),
 
                 TextColumn::make('created_at')

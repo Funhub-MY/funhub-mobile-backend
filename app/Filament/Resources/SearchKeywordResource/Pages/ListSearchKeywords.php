@@ -10,7 +10,7 @@ class ListSearchKeywords extends ListRecords
 {
     protected static string $resource = SearchKeywordResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

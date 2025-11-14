@@ -7,9 +7,9 @@ use App\Models\User;
 use Filament\Tables;
 use App\Models\Article;
 use App\Models\Interaction;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use App\Models\MerchantOffer;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -26,7 +26,7 @@ class InteractionResource extends Resource
 {
     protected static ?string $model = Interaction::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Users';
 

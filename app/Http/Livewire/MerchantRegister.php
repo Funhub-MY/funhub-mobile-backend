@@ -409,7 +409,7 @@ class MerchantRegister extends Component implements HasForms
 
                     Placeholder::make('password')
                         ->label('Password')
-                        ->content(function ($state, Closure $get) {
+                        ->content(function ($state, \Filament\Forms\Get $get) {
                             // password will be generated and emailed to you once approved
                             return 'Password will be generated and emailed to the above Company Email once account is approved';
                         })

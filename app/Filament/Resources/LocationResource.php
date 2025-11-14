@@ -7,9 +7,9 @@ use Filament\Forms;
 use Filament\Tables;
 use App\Models\Article;
 use App\Models\Location;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use App\Models\MerchantOffer;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
@@ -185,12 +185,14 @@ class LocationResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                BadgeColumn::make('status')
-                    ->enum(MerchantOffer::STATUS)
-                    ->colors([
-                        'secondary' => 0,
-                        'success' => 1,
-                    ])
+                TextColumn::make('status')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => MerchantOffer::STATUS[$state] ?? $state)
+                    ->color(fn ($state) => match($state) {
+                        0 => 'secondary',
+                        1 => 'success',
+                        default => 'gray',
+                    })
                     ->sortable()
                     ->searchable(),
                 ToggleColumn::make('is_mall')

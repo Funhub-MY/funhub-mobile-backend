@@ -5,8 +5,8 @@ namespace App\Filament\Resources;
 use Closure;
 use Filament\Forms;
 use Filament\Tables;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use App\Models\RewardComponent;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
@@ -21,7 +21,7 @@ class RewardComponentResource extends Resource
 {
     protected static ?string $model = RewardComponent::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Points & Rewards';
 

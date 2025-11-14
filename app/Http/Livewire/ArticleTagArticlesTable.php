@@ -60,10 +60,16 @@ class ArticleTagArticlesTable extends Component implements HasTable
                 ->sortable()
                 ->searchable(),
             TextColumn::make('status')
-                ->label('Status')
-                ->enum(Article::STATUS)
-                ->sortable()
-                ->searchable(),
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn (int $state): string => Article::STATUS[$state] ?? $state)
+                    ->color(fn (int $state): string => match($state) {
+                        0 => 'secondary',
+                        1 => 'success',
+                        default => 'gray',
+                    })
+                    ->sortable()
+                    ->searchable(),
             TextColumn::make('created_at')
                 ->label('Created At')
                 ->dateTime('d/m/Y H:i:s')

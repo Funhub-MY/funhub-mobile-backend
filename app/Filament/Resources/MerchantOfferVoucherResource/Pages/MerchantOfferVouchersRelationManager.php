@@ -5,8 +5,8 @@ namespace App\Filament\Resources\MerchantOfferVoucherResource\Pages;
 use Filament\Forms;
 use Filament\Tables;
 use Illuminate\Support\Arr;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use App\Models\MerchantOfferVoucher;
 use OwenIt\Auditing\Contracts\Audit;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +18,7 @@ use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class MerchantOfferVouchersRelationManager extends AuditsRelationManager
 {
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns(Arr::flatten([
@@ -47,7 +47,7 @@ class MerchantOfferVouchersRelationManager extends AuditsRelationManager
                 Tables\Actions\Action::make('restore')
                     ->label(trans('filament-auditing::filament-auditing.action.restore'))
                     ->action(fn (Audit $record) => static::restoreAuditSelected($record))
-                    ->icon('heroicon-o-refresh')
+                    ->icon('heroicon-o-arrow-path')
                     ->requiresConfirmation()
                     ->visible(fn (Audit $record, RelationManager $livewire): bool => auth()->user()->can('restoreAudit', $livewire->ownerRecord) && $record->event === 'updated' && static::shouldAllowRestoreAudit($livewire->ownerRecord))
                     ->after(function ($livewire) {

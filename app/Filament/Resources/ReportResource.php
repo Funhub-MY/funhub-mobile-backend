@@ -9,8 +9,8 @@ use Filament\Tables;
 use App\Models\Article;
 use App\Models\Comment;
 use App\Models\Reports;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,7 +23,7 @@ class ReportResource extends Resource
 {
     protected static ?string $model = Reports::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Reports';
 
@@ -48,7 +48,7 @@ class ReportResource extends Resource
                                     ->default(0)
                                     ->label('Resolved Status')
                                     ->reactive()
-                                    ->afterStateUpdated(function (\Closure $set, \Closure $get, $state, string $context) {
+                                    ->afterStateUpdated(function (\Filament\Forms\Set $set, \Filament\Forms\Get $get, $state, string $context) {
                                         if ($state == 1) {
                                             $set('resolved_at', Carbon::now()->toDateString());
                                             $set('resolved_by', auth()->user()->id);
@@ -72,7 +72,7 @@ class ReportResource extends Resource
                                     ->required()
                                     ->reactive(),
                                 Forms\Components\Select::make('violation_type')
-                                    ->options(function (\Closure $get) {
+                                    ->options(function (\Filament\Forms\Get $get) {
                                         $level = $get('violation_level');
                                         if ($level == 1) {
                                             return [

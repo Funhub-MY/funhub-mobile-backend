@@ -18,7 +18,7 @@ class ListReferrals extends ListRecords
     {
         return 'Referrals'; // Set the custom title for the page
     }
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

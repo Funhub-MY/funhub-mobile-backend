@@ -6,12 +6,12 @@ use Closure;
 use Filament\Forms;
 use Filament\Tables;
 use Illuminate\Support\Str;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use App\Models\ArticleCategory;
 use Filament\Resources\Resource;
 use Spatie\MediaLibrary\HasMedia;
-use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\KeyValue;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,7 +24,7 @@ class ArticleCategoryResource extends Resource
 {
     protected static ?string $model = ArticleCategory::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Articles';
 
@@ -34,7 +34,7 @@ class ArticleCategoryResource extends Resource
     {
         return $form
             ->schema([
-                Card::make()
+                Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->label('Category Name')

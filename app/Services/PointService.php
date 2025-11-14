@@ -40,7 +40,7 @@ class PointService
                 ->limit(1)
                 ->lockForUpdate()
                 ->first();
-            
+
             // get the latest balance with the lock in place
             $userBalance = $this->getBalanceOfUser($user);
 
@@ -85,7 +85,7 @@ class PointService
                 ->limit(1)
                 ->lockForUpdate()
                 ->first();
-            
+
             // get the latest balance with the lock in place
             $userBalance = $this->getBalanceOfUser($user);
 

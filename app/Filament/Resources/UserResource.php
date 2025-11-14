@@ -16,8 +16,8 @@ use App\Models\Reward;
 use App\Models\Approval;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Str;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use App\Services\PointService;
 use App\Models\ApprovalSetting;
 use App\Models\RewardComponent;
@@ -235,29 +235,35 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make(name: 'username')
                     ->searchable(),
                 // status
-                Tables\Columns\BadgeColumn::make('status')
-                    ->enum([
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => match($state) {
                         1 => 'Active',
                         2 => 'Suspended',
                         3 => 'Archived',
-                    ])
-                    ->colors([
-                        'success' => 1,
-                        'danger' => 2,
-                        'secondary' => 3,
-                    ]),
+                        default => $state,
+                    })
+                    ->color(fn ($state) => match($state) {
+                        1 => 'success',
+                        2 => 'danger',
+                        3 => 'secondary',
+                        default => 'gray',
+                    }),
 
                 // account restricted
-                Tables\Columns\BadgeColumn::make('account_restricted')
+                Tables\Columns\TextColumn::make('account_restricted')
                     ->label('Account Restricted')
-                    ->enum([
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => match($state) {
                         0 => 'No',
                         1 => 'Yes',
-                    ])
-                    ->colors([
-                        'success' => 0,
-                        'danger' => 1,
-                    ]),
+                        default => $state,
+                    })
+                    ->color(fn ($state) => match($state) {
+                        0 => 'success',
+                        1 => 'danger',
+                        default => 'gray',
+                    }),
 
                 // account restricted until
                 Tables\Columns\TextColumn::make('account_restricted_until')
@@ -270,38 +276,31 @@ class UserResource extends Resource
                     ->sortable(['phone_country_code','phone_no']),
                 Tables\Columns\TextColumn::make(name: 'email')->searchable(),
                 Tables\Columns\TextColumn::make(name: 'email_verified_at'),
-                Tables\Columns\BadgeColumn::make('profile_is_private')
+                Tables\Columns\TextColumn::make('profile_is_private')
                     ->label('Profile Privacy')
-                    ->enum([
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => match($state) {
                         false => 'Public',
                         true => 'Private',
-                    ])
-                    ->colors([
-                        'success' => false,
-                        'danger' => true,
-                    ]),
+                        default => $state,
+                    })
+                    ->color(fn (string $state): string => match($state) {
+                        false => 'success',
+                        true => 'danger',
+                        default => 'gray',
+                    }),
                 // has_article_personalization
-                Tables\Columns\BadgeColumn::make('has_article_personalization')
+                Tables\Columns\TextColumn::make('has_article_personalization')
                     ->label('Has Article Personalization?')
-                    ->enum([
-                        false => 'No',
-                        true => 'Yes',
-                    ])
-                    ->colors([
-                        'success' => 1,
-                        'danger' => 0,
-                    ]),
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No')
+                    ->color(fn ($state) => $state ? 'success' : 'danger'),
 
-                Tables\Columns\BadgeColumn::make('registered_with_merchant_crm')
+                Tables\Columns\TextColumn::make('registered_with_merchant_crm')
                     ->label('Registered Merchant Form?')
-                    ->enum([
-                        false => 'No',
-                        true => 'Yes',
-                    ])
-                    ->colors([
-                        'success' => 1,
-                        'danger' => 0,
-                    ]),
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No')
+                    ->color(fn ($state) => $state ? 'success' : 'danger'),
 
                 // referred_by_id
                 Tables\Columns\TextColumn::make('referredBy.name')

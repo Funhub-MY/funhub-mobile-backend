@@ -6,10 +6,10 @@ use Closure;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\FaqCategory;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -29,13 +29,13 @@ class FaqCategoryResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Card::make([
+                Section::make([
                     Hidden::make('user_id')
                         ->default(fn () => auth()->user()->id),
 

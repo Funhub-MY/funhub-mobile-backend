@@ -27,7 +27,7 @@ class Filters extends Widget implements HasForms
         $this->form->fill();
     }
 
-    public function form(Form $form): Form
+    public static function form(Form $form): Form
     {
         return $form
             ->statePath('data')

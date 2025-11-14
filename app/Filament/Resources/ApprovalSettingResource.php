@@ -5,8 +5,8 @@ namespace App\Filament\Resources;
 use Closure;
 use Filament\Forms;
 use Filament\Tables;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use App\Models\ApprovalSetting;
 use Filament\Resources\Resource;
 use Spatie\Permission\Models\Role;
@@ -25,7 +25,7 @@ class ApprovalSettingResource extends Resource
 {
     protected static ?string $model = ApprovalSetting::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Approvals';
 
@@ -50,7 +50,7 @@ class ApprovalSettingResource extends Resource
                             ->required()
                             ->rules([
                                 'required',
-                                function (Closure $get) {
+                                function (\Filament\Forms\Get $get) {
                                     return function (string $attribute, $value, Closure $fail) use ($get) {
                                         $roleId = $value;
                                         $approvableType = $get('approvable_type');
@@ -74,7 +74,7 @@ class ApprovalSettingResource extends Resource
                             ->required()
                             ->rules([
                                 'required',
-                                function (Closure $get) {
+                                function (\Filament\Forms\Get $get) {
                                     return function (string $attribute, $value, Closure $fail) use ($get) {
                                         $sequence = $value;
                                         $approvableType = $get('approvable_type');

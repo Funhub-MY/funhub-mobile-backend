@@ -10,7 +10,7 @@ class ListExpiredKeywords extends ListRecords
 {
     protected static string $resource = ExpiredKeywordsResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

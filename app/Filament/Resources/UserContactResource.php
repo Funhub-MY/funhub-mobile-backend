@@ -7,12 +7,11 @@ use App\Filament\Resources\UserContactResource\RelationManagers;
 use App\Models\User;
 use App\Models\UserContact;
 use Filament\Forms;
-use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -25,7 +24,7 @@ class UserContactResource extends Resource
 {
     protected static ?string $model = UserContact::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Users';
 
@@ -33,7 +32,7 @@ class UserContactResource extends Resource
     {
         return $form
             ->schema([
-                Card::make([
+                Section::make([
                     Select::make('Imported by user')
                         ->relationship('importedByUser', 'name')
                         ->getOptionLabelFromRecordUsing(function ($record) {

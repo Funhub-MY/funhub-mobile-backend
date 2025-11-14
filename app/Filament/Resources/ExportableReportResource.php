@@ -6,13 +6,13 @@ use App\Filament\Resources\ExportableReportResource\Pages;
 use App\Filament\Resources\ExportableReportResource\RelationManagers;
 use App\Models\ExportableReport;
 use Filament\Forms;
-use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
@@ -23,7 +23,7 @@ class ExportableReportResource extends Resource
 {
     protected static ?string $model = ExportableReport::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Settings';
 
@@ -31,7 +31,7 @@ class ExportableReportResource extends Resource
     {
         return $form
             ->schema([
-                Card::make([
+                Section::make([
                     TextInput::make('name')
                         ->required(),
 

@@ -19,12 +19,12 @@ use Filament\Widgets\FilamentInfoWidget;
 
 class Dashboard extends BasePage
 {
-    protected function getHeading(): string
+    public function getHeading(): string
     {
         return "Dashboard";
     }
 
-    protected function getColumns(): int | array
+    public function getColumns(): int | array
     {
         if (auth()->user()->hasRole('merchant')) {
             return 3;
@@ -32,29 +32,39 @@ class Dashboard extends BasePage
         return 2;
     }
 
-    // widgets
-    protected function getWidgets(): array
+    // Override getWidgets to return empty array - this prevents Dashboard from showing discovered widgets
+    public function getWidgets(): array
     {
-        $widgets = [
-            // UsersChart::class,
-
-            // StatsOverview::class,
-            // UsersChart::class,
-            // ArticleCountChartOverMonths::class,
-            // TopContributor::class,
-            // ArticleUserEngagementCategory::class,
-        ];
-
-        if (auth()->user()->hasRole('merchant')) {
-            // load filers and merchant releated widgets
-            $widgets = array_merge($widgets, [
-                // Filters::class,
-                VoucherAvailable::class,
-                RedemptionsOverview::class,
-                RedemptionsValue::class,
-            ]);
-        }
-
-        return $widgets;
+        return [];
+    }
+    
+    // Override getVisibleWidgets to ensure no widgets are displayed
+    public function getVisibleWidgets(): array
+    {
+        // Force return empty array - this is what the dashboard view uses
+        return [];
+    }
+    
+    // Override getWidgetData to prevent any widget data from being passed
+    public function getWidgetData(): array
+    {
+        return [];
+    }
+    
+    // Override filterVisibleWidgets to ensure nothing gets through
+    protected function filterVisibleWidgets(array $widgets): array
+    {
+        return [];
+    }
+    
+    // Also override header and footer widgets just in case
+    public function getHeaderWidgets(): array
+    {
+        return [];
+    }
+    
+    public function getFooterWidgets(): array
+    {
+        return [];
     }
 }

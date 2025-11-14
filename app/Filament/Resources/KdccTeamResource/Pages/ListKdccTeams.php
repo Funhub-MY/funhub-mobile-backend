@@ -10,7 +10,7 @@ class ListKdccTeams extends ListRecords
 {
     protected static string $resource = KdccTeamResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

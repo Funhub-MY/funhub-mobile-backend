@@ -9,8 +9,8 @@ use Filament\Forms;
 use Filament\Notifications\Notification;
 use Filament\Tables;
 use App\Models\Transaction;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
@@ -32,7 +32,7 @@ class TransactionResource extends Resource
 {
     protected static ?string $model = Transaction::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Sales';
 
@@ -107,19 +107,21 @@ class TransactionResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->label('Transaction No'),
-                Tables\Columns\BadgeColumn::make('status')
-                    ->enum(Transaction::STATUS)
-                    ->colors([
-                        'secondary' => 0,
-                        'success' => 1,
-                        'danger' => 2,
-                    ])
-                    ->sortable()
-                    ->searchable(),
+                TextColumn::make('status')
+                ->label('Status')
+                ->badge()
+                ->formatStateUsing(fn (int $state): string => Transaction::STATUS[$state] ?? $state)
+                ->color(fn (int $state): string => match($state) {
+                    0 => 'secondary',
+                    1 => 'success',
+                    2 => 'danger',
+                    default => 'gray',
+                })
+                ->sortable(),
                 TextColumn::make('user.name')
                     ->sortable()
                     ->searchable()
-                    ->url(fn ($record) => route('filament.resources.users.view', $record->user))
+                    //->url(fn ($record) => route('filament.resources.users.view', $record->user))
                     ->label('User'),
                 TextColumn::make('transactionable.name')
                     ->label('Item')
@@ -147,7 +149,7 @@ class TransactionResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('refresh_status')
                     ->label('Refresh Status')
-                    ->icon('heroicon-o-refresh')
+                    ->icon('heroicon-o-arrow-path')
                     ->color('warning')
                     ->requiresConfirmation()
                     ->action(function ($record) {
@@ -296,9 +298,9 @@ class TransactionResource extends Resource
                                         //         // $quantity = $transaction->amount / $product->unit_price;
                                         //         //  The payment is based on the discount price, so the quantity shall deduct by discount price and not original price
                                         //         $quantity = $record->amount / $product->discount_price;
-                    
+
                                         //         $record->user->notify(new PurchasedGiftCardNotification($record->transaction_no, $record->updated_at, $product->name, $quantity, $record->amount));
-                                                
+
                                         //         // fire event for mission progress
                                         //         //event(args: new GiftCardPurchased($record->user, $product));
                                         //     } catch (\Exception $e) {

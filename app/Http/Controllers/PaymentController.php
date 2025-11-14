@@ -283,10 +283,10 @@ class PaymentController extends Controller
                     $this->updateProductTransaction($request, $transaction);
                     $this->processPromotionCodes($transaction);
                     $this->updateExtraDrawChance($transaction);
-                    
+
                     // Get promotion code data for response if any
                     $promoResponseData = $this->getPromotionCodeResponseData($transaction);
-                    
+
                     if ($transaction->user->email) {
                         try {
                             $product = Product::where('id', $transaction->transactionable_id)->first();
@@ -349,7 +349,7 @@ class PaymentController extends Controller
                     'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
                     'success' => true
                 ];
-                
+
                 // Add promotion code data to response if this was a product transaction with promo code
                 if ($transaction->transactionable_type == Product::class && isset($promoResponseData)) {
                     $params = array_merge($params, $promoResponseData);

@@ -9,11 +9,11 @@ use App\Models\MerchantOfferClaim;
 use App\Models\VoucherTransfer;
 use Closure;
 use Filament\Forms;
-use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Section;
 use Filament\Notifications\Notification;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -32,7 +32,7 @@ class VoucherTransferResource extends Resource
 
     protected static ?string $navigationGroup = 'Merchant Offers';
 
-    protected static function getNavigationBadge(): ?string
+    public static function getNavigationBadge(): ?string
     {
         return static::getModel()::where('status', 0)->count();
     }
@@ -57,7 +57,7 @@ class VoucherTransferResource extends Resource
     {
         return $form
             ->schema([
-               Card::make([
+               Section::make([
                 Forms\Components\Select::make('merchant_offer_id')
                     ->relationship('merchantOffer', 'name')
                     ->reactive()
@@ -78,7 +78,7 @@ class VoucherTransferResource extends Resource
                 Forms\Components\TextInput::make('quantity')
                     ->label('Quantity of Available Vouchers To Transfer')
                     ->reactive()
-                    ->hidden(fn (Closure $get) => !$get('merchant_offer_id'))
+                    ->hidden(fn (\Filament\Forms\Get $get) => !$get('merchant_offer_id'))
                     ->default(0),
 
                 Forms\Components\Hidden::make('from_user_id')
@@ -203,7 +203,7 @@ class VoucherTransferResource extends Resource
 
                 Tables\Actions\Action::make('reject')
                     ->label('Reject')
-                    ->icon('heroicon-o-x')
+                    ->icon('heroicon-o-x-mark')
                     ->color('danger')
                     ->visible(fn (VoucherTransfer $record) => $record->status === 0)
                     ->action(function (VoucherTransfer $record) {
@@ -251,7 +251,7 @@ class VoucherTransferResource extends Resource
                     }),
                 Tables\Actions\BulkAction::make('reject')
                     ->label('Reject Selected')
-                    ->icon('heroicon-o-x')
+                    ->icon('heroicon-o-x-mark')
                     ->color('danger')
                     ->action(function (Collection $records) {
                         foreach ($records as $record) {

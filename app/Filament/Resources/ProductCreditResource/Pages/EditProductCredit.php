@@ -10,7 +10,7 @@ class EditProductCredit extends EditRecord
 {
     protected static string $resource = ProductCreditResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make(),

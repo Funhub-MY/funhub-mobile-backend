@@ -5,8 +5,8 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use App\Models\BlacklistSeederUser;
 use Filament\Forms\Components\Select;
@@ -24,7 +24,7 @@ class BlacklistSeederUserResource extends Resource
 {
     protected static ?string $model = BlacklistSeederUser::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Users';
 

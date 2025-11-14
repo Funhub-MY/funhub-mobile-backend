@@ -5,9 +5,9 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use Illuminate\Support\Str;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use App\Models\ArticleImport;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -19,7 +19,7 @@ class ArticleImportResource extends Resource
 {
     protected static ?string $model = ArticleImport::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Articles';
 
@@ -64,12 +64,16 @@ class ArticleImportResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('rss_channel.channel_name'),
-                Tables\Columns\BadgeColumn::make('status')
-                    ->enum(ArticleImport::STATUS)
-                    ->colors([
-                        'danger' => 0,
-                        'success' => 1,
-                    ])
+
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn (int $state): string => ArticleImport::STATUS[$state] ?? $state)
+                    ->color(fn (int $state): string => match($state) {
+                        0 => 'danger',
+                        1 => 'success',
+                        default => 'gray',
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('description')
                     ->limit(80),

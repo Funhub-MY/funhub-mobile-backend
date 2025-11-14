@@ -115,17 +115,16 @@ class AppServiceProvider extends ServiceProvider
         // });
 
         Filament::registerRenderHook(
-            name: 'scripts.start',
-            callback: fn () => new HtmlString(html: "
-                <script>
-                    document.addEventListener('DOMContentLoaded', function(){
-                       let sidebar_item = document.querySelector('.filament-sidebar-item-active');
-                               if( sidebar_item ) {
+                    'scripts.start',
+                    fn () => new HtmlString("
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function(){
+                            let sidebar_item = document.querySelector('.filament-sidebar-item-active');
+                                f( sidebar_item ) {
                                     sidebar_item.scrollIntoView({ behavior: \"auto\", block: \"center\", inline: \"center\" });
-                               }
+                            }
                     });
-                </script>
-        "));
+                </script>"));
 
 
         if ($this->app->environment('production')) {

@@ -14,7 +14,7 @@ class ListUserContacts extends ListRecords
 {
     protected static string $resource = UserContactResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

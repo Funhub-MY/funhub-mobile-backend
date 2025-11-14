@@ -10,7 +10,7 @@ class EditCampaignQuestionAnswer extends EditRecord
 {
     protected static string $resource = CampaignQuestionAnswerResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make(),

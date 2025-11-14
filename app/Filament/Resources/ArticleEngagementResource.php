@@ -8,10 +8,10 @@ use App\Models\ArticleEngagement;
 use App\Models\User;
 use Closure;
 use Filament\Forms;
-use Filament\Forms\Components\Card;
-use Filament\Resources\Form;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -24,7 +24,7 @@ class ArticleEngagementResource extends Resource
 {
     protected static ?string $model = ArticleEngagement::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Engagements';
 
@@ -39,7 +39,7 @@ class ArticleEngagementResource extends Resource
     {
         return $form
             ->schema([
-                Card::make([
+                Section::make([
                     Hidden::make('user_id')
                         ->default(auth()->id()),
 
@@ -90,7 +90,7 @@ class ArticleEngagementResource extends Resource
 
                     Textarea::make('comment')
                         ->nullable()
-                        ->visible(fn (Closure $get) => $get('action') === 'comment'),
+                        ->visible(fn (\Filament\Forms\Get $get) => $get('action') === 'comment'),
 
                     DateTimePicker::make('scheduled_at')
                         ->label('Scheduled At')

@@ -10,7 +10,7 @@ class ListMediaPartnerKeywords extends ListRecords
 {
     protected static string $resource = MediaPartnerKeywordsResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

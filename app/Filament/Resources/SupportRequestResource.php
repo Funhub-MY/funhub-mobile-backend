@@ -7,8 +7,8 @@ use App\Models\Merchant;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use App\Models\SupportRequest;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Group;
@@ -16,7 +16,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\BadgeColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SupportRequestResource\Pages;
@@ -33,9 +32,9 @@ class SupportRequestResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-	protected static function getNavigationBadge(): ?string
+	public static function getNavigationBadge(): ?string
 	{
 		return (string) SupportRequest::where('status', '!=', SupportRequest::STATUS_CLOSED)->count();
 	}
@@ -135,23 +134,26 @@ class SupportRequestResource extends Resource
                 TextColumn::make('title')
                     ->searchable(),
 
-                BadgeColumn::make('status')
-                    ->enum([
+                TextColumn::make('status')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => match($state) {
                         0 => 'Pending',
                         1 => 'In Progress',
                         2 => 'Pending Info',
                         3 => 'Closed',
                         4 => 'Reopened',
-                        5 => 'Invalid'
-                    ])
-                    ->colors([
-                        'secondary' => 0,
-                        'info' => 1,
-                        'warning' => 2,
-                        'success' => 3,
-                        'danger' => 4,
-                        'secondary' => 5,
-                    ]),
+                        5 => 'Invalid',
+                        default => $state,
+                    })
+                    ->color(fn ($state) => match($state) {
+                        0 => 'secondary',
+                        1 => 'info',
+                        2 => 'warning',
+                        3 => 'success',
+                        4 => 'danger',
+                        5 => 'secondary',
+                        default => 'gray',
+                    }),
 
                 TextColumn::make('category.name')
                     ->label('Category')

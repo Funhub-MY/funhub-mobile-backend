@@ -3,13 +3,13 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use App\Models\MerchantBanner;
 
-use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
@@ -23,7 +23,7 @@ class MerchantBannerResource extends Resource
 {
     protected static ?string $model = MerchantBanner::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-photograph';
+    protected static ?string $navigationIcon = 'heroicon-o-photo';
 
     protected static ?string $navigationGroup = 'Merchant';
 
@@ -31,7 +31,7 @@ class MerchantBannerResource extends Resource
     {
         return $form
             ->schema([
-                Card::make()->schema([
+                Section::make()->schema([
                     Forms\Components\TextInput::make('title')
                         ->required()
                         ->maxLength(255),

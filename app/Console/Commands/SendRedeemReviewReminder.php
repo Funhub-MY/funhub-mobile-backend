@@ -22,6 +22,10 @@ class SendRedeemReviewReminder extends Command
 			->whereNull('reminder_sent_at')
 			->get();
 
+		if(count($recentRedemptions) == 0){
+			return false;
+		}
+
 		Log::info('[SendRedeemReviewReminder] Total Redemptions before 2 hours: ' . count($recentRedemptions));
         $this->info('[SendRedeemReviewReminder] Total Redemptions before 2 hours: ' . count($recentRedemptions));
 

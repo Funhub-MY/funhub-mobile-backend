@@ -316,7 +316,7 @@ class SyncMerchantPortalController extends Controller
                     'message' => 'Merchant not found for Media',
                 ]);
             }
-            
+
             $merchant->media()->where('collection_name', $mediaData['collection_name'])->delete();
             // Upload media
             $merchant
@@ -387,7 +387,7 @@ class SyncMerchantPortalController extends Controller
                     ->whereIn('viewable_id', $merchant->stores->pluck('id'))
                     ->distinct('user_id')
                     ->count('user_id');
-               
+
                 $data = [
                     'rating'            => (float) number_format($averageRating, 1),
                     'review'            => $reviews,
@@ -525,7 +525,7 @@ class SyncMerchantPortalController extends Controller
                 // Use Cache::remember to handle caching
                 $lists = Cache::remember("merchant_review_list_{$userId}", 60, function () use ($merchant) {
                     $lists = collect();
-                    
+
                     //  Get comments under this merchant
                     $lists = $merchant->stores->load('storeRatings.user', 'storeRatings.ratingCategories')->flatMap(function ($store) {
                         return $store->storeRatings->map(function ($rating) {
@@ -699,7 +699,7 @@ class SyncMerchantPortalController extends Controller
                         // 'merchant_offer_user.order_no as order_no',
                         // 'merchant_offer_user.transaction_no as transaction_no',
                         // 'merchant_offer_user.status as claimStatus',
-                        
+
                         // DB::raw('(SELECT created_at 
                         //       FROM merchant_offer_user 
                         //       WHERE voucher_id = merchant_offer_vouchers.id 
@@ -739,7 +739,7 @@ class SyncMerchantPortalController extends Controller
             ]);
         }
     }
-    
+
      /**
      * Get Merchant's Offer Codes lists
      * Merchant portal will call this api for reporting
@@ -814,7 +814,7 @@ class SyncMerchantPortalController extends Controller
 
                     return $lists;
                 });
-                
+
                 return response()->json([
                     'error'     => false,
                     'message'   => "Success",
@@ -854,7 +854,7 @@ class SyncMerchantPortalController extends Controller
     //                   ->where('id', $request->merchant_id)
     //                   ->limit(1); // Ensures only one user_id is returned
     //         })->paginate(1000);
-    
+
     //         return SyncMerchantCampaignResource::collection($campaigns);
 
     //     } catch (\Exception $e) {

@@ -24,7 +24,7 @@ use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Tabs;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Group;
@@ -89,16 +89,16 @@ class MerchantDetails extends Page implements HasForms
             $store->business_hours = json_decode($store->business_hours, true);
 
             $businessHours = $store->business_hours;
-        
+
             // Add "day" key to each entry in the business_hours array
             foreach ($store->business_hours as $day => $hours) {
                 $businessHours[$day]['day'] = $day;
             }
-        
+
             // Update the store's business_hours attribute
             $store->business_hours = $businessHours;
         }
-        
+
         $this->form->fill(
             [
                 'merchant_id' => $merchant_id,
@@ -119,7 +119,7 @@ class MerchantDetails extends Page implements HasForms
                 'pic_phone_no' => $merchant_attributes['pic_phone_no'],
                 'pic_email' => $merchant_attributes['pic_email'],
                 'stores' => $stores,
-                
+
             ] 
         );
         //dd($this->form);
@@ -221,7 +221,7 @@ class MerchantDetails extends Page implements HasForms
                                 ->maxFiles(1)
                                 ->collection(Merchant::MEDIA_COLLECTION_NAME)
                                 ->required()
-                                ->afterStateUpdated(function ($state, Merchant $merchant, Closure $get) {
+                                ->afterStateUpdated(function ($state, Merchant $merchant, \Filament\Forms\Get $get) {
                                     //find the merchant
                                     $merchant_id = $get('merchant_id');
                                     $merchant = Merchant::find($merchant_id);
@@ -245,7 +245,7 @@ class MerchantDetails extends Page implements HasForms
                                     ->schema([
                                         Placeholder::make('company_logo')
                                             ->label('')
-                                            ->content(function ($state, Closure $get, Merchant $merchant) {
+                                            ->content(function ($state, \Filament\Forms\Get $get, Merchant $merchant) {
                                                 $merchant_id = $get('../../merchant_id');
                                                 $merchant = Merchant::find($merchant_id);
                                                 $merchant_logos = $merchant->getMedia(Merchant::MEDIA_COLLECTION_NAME);

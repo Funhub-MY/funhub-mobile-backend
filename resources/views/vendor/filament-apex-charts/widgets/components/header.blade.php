@@ -5,9 +5,9 @@
 
             <div>
                 @if ($heading)
-                    <x-filament::card.heading class="filament-apex-charts-heading">
+                    <x-filament::section.heading class="filament-apex-charts-heading">
                         {!! $heading !!}
-                    </x-filament::card.heading>
+                    </x-filament::section.heading>
                 @endif
 
                 @if ($subheading)

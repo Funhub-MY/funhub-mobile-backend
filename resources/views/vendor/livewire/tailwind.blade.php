@@ -1,6 +1,6 @@
 <div>
     @if ($paginator->hasPages())
-        @php(isset($this->numberOfPaginatorsRendered[$paginator->getPageName()]) ? $this->numberOfPaginatorsRendered[$paginator->getPageName()]++ : $this->numberOfPaginatorsRendered[$paginator->getPageName()] = 1)
+        {{-- @php(isset($this->numberOfPaginatorsRendered[$paginator->getPageName()]) ? $this->numberOfPaginatorsRendered[$paginator->getPageName()]++ : $this->numberOfPaginatorsRendered[$paginator->getPageName()] = 1) --}}
 
         <nav role="navigation" aria-label="Pagination Navigation" class="flex items-center justify-between">
             <div class="flex justify-between flex-1 sm:hidden">
@@ -73,7 +73,7 @@
                             @endif
 
                             {{-- Array Of Links --}}
-                            @if (is_array($element))
+                            {{-- @if (is_array($element))
                                 @foreach ($element as $page => $url)
                                     <span wire:key="paginator-{{ $paginator->getPageName() }}-{{ $this->numberOfPaginatorsRendered[$paginator->getPageName()] }}-page{{ $page }}">
                                         @if ($page == $paginator->currentPage())
@@ -87,7 +87,7 @@
                                         @endif
                                     </span>
                                 @endforeach
-                            @endif
+                            @endif --}}
                         @endforeach
 
                         <span>

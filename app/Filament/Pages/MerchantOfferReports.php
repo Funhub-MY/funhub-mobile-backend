@@ -43,12 +43,12 @@ class MerchantOfferReports extends Page implements HasTable
         return [10, 25, 50, 100];
     } 
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Action::make('export')
                 ->label('Export to Excel')
-                ->icon('heroicon-o-download')
+                ->icon('heroicon-o-arrow-down-tray')
                 ->requiresConfirmation()
                 ->action(function (array $data) {
                     // Get filters from the table
@@ -76,12 +76,16 @@ class MerchantOfferReports extends Page implements HasTable
             Columns\TextColumn::make('id')
                 ->label('Offer ID')
                 ->sortable(),
-            Columns\BadgeColumn::make('offer_status')
-                ->enum(MerchantOffer::STATUS)
-                ->colors([
-                    'secondary' => 0,
-                    'success' => 1,
-                ])
+            Columns\TextColumn::make('offer_status')
+                ->label('Offer Status')
+                ->badge()
+                ->formatStateUsing(fn (int $state): string => MerchantOffer::STATUS[$state] ?? $state)
+                ->color(fn (int $state): string => match($state) {
+                    0 => 'secondary',
+                    1 => 'success',
+                    2 => 'primary',
+                    default => 'gray',
+                })
                 ->sortable(),
             Columns\TextColumn::make('offer_name')
                 ->label('Offer Name')

@@ -6,8 +6,8 @@ use Closure;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Product;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
@@ -30,7 +30,7 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Sales';
 
@@ -109,22 +109,15 @@ class ProductResource extends Resource
                                             ->required()
                                             ->numeric()
                                             ->prefix('RM')
-                                            ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
-                                                ->numeric()
-                                                ->decimalPlaces(2)
-                                                ->minValue(1)
-                                                ->thousandsSeparator(','),
-                                            ),
+                                            ->step(0.01)
+                                            ->minValue(1),
+
                                         Forms\Components\TextInput::make('discount_price')
                                             ->label('Discounted Unit Price')
                                             ->numeric()
                                             ->prefix('RM')
-                                            ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
-                                                ->numeric()
-                                                ->decimalPlaces(2)
-                                                ->minValue(1)
-                                                ->thousandsSeparator(','),
-                                            ),
+                                            ->step(0.01)
+                                            ->minValue(1),
                                     ]),
                                     Checkbox::make('unlimited_supply')
                                         ->reactive()
@@ -194,10 +187,12 @@ class ProductResource extends Resource
 				TextColumn::make('order')
 					->sortable()
 					->label('Order'),
-                TextColumn::make('type')
-                    ->enum(Product::TYPES)
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn (int $state): string => Product::TYPES[$state] ?? $state)
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
@@ -212,14 +207,17 @@ class ProductResource extends Resource
                     ->sortable()
                     ->prefix('RM'),
                 TextColumn::make('quantity'),
-                Tables\Columns\BadgeColumn::make('status')
-                ->enum(Product::STATUS)
-                ->colors([
-                    'secondary' => 0,
-                    'success' => 1,
-                ])
-                ->sortable()
-                ->searchable(),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn (int $state): string => Product::STATUS[$state] ?? $state)
+                    ->color(fn (int $state): string => match($state) {
+                        0 => 'secondary',
+                        1 => 'success',
+                        default => 'gray',
+                    })
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
                 //

@@ -13,7 +13,7 @@ trait ArticleTrait {
     /**
      * @throws \Exception
      */
-    public function formatSlug($text): string
+    public static function formatSlug($text): string
     {
 
         if ($text == '' || $text == null) {

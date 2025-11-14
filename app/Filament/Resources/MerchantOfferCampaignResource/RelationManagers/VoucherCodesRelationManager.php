@@ -4,9 +4,9 @@ namespace App\Filament\Resources\MerchantOfferCampaignResource\RelationManagers;
 
 use App\Models\MerchantOfferCampaignVoucherCode;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -33,7 +33,7 @@ class VoucherCodesRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'code';
 
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -47,7 +47,7 @@ class VoucherCodesRelationManager extends RelationManager
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([
@@ -72,7 +72,7 @@ class VoucherCodesRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\Action::make('importCodes')
                     ->label('Import Codes')
-                    ->icon('heroicon-o-upload')
+                    ->icon('heroicon-o-arrow-up-tray')
                     ->form([
                         FileUpload::make('attachment')
                             ->label('Voucher Codes CSV')

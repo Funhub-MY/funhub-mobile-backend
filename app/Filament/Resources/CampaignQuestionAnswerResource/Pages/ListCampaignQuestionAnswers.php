@@ -10,7 +10,7 @@ class ListCampaignQuestionAnswers extends ListRecords
 {
     protected static string $resource = CampaignQuestionAnswerResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

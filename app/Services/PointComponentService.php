@@ -75,7 +75,7 @@ class PointComponentService
             ->where('component_type', get_class($component))
             ->where('component_id', $component->id)
             ->orderBy('id', 'desc')
-            ->disableCache()
+            //->disableCache()
             ->first();
 
         if(!$latest) {

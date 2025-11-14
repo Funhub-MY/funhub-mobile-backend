@@ -9,9 +9,9 @@ use App\Models\PromotionCodeGroup;
 use App\Models\Reward;
 use App\Models\RewardComponent;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Tables\Actions\BulkAction;
 use Illuminate\Database\Eloquent\Builder;
@@ -47,7 +47,7 @@ class PromotionCodeResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Card::make()
+                Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('number_of_codes')
                             ->label('Number of Codes to Generate')
@@ -103,7 +103,7 @@ class PromotionCodeResource extends Resource
 
                 Tables\Columns\TextColumn::make('promotionCodeGroup.name')
                     ->label('Group Name')
-                    ->url(fn ($record): string => route('filament.resources.promotion-code-groups.edit', $record->promotionCodeGroup ?? ''))
+                    ->url(fn ($record) => $record->promotionCodeGroup ? route('filament.admin.resources.promotion-code-groups.edit', $record->promotionCodeGroup) : null)
                     ->searchable(),
 
 				Tables\Columns\TextColumn::make('reward_name')
@@ -169,27 +169,29 @@ class PromotionCodeResource extends Resource
 					->label('Total Code Claimed')
 					->sortable(),
 
-                Tables\Columns\BadgeColumn::make('is_redeemed')
-                    ->label('Status')
-                    ->enum([
-                        false => 'Not Redeemed',
+                Tables\Columns\TextColumn::make('is_redeemed')
+                    ->label('Redeemed Status')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => match($state) {
                         true => 'Redeemed',
-                    ])
-                    ->colors([
-                        'warning' => false,
-                        'success' => true,
-                    ]),
+                        false => 'Not Redeemed',
+                    })
+                    ->color(fn ($state) => match($state) {
+                        true => 'success',
+                        false => 'warning',
+                    }),
 
-                Tables\Columns\BadgeColumn::make('status')
-                    ->label('Active')
-                    ->enum([
-                        false => 'Inactive',
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => match($state) {
                         true => 'Active',
-                    ])
-                    ->colors([
-                        'danger' => false,
-                        'success' => true,
-                    ]),
+                        false => 'Inactive',
+                    })
+                    ->color(fn ($state) => match($state) {
+                        true => 'success',
+                        false => 'danger',
+                    }),    
 
                 Tables\Columns\TagsColumn::make('tags')
                     ->separator(','),
@@ -285,7 +287,7 @@ class PromotionCodeResource extends Resource
                     ->deselectRecordsAfterCompletion(),
 				BulkAction::make('export')
 					->label('Export Selected Codes')
-					->icon('heroicon-o-download')
+					->icon('heroicon-o-arrow-down-tray')
 					->action(function ($records) {
 						$promotionCodeIds = $records->pluck('id')->toArray();
 
@@ -300,7 +302,7 @@ class PromotionCodeResource extends Resource
             ]);
     }
 
-    protected static function getNavigationBadge(): ?string
+    public static function getNavigationBadge(): ?string
     {
         return static::getModel()::where('is_redeemed', false)->count();
     }

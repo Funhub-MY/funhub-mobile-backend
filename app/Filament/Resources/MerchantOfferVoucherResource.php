@@ -6,11 +6,11 @@ use Filament\Forms;
 use Filament\Tables;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use App\Models\MerchantOfferClaim;
-use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Section;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Log;
@@ -47,7 +47,7 @@ class MerchantOfferVoucherResource extends Resource
 {
     protected static ?string $model = MerchantOfferVoucher::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $modelLabel = 'Stock Voucher';
 
@@ -108,7 +108,7 @@ class MerchantOfferVoucherResource extends Resource
     {
         return $form
             ->schema([
-                Card::make([
+                Section::make([
                     Select::make('merchant_offer_id')
                         ->label('Attached to Merchant Offer')
                         ->relationship('merchant_offer', 'name')

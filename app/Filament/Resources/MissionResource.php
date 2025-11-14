@@ -7,8 +7,8 @@ use Filament\Forms;
 use Filament\Tables;
 use App\Models\Reward;
 use App\Models\Mission;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use App\Models\RewardComponent;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Group;
@@ -30,7 +30,7 @@ class MissionResource extends Resource
 {
     protected static ?string $model = Mission::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-check';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
 
     protected static ?string $navigationGroup = 'Points & Rewards';
 

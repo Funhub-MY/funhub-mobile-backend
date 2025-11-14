@@ -22,16 +22,15 @@ use Filament\Forms\Components\Actions;
 // use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Tabs;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TimePicker;
@@ -67,7 +66,7 @@ class MerchantDetails extends Page implements HasForms
     // protected static string $view = 'livewire.merchant-details';
     protected static string $view = 'filament.pages.merchant-details';
 
-    protected static function shouldRegisterNavigation(): bool
+    public static function shouldRegisterNavigation(array $parameters = []): bool
     {
         return auth()->user()->hasRole('merchant');
     }
@@ -341,7 +340,7 @@ class MerchantDetails extends Page implements HasForms
     public function mount(): void
     {
         abort_unless(auth()->user()->hasRole('merchant'), 403);
-        
+
         $user_id = auth()->user()->id;
         //$user_id = 359;
         //$user = User::find($user_id);
@@ -350,7 +349,7 @@ class MerchantDetails extends Page implements HasForms
         $this->merchant = Merchant::where('user_id', $user_id)->first();
         $merchant_id = $this->merchant->id;
         $merchant_attributes = $this->merchant->getAttributes();
-        
+
 
         //get company logo from media tale 
         $company_logo_url = $this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME);
@@ -382,11 +381,11 @@ class MerchantDetails extends Page implements HasForms
             foreach ($store->business_hours as $day => $hours) {
                 $businessHours[$day]['day'] = $day;
             }
-        
+
             // Update the store's business_hours attribute
             $store->business_hours = $businessHours;
         }
-        
+
         $this->form->fill(
             [
                 'merchant_id' => $merchant_id,
@@ -408,7 +407,7 @@ class MerchantDetails extends Page implements HasForms
                 'pic_phone_no' => $merchant_attributes['pic_phone_no'],
                 'pic_email' => $merchant_attributes['pic_email'],
                 'stores' => $stores,
-                
+
             ] 
         );
         //dd($this->form);
@@ -510,7 +509,7 @@ class MerchantDetails extends Page implements HasForms
                                 ->maxFiles(1)
                                 ->collection(Merchant::MEDIA_COLLECTION_NAME)
                                 ->required()
-                                ->afterStateUpdated(function ($state, Merchant $merchant, Closure $get) {
+                                ->afterStateUpdated(function ($state, Merchant $merchant, \Filament\Forms\Get $get) {
                                     //find the merchant
                                     $merchant_id = $get('merchant_id');
                                     $merchant = Merchant::find($merchant_id);
@@ -534,7 +533,7 @@ class MerchantDetails extends Page implements HasForms
                                     ->schema([
                                         Placeholder::make('company_logo')
                                             ->label('')
-                                            ->content(function ($state, Closure $get, Merchant $merchant) {
+                                            ->content(function ($state, \Filament\Forms\Get $get, Merchant $merchant) {
                                                 $merchant_id = $get('../../merchant_id');
                                                 $merchant = Merchant::find($merchant_id);
                                                 $merchant_logos = $merchant->getMedia(Merchant::MEDIA_COLLECTION_NAME);
@@ -559,7 +558,7 @@ class MerchantDetails extends Page implements HasForms
                                     ->maxFiles(7)
                                     ->collection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)
                                     ->required()
-                                    ->afterStateUpdated(function ($state, Merchant $merchant, Closure $get) {
+                                    ->afterStateUpdated(function ($state, Merchant $merchant, \Filament\Forms\Get $get) {
                                         //find the merchant
                                         $merchant_id = $get('merchant_id');
                                         $merchant = Merchant::find($merchant_id);
@@ -589,7 +588,7 @@ class MerchantDetails extends Page implements HasForms
                                     ->schema([
                                         Placeholder::make('company_photo')
                                             ->label('')
-                                            ->content(function ($state, Closure $get, Merchant $merchant) {
+                                            ->content(function ($state, \Filament\Forms\Get $get, Merchant $merchant) {
                                                 $merchant_id = $get('../../merchant_id');
                                                 $merchant = Merchant::find($merchant_id);
                                                 $merchant_photos = $merchant->getMedia(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);

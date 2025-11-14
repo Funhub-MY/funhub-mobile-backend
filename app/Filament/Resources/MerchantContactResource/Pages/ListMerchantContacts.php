@@ -10,7 +10,7 @@ class ListMerchantContacts extends ListRecords
 {
     protected static string $resource = MerchantContactResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             //Actions\CreateAction::make(),

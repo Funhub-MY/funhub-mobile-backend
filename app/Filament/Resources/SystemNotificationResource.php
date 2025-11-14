@@ -11,9 +11,9 @@ use App\Models\Article;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use App\Models\MerchantOffer;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use App\Models\SystemNotification;
 use Illuminate\Support\Facades\Log;
@@ -42,13 +42,13 @@ class SystemNotificationResource extends Resource
 
     protected static ?string $navigationGroup = 'Notification';
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Card::make()
+                Forms\Components\Section::make()
                     ->schema([
                         KeyValue::make('title')
                         ->columnSpan('full')
@@ -227,7 +227,7 @@ class SystemNotificationResource extends Resource
                     ])
                     ->columns(2),
 
-                Forms\Components\Card::make()
+                Forms\Components\Section::make()
                     ->schema([
                         Radio::make('redirect_type')
                             ->label('Redirect Type')
@@ -300,7 +300,7 @@ class SystemNotificationResource extends Resource
 
                                 TextInput::make('web_link')
                                     ->label('Web Link')
-                                    ->hidden(fn (Closure $get) => $get('static_content_type') !== 'web'),
+                                    ->hidden(fn (\Filament\Forms\Get $get) => $get('static_content_type') !== 'web'),
                             ])
                             ->hidden(function ($get) {
                                 if ($get('redirect_type') == SystemNotification::REDIRECT_STATIC) {
@@ -331,7 +331,7 @@ class SystemNotificationResource extends Resource
                     ])
                     ->columns(2),
 
-				Forms\Components\Card::make()
+				Forms\Components\Section::make()
 					->schema([
 						Radio::make('selection_type')
 							->label('Select users for sending notification method')
@@ -341,7 +341,7 @@ class SystemNotificationResource extends Resource
 							])
 							->reactive()
 							->required()
-							->hidden(fn (Closure $get) => $get('all_active_users') === true)
+							->hidden(fn (\Filament\Forms\Get $get) => $get('all_active_users') === true)
 							->helperText('If want to import User list, please create notification first then import CSV in the "User" table below'),
 						Select::make('users')
 //							->preload()
@@ -350,9 +350,9 @@ class SystemNotificationResource extends Resource
 							->relationship('users', 'username')
 //                            ->options(User::pluck('username', 'id')->toArray())
 							->placeholder('Enter username or select by user status')
-							->hidden(fn (Closure $get) => $get('selection_type') === 'import' || $get('selection_type') === null || $get('all_active_users') === true)
+							->hidden(fn (\Filament\Forms\Get $get) => $get('selection_type') === 'import' || $get('selection_type') === null || $get('all_active_users') === true)
 							->rules([
-								function (Closure $get) {
+								function (\Filament\Forms\Get $get) {
 									return function (string $attribute, $value, Closure $fail) use ($get) {
 										$scheduledAt = $get('scheduled_at');
 										if ($scheduledAt) {

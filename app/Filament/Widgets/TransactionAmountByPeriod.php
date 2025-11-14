@@ -8,28 +8,16 @@ use App\Models\Transaction;
 use App\Traits\HasPeriodTrait;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Carbon\Carbon;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
+use Filament\Widgets\LineChartWidget;
+use Illuminate\Database\Eloquent\Scopes\SoftDeletingScope;
 
-class TransactionAmountByPeriod extends ApexChartWidget
+class TransactionAmountByPeriod extends LineChartWidget
 {
     use HasWidgetShield, HasPeriodTrait;
-    /**
-     * Chart Id
-     *
-     * @var string
-     */
-    protected static string $chartId = 'transactionAmountByPeriod';
-    protected int | string | array $columnSpan = 'full';
 
-    /**
-     * Widget Title
-     *
-     * @var string|null
-     */
     protected static ?string $heading = 'Transaction Amount (RM)';
+    protected int | string | array $columnSpan = 'full';
 
     protected function getFormSchema(): array
     {
@@ -42,7 +30,7 @@ class TransactionAmountByPeriod extends ApexChartWidget
                     1 => '1 Month',
                     7 => '7 Days',
                 ])
-                ->default('6'),
+                ->default(6),
 
             Select::make('status')
                 ->label('Payment Status')
@@ -55,29 +43,26 @@ class TransactionAmountByPeriod extends ApexChartWidget
         ];
     }
 
-    /**
-     * Chart options (series, labels, types, size, animations...)
-     * https://apexcharts.com/docs/options
-     *
-     * @return array
-     */
-    protected function getOptions(): array
+    protected function getData(): array
     {
-        //showing a loading indicator immediately after the page load
-        if (!$this->readyToLoad) {
-            return [];
+        if (!isset($this->filterFormData) || empty($this->filterFormData)) {
+            return [
+                'datasets' => [],
+                'labels' => [],
+            ];
         }
 
-        $selectedPeriod = $this->filterFormData['period'];
-        $selectedStatus = $this->filterFormData['status'];
+        $selectedPeriod = $this->filterFormData['period'] ?? 6;
+        $selectedStatus = $this->filterFormData['status'] ?? 1;
 
-         // get transactions amount
-         $offers =  Transaction::withoutGlobalScope(SoftDeletingScope::class)
+        // Get transaction amounts for offers
+        $offers = Transaction::withoutGlobalScope(SoftDeletingScope::class)
             ->where('created_at', '>=', now()->subMonths(12))
             ->where('transactionable_type', MerchantOffer::class)
             ->where('status', $selectedStatus)
             ->get();
 
+        // Get transaction amounts for products
         $products = Transaction::withoutGlobalScope(SoftDeletingScope::class)
             ->where('created_at', '>=', now()->subMonths(12))
             ->where('transactionable_type', Product::class)
@@ -86,72 +71,73 @@ class TransactionAmountByPeriod extends ApexChartWidget
 
         $periods = $this->getPeriods($selectedPeriod);
 
-        // map as two lines one for offer one for product, sum up each month's amount
-        $offers = $periods->map(function ($p) use ($offers, $selectedPeriod) {
+        // Map amounts for offers by period
+        $offersData = $periods->map(function ($period) use ($offers, $selectedPeriod) {
             if ($selectedPeriod == 1 || $selectedPeriod == 7) {
                 $amount = $offers->whereBetween('created_at', [
-                    Carbon::createFromFormat('d/m/Y', $p)->startOfDay(),
-                    Carbon::createFromFormat('d/m/Y', $p)->endOfDay()])
-                    ->sum('amount');
+                    Carbon::createFromFormat('d/m/Y', $period)->startOfDay(),
+                    Carbon::createFromFormat('d/m/Y', $period)->endOfDay()
+                ])->sum('amount');
             } else {
                 $amount = $offers->whereBetween('created_at', [
-                    Carbon::parse($p)->startOfMonth(),
-                    Carbon::parse($p)->endOfMonth()])
-                    ->sum('amount');
+                    Carbon::parse($period)->startOfMonth(),
+                    Carbon::parse($period)->endOfMonth()
+                ])->sum('amount');
             }
             return $amount;
-        });
+        })->toArray();
 
-        $products = $periods->map(function ($p) use ($products, $selectedPeriod) {
+        // Map amounts for products by period
+        $productsData = $periods->map(function ($period) use ($products, $selectedPeriod) {
             if ($selectedPeriod == 1 || $selectedPeriod == 7) {
                 $amount = $products->whereBetween('created_at', [
-                    Carbon::createFromFormat('d/m/Y', $p)->startOfDay(),
-                    Carbon::createFromFormat('d/m/Y', $p)->endOfDay()])
-                    ->sum('amount');
+                    Carbon::createFromFormat('d/m/Y', $period)->startOfDay(),
+                    Carbon::createFromFormat('d/m/Y', $period)->endOfDay()
+                ])->sum('amount');
             } else {
                 $amount = $products->whereBetween('created_at', [
-                    Carbon::parse($p)->startOfMonth(),
-                    Carbon::parse($p)->endOfMonth()])
-                    ->sum('amount');
+                    Carbon::parse($period)->startOfMonth(),
+                    Carbon::parse($period)->endOfMonth()
+                ])->sum('amount');
             }
             return $amount;
-        });
+        })->toArray();
 
         return [
-            'chart' => [
-                'type' => 'line',
-                'height' => 300,
-            ],
-            'series' => [
+            'datasets' => [
                 [
-                    'name' => 'Offers (Cash Purchase)',
-                    'data' => $offers->toArray(),
-                    'color' => '#6366f1',
+                    'label' => 'Offers (Cash Purchase)',
+                    'data' => $offersData,
+                    'borderColor' => '#6366f1',
+                    'backgroundColor' => 'rgba(99, 102, 241, 0.1)',
+                    'fill' => true,
+                    'tension' => 0.4,
                 ],
                 [
-                    'name' => 'Funbox Gift Card',
-                    'data' => $products->toArray(),
-                    'color' => '#f43f5e',
+                    'label' => 'Funbox Gift Card',
+                    'data' => $productsData,
+                    'borderColor' => '#f43f5e',
+                    'backgroundColor' => 'rgba(244, 63, 94, 0.1)',
+                    'fill' => true,
+                    'tension' => 0.4,
                 ],
             ],
-            'xaxis' => [
-                'categories' => $periods->toArray(),
-                'labels' => [
-                    'style' => [
-                        'colors' => '#9ca3af',
-                    ],
+            'labels' => $periods->toArray(),
+        ];
+    }
+
+    protected function getOptions(): array
+    {
+        return [
+            'plugins' => [
+                'legend' => [
+                    'display' => true,
                 ],
             ],
-            'yaxis' => [
-                'labels' => [
-                    'style' => [
-                        'colors' => '#9ca3af',
-                    ]
+            'scales' => [
+                'y' => [
+                    'beginAtZero' => true,
                 ],
-            ],
-            'colors' => ['#6366f1'],
-            'stroke' => [
-                'curve' => 'smooth',
             ],
         ];
     }

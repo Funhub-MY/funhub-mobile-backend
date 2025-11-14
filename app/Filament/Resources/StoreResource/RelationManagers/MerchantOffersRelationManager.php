@@ -5,9 +5,9 @@ namespace App\Filament\Resources\StoreResource\RelationManagers;
 use App\Models\Store;
 use App\Models\User;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -20,7 +20,7 @@ class MerchantOffersRelationManager extends RelationManager
 
     protected static ?string $modelLabel = 'Merchant Offer';
 
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -38,12 +38,10 @@ class MerchantOffersRelationManager extends RelationManager
                 Forms\Components\TextInput::make('unit_price')
                     ->required()
                     ->numeric()
-                    ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
-                        ->numeric()
-                        ->decimalPlaces(2)
-                        ->minValue(1)
-                        ->thousandsSeparator(',')
-                    ),
+                    ->label('Unit Price')
+                    ->prefix('RM')
+                    ->step(0.01)
+                    ->minValue(1),
                 Forms\Components\TextInput::make('quantity')
                     ->required()
                     ->numeric()
@@ -64,7 +62,7 @@ class MerchantOffersRelationManager extends RelationManager
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([

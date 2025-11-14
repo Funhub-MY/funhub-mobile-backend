@@ -5,8 +5,8 @@ namespace App\Filament\Resources;
 use Closure;
 use Filament\Forms;
 use Filament\Tables;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use App\Models\CampaignQuestion;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
@@ -25,7 +25,7 @@ class CampaignQuestionResource extends Resource
 {
     protected static ?string $model = CampaignQuestion::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Campaigns';
 
@@ -72,7 +72,7 @@ class CampaignQuestionResource extends Resource
                             ])
                             ->orderable()
                             ->rules('array')
-                            ->hidden(fn (Closure $get) => $get('answer_type') == 'text')
+                            ->hidden(fn (\Filament\Forms\Get $get) => $get('answer_type') == 'text')
                             ->rules('min:1'),
 
                         Textarea::make('default_answer')

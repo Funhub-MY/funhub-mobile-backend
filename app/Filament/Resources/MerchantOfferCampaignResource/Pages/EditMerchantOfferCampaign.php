@@ -19,7 +19,7 @@ class EditMerchantOfferCampaign extends EditRecord
 {
     protected static string $resource = MerchantOfferCampaignResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             //Actions\DeleteAction::make(),
@@ -65,7 +65,7 @@ class EditMerchantOfferCampaign extends EditRecord
     {
         // unset select_all_stores
         unset($data['select_all_stores']);
-        
+
         return $data;
     }
 

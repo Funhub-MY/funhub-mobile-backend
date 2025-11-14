@@ -7,12 +7,12 @@ use App\Filament\Resources\CityResource\RelationManagers;
 use App\Filament\Resources\CityResource\RelationManagers\NamesRelationManager;
 use App\Models\City;
 use Filament\Forms;
-use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,7 +30,7 @@ class CityResource extends Resource
     {
         return $form
             ->schema([
-                Card::make()
+                Section::make()
                     ->schema([
                         TextInput::make('name')
                             ->label('Name')

@@ -108,22 +108,22 @@ class ReleaseFailedMerchantOffers extends Command
                             $successfulClaim = MerchantOfferClaim::where('voucher_id', $claim->voucher_id)
                                 ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
                                 ->first();
-                        
+
                             if (!$successfulClaim) {
                                 // only proceed with release if no successful claims exist
                                 $voucher = MerchantOfferVoucher::where('id', $claim->voucher_id)
                                     ->where('owned_by_id', $claim->user_id)
                                     ->first();
-                                    
+
                                 if ($voucher) {
                                     $voucher->owned_by_id = null;
                                     $voucher->save();
-                        
+
                                     $releaseQuantity = $claim->pivot->quantity;
-                        
+
                                     $offer->quantity = $offer->quantity + $releaseQuantity;
                                     $offer->save();
-                        
+
                                     Log::info('[ReleaseFailedMerchantOffers] Stock Quantity Reverted, Voucher Released', [
                                         'transaction_id' => $transaction->id,
                                         'merchant_offer_id' => $offer->id,

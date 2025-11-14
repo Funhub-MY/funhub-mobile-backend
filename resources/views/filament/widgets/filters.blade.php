@@ -1,7 +1,7 @@
 <x-filament::widget>
-    <x-filament::card>
+    <x-filament::section>
         <form>
             {{ $this->form }}
         </form>
-    </x-filament::card>
+    </x-filament::section>
 </x-filament::widget>

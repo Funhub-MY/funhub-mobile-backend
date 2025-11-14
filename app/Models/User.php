@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Mail\EmailVerification;
 use Illuminate\Support\Facades\Mail;
 use App\Services\OneSignalService;
+use Filament\Panel;
 
 class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
 {
@@ -80,7 +81,12 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         // });
     }
 
-    public function canAccessFilament(): bool
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true; // or your custom logic
+    }
+
+    public function canAccessFilament(\Filament\Panel $panel): bool
     {
         return $this->hasRole('staff') || $this->hasRole('admin') || $this->hasRole('super_admin') || $this->hasRole('merchant');
     }

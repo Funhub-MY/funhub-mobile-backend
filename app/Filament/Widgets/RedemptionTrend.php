@@ -7,25 +7,14 @@ use App\Models\MerchantOfferClaimRedemptions;
 use App\Traits\HasPeriodTrait;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Forms\Components\Select;
-use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
+use Filament\Widgets\LineChartWidget;
 
-class RedemptionTrend extends ApexChartWidget
+class RedemptionTrend extends LineChartWidget
 {
     use HasPeriodTrait, HasWidgetShield;
-    /**
-     * Chart Id
-     *
-     * @var string
-     */
-    protected static string $chartId = 'redemptionTrend';
-    protected int | string | array $columnSpan = 'full';
 
-    /**
-     * Widget Title
-     *
-     * @var string|null
-     */
     protected static ?string $heading = 'Voucher Redemptions';
+    protected int | string | array $columnSpan = 'full';
 
     protected function getFormSchema(): array
     {
@@ -38,93 +27,89 @@ class RedemptionTrend extends ApexChartWidget
                     1 => '1 Month',
                     7 => '7 Days',
                 ])
-                ->default('6'),
+                ->default(6),
         ];
     }
 
-
-    /**
-     * Chart options (series, labels, types, size, animations...)
-     * https://apexcharts.com/docs/options
-     *
-     * @return array
-     */
-    protected function getOptions(): array
+    protected function getData(): array
     {
-        $selectedPeriod = $this->filterFormData['period'];
+        if (!isset($this->filterFormData) || empty($this->filterFormData)) {
+            return [
+                'datasets' => [],
+                'labels' => [],
+            ];
+        }
 
+        $selectedPeriod = $this->filterFormData['period'] ?? 6;
+
+        // Get redemptions from the last 12 months
         $redeems = MerchantOfferClaimRedemptions::where('created_at', '>=', now()->subMonths(12))
             ->get();
 
-        // undeemed claims
+        // Get unredeemed claims from the last 12 months
         $unredeemed = MerchantOfferClaim::doesntHave('redeem')
             ->where('created_at', '>=', now()->subMonths(12))
             ->get();
 
         $periods = $this->getPeriods($selectedPeriod);
 
-        // count no. of redeems for period
-        $redeems = $periods->map(function ($period) use ($redeems, $selectedPeriod) {
-            $count = $redeems->filter(function ($redeem) use ($period, $selectedPeriod) {
+        // Count redemptions for each period
+        $redeemsData = $periods->map(function ($period) use ($redeems, $selectedPeriod) {
+            return $redeems->filter(function ($redeem) use ($period, $selectedPeriod) {
                 if ($selectedPeriod == 7 || $selectedPeriod == 1) {
                     return $redeem->created_at->format('d/m/Y') == $period;
                 } else {
                     return $redeem->created_at->format('M Y') == $period;
                 }
             })->count();
-
-            return $count;
         })->toArray();
 
-        // count no .of unredeemed claims for period
-        $unredeemed = $periods->map(function ($period) use ($unredeemed, $selectedPeriod) {
-            $count = $unredeemed->filter(function ($unredeemed) use ($period, $selectedPeriod) {
+        // Count unredeemed claims for each period
+        $unredeemedData = $periods->map(function ($period) use ($unredeemed, $selectedPeriod) {
+            return $unredeemed->filter(function ($claim) use ($period, $selectedPeriod) {
                 if ($selectedPeriod == 7 || $selectedPeriod == 1) {
-                    return $unredeemed->created_at->format('d/m/Y') == $period;
+                    return $claim->created_at->format('d/m/Y') == $period;
                 } else {
-                    return $unredeemed->created_at->format('M Y') == $period;
+                    return $claim->created_at->format('M Y') == $period;
                 }
             })->count();
-
-            return $count;
         })->toArray();
 
         return [
-            'chart' => [
-                'type' => 'line',
-                'height' => 300,
-            ],
-            'series' => [
+            'datasets' => [
                 [
-                    'name' => 'No. Of Redemptions of Purchased Vouchers',
-                    'data' => $redeems,
+                    'label' => 'No. Of Redemptions of Purchased Vouchers',
+                    'data' => $redeemsData,
+                    'borderColor' => '#6366f1',
+                    'backgroundColor' => 'rgba(99, 102, 241, 0.1)',
+                    'fill' => true,
+                    'tension' => 0.4,
                 ],
                 [
-                    'name' => 'No. Of Unredeemed Purchased Vouchers',
-                    'data' => $unredeemed,
-                    'color' => '#ccc'
+                    'label' => 'No. Of Unredeemed Purchased Vouchers',
+                    'data' => $unredeemedData,
+                    'borderColor' => '#ccc',
+                    'backgroundColor' => 'rgba(204, 204, 204, 0.1)',
+                    'fill' => true,
+                    'tension' => 0.4,
                 ],
             ],
-            'xaxis' => [
-                'categories' => $periods->toArray(),
-                'labels' => [
-                    'style' => [
-                        'colors' => '#b8c2cc',
-                        'fontWeight' => 500,
-                    ],
+            'labels' => $periods->toArray(),
+        ];
+    }
+
+    protected function getOptions(): array
+    {
+        return [
+            'plugins' => [
+                'legend' => [
+                    'display' => true,
                 ],
             ],
-            'yaxis' => [
-                'labels' => [
-                    'style' => [
-                        'colors' => '#9ca3af',
-                        'fontWeight' => 500,
-                    ],
+            'scales' => [
+                'y' => [
+                    'beginAtZero' => true,
                 ],
-            ],
-            'colors' => ['#6366f1'],
-            'stroke' => [
-                'curve' => 'smooth',
             ],
         ];
     }

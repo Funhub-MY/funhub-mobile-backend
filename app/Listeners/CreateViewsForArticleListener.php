@@ -53,7 +53,7 @@ class CreateViewsForArticleListener
 
                 //get the view_seeder_weight from settings table(view_seeder_weight is set by admin)
                 $view_seeder_weight_setting = Setting::where('key', 'view_seeder_weight')->first();
-        
+
                 if ($view_seeder_weight_setting) {
                     Log::info('[CreateViewsForArticleListener] view_seeder_weight_setting: ', [
                         'key' => $view_seeder_weight_setting->key,
@@ -72,12 +72,12 @@ class CreateViewsForArticleListener
                 } else {
                     $auto_view_percentage = 1; // Default as 1
                 }
-        
+
                 $total_app_user = User::count();
-                
+
                 //the highest point in the bell curve. (in hours)
                 $peak_time = 6; 
-        
+
                 //Smaller values will result in a narrower curve, while larger values will make it wider.
                 $standard_deviation = 3;
 
@@ -111,7 +111,7 @@ class CreateViewsForArticleListener
 
                     // Convert scheduled_at to Malaysia time (UTC+8)
                     $scheduled_at = $scheduled_at->setTimezone('Asia/Kuala_Lumpur');
-                
+
                     // Check if the scheduled_at falls between 1 am and 6 am
                     if ($scheduled_at >= $scheduled_at->copy()->startOfDay()->addHours(1) && $scheduled_at <= $scheduled_at->copy()->startOfDay()->addHours(2)) {
                         // Adjust the scheduled_at to be 6 am
@@ -138,7 +138,7 @@ class CreateViewsForArticleListener
                         'scheduled_views' => $scheduled_views,
                         'scheduled_at' => $scheduled_at,
                     ]);
-        
+
                     // Create a ViewQueue entry
                     ViewQueue::create([
                         'article_id' => $article->id,
@@ -178,7 +178,7 @@ class CreateViewsForArticleListener
 
 //             //get the view_seeder_weight from settings table(view_seeder_weight is set by admin)
 //             $view_seeder_weight_setting = Setting::where('key', 'view_seeder_weight')->first();
-    
+
 //             if ($view_seeder_weight_setting) {
 //                 Log::info('[CreateViewsForArticleListener] view_seeder_weight_setting: ', [
 //                     'key' => $view_seeder_weight_setting->key,
@@ -197,23 +197,23 @@ class CreateViewsForArticleListener
 //             } else {
 //                 $auto_view_percentage = 1; // Default as 1
 //             }
-    
+
 //             $total_app_user = User::count();
-            
+
 //             //the highest point in the bell curve. (in hours)
 //             $peak_time = 12; 
-    
+
 //             //the highest point in the bell curve. Smaller values will result in a narrower curve, while larger values will make it wider.
 //             $standard_deviation = 3;
-    
+
 //             $scale_up_by = 100;
-    
+
 //             // Create ViewQueue entries at 2-hour intervals
 //             for ($time = 0; $time <= 24; $time += 2) {
 //                 // Calculate the view percentage using a bell curve distribution
 //                 $view_percentage = $this->bellCurve($time, $peak_time, $standard_deviation); //value too small,if round off will be 0,so need to scale up
 //                 $scaled_view_percentage = $view_percentage * $scale_up_by;
-    
+
 //                 // Calculate the number of scheduled views directly, no decimal 
 //                 $scheduled_views = round(($total_app_user * $auto_view_percentage / 100) * $scaled_view_percentage);
 
@@ -226,7 +226,7 @@ class CreateViewsForArticleListener
 //                     'scheduled_views' => $scheduled_views,
 //                     'scheduled_at' => now()->addHours($time),
 //                 ]);
-    
+
 //                 // Create a ViewQueue entry
 //                 ViewQueue::create([
 //                     'article_id' => $article->id,

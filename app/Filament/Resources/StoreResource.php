@@ -7,8 +7,8 @@ use App\Models\User;
 use Filament\Tables;
 use App\Models\Store;
 use App\Models\Merchant;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\StoreResource\Pages;
@@ -52,13 +52,13 @@ class StoreResource extends Resource
 {
     protected static ?string $model = Store::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-library';
+    protected static ?string $navigationIcon = 'heroicon-o-building-library';
 
     protected static ?string $navigationGroup = 'Merchant';
 
     protected static ?int $navigationSort = 3;
 
-    protected static function getNavigationBadge(): ?string
+    public static function getNavigationBadge(): ?string
     {
         $unlistedStores = Store::where('status', Store::STATUS_INACTIVE)->count();
 
@@ -603,7 +603,7 @@ class StoreResource extends Resource
                 // bulk action for changing status
                 BulkAction::make('change_status')
                     ->label('Change Status')
-                    ->icon('heroicon-o-refresh')
+                    ->icon('heroicon-o-arrow-path')
                     ->form([
                         Select::make('status')
                             ->options(Store::STATUS)

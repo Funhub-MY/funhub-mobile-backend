@@ -4,8 +4,8 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use App\Models\MerchantContact;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,7 +18,7 @@ class MerchantContactResource extends Resource
 {
     protected static ?string $model = MerchantContact::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $modelLabel = 'Merchant Contacts';
 

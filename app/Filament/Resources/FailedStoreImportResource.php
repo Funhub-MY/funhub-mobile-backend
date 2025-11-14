@@ -6,9 +6,9 @@ use App\Filament\Resources\FailedStoreImportResource\Pages;
 use App\Filament\Resources\FailedStoreImportResource\RelationManagers;
 use App\Models\FailedStoreImport;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -52,7 +52,7 @@ class FailedStoreImportResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Card::make()
+                Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->label('Store Name')

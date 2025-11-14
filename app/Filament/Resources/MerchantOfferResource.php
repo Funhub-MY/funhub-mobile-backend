@@ -9,9 +9,9 @@ use Filament\Forms\Components\Repeater;
 use Filament\Tables;
 use App\Models\Store;
 use App\Models\Merchant;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use App\Models\MerchantOffer;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use App\Models\MerchantCategory;
 use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
@@ -47,7 +47,7 @@ class MerchantOfferResource extends Resource
 {
     protected static ?string $model = MerchantOffer::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-cash';
+    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
     protected static ?string $modelLabel = 'Merchant Offer';
 
@@ -73,7 +73,7 @@ class MerchantOfferResource extends Resource
             ->schema([
                 Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Card::make()
+                        Forms\Components\Section::make()
                             ->schema([
                                 Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')
                                     ->label('Offer Images')
@@ -172,7 +172,7 @@ class MerchantOfferResource extends Resource
                                     ->columnSpan('full'),
                             ])->columns(2),
 
-                        Forms\Components\Card::make()
+                        Forms\Components\Section::make()
                             ->schema([
                                 Select::make('purchase_method')
                                     ->label('Default Purchase Mode')
@@ -187,39 +187,46 @@ class MerchantOfferResource extends Resource
                                     ->label('Funhub Point Cost')
                                     ->required()
                                     ->numeric()
-                                    ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
-                                        ->numeric()
-                                        ->decimalPlaces(2)
-                                        ->minValue(1)
-                                        ->thousandsSeparator(',')
-                                    ),
+                                    ->step(0.01)
+                                    ->minValue(1),
 
                                 Fieldset::make('Point Pricing (MYR)')
                                     ->schema([
-                                        Forms\Components\TextInput::make('point_fiat_price')
-                                            ->label('Funhub Cost in MYR')
-                                            ->required()
-                                            ->numeric()
-                                            ->prefix('RM')
-                                            ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
-                                                ->numeric()
-                                                ->decimalPlaces(2)
-                                                ->minValue(1)
-                                                ->padFractionalZeros(true)
-                                                ->thousandsSeparator(','),
-                                            ),
+                                    Forms\Components\TextInput::make('point_fiat_price')
+                                        ->label('Funhub Cost in MYR')
+                                        ->required()
+                                        ->numeric()
+                                        ->prefix('RM')
+                                        ->step(0.01)
+                                        ->minValue(1)
+                                        ->regex('/^\d+(\.\d{1,2})?$/')
+                                        ->validationMessages([
+                                            'regex' => 'Please enter a valid price with up to 2 decimal places.',
+                                        ])
+                                        ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                            // Format to 2 decimal places
+                                            if ($state) {
+                                                $set(number_format((float)$state, 2, '.', ''));
+                                            }
+                                        }),
+
                                     Forms\Components\TextInput::make('discounted_point_fiat_price')
                                         ->label('Discounted Funhub Cost in MYR')
                                             ->required()
                                             ->numeric()
                                             ->prefix('RM')
-                                            ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
-                                                ->numeric()
-                                                ->decimalPlaces(2)
-                                                ->minValue(1)
-                                                ->padFractionalZeros(true)
-                                                ->thousandsSeparator(','),
-                                            ),
+                                            ->step(0.01)
+                                            ->minValue(1)
+                                            ->regex('/^\d+(\.\d{1,2})?$/')
+                                            ->validationMessages([
+                                                'regex' => 'Please enter a valid price with up to 2 decimal places.',
+                                            ])
+                                            ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                                // Format to 2 decimal places
+                                                if ($state) {
+                                                    $set(number_format((float)$state, 2, '.', ''));
+                                                }
+                                        }),
                                 ]),
 
                                 Fieldset::make('MYR Pricing')
@@ -229,25 +236,36 @@ class MerchantOfferResource extends Resource
                                             ->required()
                                             ->numeric()
                                             ->prefix('RM')
-                                            ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
-                                                ->numeric()
-                                                ->decimalPlaces(2)
-                                                ->minValue(1)
-                                                ->padFractionalZeros(true)
-                                                ->thousandsSeparator(','),
-                                            ),
+                                            ->step(0.01)
+                                            ->minValue(1)
+                                            ->regex('/^\d+(\.\d{1,2})?$/')
+                                            ->validationMessages([
+                                                'regex' => 'Please enter a valid price with up to 2 decimal places.',
+                                            ])
+                                            ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                                // Format to 2 decimal places
+                                                if ($state) {
+                                                    $set(number_format((float)$state, 2, '.', ''));
+                                                }
+                                        }),
+
                                         Forms\Components\TextInput::make('discounted_fiat_price')
                                             ->label('MYR Discounted Cost')
                                             ->required()
                                             ->numeric()
                                             ->prefix('RM')
-                                            ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
-                                                ->numeric()
-                                                ->decimalPlaces(2)
-                                                ->minValue(1)
-                                                ->padFractionalZeros(true)
-                                                ->thousandsSeparator(','),
-                                            ),
+                                            ->step(0.01)
+                                            ->minValue(1)
+                                            ->regex('/^\d+(\.\d{1,2})?$/')
+                                            ->validationMessages([
+                                                'regex' => 'Please enter a valid price with up to 2 decimal places.',
+                                            ])
+                                            ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                                // Format to 2 decimal places
+                                                if ($state) {
+                                                    $set(number_format((float)$state, 2, '.', ''));
+                                                }
+                                        }),
                                 ]),
                             ])->columns(2)
                     ])->columnSpan(['lg' => 2]),
@@ -259,7 +277,7 @@ class MerchantOfferResource extends Resource
                                     ->label('Available Quantity')
                                     ->required()
                                     ->numeric()
-                                    ->disabledOn('edit')
+                                    ->disabled(fn ($context) => $context === 'edit')
                                     // ->helperText('Quantity field will be locked after created offer. Please add more vouchers using "Vouchers" below.')
                                     // ->disabled(fn ($livewire) => $livewire instanceof EditRecord)
                                     ->minValue(1),
@@ -276,7 +294,7 @@ class MerchantOfferResource extends Resource
 
                                 DatePicker::make('publish_at')
                                     ->label('Publish Date')
-                                    ->visible(fn(Closure $get) => $get('status') == MerchantOffer::STATUS_DRAFT)
+                                    ->visible(fn(\Filament\Forms\Get $get) => $get('status') == MerchantOffer::STATUS_DRAFT)
                                     ->minDate(now()->addDay()->startOfDay())
                                     ->helperText('System will change status to Published if publish date is set, change happen at 00:01 of Date.'),
                                 // Forms\Components\Select::make('user_id')
@@ -328,10 +346,10 @@ class MerchantOfferResource extends Resource
                                     ->helperText('Must select store(s) else it won\'t appear in the Nearby Merchant Stores tab.')
                                     ->preload()
                                     ->reactive()
-                                    ->relationship('stores', 'name', function (Builder $query, Closure $get) {
+                                    ->relationship('stores', 'name', function (Builder $query, \Filament\Forms\Get $get) {
                                         $query->where('user_id', $get('user_id'));
                                     })
-                                    ->hidden(fn (Closure $get) => $get('user_id') === null),
+                                    ->hidden(fn (\Filament\Forms\Get $get) => $get('user_id') === null),
                             ])->columns(1),
 
                             Forms\Components\Section::make('Categories')->schema([
@@ -394,23 +412,28 @@ class MerchantOfferResource extends Resource
                     ->html()
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\BadgeColumn::make('status')
-                    ->enum(MerchantOffer::STATUS)
-                    ->colors([
-                        'secondary' => 0,
-                        'success' => 1,
-                    ])
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => MerchantOffer::STATUS[$state] ?? $state)
+                    ->color(fn ($state) => match($state) {
+                        0 => 'secondary',
+                        1 => 'success',
+                        default => 'gray',
+                    })
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\BadgeColumn::make('available_for_web')
-                    ->enum([
+                Tables\Columns\TextColumn::make('available_for_web')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => match($state) {
                         0 => 'No',
                         1 => 'Yes',
-                    ])
-                    ->colors([
-                        'secondary' => 0,
-                        'success' => 1,
-                    ])
+                        default => $state,
+                    })
+                    ->color(fn ($state) => match($state) {
+                        0 => 'secondary',
+                        1 => 'success',
+                        default => 'gray',
+                    })
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('available_at')
@@ -517,7 +540,7 @@ class MerchantOfferResource extends Resource
                             ->required(),
                         DatePicker::make('publish_at')
                             ->label('Publish Date')
-                            ->visible(fn(Closure $get) => $get('status') == MerchantOffer::STATUS_DRAFT)
+                            ->visible(fn(\Filament\Forms\Get $get) => $get('status') == MerchantOffer::STATUS_DRAFT)
                             ->minDate(now()->addDay()->startOfDay())
                             ->helperText('System will change status to Published if publish date is set, change happen at 00:01 of Date.'),
                         Forms\Components\TextInput::make('quantity')
@@ -623,7 +646,7 @@ class MerchantOfferResource extends Resource
                 Tables\Actions\BulkAction::make('force_sync_algolia')
                     ->label('Force Sync with Algolia')
                     ->modalContent(fn () => new HtmlString("Use this when you make same day edits to Offers"))
-                    ->icon('heroicon-o-refresh')
+                    ->icon('heroicon-o-arrow-path')
                     ->action(function (Collection $records): void {
                         $successCount = 0;
                         $errorCount = 0;
@@ -659,7 +682,7 @@ class MerchantOfferResource extends Resource
                 Tables\Actions\BulkAction::make('update_status')
                     ->hidden(fn () => auth()->user()->hasRole('merchant'))
                     ->label('Update Status')
-                    ->icon('heroicon-o-refresh')
+                    ->icon('heroicon-o-arrow-path')
                     ->form([
                         Forms\Components\Select::make('status')
                             ->options(MerchantOffer::STATUS)->default(0),

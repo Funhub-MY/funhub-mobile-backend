@@ -10,7 +10,7 @@ class ListApprovalSettings extends ListRecords
 {
     protected static string $resource = ApprovalSettingResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

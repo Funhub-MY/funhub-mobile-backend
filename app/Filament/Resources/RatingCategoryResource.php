@@ -6,12 +6,12 @@ use App\Filament\Resources\RatingCategoryResource\Pages;
 use App\Filament\Resources\RatingCategoryResource\RelationManagers;
 use App\Models\RatingCategory;
 use Filament\Forms;
-use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\TextInput;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,7 +21,7 @@ class RatingCategoryResource extends Resource
 {
     protected static ?string $model = RatingCategory::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Merchant';
     protected static ?int $navigationSort = 5;
@@ -30,7 +30,7 @@ class RatingCategoryResource extends Resource
     {
         return $form
             ->schema([
-                Card::make([
+                Section::make([
                     TextInput::make('name')
                         ->label('Name')
                         ->required()

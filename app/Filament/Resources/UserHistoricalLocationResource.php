@@ -10,9 +10,9 @@ use App\Models\UserHistoricalLocation;
 use Closure;
 use Filament\Forms;
 use Filament\Notifications\Notification;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -26,7 +26,7 @@ class UserHistoricalLocationResource extends Resource
 {
     protected static ?string $model = UserHistoricalLocation::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     // disable create and edit
     public static function canCreate(): bool

@@ -4,9 +4,9 @@ namespace App\Filament\Resources\MerchantOfferResource\RelationManagers;
 
 use App\Models\User;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Tables\Actions\AttachAction;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,7 +21,7 @@ class ClaimedByUsersRelationManager extends RelationManager
     protected static ?string $modelLabel = 'Claimed By Users';
 
 
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -53,7 +53,7 @@ class ClaimedByUsersRelationManager extends RelationManager
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([

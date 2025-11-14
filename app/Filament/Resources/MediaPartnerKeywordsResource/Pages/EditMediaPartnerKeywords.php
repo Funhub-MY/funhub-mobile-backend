@@ -10,7 +10,7 @@ class EditMediaPartnerKeywords extends EditRecord
 {
     protected static string $resource = MediaPartnerKeywordsResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make(),

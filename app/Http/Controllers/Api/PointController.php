@@ -207,7 +207,7 @@ class PointController extends Controller
                     'user_id' => $user->id,
                     'seconds_remaining' => $remainingSeconds
                 ]);
-                
+
                 return response()->json([
                     'message' => 'Too Many Requests',
                     'seconds_remaining' => $remainingSeconds

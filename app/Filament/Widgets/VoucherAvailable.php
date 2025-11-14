@@ -4,7 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\MerchantOfferVoucher;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
-use Filament\Widgets\StatsOverviewWidget\Card;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class VoucherAvailable extends BaseWidget
 {
@@ -12,11 +12,22 @@ class VoucherAvailable extends BaseWidget
 
     protected function getCards(): array
     {
-        $data = MerchantOfferVoucher::whereHas('merchant_offer', function ($q) {
-            $q->where('user_id', auth()->id());
-        })->whereNull('owned_by_id')->count();
+        // Optimize query by using whereIn instead of whereHas to avoid memory issues
+        // Using whereIn with subquery is more efficient than whereHas for large datasets
+        $merchantOfferIds = \App\Models\MerchantOffer::where('user_id', auth()->id())
+            ->pluck('id');
+        
+        // Return 0 if no merchant offers found to avoid querying with empty array
+        if ($merchantOfferIds->isEmpty()) {
+            $data = 0;
+        } else {
+            $data = MerchantOfferVoucher::whereIn('merchant_offer_id', $merchantOfferIds)
+                ->whereNull('owned_by_id')
+                ->count();
+        }
+        
         return [
-            Card::make('Voucher(s) Available', $data)
+            Stat::make('Voucher(s) Available', $data)
                 ->color('success'),
         ];
     }

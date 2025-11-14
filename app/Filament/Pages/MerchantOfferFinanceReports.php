@@ -44,12 +44,12 @@ class MerchantOfferFinanceReports extends Page implements HasTable
         return [10, 25, 50, 100];
     } 
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Action::make('export')
                 ->label('Export to Excel')
-                ->icon('heroicon-o-download')
+                ->icon('heroicon-o-arrow-down-tray')
                 ->requiresConfirmation()
                 ->action(function (array $data) {
                     // Get filters from the table
@@ -130,16 +130,19 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                 ->sortable(query: function (Builder $query, string $direction): Builder {
                     return $query->orderBy('merchant_offer_user.created_at', $direction);
                 }),
-            Columns\BadgeColumn::make('purchase_method')
+            Columns\TextColumn::make('purchase_method')
                 ->label('Purchase Method')
-                ->enum([
+                ->badge()
+                ->formatStateUsing(fn (string $state): string => match($state) {
                     'points' => 'Funbox',
-                    'fiat' => 'Cash'
-                ])
-                ->colors([
-                    'secondary' => 'fiat',
-                    'success' => 'points',
-                ])
+                    'fiat' => 'Cash',
+                    default => $state,
+                })
+                ->color(fn (string $state): string => match($state) {
+                    'points' => 'secondary',
+                    'fiat' => 'success',
+                    default => 'gray',
+                })
                 ->sortable(),
             Columns\TextColumn::make('amount_total')
                 ->label('Purchase Amount')

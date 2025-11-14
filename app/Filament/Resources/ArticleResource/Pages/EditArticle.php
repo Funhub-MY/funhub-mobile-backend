@@ -28,7 +28,7 @@ class EditArticle extends EditRecord
         $this->originalTags = $this->record->tags->pluck('id')->toArray();
     }
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make(),

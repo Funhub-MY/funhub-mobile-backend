@@ -8,8 +8,8 @@ use App\Models\User;
 use Filament\Tables;
 use App\Models\Merchant;
 use Illuminate\Support\Str;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -54,7 +54,7 @@ class MerchantResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
-    protected static function getNavigationBadge(): ?string
+    public static function getNavigationBadge(): ?string
     {
         $pendingApprovals = Merchant::where('status', Merchant::STATUS_PENDING)->count();
 
@@ -101,7 +101,7 @@ class MerchantResource extends Resource
                                 Placeholder::make('business_phone_no')
                                     ->disableLabel(true)
                                     ->content(fn () => new HtmlString('<span style="font-weight:bold; color: #ff0000;font-size: 14px;margin-top: -5px">Auto linked with User as Registered Phone No. same as a Registered User </span>'))
-                                    ->visible(fn (Closure $get) => $get('has_auto_linked_user') === true),
+                                    ->visible(fn (\Filament\Forms\Get $get) => $get('has_auto_linked_user') === true),
 
                                 Forms\Components\TextInput::make('name')
                                     ->label('Merchant Name')

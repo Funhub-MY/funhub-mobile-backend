@@ -10,7 +10,7 @@ class ListVoucherMovements extends ListRecords
 {
     protected static string $resource = VoucherMovementResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

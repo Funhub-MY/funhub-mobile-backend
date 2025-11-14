@@ -15,7 +15,7 @@ class EditMerchantOffer extends EditRecord
     public $language;
     public $current_locale;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make(),

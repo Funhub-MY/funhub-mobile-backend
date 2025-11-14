@@ -5,7 +5,7 @@ namespace App\Filament\Widgets;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
-use Filament\Widgets\StatsOverviewWidget\Card;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class RedemptionsValue extends BaseWidget
 {
@@ -19,7 +19,7 @@ class RedemptionsValue extends BaseWidget
         ->sum('net_amount');
 
         return [
-            Card::make('Total Redemption Value (MYR)', $data)
+            Stat::make('Total Redemption Value (MYR)', $data)
                 ->color('success'),
         ];
     }

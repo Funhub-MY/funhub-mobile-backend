@@ -5,10 +5,10 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use Illuminate\Support\Str;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Group;
 use App\Models\MerchantOfferCategory;
 use Filament\Forms\Components\Hidden;
@@ -29,7 +29,7 @@ class MerchantOfferCategoryResource extends Resource
 {
     protected static ?string $model = MerchantOfferCategory::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Merchant Offers';
 
@@ -39,7 +39,7 @@ class MerchantOfferCategoryResource extends Resource
     {
         return $form
             ->schema([
-                Card::make([
+                Section::make([
                     TextInput::make('name')
                         ->label('Category Name')
                         ->helperText("This will show as default category name in admin backend system regardless of the app language set.")

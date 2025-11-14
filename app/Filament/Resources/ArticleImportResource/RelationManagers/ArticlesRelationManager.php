@@ -5,9 +5,9 @@ namespace App\Filament\Resources\ArticleImportResource\RelationManagers;
 use App\Models\Article;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -19,13 +19,13 @@ class ArticlesRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Card::make()->schema([
+                        Forms\Components\Section::make()->schema([
                             Forms\Components\Hidden::make('user_id')
                                 ->default(fn () => auth()->id()),
                             Forms\Components\TextInput::make('title')
@@ -112,22 +112,27 @@ class ArticlesRelationManager extends RelationManager
             ->columns(1);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('image')->collection('article_cover')->label('Image'),
                 Tables\Columns\TextColumn::make('title'),
                 Tables\Columns\TextColumn::make('type')
-                    ->enum(Article::TYPE)
+                    ->label('Type')
+                    ->badge()
+                    ->formatStateUsing(fn (int $state): string => Article::TYPE[$state] ?? $state)
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\BadgeColumn::make('status')
-                    ->enum(Article::STATUS)
-                    ->colors([
-                        'secondary' => 0,
-                        'success' => 1,
-                    ])
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn (int $state): string => Article::STATUS[$state] ?? $state)
+                    ->color(fn (int $state): string => match($state) {
+                        0 => 'secondary',
+                        1 => 'success',
+                        default => 'gray',
+                    })
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('published_at')->dateTime('d-m-Y')

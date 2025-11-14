@@ -28,7 +28,7 @@ class ListStores extends ListRecords
 {
     protected static string $resource = StoreResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),
@@ -390,7 +390,7 @@ class ListStores extends ListRecords
                                     if (empty($record->business_hours)) return '';
                                     $hours = json_decode($record->business_hours, true);
                                     if (!$hours) return '';
-                                    
+
                                     $formatted = [];
                                     foreach ($hours as $day => $time) {
                                         $formatted[] = $day . ':' . $time['open_time'] . '-' . $time['close_time'];
@@ -403,7 +403,7 @@ class ListStores extends ListRecords
                                     if (empty($record->rest_hours)) return '';
                                     $hours = json_decode($record->rest_hours, true);
                                     if (!$hours) return '';
-                                    
+
                                     $formatted = [];
                                     foreach ($hours as $day => $time) {
                                         $formatted[] = $day . ':' . $time['open_time'] . '-' . $time['close_time'];

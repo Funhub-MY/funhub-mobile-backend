@@ -17,8 +17,8 @@ use Filament\Tables\Columns\TagsColumn;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use App\Models\ArticleCategory;
 use Filament\Resources\Resource;
 use Filament\Forms\FormsComponent;
@@ -49,7 +49,7 @@ class ArticleResource extends Resource
 {
     protected static ?string $model = Article::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Articles';
 
@@ -67,7 +67,7 @@ class ArticleResource extends Resource
             ->schema([
                 Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Card::make()->schema([
+                        Forms\Components\Section::make()->schema([
 
                             Forms\Components\TextInput::make('title')
                                 ->required()
@@ -127,7 +127,7 @@ class ArticleResource extends Resource
                                 ->maxFiles(20)
                                 ->enableReordering()
                                 ->appendFiles()
-                                ->hidden(fn (Closure $get) => $get('type') !== 'multimedia')
+                                ->hidden(fn (\Filament\Forms\Get $get) => $get('type') !== 'multimedia')
                                 ->rules('image'),
 
                             //  video upload
@@ -146,7 +146,7 @@ class ArticleResource extends Resource
                                 ->rules('image')
 								->required()
 								->maxSize(4096)
-                                ->hidden(fn (Closure $get) => $get('type') !== 'video')
+                                ->hidden(fn (\Filament\Forms\Get $get) => $get('type') !== 'video')
                                 ->getUploadedFileUrlUsing(function ($file) {
                                     $disk = config('filesystems.default');
 
@@ -168,7 +168,7 @@ class ArticleResource extends Resource
                                 })
                                 ->directory('filament-article-uploads')
                                 ->acceptedFileTypes(['video/*'])
-                                ->hidden(fn (Closure $get) => $get('type') !== 'video')
+                                ->hidden(fn (\Filament\Forms\Get $get) => $get('type') !== 'video')
                                 ->rules('mimes:m4v,mp4,mov|max:'.config('app.max_size_per_video_kb'))
 								->required()
 								->getUploadedFileUrlUsing(function ($file) {
@@ -427,21 +427,26 @@ class ArticleResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->limit(50),
-                 Tables\Columns\BadgeColumn::make('status')
-                    ->enum(Article::STATUS)
-                    ->colors([
-                        'secondary' => 0,
-                        'success' => 1,
-                    ])
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn (int $state): string => Article::STATUS[$state] ?? $state)
+                    ->color(fn (int $state): string => match($state) {
+                        0 => 'secondary',
+                        1 => 'success',
+                        default => 'gray',
+                    })
                     ->sortable()
                     ->searchable(),
-
-                Tables\Columns\BadgeColumn::make('type')
-                    ->enum(Article::TYPE)
-                    ->colors([
-                        'primary' => 'video',
-                        'secondary' => 'multimedia',
-                    ])
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn (int $state): string => Article::TYPE[$state] ?? $state)
+                    ->color(fn (int $state): string => match($state) {
+                        'video' => 'primary',
+                        'multimedia' => 'secondary',
+                        default => 'gray',
+                    })
                     ->sortable(),
 				TagsColumn::make('categories.name')
 					->label('Parent Categories'),
@@ -496,14 +501,6 @@ class ArticleResource extends Resource
                         'success' => Article::VISIBILITY_PUBLIC,
                     ])
                     ->sortable(),
-
-                // Tables\Columns\TextColumn::make('excerpt')
-                //     ->sortable()
-                //     ->searchable()->wrap(),
-                // Tables\Columns\TextColumn::make('type')
-                //     ->enum(Article::TYPE)
-                //     ->sortable()
-                //     ->searchable(),
 
                 // likes count
                 Tables\Columns\TextColumn::make('likes_count')

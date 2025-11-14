@@ -10,7 +10,7 @@ class ListMerchants extends ListRecords
 {
     protected static string $resource = MerchantResource::class;
 
-    protected static function shouldRegisterNavigation(): bool
+    public static function shouldRegisterNavigation(array $parameters = []): bool
     {
         //dd('list here?');
         return auth()->user()->hasRole('super_admin');
@@ -21,7 +21,7 @@ class ListMerchants extends ListRecords
         abort_unless(auth()->user()->hasRole('super_admin'), 403);
     }
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

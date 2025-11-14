@@ -1,7 +1,10 @@
 @props(['indicatorsCount', 'width'])
 <div class="filament-apex-charts-filter-form">
-    <x-tables::filters.trigger @click="dropdownOpen = !dropdownOpen" :indicators-count="$indicatorsCount" />
-
+    <x-filament::icon-button
+        icon="heroicon-m-funnel"
+        @click="dropdownOpen = !dropdownOpen"
+    />
+    
     <div x-show="dropdownOpen" x-cloak @click="dropdownOpen = false" class="fixed inset-0 h-full w-full z-10"></div>
 
     <div x-show="dropdownOpen" x-cloak @class([
@@ -28,13 +31,23 @@
             {{ $slot }}
 
             <div class="mt-4 text-end flex gap-6 justify-end">
-                <x-tables::button wire:click="submitFiltersForm" color="primary" tag="button" size="sm">
+                <x-filament::button 
+                    wire:click="submitFiltersForm" 
+                    color="primary" 
+                    tag="button" 
+                    size="sm"
+                >
                     {{ __('filament-support::actions/modal.actions.submit.label') }}
-                </x-tables::button>
-                <x-tables::link @click="$wire.resetFiltersForm;dropdownOpen = false" color="danger" tag="button"
-                    size="sm">
-                    {{ __('tables::table.filters.buttons.reset.label') }}
-                </x-tables::link>
+                </x-filament::button>
+                
+                <x-filament::button 
+                    @click="$wire.resetFiltersForm(); dropdownOpen = false" 
+                    color="danger" 
+                    tag="button"
+                    size="sm"
+                >
+                    {{ __('filament-tables::table.filters.actions.reset.label') }}
+                </x-filament::button>
             </div>
         </div>
 

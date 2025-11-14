@@ -19,7 +19,7 @@ class EditStore extends EditRecord
 {
     protected static string $resource = StoreResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make(),

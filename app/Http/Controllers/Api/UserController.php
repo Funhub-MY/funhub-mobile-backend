@@ -263,8 +263,7 @@ class UserController extends Controller
      */
     public function getMyBlockedUsers()
     {
-        $blockedUsers = UserBlock::disableCache()
-            ->where('user_id', auth()->id())
+        $blockedUsers = UserBlock::where('user_id', auth()->id())
             ->where('blockable_type', User::class)
             ->with('blockable')
             ->get();

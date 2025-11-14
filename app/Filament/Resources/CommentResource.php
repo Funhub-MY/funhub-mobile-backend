@@ -7,9 +7,9 @@ use App\Models\User;
 use Filament\Tables;
 use App\Models\Article;
 use App\Models\Comment;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use App\Policies\AuditPolicy;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,7 +25,7 @@ class CommentResource extends Resource
 {
     protected static ?string $model = Comment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Users';
 

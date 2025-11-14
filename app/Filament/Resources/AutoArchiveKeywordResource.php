@@ -4,8 +4,8 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use App\Models\AutoArchiveKeyword;
 use Filament\Tables\Columns\TextColumn;
@@ -25,7 +25,7 @@ class AutoArchiveKeywordResource extends Resource
 
     protected static ?string $model = AutoArchiveKeyword::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {

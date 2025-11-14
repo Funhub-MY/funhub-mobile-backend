@@ -10,9 +10,9 @@ use App\Models\Reward;
 use App\Models\RewardComponent;
 use Carbon\Carbon;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
@@ -37,7 +37,7 @@ class PromotionCodeGroupResource extends Resource
             ->schema([
                 Forms\Components\Grid::make(2)
                     ->schema([
-                        Forms\Components\Card::make()
+                        Forms\Components\Section::make()
                             ->schema([
                                 Forms\Components\TextInput::make('name')
                                     ->required()
@@ -59,7 +59,7 @@ class PromotionCodeGroupResource extends Resource
                             ])
                             ->columnSpan(1),
 
-                        Forms\Components\Card::make()
+                        Forms\Components\Section::make()
                             ->schema([
                                 Forms\Components\Select::make('code_type')
 									->label('Code Type')

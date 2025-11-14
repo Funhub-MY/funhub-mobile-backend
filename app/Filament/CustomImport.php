@@ -56,7 +56,7 @@ class CustomImport
         return $this;
     }
 
-    public function formSchemas(array $formSchemas): static
+    public static function formSchemas(array $formSchemas): static
     {
         $this->formSchemas = $formSchemas;
 

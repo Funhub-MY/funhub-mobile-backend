@@ -7,9 +7,9 @@ use App\Models\User;
 use App\Models\View;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
-use Filament\Widgets\StatsOverviewWidget\Card;
 use NumberFormatter;
 use Illuminate\Support\Facades\Cache;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StatsOverview extends BaseWidget
 {
@@ -84,17 +84,17 @@ class StatsOverview extends BaseWidget
         $articleData = $this->getArticlesPublished();
 
         return [
-            Card::make('Total Users', $this->number_format_short($userData['total']))
+            Stat::make('Total Users', $this->number_format_short($userData['total']))
                 ->description($this->getChangeMessage($userData['changes_compared_last_month']))
                 ->descriptionIcon($this->getChangeIcon($userData['changes_compared_last_month']))
                 ->color($this->getChangeColor($userData['changes_compared_last_month'])),
 
-            Card::make('Active Users', $this->number_format_short($activeUserData['total']))
+            Stat::make('Active Users', $this->number_format_short($activeUserData['total']))
                 ->description($this->getChangeMessage($activeUserData['changes_compared_last_month']))
                 ->descriptionIcon($this->getChangeIcon($activeUserData['changes_compared_last_month']))
                 ->color($this->getChangeColor($activeUserData['changes_compared_last_month'])),
 
-            Card::make('Total Published Articles', number_format($articleData['total']))
+            Stat::make('Total Published Articles', number_format($articleData['total']))
                 ->description($this->getChangeMessage($articleData['changes_compared_last_month']))
                 ->descriptionIcon($this->getChangeIcon($articleData['changes_compared_last_month']))
                 ->color($this->getChangeColor($articleData['changes_compared_last_month'])),
@@ -123,9 +123,9 @@ class StatsOverview extends BaseWidget
 
     protected function getChangeIcon($value) {
         if ($value > 0) {
-            return 'heroicon-s-trending-up';
+            return 'heroicon-m-arrow-trending-up';
         } else if ($value < 0) {
-            return 'heroicon-s-trending-down';
+            return 'heroicon-m-arrow-trending-down';
         } else {
             return '';
         }

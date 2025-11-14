@@ -4,8 +4,8 @@ namespace App\Filament\Resources\SupportRequestResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Tables;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Illuminate\Support\Facades\Log;
 use Filament\Forms\Components\Hidden;
 use Filament\Tables\Columns\TextColumn;
@@ -23,7 +23,7 @@ class MessagesRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'message';
 
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -50,7 +50,7 @@ class MessagesRelationManager extends RelationManager
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([

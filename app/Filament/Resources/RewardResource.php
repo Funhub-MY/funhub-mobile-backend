@@ -6,8 +6,8 @@ use Closure;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Reward;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
@@ -23,7 +23,7 @@ class RewardResource extends Resource
 {
     protected static ?string $model = Reward::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Points & Rewards';
 

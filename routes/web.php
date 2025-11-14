@@ -43,11 +43,6 @@ Route::post('/card-tokenization/return', [PaymentController::class, 'cardTokeniz
     ->name('payment.card-tokenization.return')
     ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
-// any route other than /s redirect to /admin/login
-Route::get('/{any}', function () {
-    return redirect()->to('/admin/login');
-})->where('any', '^((?!s).)*$');
-
 // TODO:: routes below can be deleted once flutter end finish login implementation.
 // this is to get google access token, need to access to this page and login.
 Route::get('/get/google-access-token', function () {

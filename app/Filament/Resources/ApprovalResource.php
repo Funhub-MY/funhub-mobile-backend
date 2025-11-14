@@ -7,8 +7,8 @@ use App\Models\User;
 use Filament\Tables;
 use App\Models\Reward;
 use App\Models\Approval;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use App\Services\PointService;
 use App\Models\ApprovalSetting;
 use App\Models\RewardComponent;
@@ -22,7 +22,6 @@ use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ApprovalResource\Pages;
@@ -34,11 +33,11 @@ class ApprovalResource extends Resource
 {
     protected static ?string $model = Approval::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Approvals';
 
-    protected static function getNavigationBadge(): ?string
+    public static function getNavigationBadge(): ?string
     {
         $pendingApprovals = static::getModel()::where('approver_id', auth()->user()->id)->where('approved', false)->count();
         return ($pendingApprovals > 0) ? $pendingApprovals : null;
@@ -102,16 +101,19 @@ class ApprovalResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                BadgeColumn::make('approved')
+                TextColumn::make('approved')
                     ->label('Status')
-                    ->enum([
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => match($state) {
                         1 => 'Approved',
                         0 => 'Pending',
-                    ])
-                    ->colors([
-                        'success' => 1,
-                        'warning' => 0,
-                    ]),
+                        default => $state,
+                    })
+                    ->color(fn ($state) => match($state) {
+                        1 => 'success',
+                        0 => 'warning',
+                        default => 'gray',
+                    }),
                 TextColumn::make('approvable_type')
                     ->label('Approvable Type')
                     ->searchable()

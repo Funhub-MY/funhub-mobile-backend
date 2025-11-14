@@ -10,7 +10,7 @@ class EditMerchantBanner extends EditRecord
 {
     protected static string $resource = MerchantBannerResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make(),

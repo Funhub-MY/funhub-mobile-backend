@@ -5,14 +5,14 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\VoucherMovementResource\Pages;
 use App\Models\MerchantOfferVoucherMovement;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -23,7 +23,7 @@ class VoucherMovementResource extends Resource
 {
     protected static ?string $model = MerchantOfferVoucherMovement::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-switch-horizontal';
+    protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
 
     protected static ?string $navigationGroup = 'Merchant Offers';
 
@@ -35,7 +35,7 @@ class VoucherMovementResource extends Resource
     {
         return $form
             ->schema([
-                Card::make([
+                Section::make([
                     Select::make('from_merchant_offer_id')
                         ->label('From Merchant Offer')
                         ->relationship('fromMerchantOffer', 'name')

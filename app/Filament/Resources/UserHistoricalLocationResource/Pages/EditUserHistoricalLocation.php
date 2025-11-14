@@ -10,7 +10,7 @@ class EditUserHistoricalLocation extends EditRecord
 {
     protected static string $resource = UserHistoricalLocationResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make(),
