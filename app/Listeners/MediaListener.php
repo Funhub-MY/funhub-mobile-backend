@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use Exception;
 use App\Jobs\CreateImageVariants;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -41,7 +42,7 @@ class MediaListener
 
                 // Dispatch the job to create image variants
                 // CreateImageVariants::dispatch($media, $media->disk);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('Failed to get image size', [
                     'error' => $e->getMessage()
                 ]);

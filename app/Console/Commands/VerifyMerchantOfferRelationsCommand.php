@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\MerchantOffer;
+use App\Models\MerchantOfferCampaignSchedule;
 use Illuminate\Console\Command;
 
 class VerifyMerchantOfferRelationsCommand extends Command
@@ -31,7 +33,7 @@ class VerifyMerchantOfferRelationsCommand extends Command
         $this->info('Starting verification of merchant offers created since ' . $startDate);
 
         // first, find all offers created after start date that don't have a campaign ID
-        $orphanedOffers = \App\Models\MerchantOffer::where('created_at', '>=', $startDate)
+        $orphanedOffers = MerchantOffer::where('created_at', '>=', $startDate)
             ->whereNull('merchant_offer_campaign_id')
             ->has('vouchers') // has vouchers generated
             ->get();
@@ -52,7 +54,7 @@ class VerifyMerchantOfferRelationsCommand extends Command
                 
                 if ($offer->schedule_id) {
                     // if the offer has a schedule, try to find the campaign through it
-                    $schedule = \App\Models\MerchantOfferCampaignSchedule::find($offer->schedule_id);
+                    $schedule = MerchantOfferCampaignSchedule::find($offer->schedule_id);
                     if ($schedule) {
                         $this->line("  Found matching campaign #{$schedule->merchant_offer_campaign_id} through schedule #{$schedule->id}");
                         

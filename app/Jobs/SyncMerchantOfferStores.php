@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Exception;
 use App\Models\MerchantOffer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -54,7 +55,7 @@ class SyncMerchantOfferStores implements ShouldQueue
                 'offer_id' => $this->offerId,
                 'store_count' => count($this->storeIds),
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[SyncMerchantOfferStores] Error syncing stores', [
                 'offer_id' => $this->offerId,
                 'error' => $e->getMessage(),

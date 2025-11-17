@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MissionResource;
 use App\Models\Mission;
@@ -25,7 +27,7 @@ class MissionController extends Controller
      *
      * @return MissionResource
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      *
      * @group Mission
      * @urlParam completed_only boolean optional Filter by completed only. Example: 0
@@ -223,7 +225,7 @@ class MissionController extends Controller
                 ]
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error completing mission', [
                 'mission_id' => $request->mission_id,
                 'user_id' => auth()->id(),

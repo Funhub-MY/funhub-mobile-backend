@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
+use Throwable;
 use App\Http\Controllers\Controller;
 use App\Models\Merchant;
 use App\Models\MerchantCategory;
@@ -185,7 +187,7 @@ class SyncMerchantPortalController extends Controller
                 ]
             ]);
 
-        }catch (\Exception $e) {
+        }catch (Exception $e) {
             Log::error('[SyncMerchantPortalController] merchant register api failed: ' . $e->getMessage());
             return response()->json([
                 'error'     => true,
@@ -262,7 +264,7 @@ class SyncMerchantPortalController extends Controller
                 ]);
             }
 
-        }catch (\Exception $e) {
+        }catch (Exception $e) {
             Log::error('[SyncMerchantPortalController] merchant update api failed: ' . $e->getMessage());
             return response()->json([
                 'error'     => true,
@@ -331,7 +333,7 @@ class SyncMerchantPortalController extends Controller
                 'message' => 'Success',
             ]);
 
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Log errors and return response
             Log::error("Error in merchant_update_logo: " . $e->getMessage());
             return response()->json([
@@ -410,7 +412,7 @@ class SyncMerchantPortalController extends Controller
                 ]);
             }
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[SyncMerchantPortalController] get offer overview api failed: ' . $e->getMessage());
             return response()->json([
                 'error'     => true,
@@ -497,7 +499,7 @@ class SyncMerchantPortalController extends Controller
                 ]);
             }
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[SyncMerchantPortalController] get merchant overview api failed: ' . $e->getMessage());
             return response()->json([
                 'error'     => true,
@@ -565,7 +567,7 @@ class SyncMerchantPortalController extends Controller
                 ]);
             }
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[SyncMerchantPortalController] get review lists api failed: ' . $e->getMessage());
             return response()->json([
                 'error'     => true,
@@ -589,15 +591,29 @@ class SyncMerchantPortalController extends Controller
             if($merchant){
                 $userId = $merchant->user_id;
 
-                //  Get campaign agreement quantity
-                $campaigns = MerchantOfferCampaign::where('user_id', $userId)
+                //  Get campaign agreement quantity - use merchant_id if available
+                $campaigns = MerchantOfferCampaign::where(function($q) use ($merchant, $userId) {
+                        if ($merchant && $merchant->id) {
+                            $q->where('merchant_id', $merchant->id)
+                              ->orWhere('user_id', $userId);
+                        } else {
+                            $q->where('user_id', $userId);
+                        }
+                    })
                     ->select(['id', 'agreement_quantity']) 
                     ->get()->toArray();
 
-                //  Total Vouchers
+                //  Total Vouchers - use merchant_id if available
                 $total = 0;
-                $voucherTotals = MerchantOfferVoucher::whereHas('merchant_offer', function ($query) use ($userId, $campaigns) {
-                    $query->where('user_id', $userId);
+                $voucherTotals = MerchantOfferVoucher::whereHas('merchant_offer', function ($query) use ($merchant, $userId) {
+                    if ($merchant && $merchant->id) {
+                        $query->where(function($q) use ($merchant, $userId) {
+                            $q->where('merchant_id', $merchant->id)
+                              ->orWhere('user_id', $userId);
+                        });
+                    } else {
+                        $query->where('user_id', $userId);
+                    }
                 })
                 ->select('merchant_offers.merchant_offer_campaign_id as campaign_id', DB::raw('COUNT(*) as total_vouchers'))
                 ->join('merchant_offers', 'merchant_offer_vouchers.merchant_offer_id', '=', 'merchant_offers.id')
@@ -644,7 +660,7 @@ class SyncMerchantPortalController extends Controller
                 ]);
             }
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[SyncMerchantPortalController] get offer overview api failed: ' . $e->getMessage());
             return response()->json([
                 'error'     => true,
@@ -731,7 +747,7 @@ class SyncMerchantPortalController extends Controller
                 ]);
             }
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[SyncMerchantPortalController] get offer lists api failed: ' . $e->getMessage());
             return response()->json([
                 'error'     => true,
@@ -760,8 +776,16 @@ class SyncMerchantPortalController extends Controller
                 $lists = Cache::remember("merchant_offer_vouchers_{$userId}", 60, function () use ($userId) {
                     $lists = collect();
 
-                    //  Get campaign agreement quantity
-                    $campaigns  = MerchantOfferCampaign::where('user_id', $userId)
+                    //  Get campaign agreement quantity - use merchant_id if available
+                    $merchant = Merchant::where('user_id', $userId)->first();
+                    $campaigns  = MerchantOfferCampaign::where(function($q) use ($merchant, $userId) {
+                            if ($merchant && $merchant->id) {
+                                $q->where('merchant_id', $merchant->id)
+                                  ->orWhere('user_id', $userId);
+                            } else {
+                                $q->where('user_id', $userId);
+                            }
+                        })
                         ->select(['id', 'agreement_quantity']) 
                         ->get()->toArray();
 
@@ -774,7 +798,14 @@ class SyncMerchantPortalController extends Controller
                                 ->join('merchant_offers', 'merchant_offers.id', '=', 'merchant_offer_vouchers.merchant_offer_id')
                                 ->leftJoin('merchant_offer_user', 'merchant_offer_user.voucher_id', '=', 'merchant_offer_vouchers.id')
                                 ->leftJoin('merchant_offer_claims_redemptions', 'merchant_offer_claims_redemptions.claim_id', '=', 'merchant_offer_user.id')
-                                ->where('merchant_offers.user_id', $userId)
+                                ->where(function($q) use ($merchant, $userId) {
+                                    if ($merchant && $merchant->id) {
+                                        $q->where('merchant_offers.merchant_id', $merchant->id)
+                                          ->orWhere('merchant_offers.user_id', $userId);
+                                    } else {
+                                        $q->where('merchant_offers.user_id', $userId);
+                                    }
+                                })
                                 ->whereIn('merchant_offers.merchant_offer_campaign_id', $campaignIds)
                                 ->select(
                                     'merchant_offer_vouchers.id as id',
@@ -828,7 +859,7 @@ class SyncMerchantPortalController extends Controller
                 ]);
             }
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[SyncMerchantPortalController] get offer lists api failed: ' . $e->getMessage());
             return response()->json([
                 'error'     => true,

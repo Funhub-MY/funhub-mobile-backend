@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Article;
+use App\Models\LocationRating;
 use App\Models\Location;
 use App\Models\Store;
 use Illuminate\Console\Command;
@@ -174,7 +176,7 @@ class MergeStoreById extends Command
     private function moveArticles(Location $fromLocation, Location $toLocation, bool $isDryRun): int
     {
         // Find articles associated with the source location
-        $articles = \App\Models\Article::whereHas('location', function ($query) use ($fromLocation) {
+        $articles = Article::whereHas('location', function ($query) use ($fromLocation) {
             $query->where('locations.id', $fromLocation->id);
         })->get();
         
@@ -197,7 +199,7 @@ class MergeStoreById extends Command
                 // First, detach the article from the old location
                 DB::table('locatables')
                     ->where('locatable_id', $article->id)
-                    ->where('locatable_type', \App\Models\Article::class)
+                    ->where('locatable_type', Article::class)
                     ->where('location_id', $fromLocation->id)
                     ->delete();
                     
@@ -230,7 +232,7 @@ class MergeStoreById extends Command
     private function moveLocationRatings(Location $fromLocation, Location $toLocation, bool $isDryRun): int
     {
         // Find ratings associated with the source location
-        $ratings = \App\Models\LocationRating::where('location_id', $fromLocation->id)->get();
+        $ratings = LocationRating::where('location_id', $fromLocation->id)->get();
         
         if ($ratings->isEmpty()) {
             $this->info("No ratings found for location ID {$fromLocation->id}.");
@@ -240,7 +242,7 @@ class MergeStoreById extends Command
         $count = 0;
         foreach ($ratings as $rating) {
             // Check if a rating from the same user already exists for the target location
-            $existingRating = \App\Models\LocationRating::where('location_id', $toLocation->id)
+            $existingRating = LocationRating::where('location_id', $toLocation->id)
                 ->where('user_id', $rating->user_id)
                 ->first();
                 
@@ -251,7 +253,7 @@ class MergeStoreById extends Command
             
             if (!$isDryRun) {
                 // Create a new rating for the target location
-                \App\Models\LocationRating::create([
+                LocationRating::create([
                     'user_id' => $rating->user_id,
                     'location_id' => $toLocation->id,
                     'rating' => $rating->rating,
@@ -285,7 +287,7 @@ class MergeStoreById extends Command
     private function updateStoreRatings(Store $store, Location $location, bool $isDryRun): bool
     {
         // Calculate average rating from the location
-        $avgRating = \App\Models\LocationRating::where('location_id', $location->id)->avg('rating') ?: 0;
+        $avgRating = LocationRating::where('location_id', $location->id)->avg('rating') ?: 0;
         $avgRating = round($avgRating, 2); // Round to 2 decimal places
         
         if (!$isDryRun) {

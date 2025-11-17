@@ -13,7 +13,7 @@ class ProductsSales extends LineChartWidget
 {
     use HasWidgetShield, HasPeriodTrait;
 
-    protected static ?string $heading = 'Products (Gift Card) Sales Volume';
+    protected ?string $heading = 'Products (Gift Card) Sales Volume';
     protected int | string | array $columnSpan = 'full';
 
     protected function getFormSchema(): array

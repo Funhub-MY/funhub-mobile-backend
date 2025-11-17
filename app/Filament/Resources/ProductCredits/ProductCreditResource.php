@@ -1,0 +1,147 @@
+<?php
+
+namespace App\Filament\Resources\ProductCredits;
+
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\ViewAction;
+use Filament\Actions\DeleteBulkAction;
+use App\Filament\Resources\ProductCredits\Pages\ListProductCredits;
+use App\Filament\Resources\ProductCredits\Pages\CreateProductCredit;
+use App\Filament\Resources\ProductCreditResource\Pages;
+use App\Filament\Resources\ProductCreditResource\RelationManagers;
+use App\Models\ProductCredit;
+use App\Models\User;
+use App\Filament\Resources\Users\UserResource;
+use Filament\Forms;
+use Filament\Resources\Resource;
+use Filament\Tables\Table;
+use Filament\Tables;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+class ProductCreditResource extends Resource
+{
+    protected static ?string $model = ProductCredit::class;
+
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-credit-card';
+    
+    protected static string | \UnitEnum | null $navigationGroup = 'Sales';
+
+    public static function form(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Section::make('Product Credit Details')
+                    ->description('Credit a product and its rewards to a user')
+                    ->schema([
+                        Select::make('user_id')
+                            ->label('User')
+                            ->relationship('user', 'name')
+                            ->searchable()
+                            ->getSearchResultsUsing(function (string $search): array {
+                                return User::query()
+                                    ->where('name', 'LIKE', "%{$search}%")
+                                    ->orWhere('email', 'LIKE', "%{$search}%")
+                                    ->orWhere('phone_no', 'LIKE', "%{$search}%")
+                                    ->orWhere('username', 'LIKE', "%{$search}%")
+                                    ->limit(50)
+                                    ->get()
+                                    ->mapWithKeys(function ($user) {
+                                        return [
+                                            $user->id => $user->name . ($user->username ? " (username: {$user->username}, ID: {$user->id})" : '')
+                                        ];
+                                    })
+                                    ->toArray();
+                            })
+                            ->getOptionLabelUsing(function ($value): string {
+                                $user = User::find($value);
+                                return $user ? $user->name . ($user->username ? " (username: {$user->username}, ID: {$user->id})" : '') : '';
+                            })
+                            ->searchable(),
+                        Select::make('product_id')
+                            ->relationship('product', 'name')
+                            ->required()
+                            ->searchable()
+                            ->preload(),
+                        TextInput::make('ref_no')
+                            ->label('Reference Number')
+                            ->placeholder('Optional reference number')
+                            ->maxLength(255),
+                        TextInput::make('paid_by')
+                            ->label('Paid By')
+                            ->placeholder('Optional payment source')
+                            ->maxLength(255),
+                    ])->columns(1)
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('createdBy.name')
+                    ->label('Created By')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('user.name')
+                    ->label('User')
+                    ->description(fn ($record): string => 
+                        ($record->user->email ? $record->user->email : '') .
+                        ($record->user->phone_no ? ' - ' . $record->user->phone_no : '')
+                    )
+                    ->url(fn ($record): string => UserResource::getUrl('view', ['record' => $record->user_id]))
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('product.name')
+                    ->label('Product')
+                    ->description(fn ($record): string => 
+                        'Rewards: ' . 
+                        ($record->product->rewards()->exists() ? 
+                            $record->product->rewards->map(fn($reward) => 
+                                "{$reward->name} ({$reward->pivot->quantity})"
+                            )->join(', ') : 'None')
+                    )
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('ref_no')
+                    ->label('Reference')
+                    ->searchable(),
+                TextColumn::make('paid_by')
+                    ->label('Paid By')
+                    ->searchable(),
+                TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->dateTime()
+                    ->sortable(),
+            ])
+            ->defaultSort('created_at', 'desc')
+            ->filters([
+                //
+            ])
+            ->recordActions([
+                ViewAction::make(),
+            ])
+            ->toolbarActions([
+                DeleteBulkAction::make(),
+            ]);
+    }
+    
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+    
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListProductCredits::route('/'),
+            'create' => CreateProductCredit::route('/create'),
+        ];
+    }    
+}

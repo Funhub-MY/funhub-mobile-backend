@@ -2,6 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Approval;
+use App\Models\Reward;
+use App\Services\PointService;
+use App\Models\User;
 use App\Models\PointLedger;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -34,16 +38,16 @@ class RevertDoubleReward extends Command
         $dryRun = $this->option('dry-run');
 
         //get all approvals
-        $approvals = \App\Models\Approval::where('created_at', '>=', $start_date)
+        $approvals = Approval::where('created_at', '>=', $start_date)
             ->get();
 
-        $reward = \App\Models\Reward::first();
+        $reward = Reward::first();
 
         foreach ($approvals as $approval) {
             // check each approval target user ledger if there's double record
             $data = json_decode($approval->data, true);
-            $pointService = new \App\Services\PointService();
-            $user = \App\Models\User::find($data['user']['id']);
+            $pointService = new PointService();
+            $user = User::find($data['user']['id']);
             $ledgers = PointLedger::where('user_id', $user->id)
                 ->orderBy('id', 'asc')
                 ->where('created_at', '>=', $start_date)

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Sms;
+use App\Events\PurchasedMerchantOffer;
+use Illuminate\Http\JsonResponse;
 use Exception;
 use App\Services\Mpay;
 use App\Models\Product;
@@ -41,7 +44,7 @@ class PaymentController extends Controller
 
         $this->checkout_secret = config('app.funhub_checkout_secret');
 
-        $this->smsService = new \App\Services\Sms(
+        $this->smsService = new Sms(
             [
                 'url' => config('services.byteplus.sms_url'),
                 'username' => config('services.byteplus.sms_account'),
@@ -97,7 +100,7 @@ class PaymentController extends Controller
         }
 
         // get transaction record via $request->invno
-        $transaction = \App\Models\Transaction::where('transaction_no', request()->invno)->first();
+        $transaction = Transaction::where('transaction_no', request()->invno)->first();
 
         Log::info('Transaction found', [
             'transaction' => $transaction,
@@ -133,20 +136,20 @@ class PaymentController extends Controller
                 ]);
             }
             // check if transaction already a success or failed
-            if ($transaction->status != \App\Models\Transaction::STATUS_PENDING) {
+            if ($transaction->status != Transaction::STATUS_PENDING) {
                 Log::info('Payment return/callback already processed', [
                     'error' => 'Transaction already processed',
                     'request' => request()->all()
                 ]);
 
-                if ($transaction->status == \App\Models\Transaction::STATUS_SUCCESS) {
+                if ($transaction->status == Transaction::STATUS_SUCCESS) {
                     // SUCCESS
                     $offer_name = null;
                     $offer_id = null;
                     $claim_id = null;
                     $redemption_start_date = null;
                     $redemption_end_date = null;
-                    if ($transaction->transactionable_type == \App\Models\MerchantOffer::class) {
+                    if ($transaction->transactionable_type == MerchantOffer::class) {
                         $merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
                         $offer_name = $merchantOffer ? $merchantOffer->name : null;
                         $offer_id = $merchantOffer ? $merchantOffer->id : null;
@@ -218,7 +221,7 @@ class PaymentController extends Controller
             if ($request->responseCode == 0 || $request->responseCode == '0') { // success
 
                 $transactionUpdateData = [
-                    'status' => \App\Models\Transaction::STATUS_SUCCESS,
+                    'status' => Transaction::STATUS_SUCCESS,
                     'gateway_transaction_id' => ($request->has('mpay_ref_no')) ? $request->mpay_ref_no : $request->authCode,
                 ];
 
@@ -270,13 +273,13 @@ class PaymentController extends Controller
                     if ($transaction->user->phone_no) {
                         try {
                             $this->smsService->sendSms($transaction->user->full_phone_no, config('app.name') . " - Voucher purchase successful. Redemption steps are sent via email.");
-                        } catch (\Exception $e) {
+                        } catch (Exception $e) {
                             Log::error('Error sending PurchasedOfferNotification SMS: ' . $e->getMessage());
                         }
                     }
 
                     // Dispatch event only after successful fiat payment
-                    event(new \App\Events\PurchasedMerchantOffer($transaction->user, $merchantOffer, 'fiat'));
+                    event(new PurchasedMerchantOffer($transaction->user, $merchantOffer, 'fiat'));
 
                 } else if ($transaction->transactionable_type == Product::class) {
 					Log::info('[Payment Controller success] heres product class');
@@ -297,7 +300,7 @@ class PaymentController extends Controller
                             $transaction->user->notify(new PurchasedGiftCardNotification($transaction->transaction_no, $transaction->updated_at, $product->name, $quantity, $transaction->amount));
                             // fire event for mission progress
                             event(new GiftCardPurchased($transaction->user, $product));
-                        } catch (\Exception $e) {
+                        } catch (Exception $e) {
                             Log::error('Error sending PurchasedGiftCardNotification: ' . $e->getMessage());
                         }
                     }
@@ -313,7 +316,7 @@ class PaymentController extends Controller
                 $claim_id = null;
                 $redemption_start_date = null;
                 $redemption_end_date = null;
-                if ($transaction->transactionable_type == \App\Models\MerchantOffer::class) {
+                if ($transaction->transactionable_type == MerchantOffer::class) {
                     $merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
                     $offer_name = $merchantOffer ? $merchantOffer->name : null;
                     $offer_id = $merchantOffer ? $merchantOffer->id : null;
@@ -387,7 +390,7 @@ class PaymentController extends Controller
                     $gatewayId = 'RES' . $request->responseCode;
                 }
                 $transaction->update([
-                    'status' => \App\Models\Transaction::STATUS_FAILED,
+                    'status' => Transaction::STATUS_FAILED,
                     'gateway_transaction_id' => $gatewayId,
                 ]);
 
@@ -455,7 +458,7 @@ class PaymentController extends Controller
 
                 $reward = $product->rewards()->first();
                 if ($reward) {
-                    $pointService = new \App\Services\PointService($transaction->user);
+                    $pointService = new PointService($transaction->user);
 
                     // credit user
                     $pointService->credit(
@@ -538,7 +541,7 @@ class PaymentController extends Controller
 
         if ($request->responseCode == 0 || $request->responseCode == '0') {
             $claim->update([
-                'status' => \App\Models\MerchantOffer::CLAIM_SUCCESS
+                'status' => MerchantOffer::CLAIM_SUCCESS
             ]);
 
             Log::info('[PaymentController] Updated Merchant Offer Claim to Success', [
@@ -575,7 +578,7 @@ class PaymentController extends Controller
         } else {
             // failed
             $claim->update([
-                'status' => \App\Models\MerchantOffer::CLAIM_FAILED
+                'status' => MerchantOffer::CLAIM_FAILED
             ]);
             if ($claim) {
                 try {
@@ -810,7 +813,7 @@ class PaymentController extends Controller
      * }
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getAvailablePaymentTypes()
     {
@@ -990,7 +993,7 @@ class PaymentController extends Controller
                 // Transaction completed successfully without using any promotion codes
                 return;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[PaymentController] Error processing promotion codes', [
                 'error' => $e->getMessage(),
                 'transaction_id' => $transaction->id
@@ -1049,7 +1052,7 @@ class PaymentController extends Controller
             $responseData['discount'] = $discountData;
             
             return $responseData;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[PaymentController] Error getting promotion code response data', [
                 'error' => $e->getMessage(),
                 'transaction_id' => $transaction->id
@@ -1089,7 +1092,7 @@ class PaymentController extends Controller
 
             return $encrypted_data;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error encrypting data', [
                 'error' => $e->getMessage(),
                 'data' => $data

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Validation\ValidationException;
+use Illuminate\Http\JsonResponse;
 use App\Events\RatedStore;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LocationResource;
@@ -18,7 +20,7 @@ class LocationController extends Controller
      * Get Locations
      *
      * @return LocationResource
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      *
      * @group Location
      * @bodyParam location_ids array optional Location Ids to Filter. Example [1,2,3]
@@ -118,7 +120,7 @@ class LocationController extends Controller
      * a new store will be created with the location's details.
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Location
      * @bodyParam lat float required Latitude of the location. Example: 3.073065

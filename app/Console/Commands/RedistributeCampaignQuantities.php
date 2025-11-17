@@ -144,6 +144,8 @@ class RedistributeCampaignQuantities extends Command
                     $newOffer = $this->createMerchantOffer($campaign, $schedule, $scheduleQuantity);
 
                     // move vouchers to the new offer
+                    // Note: Moving existing vouchers within the same campaign doesn't change total count,
+                    // so agreement_quantity validation is not needed here (vouchers already exist in campaign)
                     for ($j = 0; $j < $scheduleQuantity; $j++) {
                         $voucher = $unsoldVouchers[$voucherIndex];
                         

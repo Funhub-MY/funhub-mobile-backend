@@ -2,6 +2,15 @@
 
 namespace App\Http\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Exception;
+use Filament\Schemas\Components\Wizard;
+use Filament\Schemas\Components\Wizard\Step;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
 use App\Models\Country;
 use App\Models\Location;
 use App\Models\Merchant;
@@ -15,18 +24,14 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Illuminate\Http\Request;
 use Livewire\Component;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Wizard;
 use Filament\Pages\Actions\Action;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\Log;
@@ -34,8 +39,9 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-class MerchantRegister extends Component implements HasForms
+class MerchantRegister extends Component implements HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public function mount(): void
@@ -126,7 +132,7 @@ class MerchantRegister extends Component implements HasForms
                     'password' => bcrypt($password),
                 ]);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[MerchantOnboarding] User creation failed: ' . $e->getMessage());
             session()->flash('error', 'User creation failed. Please try again.');
         }
@@ -139,7 +145,7 @@ class MerchantRegister extends Component implements HasForms
         //assign merchant role to the user
         try {
             $user->assignRole('merchant');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[MerchantOnboarding] User role assignment failed: ' . $e->getMessage());
             session()->flash('error', 'User role assignment failed. Please try again.');
         }
@@ -193,7 +199,7 @@ class MerchantRegister extends Component implements HasForms
                     'redeem_code' => $data['redeem_code'],
                 ]);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[MerchantOnboarding] Merchant creation failed: ' . $e->getMessage());
             session()->flash('error', 'Merchant creation failed. Please try again.');
         }
@@ -371,7 +377,7 @@ class MerchantRegister extends Component implements HasForms
     {
         return [
             Wizard::make([
-                Wizard\Step::make('Create Account')
+                Step::make('Create Account')
                 ->schema([
                     Fieldset::make('Phone Number')
                         ->schema([
@@ -409,7 +415,7 @@ class MerchantRegister extends Component implements HasForms
 
                     Placeholder::make('password')
                         ->label('Password')
-                        ->content(function ($state, \Filament\Forms\Get $get) {
+                        ->content(function ($state, Get $get) {
                             // password will be generated and emailed to you once approved
                             return 'Password will be generated and emailed to the above Company Email once account is approved';
                         })
@@ -427,7 +433,7 @@ class MerchantRegister extends Component implements HasForms
                             'company_email' => 'required|email',
                         ])->validate();
                     }),
-                Wizard\Step::make('Company')
+                Step::make('Company')
                     ->schema([
                         TextInput::make('business_name') //merchant's table 'business_name'
                         ->label('Company Name (as per SSM)')
@@ -537,7 +543,7 @@ class MerchantRegister extends Component implements HasForms
                             // 'company_photos' => 'required',
                         ])->validate();
                     }),
-                Wizard\Step::make('PIC / Authorised Personnel')
+                Step::make('PIC / Authorised Personnel')
                     ->schema([
                         Group::make()
                             ->columnSpanFull()

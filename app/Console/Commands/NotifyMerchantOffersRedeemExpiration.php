@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Notifications\RedemptionExpirationNotification;
+use Exception;
 use App\Models\MerchantOfferClaim;
 use Illuminate\Console\Command;
 
@@ -48,7 +50,7 @@ class NotifyMerchantOffersRedeemExpiration extends Command
     
                         if ($daysLeft === 3 || $daysLeft === 7) {
                             $locale = $merchantOfferWithoutRedeem->user->last_lang ?? config('app.locale');
-                            $merchantOfferWithoutRedeem->user->notify((new \App\Notifications\RedemptionExpirationNotification($merchantOfferWithoutRedeem->merchantOffer, $merchantOfferWithoutRedeem->user, $daysLeft))->locale($locale));
+                            $merchantOfferWithoutRedeem->user->notify((new RedemptionExpirationNotification($merchantOfferWithoutRedeem->merchantOffer, $merchantOfferWithoutRedeem->user, $daysLeft))->locale($locale));
                         // Log the information for each record
                         Log::info('[NotifyMerchantOffersRedeemExpiration]', [
                             'merchant_offer_id' => $merchantOfferWithoutRedeem->merchant_offer_id,
@@ -62,7 +64,7 @@ class NotifyMerchantOffersRedeemExpiration extends Command
 
             return Command::SUCCESS;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[NotifyMerchantOffersRedeemExpiration] Error: ' . $e->getMessage());
             return Command::FAILURE;
         }

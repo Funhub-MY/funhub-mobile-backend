@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use Filament\Tables\Columns\TextColumn;
 use App\Models\User;
 use Closure;
 use Filament\Forms\Components\Actions\Modal\Actions\Action;
@@ -31,10 +32,10 @@ class TopContributor extends BaseWidget
     protected function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('name')
+            TextColumn::make('name')
                 ->searchable()
                 ->sortable(),
-            Tables\Columns\TextColumn::make('articles_count')
+            TextColumn::make('articles_count')
                 ->label('Articles Published')
                 ->sortable(),
         ];
@@ -44,7 +45,7 @@ class TopContributor extends BaseWidget
     {
         return [
             Filter::make('created_at')
-                ->form([
+                ->schema([
                     DateTimePicker::make('created_from')->label('From'),
                     DateTimePicker::make('created_until')->label('Until'),
                 ])

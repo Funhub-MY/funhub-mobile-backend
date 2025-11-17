@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Jobs\ByteplusVODProcess;
 use App\Models\User;
@@ -21,7 +23,7 @@ class MediaController extends Controller
      * Must only call one per file. If multiple files, call multiple times. URL generated you need to PUT a binary file to it.
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Media
      * @urlParam filename string required The filename of the media to be uploaded, filename must only contain alphabets and numbers. Example: my-photo.jpg
@@ -126,7 +128,7 @@ class MediaController extends Controller
                     // user add media from Storage::file($fullPath) to collection "user_uploads"
                     $file = $user->addMediaFromDisk($fullPath, 's3')
                         ->toMediaCollection(User::USER_UPLOADS); // image and video consolidate here
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Log::error('[MediaController] Error completing file upload to user_uploads: ' . $e->getMessage(), [
                         'uploadId' => $uploadId,
                     ]);
@@ -152,7 +154,7 @@ class MediaController extends Controller
                             $file->setCustomProperty('height', $imageSize[1]);
                             $file->save();
                         });
-                   } catch (\Exception $ex) {
+                   } catch (Exception $ex) {
                        Log::error('[MediaController] Error getting image size: ' . $ex->getMessage(), [
                            'uploadId' => $uploadId,
                            'media_id' => $file->id,

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\Setting;
@@ -120,7 +121,7 @@ class ProcessArticleToCategoriesML extends Command
                 }
 
                 $totalArticlesProcessed++;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('Error processing article: '. $article->id);
                 $this->error('Error processing article, skipping: '. $article->id);
                 Log::error($e->getMessage());

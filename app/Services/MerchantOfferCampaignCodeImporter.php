@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use InvalidArgumentException;
+use Exception;
 use App\Models\MerchantOfferCampaign;
 use App\Models\MerchantOfferCampaignVoucherCode;
 use App\Models\MerchantOfferVoucher; 
@@ -17,8 +19,8 @@ class MerchantOfferCampaignCodeImporter
     *
     * @param MerchantOfferCampaign $merchantOfferCampaign The campaign to import codes for.
     * @param array $codes An array of unique voucher codes to import.
-    * @throws \Exception If the number of codes does not match the number of empty vouchers or on DB error.
-    * @throws \InvalidArgumentException If no unique codes are provided.
+    * @throws Exception If the number of codes does not match the number of empty vouchers or on DB error.
+    * @throws InvalidArgumentException If no unique codes are provided.
     */
    public function importCodes(MerchantOfferCampaign $merchantOfferCampaign, array $codes): void
    {
@@ -28,7 +30,7 @@ class MerchantOfferCampaignCodeImporter
 
        if ($importCount === 0) {
            Log::warning('[Voucher Code Import] No unique, non-empty codes provided for import.', ['campaign_id' => $merchantOfferCampaign->id]);
-           throw new \InvalidArgumentException('No unique, non-empty codes provided for import.');
+           throw new InvalidArgumentException('No unique, non-empty codes provided for import.');
        }
 
        Log::info("[Voucher Code Import] Attempting to import {$importCount} unique codes for Campaign ID: {$merchantOfferCampaign->id}");
@@ -55,7 +57,7 @@ class MerchantOfferCampaignCodeImporter
            if ($importCount !== $emptyVoucherCount) {
                 DB::rollBack(); // Rollback before throwing
                 Log::error("[Voucher Code Import] Quantity Mismatch: Provided codes ({$importCount}) != available voucher slots ({$emptyVoucherCount}).", ['campaign_id' => $merchantOfferCampaign->id]);
-                throw new \Exception("Quantity Mismatch: The number of imported codes ({$importCount}) does not match the number of available empty voucher slots ({$emptyVoucherCount}) for this campaign.");
+                throw new Exception("Quantity Mismatch: The number of imported codes ({$importCount}) does not match the number of available empty voucher slots ({$emptyVoucherCount}) for this campaign.");
            }
 
            if ($emptyVoucherCount === 0) {

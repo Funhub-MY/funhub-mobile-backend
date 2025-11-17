@@ -1,6 +1,8 @@
 <?php
 namespace App\Services;
 
+use Exception;
+use Psr\Http\Message\ResponseInterface;
 use App\Mail\SmsFailureNotification;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -60,7 +62,7 @@ class Sms {
      *
      * @param $to string phone number with country code
      * @param $message string message to send
-     * @return bool|\Psr\Http\Message\ResponseInterface
+     * @return bool|ResponseInterface
      */
     public function sendSms($to, $message)
     {
@@ -115,7 +117,7 @@ class Sms {
      *
      * @param $to string phone number with country code
      * @param $message  string message to send
-     * @return bool|\Psr\Http\Message\ResponseInterface
+     * @return bool|ResponseInterface
      */
     protected function sendBytePlusSms($to, $message)
     {
@@ -146,7 +148,7 @@ class Sms {
                 ]);
                 return false;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error sending SMS using BytePlus: ' . $e->getMessage(), $params);
             $this->sendFailureNotificationEmail('BytePlus', $to, $e->getMessage());
             return false;
@@ -158,7 +160,7 @@ class Sms {
      *
      * @param $to string phone number with country code
      * @param $message  string message to send
-     * @return bool|\Psr\Http\Message\ResponseInterface
+     * @return bool|ResponseInterface
      */
     protected function sendMoviderSms($to, $message)
     {
@@ -186,7 +188,7 @@ class Sms {
                 Log::error('Error sending SMS using Movider: ' . $response->body());
                 return false;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error sending SMS using Movider: ' . $e->getMessage(), $data);
             $this->sendFailureNotificationEmail('Movider', $to, $e->getMessage());
             return false;

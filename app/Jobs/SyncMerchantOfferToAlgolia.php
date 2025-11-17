@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Exception;
 use App\Models\MerchantOffer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -52,7 +53,7 @@ class SyncMerchantOfferToAlgolia implements ShouldQueue
                 try {
                     $offer->searchable();
                     $successCount++;
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $errorCount++;
                     Log::error('[SyncMerchantOfferToAlgolia] Error syncing offer to Algolia', [
                         'offer_id' => $offer->id,

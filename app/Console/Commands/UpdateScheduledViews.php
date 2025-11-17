@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use App\Models\Article;
 use App\Models\Setting;
@@ -49,7 +50,7 @@ class UpdateScheduledViews extends Command
                         'article_id' => $articleId,
                         'article_interaction_score' => $articleInteractionScore,
                     ]);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Log::error('[UpdateScheduledViews] Error calculating interaction score: ', [
                         'article_id' => $articleId,
                         'error' => $e->getMessage(),
@@ -93,7 +94,7 @@ class UpdateScheduledViews extends Command
                 }
 
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[UpdateScheduledViews] Error: ' . $e->getMessage());
             return Command::FAILURE;
         }

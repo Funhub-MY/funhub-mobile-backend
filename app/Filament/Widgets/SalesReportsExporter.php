@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use Illuminate\Database\Eloquent\Builder;
 use App\Models\ExportableReport;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Tables\Columns\TextColumn;
@@ -21,7 +22,7 @@ class SalesReportsExporter extends TableWidget
         return null;
     }
 
-    protected function getTableQuery(): \Illuminate\Database\Eloquent\Builder
+    protected function getTableQuery(): Builder
     {
         return ExportableReport::query();
     }
@@ -33,14 +34,23 @@ class SalesReportsExporter extends TableWidget
                 ->sortable(),
 
             TextColumn::make('description'),
+        ];
+    }
 
-            ExportAction::make()->exports([
-                ExcelExport::make()->fromModel()->withColumns([
-                    Column::make('name'),
-                    Column::make('created_at'),
-                    Column::make('deleted_at'),
-                ])->modifyQueryUsing(fn ($query) => $query->where('exportable', true))
-            ])
+    protected function getTableActions(): array
+    {
+        return [
+            ExportAction::make()
+                ->exports([
+                    ExcelExport::make()
+                        ->fromModel()
+                        ->withColumns([
+                            Column::make('name'),
+                            Column::make('created_at'),
+                            Column::make('deleted_at'),
+                        ])
+                        ->modifyQueryUsing(fn ($query) => $query->where('exportable', true))
+                ])
         ];
     }
 

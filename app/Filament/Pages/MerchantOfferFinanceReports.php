@@ -1,8 +1,9 @@
 <?php
 namespace App\Filament\Pages;
 
+use Filament\Actions\Action;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Pages\Page;
-use Filament\Pages\Actions\Action;
 use Filament\Tables\Columns;
 use Filament\Tables\Table;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -25,9 +26,9 @@ class MerchantOfferFinanceReports extends Page implements HasTable
 {
     use InteractsWithTable, HasPageShield;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $navigationGroup = 'Reports';
+    protected static string | \UnitEnum | null $navigationGroup = 'Reports';
 
     protected static ?int $navigationSort = 3;
 
@@ -37,7 +38,7 @@ class MerchantOfferFinanceReports extends Page implements HasTable
 
     protected static ?string $slug = 'merchant-offer-finance-reports';
 
-    protected static string $view = 'filament.pages.merchant-offer-finance-reports';
+    protected string $view = 'filament.pages.merchant-offer-finance-reports';
 
     protected function getTableRecordsPerPageSelectOptions(): array 
     {
@@ -75,62 +76,62 @@ class MerchantOfferFinanceReports extends Page implements HasTable
     protected function getTableColumns(): array
     {
         return [
-            Columns\TextColumn::make('id')
+            TextColumn::make('id')
                 ->label('ID')
                 ->sortable(),
-            Columns\TextColumn::make('offer_name')
+            TextColumn::make('offer_name')
                 ->label('Offer Name')
                 ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('merchant_offers.name', 'like', "%{$search}%");
                 }),
 
-            Columns\TextColumn::make('merchant_name')
+            TextColumn::make('merchant_name')
                 ->label('Merchant Name')
                 ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('merchants.name', 'like', "%{$search}%");
                 }), 
-            Columns\TextColumn::make('brand_name')
+            TextColumn::make('brand_name')
                 ->label('Brand Name')
                 ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('merchants.brand_name', 'like', "%{$search}%");
                 }), 
-            Columns\TextColumn::make('koc_user_name')
+            TextColumn::make('koc_user_name')
                 ->label('KOC Name')
                 ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('koc_users.name', 'like', "%{$search}%");
                 }), 
-            Columns\TextColumn::make('koc_user_email')
+            TextColumn::make('koc_user_email')
                 ->label('KOC Email address')
                 ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('koc_users.email', 'like', "%{$search}%");
                 }),
-            Columns\TextColumn::make('koc_user_phone_no')
+            TextColumn::make('koc_user_phone_no')
                 ->label('KOC Phone No')
                 ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('koc_users.phone_no', 'like', "%{$search}%");
                 }),
-            Columns\TextColumn::make('buyer_name')
+            TextColumn::make('buyer_name')
                 ->label('Buyer Name')
                 ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('users.name', 'like', "%{$search}%");
                 }),
-            Columns\TextColumn::make('code')
+            TextColumn::make('code')
                 ->label('Voucher Code')
                 ->sortable(),
-            Columns\TextColumn::make('transaction_date')
+            TextColumn::make('transaction_date')
                 ->label('Transaction Date')
                 ->sortable()
                 ->sortable(query: function (Builder $query, string $direction): Builder {
                     return $query->orderBy('merchant_offer_user.created_at', $direction);
                 }),
-            Columns\TextColumn::make('purchase_method')
+            TextColumn::make('purchase_method')
                 ->label('Purchase Method')
                 ->badge()
                 ->formatStateUsing(fn (string $state): string => match($state) {
@@ -144,7 +145,7 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                     default => 'gray',
                 })
                 ->sortable(),
-            Columns\TextColumn::make('amount_total')
+            TextColumn::make('amount_total')
                 ->label('Purchase Amount')
                 ->sortable()
                 ->formatStateUsing(function (?string $state, $record): string {
@@ -163,13 +164,13 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                         return $state;
                     }
                 }),
-            Columns\TextColumn::make('transaction_no')
+            TextColumn::make('transaction_no')
                 ->label('Transaction No (MPAY)')
                 ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('transactions.transaction_no', 'like', "%{$search}%");
                 }),
-            Columns\TextColumn::make('amount')
+            TextColumn::make('amount')
                 ->label('Purchase Amount (MPAY)')
                 ->sortable()
                 ->formatStateUsing(function (?string $state): string {
@@ -181,23 +182,23 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                     $formatter = new NumberFormatter('en_MY', NumberFormatter::CURRENCY);
                     return $formatter->formatCurrency($state, 'MYR');
                 }),
-            Columns\TextColumn::make('reference_no')
+            TextColumn::make('reference_no')
                 ->label('Reference No (MPAY)')
                 ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('transactions.gateway_transaction_id', 'like', "%{$search}%");
                 }),
-            Columns\TextColumn::make('payment_method')
+            TextColumn::make('payment_method')
                 ->label('Payment Method (MPAY)')
                 ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('transactions.payment_method', 'like', "%{$search}%");
                 }),
 
-            Columns\TextColumn::make('funbox_quantity')
+            TextColumn::make('funbox_quantity')
                 ->label('Funbox Quantity')
                 ->sortable(),
-            Columns\TextColumn::make('funbox_original')
+            TextColumn::make('funbox_original')
                 ->label('Funbox Original Price (RM)')
                 ->sortable()
                 ->formatStateUsing(function (?string $state): string {
@@ -209,7 +210,7 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                     $formatter = new NumberFormatter('en_MY', NumberFormatter::CURRENCY);
                     return $formatter->formatCurrency($state, 'MYR');
                 }),
-            Columns\TextColumn::make('funbox_selling')
+            TextColumn::make('funbox_selling')
                 ->label('Funbox Selling Price (RM)')
                 ->sortable()
                 ->formatStateUsing(function (?string $state): string {
@@ -221,13 +222,13 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                     $formatter = new NumberFormatter('en_MY', NumberFormatter::CURRENCY);
                     return $formatter->formatCurrency($state, 'MYR');
                 }),
-            Columns\TextColumn::make('funbox_discount_rate')
+            TextColumn::make('funbox_discount_rate')
                 ->label('Funbox Discount Rate')
                 ->sortable()
                 ->formatStateUsing(function (?float $state): string {
                     return $state !== null ? number_format($state, 2) . '%' : '-';
                 }),
-            Columns\TextColumn::make('price_original')
+            TextColumn::make('price_original')
                 ->label('Original Price (RM)')
                 ->sortable()
                 ->formatStateUsing(function (?string $state): string {
@@ -239,7 +240,7 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                     $formatter = new NumberFormatter('en_MY', NumberFormatter::CURRENCY);
                     return $formatter->formatCurrency($state, 'MYR');
                 }),
-            Columns\TextColumn::make('price_selling')
+            TextColumn::make('price_selling')
                 ->label('Selling Price (RM)')
                 ->sortable()
                 ->formatStateUsing(function (?string $state): string {
@@ -251,7 +252,7 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                     $formatter = new NumberFormatter('en_MY', NumberFormatter::CURRENCY);
                     return $formatter->formatCurrency($state, 'MYR');
                 }),
-            Columns\TextColumn::make('discount_rate')
+            TextColumn::make('discount_rate')
                 ->label('Discount Rate')
                 ->sortable()
                 ->formatStateUsing(function (?float $state): string {
@@ -264,7 +265,7 @@ class MerchantOfferFinanceReports extends Page implements HasTable
     {
         return [ 
             Filter::make('period')
-                ->form([
+                ->schema([
                     DatePicker::make('start_date')->required(),
                     DatePicker::make('end_date')->required(),
                 ])

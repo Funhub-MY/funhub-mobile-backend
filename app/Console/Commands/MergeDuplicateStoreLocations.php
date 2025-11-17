@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\Location;
 use App\Models\LocationRating;
 use App\Models\Store;
@@ -217,7 +218,7 @@ class MergeDuplicateStoreLocations extends Command
                 'merged_stores' => $totalMerged
             ]);
             return Command::SUCCESS;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error("An error occurred: {$e->getMessage()}");
             Log::error('[MergeDuplicateStoreLocations] Error occurred', [
                 'error' => $e->getMessage(),

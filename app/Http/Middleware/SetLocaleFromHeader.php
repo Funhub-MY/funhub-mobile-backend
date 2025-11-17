@@ -2,6 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Http\Response;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use App\Jobs\UpdateUserLastLang;
@@ -16,9 +19,9 @@ class SetLocaleFromHeader
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @param Request $request
+     * @param Closure(Request):((Response|RedirectResponse)) $next
+     * @return Response|RedirectResponse
      */
     public function handle(Request $request, Closure $next)
     {
@@ -51,7 +54,7 @@ class SetLocaleFromHeader
     /**
      * Determine if we should update the user's language preference.
      *
-     * @param  \App\Models\User  $user
+     * @param User $user
      * @param  string  $locale
      * @param  string  $cacheKey
      * @return bool

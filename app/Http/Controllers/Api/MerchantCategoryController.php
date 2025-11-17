@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use App\Models\MerchantCategory;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MerchantCategoryResource;
@@ -17,7 +18,7 @@ class MerchantCategoryController extends Controller
      * Get popular Merchant Categories
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Merchant
      * @subgroup Merchant Categories
@@ -90,7 +91,7 @@ class MerchantCategoryController extends Controller
      * Get Merchant Categories by offer id
      *
      * @param $offer_id integer
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Merchant
      * @subgroup Merchant Categories

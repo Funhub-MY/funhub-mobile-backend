@@ -33,7 +33,7 @@ class TransactionService {
 
         // check if transactionable has transactions relationship
         if (!method_exists($transactionable, 'transactions')) {
-            throw new \Exception('Transactionable model must have transactions relationship');
+            throw new Exception('Transactionable model must have transactions relationship');
         }
 
         // // check if transactionable has user_id attribute
@@ -105,7 +105,7 @@ class TransactionService {
         $transaction = Transaction::find($transaction_id);
 
         if (!$transaction) {
-            throw new \Exception('Transaction not found');
+            throw new Exception('Transaction not found');
         }
 
         $transaction->status = $status;

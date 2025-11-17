@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Services\Sms;
+use App\Jobs\CleanupDuplicateFcmTokensJob;
+use Exception;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\FirebaseAuthController;
 use App\Http\Resources\UserResource;
@@ -25,7 +28,7 @@ class AuthController extends Controller
     protected $smsService;
     public function __construct()
     {
-        $this->smsService = new \App\Services\Sms(
+        $this->smsService = new Sms(
             [
                 'url' => config('services.byteplus.sms_url'),
                 'username' => config('services.byteplus.sms_account'),
@@ -100,9 +103,9 @@ class AuthController extends Controller
         // dispatch job to clean up duplicate FCM tokens
         try {
             if (!empty($user->fcm_token)) {
-                \App\Jobs\CleanupDuplicateFcmTokensJob::dispatch($user->fcm_token, $user->id);
+                CleanupDuplicateFcmTokensJob::dispatch($user->fcm_token, $user->id);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Failed to dispatch FCM token cleanup job: ' . $e->getMessage());
             // Don't let this affect the login process
         }
@@ -253,7 +256,7 @@ class AuthController extends Controller
      * Send SMS OTP to phone number
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Authentication
      * @unauthenticated
@@ -305,7 +308,7 @@ class AuthController extends Controller
                     'otp_expiry' => now()->addMinutes(1),
                     'otp_verified_at' => null,
                 ]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return response()->json(['message' => __('messages.error.auth_controller.Phone_Number_already_registered')], 422);
             }
         } else {
@@ -320,7 +323,7 @@ class AuthController extends Controller
         if ($user) {
             try {
                 $this->smsService->sendSms($user->full_phone_no, config('app.name') . " - Your OTP is ".$user->otp);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error($e->getMessage(), [
                     'phone_no' => $user->full_phone_no,
                     'otp' => $user->otp,
@@ -338,7 +341,7 @@ class AuthController extends Controller
      * Login user into the system with OTP
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Authentication
      * @unauthenticated
@@ -402,9 +405,9 @@ class AuthController extends Controller
             // dispatch job to clean up duplicate FCM tokens
             try {
                 if (!empty($user->fcm_token)) {
-                    \App\Jobs\CleanupDuplicateFcmTokensJob::dispatch($user->fcm_token, $user->id);
+                    CleanupDuplicateFcmTokensJob::dispatch($user->fcm_token, $user->id);
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('Failed to dispatch FCM token cleanup job: ' . $e->getMessage());
             }
 
@@ -422,7 +425,7 @@ class AuthController extends Controller
      *
      * Register user with OTP
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Authentication
      * @unauthenticated
@@ -433,7 +436,7 @@ class AuthController extends Controller
      * @bodyParam name string required The name of the use. Example: John Smith
      * @bodyParam password string required The password of the user. Example: abcd1234
      *
-      * @response scenario=success {
+     * @response scenario=success {
      *  "user": {
      *     id: 1,
      *     name: "John Smith"
@@ -533,7 +536,7 @@ class AuthController extends Controller
      * Send Verification Email with Token Inside
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Authentication
      * @authenticated
@@ -564,7 +567,7 @@ class AuthController extends Controller
      * Verify Email with Token
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Authentication
      * @authenticated
@@ -606,7 +609,7 @@ class AuthController extends Controller
      * Log User Out and destroy any active tokens of user
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Authentication
      * @authenticated
@@ -628,7 +631,7 @@ class AuthController extends Controller
      *
      * Login user with Facebook
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Authentication
      * @unauthenticated
@@ -672,7 +675,7 @@ class AuthController extends Controller
      * Login user with Google
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Authentication
      * @unauthenticated
@@ -713,7 +716,7 @@ class AuthController extends Controller
      * Login user with Social
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Authentication
      * @unauthenticated
@@ -843,7 +846,7 @@ class AuthController extends Controller
                 // check db unique email
                try {
                     $user->update(['email' => $firebase_user->email]);
-               } catch (\Exception $e) {
+               } catch (Exception $e) {
                     Log::error($e->getMessage());
                }
             }
@@ -873,9 +876,9 @@ class AuthController extends Controller
         // dispatch job to clean up duplicate FCM tokens
         try {
             if (!empty($user->fcm_token)) {
-                \App\Jobs\CleanupDuplicateFcmTokensJob::dispatch($user->fcm_token, $user->id);
+                CleanupDuplicateFcmTokensJob::dispatch($user->fcm_token, $user->id);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Failed to dispatch FCM token cleanup job: ' . $e->getMessage());
         }
 
@@ -903,7 +906,7 @@ class AuthController extends Controller
      * Reset Password Send NEW OTP (Step 1)
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Authentication
      * @unauthenticated
@@ -913,7 +916,6 @@ class AuthController extends Controller
      * "status": "success",
      * "message": "OTP sent successfully"
      * }
-     *
      */
     public function postResetPasswordSendOtp(Request $request) {
         $this->validate($request, [
@@ -957,7 +959,7 @@ class AuthController extends Controller
      * Reset Password with OTP (Step 2)
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Authentication
      * @unauthenticated

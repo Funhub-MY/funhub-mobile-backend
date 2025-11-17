@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\ArticleExpired;
 use App\Models\ExpiredKeyword;
 use Carbon\Carbon;
@@ -144,7 +145,7 @@ class CheckExpiredArticles extends Command
 			try {
 				$date = Carbon::create($matches[1][$i], $matches[2][$i], $matches[3][$i]);
 				$dates[] = $date;
-			} catch (\Exception $e) {
+			} catch (Exception $e) {
 				continue;
 			}
 		}
@@ -155,7 +156,7 @@ class CheckExpiredArticles extends Command
 			try {
 				$date = Carbon::createFromFormat('d/m/Y', $matches[1][$i] . '/' . $matches[2][$i] . '/' . $matches[3][$i]);
 				$dates[] = $date;
-			} catch (\Exception $e) {
+			} catch (Exception $e) {
 				continue;
 			}
 		}
@@ -166,7 +167,7 @@ class CheckExpiredArticles extends Command
 			try {
 				$date = Carbon::createFromFormat('d-m-Y', $matches[1][$i] . '-' . $matches[2][$i] . '-' . $matches[3][$i]);
 				$dates[] = $date;
-			} catch (\Exception $e) {
+			} catch (Exception $e) {
 				continue;
 			}
 		}

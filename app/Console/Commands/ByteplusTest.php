@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Services\Byteplus\SignatureV4;
 use AWS\CRT\Log;
 use GuzzleHttp\Psr7\Request;
@@ -49,7 +50,7 @@ class BytePlusTest extends Command
                 'Authorization' => $signature['signature'],
                 'x-date' => $signature['timestamp'],
             ])->get($url . '?' . http_build_query($params));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error('Error: ' . $e->getMessage());
             return;
         }
@@ -99,7 +100,7 @@ class BytePlusTest extends Command
 
             $this->info('Upload Media Response:');
             $this->info($response->body());
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error('Error: ' . $e->getMessage());
             return;
         }
@@ -155,7 +156,7 @@ class BytePlusTest extends Command
                 }
             }
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error('Error: ' . $e->getMessage());
             return;
         }

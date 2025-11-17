@@ -2,12 +2,15 @@
 
 namespace App\Http\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
+use Exception;
 use Filament\Notifications\Notification;
 use Livewire\Component;
 use App\Models\PointLedger;
 use App\Models\User;
 use App\Services\PointService;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
@@ -16,8 +19,9 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Log;
 
-class PointLedgerTable extends Component implements HasTable
+class PointLedgerTable extends Component implements HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
 
     public $currentRouteId;
@@ -159,7 +163,7 @@ class PointLedgerTable extends Component implements HasTable
                             ->title('Reverted')
                             ->body('The transaction has been reverted. New ledger has been created and latest balance updated.')
                             ->send();
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $this->addError('revert', $e->getMessage());
                     }
                 })

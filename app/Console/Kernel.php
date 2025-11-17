@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Jobs\ImportedContactMatching;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -10,7 +11,7 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param Schedule $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
@@ -45,7 +46,7 @@ class Kernel extends ConsoleKernel
         // Hourly
         $schedule->command('fetch:news-feed')->hourly()->onOneServer();
         $schedule->command('media-partner:auto-publish-by-keywords')->hourly()->onOneServer();
-        $schedule->job(new \App\Jobs\ImportedContactMatching())->hourly()->onOneServer();
+        $schedule->job(new ImportedContactMatching())->hourly()->onOneServer();
         $schedule->command('stores:auto-hide-unonboarded')->hourly()->onOneServer();
 		$schedule->command('redeem:send-review-reminder')->hourly()->onOneServer();
 

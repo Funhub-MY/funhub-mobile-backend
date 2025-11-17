@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
@@ -29,6 +30,6 @@ class Application extends Model
 
     public function tokens()
     {
-        return $this->morphMany(\Laravel\Sanctum\PersonalAccessToken::class, 'tokenable');
+        return $this->morphMany(PersonalAccessToken::class, 'tokenable');
     }
 }

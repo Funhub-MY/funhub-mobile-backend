@@ -1,6 +1,8 @@
 <?php
 namespace App\Console\Commands;
 
+use App\Models\VideoJob;
+use Exception;
 use App\Jobs\ByteplusVODProcess;
 use Illuminate\Console\Command;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -45,7 +47,7 @@ class DispatchByteplusVODProcess extends Command
             }
 
             // check if already being processed
-            $existingJob = \App\Models\VideoJob::where('media_id', $mediaId)
+            $existingJob = VideoJob::where('media_id', $mediaId)
                 ->whereIn('status', [0, 1]) // Pending or Processing
                 ->first();
 
@@ -59,7 +61,7 @@ class DispatchByteplusVODProcess extends Command
                 ByteplusVODProcess::dispatch($media);
                 $this->info("✓ Successfully dispatched job for Media ID {$mediaId}");
                 $successCount++;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error("✗ Failed to dispatch job for Media ID {$mediaId}: " . $e->getMessage());
                 $failureCount++;
             }

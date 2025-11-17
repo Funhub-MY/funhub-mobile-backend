@@ -14,11 +14,11 @@ class SalesAnalytics extends Page
 {
     use HasPageShield;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.pages.sales-report';
+    protected string $view = 'filament.pages.sales-report';
 
-    protected static ?string $navigationGroup = 'Sales';
+    protected static string | \UnitEnum | null $navigationGroup = 'Sales';
 
     // widgets
     protected function getHeaderWidgets(): array

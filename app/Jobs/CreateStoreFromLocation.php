@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use Exception;
+use App\Models\ArticleStoreCategory;
 use App\Models\Location;
 use App\Models\Store;
 use App\Models\Article;
@@ -123,7 +125,7 @@ class CreateStoreFromLocation implements ShouldQueue
 							'store_id' => $store->id,
 							'store_name' => $store->name
 						]);
-					} catch (\Exception $e) {
+					} catch (Exception $e) {
 						Log::error('[CreateStoreFromLocation] Failed to create store', [
 							'location_id' => $location->id,
 							'error_message' => $e->getMessage(),
@@ -140,7 +142,7 @@ class CreateStoreFromLocation implements ShouldQueue
 							'store_id' => $store->id,
 							'location_id' => $location->id
 						]);
-					} catch (\Exception $e) {
+					} catch (Exception $e) {
 						Log::error('[CreateStoreFromLocation] Failed to attach location to store', [
 							'store_id' => $store->id,
 							'location_id' => $location->id,
@@ -181,7 +183,7 @@ class CreateStoreFromLocation implements ShouldQueue
 							'subcategory_ids' => $articleSubCategoryIds->toArray()
 						]);
 
-						$storeCategoriesToAttach = \App\Models\ArticleStoreCategory::whereIn('article_category_id', $allArticleCategoryIds)
+						$storeCategoriesToAttach = ArticleStoreCategory::whereIn('article_category_id', $allArticleCategoryIds)
 							->pluck('merchant_category_id')
 							->unique();
 
@@ -205,7 +207,7 @@ class CreateStoreFromLocation implements ShouldQueue
 								]);
 
 								$store->categories()->attach($categoryId);
-							} catch (\Exception $e) {
+							} catch (Exception $e) {
 								Log::error('[CreateStoreFromLocation] Error attaching store category', [
 									'store_id' => $store->id,
 									'category_id' => $categoryId,
@@ -214,7 +216,7 @@ class CreateStoreFromLocation implements ShouldQueue
 								]);
 							}
 						}
-					} catch (\Exception $e) {
+					} catch (Exception $e) {
 						Log::error('[CreateStoreFromLocation] Error processing categories', [
 							'store_id' => $store->id,
 							'article_id' => $article->id,
@@ -228,7 +230,7 @@ class CreateStoreFromLocation implements ShouldQueue
 					]);
 				}
 			}
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			Log::error('[CreateStoreFromLocation] Unhandled exception in job', [
 				'location_id' => $this->locationId,
 				'article_id' => $this->articleId,

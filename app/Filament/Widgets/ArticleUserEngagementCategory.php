@@ -10,7 +10,7 @@ class ArticleUserEngagementCategory extends RadarChartWidget
 {
     use HasWidgetShield;
 
-    protected static ?string $heading = 'User Activity by Published Article Category';
+    protected ?string $heading = 'User Activity by Published Article Category';
 
     protected function getData(): array
     {

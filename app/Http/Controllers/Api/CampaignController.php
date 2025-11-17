@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CampaignQuestionAnswerResource;
 use App\Http\Resources\CampaignQuestionResource;
@@ -38,14 +39,13 @@ class CampaignController extends Controller
      * Get Active Campaign By ID
      *
      * @param Campaigns $campaign
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Campaigns
      * @queryParam campaign_id integer required Campaign ID. Example: 1
      * @response scenario=success {
      * "data": {}
      * }
-     *
      */
     public function show($id)
     {

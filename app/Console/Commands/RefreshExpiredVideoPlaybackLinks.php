@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\VideoJob;
 use App\Services\ByteplusService;
 use Illuminate\Console\Command;
@@ -153,7 +154,7 @@ class RefreshExpiredVideoPlaybackLinks extends Command
                             $this->line("  <fg=yellow>⚠</> Link returned HTTP status {$response->status()}, will refresh");
                             $needsRefresh = true;
                         }
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $this->line("  <fg=red>✗</> Exception while checking link: {$e->getMessage()}");
                         $this->line("  <fg=yellow>⚠</> Will refresh due to error");
                         $needsRefresh = true;
@@ -204,7 +205,7 @@ class RefreshExpiredVideoPlaybackLinks extends Command
                             $this->line("  <fg=red>✗</> Failed to get valid playback links");
                             $failed++;
                         }
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $this->line("  <fg=red>✗</> Exception: " . $e->getMessage());
                         Log::error("Exception while refreshing playback links", [
                             'job_id' => $videoJob->id,
@@ -232,7 +233,7 @@ class RefreshExpiredVideoPlaybackLinks extends Command
                                 'dry_run' => true
                             ];
                         }
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $this->line("  <fg=red>✗</> Could not get sample links: " . $e->getMessage());
                     }
                     $refreshed++;

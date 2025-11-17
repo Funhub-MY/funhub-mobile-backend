@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Transaction;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
@@ -36,8 +37,8 @@ class ReleaseFailedMerchantOffers extends Command
         // loop through each transaction and check if the created_at is more than config('app.release_offer_stock_after_min')
         // if yes, then update the status to failed and release the stock
         // if no, then do nothing
-        $transactions = \App\Models\Transaction::where('transactionable_type', MerchantOffer::class)
-            ->whereIn('status', [\App\Models\Transaction::STATUS_PENDING, \App\Models\Transaction::STATUS_FAILED])
+        $transactions = Transaction::where('transactionable_type', MerchantOffer::class)
+            ->whereIn('status', [Transaction::STATUS_PENDING, Transaction::STATUS_FAILED])
             ->get();
 
         $this->info('[ReleaseFailedMerchantOffers] Total Transaction Found: ' . $transactions->count());
@@ -47,9 +48,9 @@ class ReleaseFailedMerchantOffers extends Command
             $release = false;
 
             if ($transaction->created_at->diffInMinutes(now()) > config('app.release_offer_stock_after_min')
-                && $transaction->status == \App\Models\Transaction::STATUS_PENDING) {
+                && $transaction->status == Transaction::STATUS_PENDING) {
                 $transaction->update([
-                    'status' => \App\Models\Transaction::STATUS_FAILED,
+                    'status' => Transaction::STATUS_FAILED,
                 ]);
                 $release = true;
 
@@ -60,7 +61,7 @@ class ReleaseFailedMerchantOffers extends Command
             }
 
             // if already failed but claim still havent release voucher
-            if ($transaction->status == \App\Models\Transaction::STATUS_FAILED) {
+            if ($transaction->status == Transaction::STATUS_FAILED) {
                 $release = true;
             }
 
@@ -94,7 +95,7 @@ class ReleaseFailedMerchantOffers extends Command
                     try {
                         if ($claim->status == MerchantOfferClaim::CLAIM_AWAIT_PAYMENT) {
                             $claim->update([
-                                'status' => \App\Models\MerchantOffer::CLAIM_FAILED
+                                'status' => MerchantOffer::CLAIM_FAILED
                             ]);
                             Log::info('[ReleaseFailedMerchantOffers] Updated Merchant Offer Claim to Failed', [
                                 'transaction_id' => $transaction->id,

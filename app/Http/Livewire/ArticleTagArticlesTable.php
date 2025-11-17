@@ -2,6 +2,9 @@
 
 namespace App\Http\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Forms\Components\DatePicker;
 use App\Models\ArticleTag;
 use Filament\Tables\Filters\Filter;
 use Livewire\Component;
@@ -20,8 +23,9 @@ use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class ArticleTagArticlesTable extends Component implements HasTable
+class ArticleTagArticlesTable extends Component implements HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
 
     public $currentTagId = null;
@@ -111,8 +115,8 @@ class ArticleTagArticlesTable extends Component implements HasTable
                 ->label('Status')
                 ->options(Article::STATUS),
             Filter::make('created_from')
-                ->form([
-                    \Filament\Forms\Components\DatePicker::make('created_from')
+                ->schema([
+                    DatePicker::make('created_from')
                         ->placeholder('Select start date'),
                 ])
                 ->query(function (Builder $query, array $data) {
@@ -122,8 +126,8 @@ class ArticleTagArticlesTable extends Component implements HasTable
                 })
                 ->label('Created From'),
             Filter::make('created_until')
-                ->form([
-                    \Filament\Forms\Components\DatePicker::make('created_until')
+                ->schema([
+                    DatePicker::make('created_until')
                         ->placeholder('Select end date'),
                 ])
                 ->query(function (Builder $query, array $data) {

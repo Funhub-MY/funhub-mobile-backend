@@ -25,7 +25,7 @@ class UserReferredListener
     /**
      * Handle the event.
      *
-     * @param  \App\Events\UserReferred  $event
+     * @param UserReferred $event
      * @return void
      */
     public function handle(UserReferred $event)

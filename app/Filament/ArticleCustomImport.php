@@ -2,6 +2,7 @@
 
 namespace App\Filament;
 
+use Exception;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\MerchantCategory;
@@ -136,7 +137,7 @@ class ArticleCustomImport
 
                 return false;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $data;
         }
 
@@ -243,7 +244,7 @@ class ArticleCustomImport
 							'main_categories' => $mainCategories,
 							'sub_categories' => $subCategories
 						]);
-					} catch (\Exception $e) {
+					} catch (Exception $e) {
 						Log::error('Error syncing article categories', [
 							'article_id' => $article->id,
 							'error' => $e->getMessage(),

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\PromotionCode;
 use App\Models\PromotionCodeGroup;
@@ -26,7 +28,7 @@ class PromotionCodeController extends Controller
      * Redeem a promotion code
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Promotion Code
      * @bodyParam code string required The code to redeem. Example: ABCD123ABCDD
@@ -327,44 +329,44 @@ class PromotionCodeController extends Controller
 
 
 	/**
-	 * Redeem a promotion code
-	 *
-	 * @param Request $request
-	 * @return \Illuminate\Http\JsonResponse
-	 *
-	 * @group Promotion Code
-	 * @bodyParam code string required The code to redeem. Example: ABCD123ABCDD
-	 * @response scenario=success {
-	 * "message": "Code redeemed successfully",
-	 * "rewards": [
-	 *   {
-	 *     "id": 1,
-	 *     "name": "Funhub",
-	 *     "description": "Funhub",
-	 *     "components": [],
-	 *   }
-	 * ],
-	 * "reward_components": [
-	 *   {
-	 *     "id": 1,
-	 *     "name": "Funhub",
-	 *     "description": "Funhub",
-	 *     "components": [],
-	 *   }
-	 * ]
-	 * }
-	 */
-	/**
-	 * Check if a promotion code is valid for checkout
-	 *
-	 * @param Request $request
-	 * @return \Illuminate\Http\JsonResponse
-	 *
-	 * @group Promotion Code
-	 * @bodyParam code string required The code to check. Example: ABCD123ABCDD
-	 * @bodyParam product_ids array optional The product IDs to check against. Example: [1, 2, 3]
-	 */
-	public function postCheckPromoCode(Request $request)
+     * Redeem a promotion code
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Promotion Code
+     * @bodyParam code string required The code to redeem. Example: ABCD123ABCDD
+     * @response scenario=success {
+     * "message": "Code redeemed successfully",
+     * "rewards": [
+     *   {
+     *     "id": 1,
+     *     "name": "Funhub",
+     *     "description": "Funhub",
+     *     "components": [],
+     *   }
+     * ],
+     * "reward_components": [
+     *   {
+     *     "id": 1,
+     *     "name": "Funhub",
+     *     "description": "Funhub",
+     *     "components": [],
+     *   }
+     * ]
+     * }
+     */
+    /**
+     * Check if a promotion code is valid for checkout
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Promotion Code
+     * @bodyParam code string required The code to check. Example: ABCD123ABCDD
+     * @bodyParam product_ids array optional The product IDs to check against. Example: [1, 2, 3]
+     */
+    public function postCheckPromoCode(Request $request)
 	{
 		$request->validate([
 			'product_id' => 'required|integer',
@@ -596,7 +598,7 @@ class PromotionCodeController extends Controller
 			}
 
 			// Check if the product exists in the database
-			$product = \App\Models\Product::find($productId);
+			$product = Product::find($productId);
 			if (!$product) {
 				return response()->json(array_merge([
 					'success' => false,

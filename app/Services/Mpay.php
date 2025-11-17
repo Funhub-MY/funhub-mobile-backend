@@ -1,5 +1,6 @@
 <?php
 namespace App\Services;
+use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use PhpParser\Node\Expr\Cast\Double;
@@ -61,7 +62,7 @@ class Mpay {
     {
         // check if mid and hashKey is set
         if (!$this->mid || !$this->hashKey) {
-            throw new \Exception('Mpay MID or hash key is not set');
+            throw new Exception('Mpay MID or hash key is not set');
         }
 
         // convert amount 000000000100 represent RM 1.00
@@ -133,7 +134,7 @@ class Mpay {
     {
         // check if mid and hashKey is set
         if (!$this->mid || !$this->hashKey) {
-            throw new \Exception('Mpay MID or hash key is not set');
+            throw new Exception('Mpay MID or hash key is not set');
         }
 
         if(!$email) {
@@ -182,7 +183,7 @@ class Mpay {
     public function queryCardToken($uuid, $invno)
     {
         if (!$this->mid || !$this->hashKey) {
-            throw new \Exception('Mpay MID or hash key is not set');
+            throw new Exception('Mpay MID or hash key is not set');
         }
 
         $url = $this->url . '/api/paymentService/queryToken/';
@@ -210,13 +211,13 @@ class Mpay {
      * @param string|null $authorize Optional - Pass 'authorize' to query capture transaction, leave empty for normal transaction
      * @param string|null $postURL  Optional - URL to receive result from MPAY Payment Gateway
      * @return array Response from MPAY containing transaction details
-     * @throws \Exception
+     * @throws Exception
      */
     public function queryTransaction(string $invoice_no, float $amount, ?string $authorize = null, ?string $postURL = null)
     {
         // check if mid and hashKey is set
         if (!$this->mid || !$this->hashKey) {
-            throw new \Exception('Mpay MID or hash key is not set');
+            throw new Exception('Mpay MID or hash key is not set');
         }
 
         // convert amount 000000000100 represent RM 1.00
@@ -255,8 +256,8 @@ class Mpay {
                 return $response;
             } 
             
-            throw new \Exception('Failed to query transaction: Invalid response format');
-        } catch (\Exception $e) {
+            throw new Exception('Failed to query transaction: Invalid response format');
+        } catch (Exception $e) {
             Log::error('[MPAY] Query transaction failed: ' . $e->getMessage());
             throw $e;
         }

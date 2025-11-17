@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferVoucherMovement;
 use Carbon\Carbon;
@@ -61,10 +62,40 @@ class AutoMoveVouchers extends Command
                     ->first();
 
                 if ($upcomingOffer) {
+                    // Validate agreement_quantity if target campaign has it set
+                    // Note: Moving within same campaign doesn't change total count, but we validate for safety
+                    $targetCampaign = $upcomingOffer->campaign;
+                    $vouchersToMove = $offer->unclaimedVouchers()->get();
+                    $vouchersCount = $vouchersToMove->count();
+                    
+                    // If moving to a different campaign (shouldn't happen in automove, but validate anyway)
+                    if ($targetCampaign && $targetCampaign->id !== $offer->campaign->id) {
+                        if ($targetCampaign->agreement_quantity > 0) {
+                            $targetCampaignVoucherCount = \App\Models\MerchantOfferVoucher::whereHas('merchant_offer', function ($query) use ($targetCampaign) {
+                                $query->where('merchant_offer_campaign_id', $targetCampaign->id);
+                            })->count();
+                            
+                            $maxAllowed = $targetCampaign->agreement_quantity - $targetCampaignVoucherCount;
+                            
+                            if ($maxAllowed < $vouchersCount) {
+                                Log::warning('[AutoMoveVouchers] Cannot move all vouchers - target campaign agreement quantity limit', [
+                                    'from_offer_id' => $offer->id,
+                                    'to_offer_id' => $upcomingOffer->id,
+                                    'target_campaign_id' => $targetCampaign->id,
+                                    'agreement_quantity' => $targetCampaign->agreement_quantity,
+                                    'current_vouchers' => $targetCampaignVoucherCount,
+                                    'vouchers_to_move' => $vouchersCount,
+                                    'max_allowed' => $maxAllowed,
+                                ]);
+                                $this->warn("[AutoMoveVouchers] Cannot move {$vouchersCount} vouchers - target campaign would exceed agreement quantity (max allowed: {$maxAllowed})");
+                                return;
+                            }
+                        }
+                    }
+                    
                     DB::beginTransaction();
                     try {
-                        $unclaimedVouchers = $offer->unclaimedVouchers()->get();
-                        $unclaimedVouchers->each(function ($voucher) use ($upcomingOffer, $offer) {
+                        $vouchersToMove->each(function ($voucher) use ($upcomingOffer, $offer) {
 
                             // create voucher movements
                             MerchantOfferVoucherMovement::create([
@@ -91,9 +122,9 @@ class AutoMoveVouchers extends Command
                         });
 
                         DB::commit();
-                        $this->info('[AutoMoveVouchers] Successfully moved ' . $unclaimedVouchers->count() . ' vouchers from offer ' . $offer->id . ' to ' . $upcomingOffer->id);
+                        $this->info('[AutoMoveVouchers] Successfully moved ' . $vouchersCount . ' vouchers from offer ' . $offer->id . ' to ' . $upcomingOffer->id);
 
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         DB::rollBack();
                         $this->error('[AutoMoveVouchers] Failed to move vouchers from offer ' . $offer->id . ': ' . $e->getMessage());
                         Log::error('[AutoMoveVouchers] Error moving vouchers', [

@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use Exception;
 use App\Events\MissionCompletedEvent;
 use App\Models\Mission;
 use App\Notifications\CompletedNewbieMission;
@@ -26,7 +27,7 @@ class CheckNewbieMissionsCompletedListener implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param  App\Events\MissionCompletedEvent  $event
+     * @param MissionCompletedEvent $event
      * @return void
      */
     public function handle(MissionCompletedEvent $event)
@@ -65,7 +66,7 @@ class CheckNewbieMissionsCompletedListener implements ShouldQueue
                     'total_missions' => $totalOneOffMissions,
                     'completed_missions' => $completedOneOffMissions
                 ]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('Failed to send completed newbie mission notification', [
                     'user_id' => $user->id,
                     'error' => $e->getMessage(),

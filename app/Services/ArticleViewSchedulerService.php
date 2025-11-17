@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use App\Models\Article;
 use App\Models\Setting;
 use App\Models\User;
@@ -45,7 +46,7 @@ class ArticleViewSchedulerService
             try {
                 $auto_view_percentage = (int)$view_seeder_weight_setting->value; // Convert to integer
                 Log::info('[ArticleViewSchedulerService] view_seeder_weight found.', ['value' => $auto_view_percentage]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('[ArticleViewSchedulerService] Failed to convert view_seeder_weight to integer.', ['value' => $view_seeder_weight_setting->value, 'error' => $e->getMessage()]);
                 // Use default $auto_view_percentage = 1;
             }
@@ -122,7 +123,7 @@ class ArticleViewSchedulerService
                         'scheduled_at' => $scheduled_at,
                         'is_processed' => false, // Ensure this is set
                     ]);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                      Log::error('[ArticleViewSchedulerService] Failed to create ViewQueue entry.', [
                         'article_id' => $article->id,
                         'scheduled_views' => $scheduled_views,

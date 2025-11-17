@@ -2,6 +2,9 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Http\Request;
+use Illuminate\Contracts\Support\Arrayable;
+use JsonSerializable;
 use App\Models\FollowRequest;
 use App\Models\User;
 use App\Models\Setting;
@@ -26,12 +29,11 @@ class UserResource extends JsonResource
      * @var string|null
      */
     // public static $wrap = 'user';
-
     /**
      * Transform the resource collection into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param Request $request
+     * @return array|Arrayable|JsonSerializable
      */
     public function toArray($request)
     {

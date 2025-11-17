@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Traits\QueryBuilderTrait;
@@ -15,7 +16,7 @@ class MerchantOfferCategoryController extends Controller
      * Get All Merchant Offer Categories
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Merchant
      * @subgroup Merchant Offer Categories

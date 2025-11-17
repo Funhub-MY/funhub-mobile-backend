@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Notifications\NewFollowRequest;
+use App\Notifications\Newfollower;
+use Illuminate\Http\JsonResponse;
 use App\Events\FollowedUser;
 use App\Events\UnfollowedUser;
 use App\Http\Controllers\Controller;
@@ -20,7 +23,7 @@ class UserFollowingController extends Controller
      * Follow another user
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @group User
      * @subgroup Followings
      * @bodyParam user_id int required The id of the user to follow
@@ -67,7 +70,7 @@ class UserFollowingController extends Controller
 
 					if ($user && $user->id !== auth()->user()->id) {
 						$locale = $user->last_lang ?? config('app.locale');
-						$user->notify((new \App\Notifications\NewFollowRequest(auth()->user()))->locale($locale));
+						$user->notify((new NewFollowRequest(auth()->user()))->locale($locale));
 					}
 					return response()->json([
 						'message' => __('messages.success.user_following_controller.Follow_request_sent'),
@@ -92,7 +95,7 @@ class UserFollowingController extends Controller
 				// cool down for 5 minutes
 				if (!$lastNotificationSentAt || now()->diffInMinutes($lastNotificationSentAt) >= config('app.cooldowns.following_a_user_notification')) {
 					$locale = $followedUser->last_lang ?? config('app.locale');
-					$followedUser->notify((new \App\Notifications\Newfollower(auth()->user()))->locale($locale));
+					$followedUser->notify((new Newfollower(auth()->user()))->locale($locale));
 
 					// Set the cache with a 5-minute timeout
 					cache()->put('follow_notification_' . auth()->id() . '_' . $followedUser->id, now(), now()->addMinutes(config('app.cooldowns.following_a_user_notification')));
@@ -110,7 +113,7 @@ class UserFollowingController extends Controller
      * Unfollow another user
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @group User
      * @subgroup Followings
      * @bodyParam user_id int required The id of the user to unfollow
@@ -187,7 +190,7 @@ class UserFollowingController extends Controller
     /**
      * Get all followers of user id or logged in user
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User
      * @subgroup Followers
@@ -223,7 +226,7 @@ class UserFollowingController extends Controller
     /**
      * Get all followings of user id or logged in user
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User
      * @subgroup Followings
@@ -282,7 +285,7 @@ class UserFollowingController extends Controller
      * Accept Follow Request
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User
      * @subgroup Followings
@@ -319,7 +322,7 @@ class UserFollowingController extends Controller
      * Reject Follow Request
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User
      * @subgroup Followings

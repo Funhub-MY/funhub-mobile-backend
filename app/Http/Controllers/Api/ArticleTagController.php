@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ArticleTagResource;
 use App\Models\ArticleTag;
@@ -16,7 +17,7 @@ class ArticleTagController extends Controller
      * Get popular tags
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Article
      * @subgroup Article Tags
@@ -92,7 +93,7 @@ class ArticleTagController extends Controller
      * Get Tags by article id
      *
      * @param $article_id integer
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Article
      * @subgroup Article Tags

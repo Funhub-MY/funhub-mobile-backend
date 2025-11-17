@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Exception;
 use App\Models\Store;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -71,7 +72,7 @@ class IndexStore implements ShouldQueue
                 'ratings_avg' => $avgRating
             ]);
             
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[IndexStore] Error indexing store', [
                 'store_id' => $this->storeId,
                 'error' => $e->getMessage()

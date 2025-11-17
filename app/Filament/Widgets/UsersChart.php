@@ -11,8 +11,8 @@ class UsersChart extends LineChartWidget
 {
     use HasWidgetShield;
 
-    protected static ?string $heading = 'Users';
-    protected static ?array $options = [
+    protected ?string $heading = 'Users';
+    protected ?array $options = [
         'ticks' => [
             'precision' => 0
         ],

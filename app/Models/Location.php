@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Exception;
 use App\Models\BaseModel;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,11 +12,10 @@ use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Netsells\GeoScope\Traits\GeoScopeTrait;
 
 class Location extends BaseModel implements HasMedia, Auditable
 {
-    use HasFactory, InteractsWithMedia, GeoScopeTrait, Searchable, \OwenIt\Auditing\Auditable;
+    use HasFactory, InteractsWithMedia, Searchable, \OwenIt\Auditing\Auditable;
 
     protected $guarded = ['id'];
 
@@ -205,7 +205,7 @@ class Location extends BaseModel implements HasMedia, Auditable
 
         if ($radLat < $latLimits[0] || $radLat > $latLimits[1]
             || $radLon < $lonLimits[0] || $radLon > $lonLimits[1]) {
-            throw new \Exception("Invalid Argument");
+            throw new Exception("Invalid Argument");
         }
 
         // Angular distance in radians on a great circle,

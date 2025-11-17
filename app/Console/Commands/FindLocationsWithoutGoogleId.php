@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\Location;
 use App\Models\Article;
 use Illuminate\Console\Command;
@@ -167,7 +168,7 @@ class FindLocationsWithoutGoogleId extends Command
                         $this->error('× No results found from Google API');
                         $this->info("Google Place: " . json_encode($googlePlace));
                     }
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->error('× Error updating location: ' . $e->getMessage());
                     Log::error('[FindLocationsWithoutGoogleId] Error updating location ' . $location->id . ': ' . $e->getMessage());
                 }

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Exception;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferCampaign;
 use App\Models\MerchantOfferCampaignVoucherCode;
@@ -119,24 +120,61 @@ class CreateMerchantOfferJob implements ShouldQueue
                 ]);
             }
             
-            // Generate remaining codes if needed
-            $voucherData = [];
-            for ($i = 0; $i < $remainingCount; $i++) {
-                $voucherData[] = [
-                    'merchant_offer_id' => $offer->id,
-                    'code' => MerchantOfferVoucher::generateCode(),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            }
-            
-            // Bulk insert remaining vouchers if any
-            if (!empty($voucherData)) {
-                MerchantOfferVoucher::insert($voucherData);
+            // Generate remaining codes if needed - using chunking for better performance
+            if ($remainingCount > 0) {
+                // Validate against agreement_quantity if set
+                $campaign = MerchantOfferCampaign::find($this->campaignId);
+                if ($campaign && $campaign->agreement_quantity > 0) {
+                    $currentVoucherCount = MerchantOfferVoucher::whereHas('merchant_offer', function ($query) use ($campaign) {
+                        $query->where('merchant_offer_campaign_id', $campaign->id);
+                    })->count();
+                    
+                    $maxAllowed = $campaign->agreement_quantity - $currentVoucherCount;
+                    $remainingCount = min($remainingCount, $maxAllowed);
+                    
+                    if ($remainingCount <= 0) {
+                        Log::warning('[CreateMerchantOfferJob] Cannot create vouchers - agreement quantity reached', [
+                            'campaign_id' => $campaign->id,
+                            'agreement_quantity' => $campaign->agreement_quantity,
+                            'current_vouchers' => $currentVoucherCount,
+                            'offer_id' => $offer->id,
+                        ]);
+                    }
+                }
+                
+                // Process in chunks to avoid memory issues
+                $chunkSize = 500;
+                $now = now();
+                
+                for ($chunk = 0; $chunk < $remainingCount; $chunk += $chunkSize) {
+                    $chunkQuantity = min($chunkSize, $remainingCount - $chunk);
+                    $voucherData = [];
+                    
+                    for ($i = 0; $i < $chunkQuantity; $i++) {
+                        $voucherData[] = [
+                            'merchant_offer_id' => $offer->id,
+                            'code' => MerchantOfferVoucher::generateCode(),
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
+                    }
+                    
+                    // Bulk insert the chunk
+                    if (!empty($voucherData)) {
+                        MerchantOfferVoucher::insert($voucherData);
+                        
+                        Log::info('[CreateMerchantOfferJob] Created voucher chunk', [
+                            'offer_id' => $offer->id,
+                            'chunk_size' => count($voucherData),
+                            'total_created' => $chunk + count($voucherData),
+                            'remaining' => $remainingCount - ($chunk + count($voucherData)),
+                        ]);
+                    }
+                }
             }
             
             DB::commit();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             Log::error('[CreateMerchantOfferJob] Error creating vouchers', [
                 'error' => $e->getMessage(),
@@ -149,7 +187,7 @@ class CreateMerchantOfferJob implements ShouldQueue
         try {
             $offer->refresh();
             $offer->searchable();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[CreateMerchantOfferJob] Error syncing algolia', [
                 'error' => $e->getMessage()
             ]);

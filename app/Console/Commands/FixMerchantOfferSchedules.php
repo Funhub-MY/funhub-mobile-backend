@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use Exception;
+use Illuminate\Support\Collection;
 use Illuminate\Console\Command;
 use App\Models\MerchantOfferCampaign;
 use App\Models\MerchantOfferCampaignSchedule;
@@ -81,7 +83,7 @@ class FixMerchantOfferSchedules extends Command
                     $createdAtDate->copy()->addMinutes(60)
                 ]);
                 $this->info("Filtering offers created around {$createdAt}");
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error("Invalid created_at format. Use Y-m-d H:i format (e.g., 2025-03-11 12:40)");
                 return 1;
             }
@@ -296,7 +298,7 @@ class FixMerchantOfferSchedules extends Command
             
             DB::commit();
             $this->info("Successfully updated {$offers->count()} offers and " . count($updatedSchedules) . " schedules.");
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             $this->error("Error updating schedules: " . $e->getMessage());
             Log::error("Error updating merchant offer schedules: " . $e->getMessage());
@@ -311,7 +313,7 @@ class FixMerchantOfferSchedules extends Command
      * Identify and resolve conflicting schedules
      *
      * @param MerchantOfferCampaign $campaign
-     * @param \Illuminate\Support\Collection $offers
+     * @param Collection $offers
      * @param bool $dryRun
      * @return void
      */
@@ -428,7 +430,7 @@ class FixMerchantOfferSchedules extends Command
             
             DB::commit();
             $this->info("Successfully resolved schedule conflicts.");
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             $this->error("Error resolving conflicts: " . $e->getMessage());
             Log::error("Error resolving schedule conflicts: " . $e->getMessage());

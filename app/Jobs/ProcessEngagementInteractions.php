@@ -2,6 +2,11 @@
 
 namespace App\Jobs;
 
+use App\Events\CommentCreated;
+use App\Notifications\Commented;
+use App\Events\InteractionCreated;
+use App\Notifications\ArticleInteracted;
+use App\Models\View;
 use App\Models\ArticleEngagement;
 use App\Models\Interaction;
 use App\Models\Article;
@@ -66,11 +71,11 @@ class ProcessEngagementInteractions implements ShouldQueue
                 'status' => Comment::STATUS_PUBLISHED,
             ]);
 
-            event(new \App\Events\CommentCreated($comment));
+            event(new CommentCreated($comment));
 
             if ($comment->commentable->user && $comment->commentable->user->id != $userId) {
                 $locale = $comment->commentable->user->last_lang ?? config('app.locale');
-                $comment->commentable->user->notify((new \App\Notifications\Commented($comment))->locale($locale));
+                $comment->commentable->user->notify((new Commented($comment))->locale($locale));
             }
         } else {
             // Create an interaction
@@ -81,15 +86,15 @@ class ProcessEngagementInteractions implements ShouldQueue
                 'type' => $interactionType,
             ]);
 
-            event(new \App\Events\InteractionCreated($interaction));
+            event(new InteractionCreated($interaction));
 
             if ($interactable === Article::class && $interactionType === Interaction::TYPE_LIKE && $interaction->interactable->user->id !== $userId) {
                 $locale = $interaction->interactable->user->last_lang ?? config('app.locale');
-                $interaction->interactable->user->notify((new \App\Notifications\ArticleInteracted($interaction))->locale($locale));
+                $interaction->interactable->user->notify((new ArticleInteracted($interaction))->locale($locale));
             }
 
             if ($interactable === Article::class && $interactionType === Interaction::TYPE_LIKE) {
-                \App\Models\View::create([
+                View::create([
                     'user_id' => $userId,
                     'viewable_type' => $interactable,
                     'viewable_id' => $articleId,

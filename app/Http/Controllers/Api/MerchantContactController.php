@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\MerchantContact;
@@ -14,7 +15,7 @@ class MerchantContactController extends Controller
      * Allows users to submit merchant contact information via the API.
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Merchant
      * @subgroup Merchant Contact

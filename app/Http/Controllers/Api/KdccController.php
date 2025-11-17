@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
 use App\Models\KdccTeams;
 use App\Models\KdccVote;
 use Illuminate\Http\Request;
@@ -79,7 +80,7 @@ class KdccController extends Controller
                 'message' => 'Vote recorded successfully',
                 'data' => new KdccVoteResource($vote)
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
                 'success' => false,

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\User;
 use Illuminate\Console\Command;
 use App\Models\SystemNotification;
@@ -77,7 +78,7 @@ class SendCustomNotification extends Command
 						'system_notification_id' => $systemNotification->id,
 						'user_id' => $user->id,
 					]);
-				} catch (\Exception $e) {
+				} catch (Exception $e) {
                     Log::error('Error sending custom notification to user: ' . $e->getMessage(), [
                         'system_notification_id' => $systemNotification->id,
                         'user_id' => $user->id,

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferCampaign;
 use Carbon\Carbon;
@@ -43,7 +44,7 @@ class SyncMissingOfferMedia extends Command
                 $from = Carbon::createFromFormat('Y-m-d', $fromDate)->startOfDay();
                 $query->where('created_at', '>=', $from);
                 $this->info("Filtering offers created from: {$from->format('Y-m-d H:i:s')}");
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error("Invalid from date format. Use YYYY-MM-DD");
                 return 1;
             }
@@ -54,7 +55,7 @@ class SyncMissingOfferMedia extends Command
                 $to = Carbon::createFromFormat('Y-m-d', $toDate)->endOfDay();
                 $query->where('created_at', '<=', $to);
                 $this->info("Filtering offers created until: {$to->format('Y-m-d H:i:s')}");
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error("Invalid to date format. Use YYYY-MM-DD");
                 return 1;
             }
@@ -111,7 +112,7 @@ class SyncMissingOfferMedia extends Command
                     $skipped++;
                 }
 
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error("Error processing offer #{$offer->id}: " . $e->getMessage());
                 Log::error('Failed to sync offer media', [
                     'offer_id' => $offer->id,

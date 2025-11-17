@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\SearchKeyword;
 use App\Models\Article;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -55,7 +56,7 @@ class MatchArticleHashtagsToKeywords extends Command
             $this->info('Total hashtags found: ' . $hashtags->count());
 
             foreach ($hashtags as $hashtag) {
-                $searchKeyword = \App\Models\SearchKeyword::where('keyword', $hashtag->name)->first();
+                $searchKeyword = SearchKeyword::where('keyword', $hashtag->name)->first();
 
                 if ($searchKeyword) {
                     $this->info('Search keyword found: ' . $searchKeyword->name);
@@ -69,7 +70,7 @@ class MatchArticleHashtagsToKeywords extends Command
                     $tag_name = str_replace('#', '', $hashtag->name);
                     $tag_name = trim($hashtag->name);
 
-                    $newSearchKeyword = \App\Models\SearchKeyword::create([
+                    $newSearchKeyword = SearchKeyword::create([
                         'keyword' => $tag_name,
                     ]);
 

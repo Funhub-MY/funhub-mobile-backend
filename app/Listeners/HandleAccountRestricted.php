@@ -2,6 +2,8 @@
 
 namespace App\Listeners;
 
+use App\Notifications\AccountRestrictedNotification;
+use App\Notifications\AccountUnrestrictedNotification;
 use App\Events\OnAccountRestricted;
 use App\Notifications\CustomNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,9 +24,9 @@ class HandleAccountRestricted
         $locale = $user->locale ?? 'en';
 
         if ($restricted) {
-            $user->notify(new \App\Notifications\AccountRestrictedNotification($restrictedUntil, $locale));
+            $user->notify(new AccountRestrictedNotification($restrictedUntil, $locale));
         } else {
-            $user->notify(new \App\Notifications\AccountUnrestrictedNotification($locale));
+            $user->notify(new AccountUnrestrictedNotification($locale));
         }
     }
 }

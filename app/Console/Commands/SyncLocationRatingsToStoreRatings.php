@@ -2,6 +2,10 @@
 
 namespace App\Console\Commands;
 
+use Exception;
+use DateTime;
+use App\Jobs\IndexStore;
+use Illuminate\Support\Collection;
 use App\Models\Location;
 use App\Models\LocationRating;
 use App\Models\Store;
@@ -60,7 +64,7 @@ class SyncLocationRatingsToStoreRatings extends Command
 
             $this->info(($dryRun ? 'Dry run' : 'Sync') . ' completed successfully!');
             return Command::SUCCESS;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error('An error occurred: ' . $e->getMessage());
             Log::error('Error in SyncLocationRatingsToStoreRatings command', [
                 'error' => $e->getMessage(),
@@ -250,7 +254,7 @@ class SyncLocationRatingsToStoreRatings extends Command
      * @param Location $location
      * @param Store $store
      * @param bool $force
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     private function findMissingLocationRatings(Location $location, Store $store, bool $force)
     {
@@ -291,7 +295,7 @@ class SyncLocationRatingsToStoreRatings extends Command
      *
      * @param Location $location
      * @param Store $store
-     * @param \Illuminate\Support\Collection $locationRatings
+     * @param Collection $locationRatings
      * @param bool $dryRun
      * @return void
      */
@@ -310,11 +314,11 @@ class SyncLocationRatingsToStoreRatings extends Command
                 if (!$dryRun) {
                     // Use DB::table instead of Eloquent to avoid triggering Scout
                     // Format dates properly for MySQL timestamp format
-                    $createdAt = $locationRating['created_at'] instanceof \DateTime 
+                    $createdAt = $locationRating['created_at'] instanceof DateTime 
                         ? $locationRating['created_at']->format('Y-m-d H:i:s')
                         : date('Y-m-d H:i:s', strtotime($locationRating['created_at']));
                     
-                    $updatedAt = $locationRating['updated_at'] instanceof \DateTime 
+                    $updatedAt = $locationRating['updated_at'] instanceof DateTime 
                         ? $locationRating['updated_at']->format('Y-m-d H:i:s')
                         : date('Y-m-d H:i:s', strtotime($locationRating['updated_at']));
                     
@@ -404,7 +408,7 @@ class SyncLocationRatingsToStoreRatings extends Command
                 if (!$dryRun) {
                     // Use DB::table instead of Eloquent to avoid triggering Scout
                     // Format date properly for MySQL timestamp format
-                    $updatedAt = $locationRating->updated_at instanceof \DateTime 
+                    $updatedAt = $locationRating->updated_at instanceof DateTime 
                         ? $locationRating->updated_at->format('Y-m-d H:i:s')
                         : date('Y-m-d H:i:s', strtotime($locationRating->updated_at));
                     
@@ -420,11 +424,11 @@ class SyncLocationRatingsToStoreRatings extends Command
                 if (!$dryRun) {
                     // Use DB::table instead of Eloquent to avoid triggering Scout
                     // Format dates properly for MySQL timestamp format
-                    $createdAt = $locationRating->created_at instanceof \DateTime 
+                    $createdAt = $locationRating->created_at instanceof DateTime 
                         ? $locationRating->created_at->format('Y-m-d H:i:s')
                         : date('Y-m-d H:i:s', strtotime($locationRating->created_at));
                     
-                    $updatedAt = $locationRating->updated_at instanceof \DateTime 
+                    $updatedAt = $locationRating->updated_at instanceof DateTime 
                         ? $locationRating->updated_at->format('Y-m-d H:i:s')
                         : date('Y-m-d H:i:s', strtotime($locationRating->updated_at));
                     
@@ -468,7 +472,7 @@ class SyncLocationRatingsToStoreRatings extends Command
                 ]);
             
             // Dispatch job to update store search index
-            dispatch(new \App\Jobs\IndexStore($store->id));
+            dispatch(new IndexStore($store->id));
             
             Log::info('Updated store average rating', [
                 'store_id' => $store->id,

@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use Exception;
 use App\Models\User;
 use App\Models\Approval;
 use Illuminate\Support\Facades\Log;
@@ -12,7 +13,7 @@ class ApprovalObserver
     /**
      * Handle the Approval "created" event.
      *
-     * @param  \App\Models\Approval  $approval
+     * @param Approval $approval
      * @return void
      */
     public function created(Approval $approval)
@@ -23,7 +24,7 @@ class ApprovalObserver
     /**
      * Handle the Approval "updated" event.
      *
-     * @param  \App\Models\Approval  $approval
+     * @param Approval $approval
      * @return void
      */
     public function updated(Approval $approval)
@@ -45,7 +46,7 @@ class ApprovalObserver
 
                 // Send the notification
                 $user->notify((new NewFunboxRewardApproved($approval, $user))->locale($locale));
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('Error sending notification: ' . $e->getMessage());
             }
         }
@@ -54,7 +55,7 @@ class ApprovalObserver
     /**
      * Handle the Approval "deleted" event.
      *
-     * @param  \App\Models\Approval  $approval
+     * @param Approval $approval
      * @return void
      */
     public function deleted(Approval $approval)
@@ -65,7 +66,7 @@ class ApprovalObserver
     /**
      * Handle the Approval "restored" event.
      *
-     * @param  \App\Models\Approval  $approval
+     * @param Approval $approval
      * @return void
      */
     public function restored(Approval $approval)
@@ -76,7 +77,7 @@ class ApprovalObserver
     /**
      * Handle the Approval "force deleted" event.
      *
-     * @param  \App\Models\Approval  $approval
+     * @param Approval $approval
      * @return void
      */
     public function forceDeleted(Approval $approval)

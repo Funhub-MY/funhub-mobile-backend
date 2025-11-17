@@ -28,14 +28,14 @@ class GeneratePromotionCodesJob implements ShouldQueue
     /**
      * The promotion code group model.
      *
-     * @var \App\Models\PromotionCodeGroup
+     * @var PromotionCodeGroup
      */
     protected $group;
 
     /**
      * Create a new job instance.
      *
-     * @param \App\Models\PromotionCodeGroup $group
+     * @param PromotionCodeGroup $group
      * @param array $groupData
      * @return void
      */

@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\ArticleRecommendation;
+use App\Jobs\IndexStore;
+use App\Models\ArticleStoreCategory;
+use Illuminate\Http\JsonResponse;
 use App\Jobs\SyncLocationRatingAsStoreRating;
 
 use App\Console\Commands\UpdateArticleTagsArticlesCount;
@@ -62,7 +66,7 @@ class ArticleController extends Controller
      * Note: user's own posts will not show up on home page
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Article
      *
@@ -435,7 +439,7 @@ class ArticleController extends Controller
                 }, $newArticleIds);
 
                 // mass insert new recommendations
-                \App\Models\ArticleRecommendation::insert($insertData);
+                ArticleRecommendation::insert($insertData);
             }
 
             // delete recommendations that are not in the new list
@@ -452,7 +456,7 @@ class ArticleController extends Controller
                 'preserved_articles' => count($existingRecommendations),
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error saving article recommendations: ' . $e->getMessage());
             return response()->json([
                 'message' => 'Error saving article recommendations',
@@ -1046,7 +1050,7 @@ class ArticleController extends Controller
     /**
      * Create New Article
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      *
@@ -1178,7 +1182,7 @@ class ArticleController extends Controller
         if ($request->has('location') && $request->location !== 'null') {
             try {
                 $loc = $this->createOrAttachLocation($article, $request->location);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('Location error', ['error' => $e->getMessage(), 'location' => $request->location]);
             }
         }
@@ -1192,7 +1196,7 @@ class ArticleController extends Controller
                 try {
                     $locale = $taggedUser->last_lang ?? config('app.locale');
                     $taggedUser->notify((new TaggedUserInArticle($article, $article->user))->locale($locale));
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Log::error('Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser]);
                 }
             });
@@ -1431,7 +1435,7 @@ class ArticleController extends Controller
                     $store->save();
                     
                     // Dispatch job to index the store in search
-                    dispatch(new \App\Jobs\IndexStore($store->id));
+                    dispatch(new IndexStore($store->id));
                 }
                 
                 // If article has categories, try to map them to store categories
@@ -1444,7 +1448,7 @@ class ArticleController extends Controller
                         $allArticleCategoryIds = $articleCategoryIds->merge($articleSubCategoryIds);
                         
                         // Find mapped merchant categories from ArticleStoreCategory
-                        $storeCategoriesToAttach = \App\Models\ArticleStoreCategory::whereIn('article_category_id', $allArticleCategoryIds)
+                        $storeCategoriesToAttach = ArticleStoreCategory::whereIn('article_category_id', $allArticleCategoryIds)
                             ->pluck('merchant_category_id')
                             ->unique();
                         
@@ -1453,11 +1457,11 @@ class ArticleController extends Controller
                             try {
                                 $store->categories()->attach($categoryId);
                                 Log::info('[ArticleController] Store category attached: ' . $categoryId . ' to store: ' . $store->id);
-                            } catch (\Exception $e) {
+                            } catch (Exception $e) {
                                 Log::error('[ArticleController] Error attaching store category: ' . $categoryId . ' to store: ' . $store->id . '. Error: ' . $e->getMessage());
                             }
                         }
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         Log::error('[ArticleController] Error processing categories for store: ' . $store->id . ' and article: ' . $article->id . '. Error: ' . $e->getMessage());
                     }
                 }
@@ -1548,7 +1552,7 @@ class ArticleController extends Controller
     /**
      * Update article by ID. (Only owner of article can update)
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      *
@@ -1670,7 +1674,7 @@ class ArticleController extends Controller
                 $article->taggedUsers->each(function ($taggedUser) use ($article) {
                     try {
                         $taggedUser->notify(new TaggedUserInArticle($article, $article->user));
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         Log::error('Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser]);
                     }
                 });
@@ -1687,7 +1691,7 @@ class ArticleController extends Controller
 
                     // create or attach new location with ratings
                     $loc = $this->createOrAttachLocation($article, $request->location); // this will detach existing location if changed
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Log::error('Location error', ['error' => $e->getMessage(), 'location' => $request->location]);
                 }
             }
@@ -1765,7 +1769,7 @@ class ArticleController extends Controller
      * Upload Images for Article
      *
      * @param ArticleImagesUploadRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Article
      * @bodyParam images file required The images to upload.
@@ -1842,7 +1846,7 @@ class ArticleController extends Controller
      * Must be able to stream completion percentage back to client
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Article
      * @bodyParam video file required The video to upload.
@@ -1906,8 +1910,8 @@ class ArticleController extends Controller
     /**
      * Report an article
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      *
      * @group Article
      * @subgroup Reports
@@ -1949,7 +1953,7 @@ class ArticleController extends Controller
      * Get Article Cities (Unique)
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Article
      * @urlParam search string optional Search for city. Example: "Kota"

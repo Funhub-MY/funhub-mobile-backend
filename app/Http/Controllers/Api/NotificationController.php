@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\NotificationResource;
 use App\Http\Resources\UserResource;
@@ -14,7 +15,7 @@ class NotificationController extends Controller
      * Get latest notifications of the user
      * Ordered by latest one
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Notifications
      * @bodyParam per_page int The number of items per page. Example: 10
@@ -34,7 +35,6 @@ class NotificationController extends Controller
      *    "created_at" : "1 day ago"
      * }
      * ]
-     *
      */
     public function getNotifications(Request $request)
     {
@@ -68,7 +68,7 @@ class NotificationController extends Controller
     /**
      * Mark all notifications as read
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Notifications
      * @response scenario=success {
@@ -92,7 +92,7 @@ class NotificationController extends Controller
      * Mark a Single Notification as Read by Notification ID
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Notifications
      * @bodyParam notification_id string required The notification id. Example: 058d0c3d-1028-4660-b905-7e30ad7eee9c

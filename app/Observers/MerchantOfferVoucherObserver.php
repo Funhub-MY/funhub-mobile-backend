@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use Exception;
 use App\Models\MerchantOfferVoucher;
 use App\Services\MixpanelService;
 use Illuminate\Support\Facades\Log;
@@ -26,7 +27,7 @@ class MerchantOfferVoucherObserver
     /**
      * Handle the MerchantOfferVoucher "created" event.
      *
-     * @param  \App\Models\MerchantOfferVoucher  $voucher
+     * @param MerchantOfferVoucher $voucher
      * @return void
      */
     public function created(MerchantOfferVoucher $voucher)
@@ -37,7 +38,7 @@ class MerchantOfferVoucherObserver
     /**
      * Handle the MerchantOfferVoucher "updated" event.
      *
-     * @param  \App\Models\MerchantOfferVoucher  $voucher
+     * @param MerchantOfferVoucher $voucher
      * @return void
      */
     public function updated(MerchantOfferVoucher $voucher)
@@ -47,7 +48,7 @@ class MerchantOfferVoucherObserver
             try {
                 Log::info('Tracking voucher sale for voucher ID: ' . $voucher->id);
                 $this->mixpanelService->trackVoucherSale($voucher);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('Failed to track voucher sale in observer: ' . $e->getMessage(), [
                     'voucher_id' => $voucher->id,
                     'exception' => $e
@@ -59,7 +60,7 @@ class MerchantOfferVoucherObserver
     /**
      * Handle the MerchantOfferVoucher "deleted" event.
      *
-     * @param  \App\Models\MerchantOfferVoucher  $voucher
+     * @param MerchantOfferVoucher $voucher
      * @return void
      */
     public function deleted(MerchantOfferVoucher $voucher)
@@ -70,7 +71,7 @@ class MerchantOfferVoucherObserver
     /**
      * Handle the MerchantOfferVoucher "restored" event.
      *
-     * @param  \App\Models\MerchantOfferVoucher  $voucher
+     * @param MerchantOfferVoucher $voucher
      * @return void
      */
     public function restored(MerchantOfferVoucher $voucher)
@@ -81,7 +82,7 @@ class MerchantOfferVoucherObserver
     /**
      * Handle the MerchantOfferVoucher "force deleted" event.
      *
-     * @param  \App\Models\MerchantOfferVoucher  $voucher
+     * @param MerchantOfferVoucher $voucher
      * @return void
      */
     public function forceDeleted(MerchantOfferVoucher $voucher)

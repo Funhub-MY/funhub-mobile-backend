@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\User;
 use App\Models\View;
 use App\Models\ViewQueue;
@@ -103,7 +104,7 @@ class AutoGenerateArticleViews extends Command
 
             Log::info('[AutoGenerateArticleViews] AutoGenerateArticleViews completed successfully');
             return Command::SUCCESS;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[AutoGenerateArticleViews] Error: ' . $e->getMessage());
             return Command::FAILURE;
         }

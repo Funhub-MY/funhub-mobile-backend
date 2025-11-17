@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use DateTime;
 use App\Models\Location;
 use App\Models\Store;
 use Illuminate\Bus\Queueable;
@@ -19,7 +20,7 @@ class SyncLocationRatingAsStoreRating implements ShouldQueue
     /**
      * The location instance.
      *
-     * @var \App\Models\Location
+     * @var Location
      */
     protected $location;
 
@@ -40,7 +41,7 @@ class SyncLocationRatingAsStoreRating implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param \App\Models\Location $location
+     * @param Location $location
      * @param int $userId
      * @param int|null $articleId
      * @return void
@@ -120,11 +121,11 @@ class SyncLocationRatingAsStoreRating implements ShouldQueue
             }
 
             // Format dates properly for MySQL timestamp format
-            $createdAt = $locationRating->created_at instanceof \DateTime 
+            $createdAt = $locationRating->created_at instanceof DateTime 
                 ? $locationRating->created_at->format('Y-m-d H:i:s')
                 : date('Y-m-d H:i:s', strtotime($locationRating->created_at));
             
-            $updatedAt = $locationRating->updated_at instanceof \DateTime 
+            $updatedAt = $locationRating->updated_at instanceof DateTime 
                 ? $locationRating->updated_at->format('Y-m-d H:i:s')
                 : date('Y-m-d H:i:s', strtotime($locationRating->updated_at));
 

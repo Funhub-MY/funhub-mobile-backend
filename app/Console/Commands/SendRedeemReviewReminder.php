@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\MerchantOfferClaimRedemptions;
 use App\Models\StoreRating;
 use App\Notifications\RedeemReview;
@@ -32,7 +33,7 @@ class SendRedeemReviewReminder extends Command
         foreach ($recentRedemptions as $redemption) {
 			try {
 				if (!$redemption->claim || !$redemption->claim->merchantOffer) {
-					throw new \Exception('Claim or Merchant Offer is null for redemption ID ' . $redemption->id);
+					throw new Exception('Claim or Merchant Offer is null for redemption ID ' . $redemption->id);
 				}
 				$this->info('Processing redemption for user ID ' . $redemption->user_id . ' and merchant offer ID ' . $redemption->claim->merchantOffer->id);
 				$user = $redemption->user;
@@ -77,7 +78,7 @@ class SendRedeemReviewReminder extends Command
 
 					$this->info('[SendRedeemReviewReminder] User ' . $user->id);
 				}
-			} catch (\Exception $e) {
+			} catch (Exception $e) {
 				Log::error('[SendRedeemReviewReminder] Error processing redemption ID: ' . $redemption->id, [
 					'error' => $e->getMessage(),
 					'stack' => $e->getTraceAsString(),

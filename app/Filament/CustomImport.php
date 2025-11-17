@@ -2,6 +2,7 @@
 
 namespace App\Filament;
 
+use Exception;
 use App\Models\MerchantCategory;
 use App\Models\Store;
 use Closure;
@@ -134,7 +135,7 @@ class CustomImport
 
                 return false;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $data;
         }
 
@@ -203,7 +204,7 @@ class CustomImport
                                 'status' => $status,
                             ]);
                         }
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         Log::error('Error updating store status', [
                             'store_id' => $store->id,
                             'status' => $status,
@@ -228,7 +229,7 @@ class CustomImport
                             // detach all
                             $store->categories()->detach();
                         }
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         Log::error('Error syncing store categories', [
                             'store_id' => $store->id,
                             'category_names' => $categoryNames,

@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use Exception;
 use App\Events\PurchasedMerchantOffer;
 use App\Models\MerchantOfferVoucher;
 use App\Services\MixpanelService;
@@ -14,14 +15,14 @@ class TrackPurchasedMerchantOfferListener implements ShouldQueue
     /**
      * The MixpanelService instance.
      *
-     * @var \App\Services\MixpanelService
+     * @var MixpanelService
      */
     protected $mixpanelService;
 
     /**
      * Create the event listener.
      *
-     * @param \App\Services\MixpanelService $mixpanelService
+     * @param MixpanelService $mixpanelService
      * @return void
      */
     public function __construct(MixpanelService $mixpanelService)
@@ -32,7 +33,7 @@ class TrackPurchasedMerchantOfferListener implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param  \App\Events\PurchasedMerchantOffer  $event
+     * @param PurchasedMerchantOffer $event
      * @return void
      */
     public function handle(PurchasedMerchantOffer $event)
@@ -61,7 +62,7 @@ class TrackPurchasedMerchantOfferListener implements ShouldQueue
                 'merchant_offer_id' => $event->merchantOffer->id,
                 'user_id' => $event->user->id
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error tracking merchant offer purchase: ' . $e->getMessage(), [
                 'exception' => $e,
                 'merchant_offer_id' => $event->merchantOffer->id ?? null,

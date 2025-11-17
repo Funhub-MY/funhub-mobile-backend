@@ -24,7 +24,7 @@ class Dashboard extends BasePage
         return "Dashboard";
     }
 
-    public function getColumns(): int | array
+    public function getColumns(): int|array
     {
         if (auth()->user()->hasRole('merchant')) {
             return 3;

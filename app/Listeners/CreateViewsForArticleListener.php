@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use Exception;
 use App\Events\ArticleCreated;
 use App\Models\BlacklistSeederUser;
 use App\Models\Setting;
@@ -65,7 +66,7 @@ class CreateViewsForArticleListener
                         Log::info('[CreateViewsForArticleListener] auto_view_percentage: ', [
                             'auto_view_percentage' => $auto_view_percentage,
                         ]);
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         // Handle the case where the value is not convertible to an integer
                         $auto_view_percentage = 1; // Default as 1
                     }

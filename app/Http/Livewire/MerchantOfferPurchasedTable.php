@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
 use Livewire\Component;
 use App\Models\MerchantOfferClaim;
 use Filament\Tables\Columns\TextColumn;
@@ -11,8 +13,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
-class MerchantOfferPurchasedTable extends Component implements HasTable
+class MerchantOfferPurchasedTable extends Component implements HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
 
     public $currentRouteId;

@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use App\Events\MerchantOfferClaimed;
 use App\Events\PurchasedMerchantOffer;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MerchantOfferClaimResource;
 use App\Http\Resources\MerchantOfferResource;
 use App\Models\OfferLimitWhitelist;
+use App\Models\MerchantOfferWhitelist;
 use App\Http\Resources\PublicMerchantOfferResource;
 use App\Models\Interaction;
 use App\Models\Merchant;
@@ -48,7 +52,7 @@ class MerchantOfferController extends Controller
      * Get Offers
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Merchant
      * @subgroup Merchant Offers
@@ -82,7 +86,6 @@ class MerchantOfferController extends Controller
      *     "current_page": 1,
      *   }
      * }
-     *
      */
     public function index(Request $request)
     {
@@ -298,23 +301,76 @@ class MerchantOfferController extends Controller
             $isWhitelisted = OfferLimitWhitelist::where('user_id', $user->id)->exists();
 
             if (!$isWhitelisted) {
-                $merchantIds = MerchantOfferClaim::where('user_id', $user->id)
+                // Get all offers the user has purchased
+                $purchasedOfferIds = MerchantOfferClaim::where('user_id', $user->id)
                     ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
-                    ->where('created_at', '>=', now()->subDays(config('app.same_merchant_spend_limit_days')))
                     ->pluck('merchant_offer_id')
                     ->toArray();
 
-                $userPurchasedBeforeFromMerchantIds = MerchantOffer::whereIn('id', $merchantIds)
+                if (empty($purchasedOfferIds)) {
+                    return [];
+                }
+
+                // Get whitelisted offers from database
+                $whitelistedOffers = MerchantOfferWhitelist::whereIn('merchant_offer_id', $purchasedOfferIds)
+                    ->with('merchantOffer')
+                    ->get()
+                    ->keyBy('merchant_offer_id');
+
+                // Filter offers based on whitelist and custom days
+                // Logic: If purchase is WITHIN days limit, RESTRICT (hide offer)
+                //        If purchase is OUTSIDE days limit, DON'T RESTRICT (show offer)
+                //        If fully whitelisted, DON'T RESTRICT (show offer)
+                $restrictedOfferIds = [];
+                foreach ($purchasedOfferIds as $offerId) {
+                    $whitelistEntry = $whitelistedOffers->get($offerId);
+                    
+                    if ($whitelistEntry) {
+                        // Offer is whitelisted
+                        if ($whitelistEntry->isFullyWhitelisted()) {
+                            // Fully whitelisted - no restriction, skip this offer
+                            continue;
+                        } else {
+                            // Has custom days limit - check if purchase is within custom days
+                            $customDays = $whitelistEntry->override_days;
+                            $claim = MerchantOfferClaim::where('user_id', $user->id)
+                                ->where('merchant_offer_id', $offerId)
+                                ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
+                                ->where('created_at', '>=', now()->subDays($customDays))
+                                ->exists();
+                            
+                            if ($claim) {
+                                // Purchase is within custom days limit - RESTRICT (hide offer)
+                                $restrictedOfferIds[] = $offerId;
+                            }
+                            // If purchase is outside custom days, don't restrict (show offer)
+                        }
+                    } else {
+                        // Not whitelisted - check against config default days
+                        $claim = MerchantOfferClaim::where('user_id', $user->id)
+                            ->where('merchant_offer_id', $offerId)
+                            ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
+                            ->where('created_at', '>=', now()->subDays(config('app.same_merchant_spend_limit_days')))
+                            ->exists();
+                        
+                        if ($claim) {
+                            // Purchase is within default days limit - RESTRICT (hide offer)
+                            $restrictedOfferIds[] = $offerId;
+                        }
+                        // If purchase is outside default days, don't restrict (show offer)
+                    }
+                }
+
+                // Get merchant user_ids from restricted offers
+                $userPurchasedBeforeFromMerchantIds = MerchantOffer::whereIn('id', $restrictedOfferIds)
                     ->pluck('user_id')
                     ->unique()
                     ->toArray();
 
-                $merchantUserWhitelist = [28825,93716,94359,94361,94377,94515,94516,94519,94520,94521,94522,94552,94557,94561,94588,94589,94590,94591,94592,93761,94739,95133,95174,96126,96135,96142,96151,96870]; //Merchant Whitelist, user can view merchant offer after purchase
-                $userPurchasedBeforeFromMerchantIds = array_values(array_diff($userPurchasedBeforeFromMerchantIds, $merchantUserWhitelist));    
-
                 Log::info('User purchased before from merchant ids', [
                     'user_id' => $user->id,
                     'user_purchased_before_from_merchant_ids' => $userPurchasedBeforeFromMerchantIds,
+                    'restricted_offer_ids' => $restrictedOfferIds,
                 ]);
             } else {
                 Log::info('User in whitelist', [
@@ -330,7 +386,7 @@ class MerchantOfferController extends Controller
     /**
      * Get My Merchant Offers (Logged in User)
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Merchant
      * @subgroup Merchant Offers
@@ -391,7 +447,7 @@ class MerchantOfferController extends Controller
      * Get Offer By ID
      *
      * @param MerchantOffer $merchantOffer
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Merchant
      * @subgroup Merchant Offers
@@ -399,7 +455,6 @@ class MerchantOfferController extends Controller
      * @response scenario=success {
      * "offer": {}
      * }
-     *
      */
     public function show($id)
     {
@@ -478,7 +533,7 @@ class MerchantOfferController extends Controller
      * Claim Offer
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Merchant
      * @subgroup Merchant Offers
@@ -658,7 +713,7 @@ class MerchantOfferController extends Controller
             try {
                 // notify user offer claimed
                 $user->notify(new OfferClaimed($offer, $user, 'points', $net_amount));
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error($e->getMessage(), [
                     'user_id' => $user->id,
                     'offer_id' => $offer->id,
@@ -747,7 +802,7 @@ class MerchantOfferController extends Controller
                     ], 422);
                 }
 
-                $mpayService = new \App\Services\Mpay(
+                $mpayService = new Mpay(
                     config('services.mpay.mid'),
                     config('services.mpay.hash_key'),
                     ($request->fiat_payment_method) ? $request->fiat_payment_method : false,
@@ -824,7 +879,7 @@ class MerchantOfferController extends Controller
      * Get My Bookmarked Merchant Offers
      *
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      *
      * @group Merchant
      * @subgroup Merchant Offers
@@ -842,7 +897,6 @@ class MerchantOfferController extends Controller
      *     "current_page": 1,
      *   }
      * }
-     *
      */
     public function getMyBookmarkedMerchantOffers(Request $request)
     {
@@ -968,7 +1022,7 @@ class MerchantOfferController extends Controller
      * This is when customer with claimed merchant offer wishes to redeem in store
      *
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      *
      * @group Merchant
      * @subgroup Merchant Offers
@@ -1076,7 +1130,7 @@ class MerchantOfferController extends Controller
             } else {
                 // voucher has imported code, no need to provide redeem_code
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[MerchantOfferController] postRedeemOffer: Error validating voucher code', [$e->getMessage()]);
             return response()->json([
                 'message' => __('messages.error.merchant_offer_controller.You_do_not_have_enough_to_redeem')
@@ -1097,7 +1151,7 @@ class MerchantOfferController extends Controller
         try {
             $locale = auth()->user()->last_lang ?? config('app.locale');
             auth()->user()->notify((new OfferRedeemed($offer, auth()->user()))->locale($locale));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error sending offer redeemed notification', [$e->getMessage()]);
         }
 
@@ -1117,7 +1171,7 @@ class MerchantOfferController extends Controller
 			} else {
 				Log::info('[MerchantOfferController] Redeem offer voucher, dont have offer user email.');
 			}
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 			Log::error('Error sending offer redeemed notification to merchant', [
 				'error' => $e->getMessage(),
 				'trace' => $e->getTraceAsString(),
@@ -1491,8 +1545,12 @@ class MerchantOfferController extends Controller
         }
 
         if ($request->has('merchant_id')) {
-            $query->whereHas('merchant', function ($query) use ($request) {
-                $query->where('id', $request->merchant_id);
+            // Use direct merchant_id relationship (preferred) or fallback to whereHas for legacy records
+            $query->where(function($q) use ($request) {
+                $q->where('merchant_id', $request->merchant_id)
+                  ->orWhereHas('merchant', function ($query) use ($request) {
+                      $query->where('id', $request->merchant_id);
+                  });
             });
         }
 
@@ -1532,7 +1590,7 @@ class MerchantOfferController extends Controller
      * Get Last Purchase Date of user on a Merchant User
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Merchant
      * @subgroup Merchant Offers
@@ -1574,7 +1632,7 @@ class MerchantOfferController extends Controller
      * Get Total Quantity of Purchased Offers by User
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Merchant
      * @subgroup Merchant Offers
@@ -1637,7 +1695,7 @@ class MerchantOfferController extends Controller
 
             return $encrypted_data;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error encrypting data', [
                 'error' => $e->getMessage(),
                 'data' => $data

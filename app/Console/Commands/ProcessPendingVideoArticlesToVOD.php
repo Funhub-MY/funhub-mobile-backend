@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Jobs\ByteplusVODProcess;
 use App\Models\Article;
 use Illuminate\Console\Command;
@@ -46,7 +47,7 @@ class ProcessPendingVideoArticlesToVOD extends Command
                 }
 
                 $this->info(sprintf('Processing articles from %s to %s', $fromDate->format('Y-m-d'), $toDate->format('Y-m-d')));
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error('Invalid date format. Use Y-m-d (e.g., 2025-01-07)');
                 return 1;
             }
@@ -114,7 +115,7 @@ class ProcessPendingVideoArticlesToVOD extends Command
                         // Add some delay to prevent overwhelming the queue
                         sleep(1);
                     }
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Log::error('Error processing video article', [
                         'article_id' => $article->id,
                         'error' => $e->getMessage()
@@ -138,7 +139,7 @@ class ProcessPendingVideoArticlesToVOD extends Command
 
             return 0;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error in ProcessPendingVideoArticlesToVOD', [
                 'error' => $e->getMessage(),
                 'date_range' => $fromDate && $toDate ? [

@@ -468,13 +468,13 @@ class StoreController extends Controller
      * Check if store exists at given location
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Stores
      * @bodyParam lat float optional Latitude coordinate. Example: 3.1390
      * @bodyParam lng float optional Longitude coordinate. Example: 101.6869
      * @bodyParam location_name string optional Location name to search. Example: "KLCC"
-     * 
+     *
      * @response scenario=success {
      *   "exists": true,
      *   "store": {
@@ -651,11 +651,11 @@ class StoreController extends Controller
      * Get Stores by Merchant Offer Claim ID
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Stores
      * @urlParam claim_id integer required The merchant offer claim ID. Example: 1
-     * 
+     *
      * @response scenario=success {
      *   "data": {
      *     "id": 1,

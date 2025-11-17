@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Listeners\SendProductPurchaseNotificationListener;
+use App\Events\OnAccountRestricted;
+use App\Listeners\HandleAccountRestricted;
 use App\Models\Approval;
 use App\Events\ArticleCreated;
 use App\Events\ClosedSupportTicket;
@@ -118,15 +121,15 @@ class EventServiceProvider extends ServiceProvider
 
         GiftCardPurchased::class => [
             MissionEventListener::class,
-            \App\Listeners\SendProductPurchaseNotificationListener::class,
+            SendProductPurchaseNotificationListener::class,
         ],
 
         MissionCompletedEvent::class => [
             CheckNewbieMissionsCompletedListener::class,
         ],
 
-        \App\Events\OnAccountRestricted::class => [
-            \App\Listeners\HandleAccountRestricted::class,
+        OnAccountRestricted::class => [
+            HandleAccountRestricted::class,
         ],
     ];
 

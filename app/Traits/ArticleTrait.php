@@ -1,6 +1,7 @@
 <?php
 namespace App\Traits;
 
+use Exception;
 use App\Models\Article;
 use App\Models\ArticleImport;
 use Illuminate\Support\Collection;
@@ -11,13 +12,13 @@ use Illuminate\Support\Str;
  */
 trait ArticleTrait {
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public static function formatSlug($text): string
     {
 
         if ($text == '' || $text == null) {
-            throw new \Exception('Text must not be empty or null.');
+            throw new Exception('Text must not be empty or null.');
         }
         // try Str::slug first, then see if it is empty or null
         $slug_text = Str::slug($text);
@@ -41,7 +42,7 @@ trait ArticleTrait {
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function generateSlugRandomTextAndNumber($concat = ''): string
     {

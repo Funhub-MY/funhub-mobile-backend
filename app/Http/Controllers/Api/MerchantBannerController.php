@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MerchantBannerResource;
 use App\Models\MerchantBanner;
@@ -11,12 +12,12 @@ class MerchantBannerController extends Controller
 {
     /**
      * Get Banners
-     * 
+     *
      * Get a list of published merchant banners ordered by ascending order.
-     * 
+     *
      * @group Merchant
      * @subgroup Banners
-     * 
+     *
      * @response scenario=success {
      *  "data": [
      *      {
@@ -28,8 +29,8 @@ class MerchantBannerController extends Controller
      *      }
      *  ]
      * }
-     * 
-     * @return \Illuminate\Http\JsonResponse
+     *
+     * @return JsonResponse
      */
     public function getBanners()
     {

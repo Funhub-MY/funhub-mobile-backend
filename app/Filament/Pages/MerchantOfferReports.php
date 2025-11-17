@@ -1,8 +1,9 @@
 <?php
 namespace App\Filament\Pages;
 
+use Filament\Actions\Action;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Pages\Page;
-use Filament\Pages\Actions\Action;
 use Filament\Tables\Columns;
 use Filament\Tables\Table;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -24,9 +25,9 @@ class MerchantOfferReports extends Page implements HasTable
 {
     use InteractsWithTable, HasPageShield;
     
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $navigationGroup = 'Reports';
+    protected static string | \UnitEnum | null $navigationGroup = 'Reports';
 
     protected static ?int $navigationSort = 2;
 
@@ -36,7 +37,7 @@ class MerchantOfferReports extends Page implements HasTable
 
     protected static ?string $slug = 'merchant-offer-reports';
 
-    protected static string $view = 'filament.pages.merchant-offer-reports';
+    protected string $view = 'filament.pages.merchant-offer-reports';
 
     protected function getTableRecordsPerPageSelectOptions(): array 
     {
@@ -73,10 +74,10 @@ class MerchantOfferReports extends Page implements HasTable
     protected function getTableColumns(): array
     {
         return [
-            Columns\TextColumn::make('id')
+            TextColumn::make('id')
                 ->label('Offer ID')
                 ->sortable(),
-            Columns\TextColumn::make('offer_status')
+            TextColumn::make('offer_status')
                 ->label('Offer Status')
                 ->badge()
                 ->formatStateUsing(fn (int $state): string => MerchantOffer::STATUS[$state] ?? $state)
@@ -87,37 +88,37 @@ class MerchantOfferReports extends Page implements HasTable
                     default => 'gray',
                 })
                 ->sortable(),
-            Columns\TextColumn::make('offer_name')
+            TextColumn::make('offer_name')
                 ->label('Offer Name')
                 ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('merchant_offers.name', 'like', "%{$search}%");
                 }),
-            Columns\TextColumn::make('merchant_name')
+            TextColumn::make('merchant_name')
                 ->label('Merchant Name')
                 ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('merchants.name', 'like', "%{$search}%");
                 }),
-            Columns\TextColumn::make('brand_name')
+            TextColumn::make('brand_name')
                 ->label('Brand Name')
                 ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('merchants.brand_name', 'like', "%{$search}%");
                 }), 
-            Columns\TextColumn::make('total_vouchers')
+            TextColumn::make('total_vouchers')
                 ->label('Total Vouchers')
                 ->sortable(),
-            Columns\TextColumn::make('total_purchases')
+            TextColumn::make('total_purchases')
                 ->label('Total Sold')
                 ->sortable(),
-            Columns\TextColumn::make('quantity')
+            TextColumn::make('quantity')
                 ->label('Offer Remaining Quantity')
                 ->sortable(),
-            Columns\TextColumn::make('funbox_quantity')
+            TextColumn::make('funbox_quantity')
                 ->label('Funbox Quantity')
                 ->sortable(),
-            Columns\TextColumn::make('funbox_original')
+            TextColumn::make('funbox_original')
                 ->label('Funbox Original Price (RM)')
                 ->sortable()
                 ->formatStateUsing(function (?string $state): string {
@@ -129,7 +130,7 @@ class MerchantOfferReports extends Page implements HasTable
                     $formatter = new NumberFormatter('en_MY', NumberFormatter::CURRENCY);
                     return $formatter->formatCurrency($state, 'MYR');
                 }),
-            Columns\TextColumn::make('funbox_selling')
+            TextColumn::make('funbox_selling')
                 ->label('Funbox Selling Price (RM)')
                 ->sortable()
                 ->formatStateUsing(function (?string $state): string {
@@ -141,13 +142,13 @@ class MerchantOfferReports extends Page implements HasTable
                     $formatter = new NumberFormatter('en_MY', NumberFormatter::CURRENCY);
                     return $formatter->formatCurrency($state, 'MYR');
                 }),
-            Columns\TextColumn::make('funbox_discount_rate')
+            TextColumn::make('funbox_discount_rate')
                 ->label('Funbox Discount Rate')
                 ->sortable()
                 ->formatStateUsing(function (?float $state): string {
                     return $state !== null ? number_format($state, 2) . '%' : '-';
                 }),
-            Columns\TextColumn::make('price_original')
+            TextColumn::make('price_original')
                 ->label('Original Price (RM)')
                 ->sortable()
                 ->formatStateUsing(function (?string $state): string {
@@ -159,7 +160,7 @@ class MerchantOfferReports extends Page implements HasTable
                     $formatter = new NumberFormatter('en_MY', NumberFormatter::CURRENCY);
                     return $formatter->formatCurrency($state, 'MYR');
                 }),
-            Columns\TextColumn::make('price_selling')
+            TextColumn::make('price_selling')
                 ->label('Selling Price (RM)')
                 ->sortable()
                 ->formatStateUsing(function (?string $state): string {
@@ -171,17 +172,17 @@ class MerchantOfferReports extends Page implements HasTable
                     $formatter = new NumberFormatter('en_MY', NumberFormatter::CURRENCY);
                     return $formatter->formatCurrency($state, 'MYR');
                 }),
-            Columns\TextColumn::make('discount_rate')
+            TextColumn::make('discount_rate')
                 ->label('Discount Rate')
                 ->sortable()
                 ->formatStateUsing(function (?float $state): string {
                     return $state !== null ? number_format($state, 2) . '%' : '-';
                 }),
-            Columns\TextColumn::make('offer_available_at')
+            TextColumn::make('offer_available_at')
                 ->label('Available From')
                 ->dateTime()
                 ->sortable(),
-            Columns\TextColumn::make('offer_available_until')
+            TextColumn::make('offer_available_until')
                 ->label('Available Until')
                 ->dateTime()
                 ->sortable(),
@@ -192,7 +193,7 @@ class MerchantOfferReports extends Page implements HasTable
     {
         return [ 
             Filter::make('period')
-                ->form([
+                ->schema([
                     DatePicker::make('start_date')->required(),
                     DatePicker::make('end_date')->required(),
                 ])

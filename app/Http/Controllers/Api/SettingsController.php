@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
@@ -11,9 +12,9 @@ class SettingsController extends Controller
 {
     /**
      * Get a setting value by key
-     * 
+     *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getSettingSwitch(Request $request)
     {
@@ -46,9 +47,9 @@ class SettingsController extends Controller
     
     /**
      * Update a setting value by key
-     * 
+     *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function postSettingsSwitch(Request $request)
     {

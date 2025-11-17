@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferCampaign;
 use Carbon\Carbon;
@@ -37,7 +38,7 @@ class SyncOfferRelations extends Command
             try {
                 $from = Carbon::createFromFormat('Y-m-d', $fromDate)->startOfDay();
                 $query->where('created_at', '>=', $from);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error("Invalid from date format. Use YYYY-MM-DD");
                 return 1;
             }
@@ -47,7 +48,7 @@ class SyncOfferRelations extends Command
             try {
                 $to = Carbon::createFromFormat('Y-m-d', $toDate)->endOfDay();
                 $query->where('created_at', '<=', $to);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error("Invalid to date format. Use YYYY-MM-DD");
                 return 1;
             }
@@ -92,7 +93,7 @@ class SyncOfferRelations extends Command
                     $synced++;
                 }
 
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error("Error processing offer #{$offer->id}: " . $e->getMessage());
                 Log::error('Failed to sync offer relations', [
                     'offer_id' => $offer->id,

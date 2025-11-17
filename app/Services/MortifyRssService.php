@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use App\Models\Article;
 use App\Models\ArticleImport;
 use App\Models\ArticleTag;
@@ -208,7 +209,7 @@ class MortifyRssService
                     $import->article_pub_date = Carbon::parse($articles[0]['pub_date']);
                     $import->save();
                 }
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 // Log messages
                 $this->error_messages[] = $exception->getMessage();
                 Log::info('Processing Articles of Channel ID: '.$channel->id .'\n'.'Channel Name: '.$channel->channel_name);

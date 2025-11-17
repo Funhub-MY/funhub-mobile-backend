@@ -224,9 +224,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\Filament\AdminPanelProvider::class,
         App\Providers\Filament\AdminPanelProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        // App\Providers\RouteServiceProvider::class, // Removed - routes now configured in bootstrap/app.php
         // App\Providers\TelescopeServiceProvider::class,
         App\Providers\MpayServiceProvider::class,
+        App\Providers\FilamentGoogleMapsCompatibilityServiceProvider::class,
     ],
 
     /*

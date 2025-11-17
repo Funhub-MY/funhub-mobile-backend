@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\MerchantOfferCampaignSchedule;
+use Exception;
+use App\Jobs\IndexMerchantOffer;
 use App\Events\MerchantOfferPublished;
 use App\Models\MerchantOffer;
 use Carbon\Carbon;
@@ -75,14 +78,14 @@ class PublishMerchantOffers extends Command
                 
                 if (!empty($scheduleIds)) {
                     // update all schedules in a single query
-                    $updatedSchedules = \App\Models\MerchantOfferCampaignSchedule::whereIn('id', $scheduleIds)
+                    $updatedSchedules = MerchantOfferCampaignSchedule::whereIn('id', $scheduleIds)
                         ->update(['status' => MerchantOffer::STATUS_PUBLISHED]);
                         
                     $this->info("Updated {$updatedSchedules} campaign schedules to published status");
                     Log::info("[PublishMerchantOffers] Updated {$updatedSchedules} campaign schedules");
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[PublishMerchantOffers] Error batch updating schedules', ['error' => $e->getMessage()]);
         }
             
@@ -96,11 +99,11 @@ class PublishMerchantOffers extends Command
                 // dispatch jobs for each offer ID to be processed in the queue
                 foreach ($offerIds as $offerId) {
                     // important as single update query will not trigger scout to index
-                    \App\Jobs\IndexMerchantOffer::dispatch($offerId);
+                    IndexMerchantOffer::dispatch($offerId);
                 }
                 
                 $this->info('Dispatched ' . count($offerIds) . ' indexing jobs to the queue');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('[PublishMerchantOffers] Error dispatching indexing jobs', ['error' => $e->getMessage()]);
             }
         } else {
@@ -117,7 +120,7 @@ class PublishMerchantOffers extends Command
                     event(new MerchantOfferPublished($offer));
                     Log::info('[PublishMerchantOffers] Merchant offer processed', ['offer_id' => $offer->id]);
                     $processedCount++;
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Log::error('[PublishMerchantOffers] Error firing event', [
                         'offer_id' => $offer->id,
                         'error' => $e->getMessage()

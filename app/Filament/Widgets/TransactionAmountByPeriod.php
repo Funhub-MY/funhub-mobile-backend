@@ -16,7 +16,7 @@ class TransactionAmountByPeriod extends LineChartWidget
 {
     use HasWidgetShield, HasPeriodTrait;
 
-    protected static ?string $heading = 'Transaction Amount (RM)';
+    protected ?string $heading = 'Transaction Amount (RM)';
     protected int | string | array $columnSpan = 'full';
 
     protected function getFormSchema(): array

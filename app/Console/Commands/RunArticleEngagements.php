@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\ArticleEngagement;
 use App\Jobs\ProcessEngagementInteractions;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -32,7 +33,7 @@ class RunArticleEngagements extends Command
     {
         $this->info('Running article engagements');
 
-        $engagements  = \App\Models\ArticleEngagement::where('scheduled_at', '<=', now())
+        $engagements  = ArticleEngagement::where('scheduled_at', '<=', now())
             ->whereNull('executed_at')
             ->get();
 

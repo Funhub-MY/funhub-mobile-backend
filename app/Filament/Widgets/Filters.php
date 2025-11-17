@@ -2,19 +2,22 @@
 
 namespace App\Filament\Widgets;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Widgets\Widget;
 
-class Filters extends Widget implements HasForms
+class Filters extends Widget implements HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
-    protected static string $view = 'filament.widgets.filters';
+    protected string $view = 'filament.widgets.filters';
 
     protected int | string | array $columnSpan = 'full';
 
@@ -27,9 +30,9 @@ class Filters extends Widget implements HasForms
         $this->form->fill();
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->statePath('data')
             ->schema([
                 Grid::make()

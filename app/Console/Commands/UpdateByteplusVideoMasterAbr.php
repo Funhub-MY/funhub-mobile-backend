@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\VideoJob;
 use App\Services\ByteplusService;
 use Illuminate\Console\Command;
@@ -63,7 +64,7 @@ class UpdateByteplusVideoMasterAbr extends Command
                 $this->info("Successfully updated video job ID: {$job->id}");
                 $this->line("New playback links: " . json_encode($playbackInfo, JSON_PRETTY_PRINT));
 
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error("Error processing job ID {$job->id}: " . $e->getMessage());
                 Log::error('Error updating video job master ABR', [
                     'job_id' => $job->id,

@@ -11,7 +11,7 @@ class ArticleCountChartOverMonths extends BarChartWidget
 {
     use HasWidgetShield;
 
-    protected static ?string $heading = 'Articles';
+    protected ?string $heading = 'Articles';
 
     protected function getData(): array
     {

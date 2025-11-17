@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use Exception;
 use App\Events\GiftCardPurchased;
 use App\Notifications\ProductPurchaseNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -26,7 +27,7 @@ class SendProductPurchaseNotificationListener implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param  \App\Events\GiftCardPurchased  $event
+     * @param GiftCardPurchased $event
      * @return void
      */
     public function handle(GiftCardPurchased $event)
@@ -58,7 +59,7 @@ class SendProductPurchaseNotificationListener implements ShouldQueue
                     'user_id' => $user->id,
                     'locale' => $user->last_lang ?? config('app.locale')
                 ]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('Failed to send product purchase notification', [
                     'product_id' => $product->id,
                     'user_id' => $user->id,

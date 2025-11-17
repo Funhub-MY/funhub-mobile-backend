@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use HubSpot\Factory;
+use HubSpot\Client\Crm\Contacts\Model\SimplePublicObjectInput;
+use Exception;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Article;
 use App\Http\Resources\MerchantRatingResource;
@@ -338,9 +341,9 @@ class MerchantController extends Controller
         ]);
 
         try {
-            $hubspot = \HubSpot\Factory::createWithAccessToken(config('services.hubspot.token'));
+            $hubspot = Factory::createWithAccessToken(config('services.hubspot.token'));
 
-            $contactInput = new \HubSpot\Client\Crm\Contacts\Model\SimplePublicObjectInput();
+            $contactInput = new SimplePublicObjectInput();
             $contactInput->setProperties([
                 'brand_name' => $request->brand_name,
                 'firstname' => $request->pic_name,
@@ -356,7 +359,7 @@ class MerchantController extends Controller
             if (auth()->user()) {
                 auth()->user()->update(['registered_with_merchant_crm' => true]);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error creating contact via HubSpot API: ' . $e->getMessage());
             return response()->json(['message' => 'Error creating contact.'], 422);
         }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\ArticleRecommendation;
@@ -22,7 +24,7 @@ class ViewController extends Controller
      * This is used for recording views for articles, comments, merchant offers, user profiles and location
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group View
      * @bodyParam viewable_type string required The type of the viewable. Example: article/comment/merchant_offer/user_profile/location/store
@@ -91,7 +93,7 @@ class ViewController extends Controller
      * @param string $type
      * @param int $id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group View
      * @urlParam type string required The type of the viewable. Example: article/comment/merchant_offer/user_profile/stpres
@@ -139,7 +141,7 @@ class ViewController extends Controller
                     'objectIDs' => [(string) $view->viewable_id],
                 ]
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[recordInsights] Error sending events to Algolia', ['error' => $e->getMessage(), 'view' => $view]);
         }
         return true;

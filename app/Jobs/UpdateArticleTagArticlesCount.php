@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Exception;
 use App\Models\ArticleTag;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -41,7 +42,7 @@ class UpdateArticleTagArticlesCount implements ShouldQueue
                 ['name' => $this->articleTag->name],
                 ['articles_count' => $sumArticlesCounts, 'updated_at' => now()]
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error updating article tag articles count: ' . $e->getMessage(), [
                 'article_tag' => $this->articleTag->name,
                 'error' => $e->getMessage()

@@ -2,6 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
+use App\Events\CommentCreated;
+use App\Notifications\RepliedCommentReplies;
+use App\Notifications\CommentReplied;
+use App\Notifications\Commented;
+use App\Events\CommentReported;
+use App\Events\CommentLiked;
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCommentRequest;
 use App\Http\Resources\CommentResource;
@@ -25,7 +33,7 @@ class CommentController extends Controller
      * @param $type string
      * @param $id integer
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      *
      * @group Article
      * @subgroup Comments
@@ -144,8 +152,8 @@ class CommentController extends Controller
     /**
      * Create a new comment by logged in user
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      *
      * @group Article
      * @subgroup Comments
@@ -200,16 +208,16 @@ class CommentController extends Controller
                     try {
                         $locale = $taggedUser->last_lang ?? config('app.locale');
                         $taggedUser->notify((new TaggedUserInComment($comment, $comment->user))->locale($locale));
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         Log::error('[CommentController] Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser, 'trace' => $e->getTraceAsString()]);
                     }
                 });
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[CommentController] Tagged user error', ['message' => $e->getMessage()]);
         }
 
-        event(new \App\Events\CommentCreated($comment)); // fires event
+        event(new CommentCreated($comment)); // fires event
 
         try {
             if ($comment && $comment->reply_to_id) {
@@ -217,14 +225,14 @@ class CommentController extends Controller
                 $comment->load('replyTo', 'replyTo.user');
                 // direct reply within replies
                 $locale = $comment->replyTo->user->last_lang ?? config('app.locale');
-                $comment->replyTo->user->notify((new \App\Notifications\RepliedCommentReplies($comment, $comment->replyTo))->locale($locale)); // send notification
+                $comment->replyTo->user->notify((new RepliedCommentReplies($comment, $comment->replyTo))->locale($locale)); // send notification
             } elseif ($comment && $comment->parent_id && $comment->parent->user->id !== auth()->user()->id) {
                 // parent replied
                 $locale = $comment->parent->user->last_lang ?? config('app.locale');
                 // if comment has parent and is not self, send notification to parent comment's user
-                $comment->parent->user->notify((new \App\Notifications\CommentReplied($comment, $comment->parent))->locale($locale)); // send notification
+                $comment->parent->user->notify((new CommentReplied($comment, $comment->parent))->locale($locale)); // send notification
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[CommentController] Notification error when comment', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
         }
 
@@ -234,9 +242,9 @@ class CommentController extends Controller
         try {
             if ($comment->commentable->user && $comment->commentable->user->id != auth()->id()) {
                 $locale = $comment->commentable->user->last_lang ?? config('app.locale');
-                $comment->commentable->user->notify((new \App\Notifications\Commented($comment))->locale($locale)); // send notification
+                $comment->commentable->user->notify((new Commented($comment))->locale($locale)); // send notification
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[CommentController] Notification error when commentable user', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
         }
 
@@ -257,7 +265,7 @@ class CommentController extends Controller
      * Show one comment by ID
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      *
      * @group Article
      * @subgroup Comments
@@ -308,9 +316,9 @@ class CommentController extends Controller
     /**
      * Update comment by ID. (Only owner of comment can update)
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      *
      * @group Article
      * @subgroup Comments
@@ -350,7 +358,7 @@ class CommentController extends Controller
                 $comment->taggedUsers->whereIn('id', $newTaggedUsers)->each(function ($taggedUser) use ($comment) {
                     try {
                         $taggedUser->notify(new TaggedUserInComment($comment, $comment->user));
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         Log::error('[CommentController] Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser]);
                     }
                 });
@@ -365,7 +373,7 @@ class CommentController extends Controller
      * Remove comment by ID. (Only owner of comment can delete)
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      *
      * @group Article
      * @subgroup Comments
@@ -393,8 +401,8 @@ class CommentController extends Controller
     /**
      * Report a comment
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      *
      * @group Article
      * @subgroup Comments
@@ -428,7 +436,7 @@ class CommentController extends Controller
             ]);
 
             // TODO: Auto hide comment if comment is reported more than X times
-            event(new \App\Events\CommentReported($comment)); // fires event
+            event(new CommentReported($comment)); // fires event
 
         } else {
             return response()->json(['message' => __('messages.error.comment_controller.You_have_already_reported_this_comment')], 422);
@@ -440,9 +448,9 @@ class CommentController extends Controller
     /**
      * Get replies to a comment
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      *
      * @group Article
      * @subgroup Comments
@@ -491,8 +499,8 @@ class CommentController extends Controller
     /**
      * Toggle a Comment Like
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      *
      * @group Article
      * @subgroup Comments
@@ -515,7 +523,7 @@ class CommentController extends Controller
             $comment->likes()->create([
                 'user_id' => auth()->id(),
             ]);
-            event(new \App\Events\CommentLiked($comment, true, auth()->user())); // fires event
+            event(new CommentLiked($comment, true, auth()->user())); // fires event
 
             if ($comment && $comment->user && $comment->user->id != auth()->id()) {
                 $locale = $comment->user->last_lang ?? config('app.locale');
@@ -527,7 +535,7 @@ class CommentController extends Controller
         } else {
             // unlike
             $comment->likes()->where('user_id', auth()->id())->delete();
-            event(new \App\Events\CommentLiked($comment, false, auth()->user())); // fires event
+            event(new CommentLiked($comment, false, auth()->user())); // fires event
             return response()->json(['message' => __('messages.success.comment_controller.Comment_Un-Liked')]);
         }
     }

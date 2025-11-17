@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Jobs\IndexStore;
 use App\Models\RatingCategory;
 use App\Models\Store;
@@ -282,7 +283,7 @@ class PullBubbleDataForUserStoreRatings extends Command
             
             return Command::SUCCESS;
             
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error("An error occurred: " . $e->getMessage());
             return Command::FAILURE;
         }
@@ -312,7 +313,7 @@ class PullBubbleDataForUserStoreRatings extends Command
                     'phone_no' => $userData['Phone number'],
                     'name' => $userData['User name'],
                 ]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error("Failed to create user: " . $userData['User name']. ' phone_no: ' . $userData['Phone number']);
                 return null;
             }

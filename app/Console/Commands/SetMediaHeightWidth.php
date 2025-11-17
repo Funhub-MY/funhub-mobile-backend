@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -30,7 +31,7 @@ class SetMediaHeightWidth extends Command
     public function handle()
     {
         // get all media without custom_properties of width and height
-        $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::whereNull('custom_properties->width')
+        $media = Media::whereNull('custom_properties->width')
             ->whereNull('custom_properties->height')->get();
 
         foreach($media as $m) {
@@ -48,7 +49,7 @@ class SetMediaHeightWidth extends Command
     
                         $this->info('Media with width and height SAVED for ID: '.$m->id.' PATH: '.$m->getPath());
                     });
-                } catch (\Exception $ex) {
+                } catch (Exception $ex) {
                     $this->error('Media with width and height FAILED for ID: '.$m->id.' PATH: '.$m->getPath());
                 }
             }

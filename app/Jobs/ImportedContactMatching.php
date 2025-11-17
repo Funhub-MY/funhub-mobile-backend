@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Exception;
 use App\Models\User;
 use App\Models\UserContact;
 use Illuminate\Bus\Queueable;
@@ -53,7 +54,7 @@ class ImportedContactMatching implements ShouldQueue
                             ->update(['related_user_id' => $user->id]);
                     }
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('[MatchContactToUser] Error matching contacts to users: ' . $e->getMessage());
             }
         }

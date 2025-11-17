@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\SearchKeyword;
+use App\Models\Article;
 use Illuminate\Console\Command;
 use OpenAI;
 
@@ -31,7 +33,7 @@ class SearchKeywordAutoLink extends Command
         $client = OpenAI::client(config('services.openai.secret'));
 
         // combine all keywords into id:keyword-array
-        $keywords = \App\Models\SearchKeyword::all()->pluck('keyword', 'id')->toArray();
+        $keywords = SearchKeyword::all()->pluck('keyword', 'id')->toArray();
         $this->info('Total Keywords: ' . count($keywords));
 
         // get keywords into id:keyword command seperate string
@@ -50,7 +52,7 @@ class SearchKeywordAutoLink extends Command
         $totalArticlesProcessed = 0;
 
         $chunkSize = 200; // Adjust this value based on your memory requirements
-        $articles = \App\Models\Article::published()
+        $articles = Article::published()
             ->whereDoesntHave('searchKeywords')
             ->orderBy('created_at', 'DESC')
             ->chunkById($chunkSize, function ($articlesChunk) use ($client, $totalArticlesProcessed, $keywordsCommand) {

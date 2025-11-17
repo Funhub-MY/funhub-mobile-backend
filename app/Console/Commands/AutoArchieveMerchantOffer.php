@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Jobs\IndexMerchantOffer;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
@@ -106,7 +107,7 @@ class AutoArchieveMerchantOffer extends Command
                 
                 $this->info('Dispatched ' . count($allOfferIdsToArchive) . ' indexing jobs to the queue');
                 Log::info('[AutoArchiveMerchantOffer] Dispatched ' . count($allOfferIdsToArchive) . ' indexing jobs');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('[AutoArchiveMerchantOffer] Error dispatching indexing jobs', ['error' => $e->getMessage()]);
             }
         }

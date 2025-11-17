@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use Exception;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use App\Models\SupportRequestMessage;
@@ -14,7 +15,7 @@ class SupportRequestMessageObserver
     /**
      * Handle the SupportRequestMessage "created" event.
      *
-     * @param  \App\Models\SupportRequestMessage  $supportRequestMessage
+     * @param SupportRequestMessage $supportRequestMessage
      * @return void
      */
     public function created(SupportRequestMessage $supportRequestMessage)
@@ -31,7 +32,7 @@ class SupportRequestMessageObserver
             try {
                 $locale = $supportRequestMessage->request->requestor->last_lang ?? config('app.locale');
                 $supportRequestMessage->request->requestor->notify((new NewSupportRequestMessage($supportRequestMessage))->locale($locale));
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('Error sending notification: ' . $e->getMessage());
             }
         } else {
@@ -71,7 +72,7 @@ class SupportRequestMessageObserver
 					Notification::route('mail', $email)
 						->notify(new NewSupportRequestRaised($supportRequestMessage, $notificationType));
 				}
-			} catch (\Exception $e) {
+			} catch (Exception $e) {
 				Log::error('Error sending support request email to admin: ' . $e->getMessage());
 			}
         }
@@ -80,7 +81,7 @@ class SupportRequestMessageObserver
     /**
      * Handle the SupportRequestMessage "updated" event.
      *
-     * @param  \App\Models\SupportRequestMessage  $supportRequestMessage
+     * @param SupportRequestMessage $supportRequestMessage
      * @return void
      */
     public function updated(SupportRequestMessage $supportRequestMessage)
@@ -91,7 +92,7 @@ class SupportRequestMessageObserver
     /**
      * Handle the SupportRequestMessage "deleted" event.
      *
-     * @param  \App\Models\SupportRequestMessage  $supportRequestMessage
+     * @param SupportRequestMessage $supportRequestMessage
      * @return void
      */
     public function deleted(SupportRequestMessage $supportRequestMessage)
@@ -102,7 +103,7 @@ class SupportRequestMessageObserver
     /**
      * Handle the SupportRequestMessage "restored" event.
      *
-     * @param  \App\Models\SupportRequestMessage  $supportRequestMessage
+     * @param SupportRequestMessage $supportRequestMessage
      * @return void
      */
     public function restored(SupportRequestMessage $supportRequestMessage)
@@ -113,7 +114,7 @@ class SupportRequestMessageObserver
     /**
      * Handle the SupportRequestMessage "force deleted" event.
      *
-     * @param  \App\Models\SupportRequestMessage  $supportRequestMessage
+     * @param SupportRequestMessage $supportRequestMessage
      * @return void
      */
     public function forceDeleted(SupportRequestMessage $supportRequestMessage)

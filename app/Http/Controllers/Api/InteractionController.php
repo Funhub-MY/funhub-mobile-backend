@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Response;
 use App\Events\InteractionCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InteractionResource;
@@ -33,7 +34,7 @@ class InteractionController extends Controller
      * @param $type string
      * @param $id integer
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      *
      * @group Interactions
      * @authenticated
@@ -53,7 +54,7 @@ class InteractionController extends Controller
      *   }
      * }
      * @response status=404 scenario="Not Found"
-    */
+     */
     public function index(Request $request)
     {
         $this->validate($request, [
@@ -109,8 +110,8 @@ class InteractionController extends Controller
     /**
      * Create an interaction for interactable type
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      *
      * @group Interactions
      * @authenticated
@@ -241,7 +242,7 @@ class InteractionController extends Controller
      * Show one interaction by ID
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      *
      * @group Interactions
      * @authenticated
@@ -262,7 +263,7 @@ class InteractionController extends Controller
      * Only owner can call this method
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      *
      * @group Interactions
      * @authenticated

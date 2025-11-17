@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Models\BaseModel;
 use Carbon\Carbon;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -203,7 +204,7 @@ class Article extends BaseModel implements HasMedia, Auditable
      * Relationships
      */
 
-    public function media() : \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function media() : MorphMany
     {
         return $this->morphMany(config('media-library.media_model'), 'model')
             ->with('videoJob');

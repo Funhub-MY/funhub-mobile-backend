@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use RuntimeException;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -94,7 +95,7 @@ class PromotionCode extends BaseModel implements Auditable
             $attempts++;
 
             if ($attempts >= $maxAttempts) {
-                throw new \RuntimeException('failed to generate unique code after ' . $maxAttempts . ' attempts');
+                throw new RuntimeException('failed to generate unique code after ' . $maxAttempts . ' attempts');
             }
         } while (static::where('code', $code)->exists());
         

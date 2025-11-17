@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferCampaign;
 use App\Models\MerchantOfferVoucher;
@@ -58,7 +59,7 @@ class ReactivateMissingMerchantOffersCommand extends Command
             ]);
             return self::SUCCESS;
             
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error("Error processing campaign ID {$campaignId}: " . $e->getMessage());
             Log::error("Error in ReactivateMissingMerchantOffersCommand", [
                 'campaign_id' => $campaignId,
@@ -115,17 +116,50 @@ class ReactivateMissingMerchantOffersCommand extends Command
         $offer->allOfferCategories()->sync($campaign->allOfferCategories->pluck('id'));
         $offer->stores()->sync($campaign->stores->pluck('id'));
 
-        // Create vouchers
-        $voucherData = [];
-        for ($i = 0; $i < $schedule->quantity; $i++) {
-            $voucherData[] = [
-                'merchant_offer_id' => $offer->id,
-                'code' => MerchantOfferVoucher::generateCode(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
+        // Create vouchers with agreement_quantity validation
+        $quantity = $schedule->quantity;
+        
+        // Validate against agreement_quantity if set
+        if ($campaign->agreement_quantity > 0) {
+            $currentVoucherCount = MerchantOfferVoucher::whereHas('merchant_offer', function ($query) use ($campaign) {
+                $query->where('merchant_offer_campaign_id', $campaign->id);
+            })->count();
+            
+            $maxAllowed = $campaign->agreement_quantity - $currentVoucherCount;
+            $quantity = min($quantity, $maxAllowed);
+            
+            if ($quantity <= 0) {
+                Log::warning('[ReactivateMissingMerchantOffersCommand] Cannot create vouchers - agreement quantity reached', [
+                    'campaign_id' => $campaign->id,
+                    'agreement_quantity' => $campaign->agreement_quantity,
+                    'current_vouchers' => $currentVoucherCount,
+                    'offer_id' => $offer->id,
+                ]);
+                return $offer;
+            }
         }
-        MerchantOfferVoucher::insert($voucherData);
+        
+        // Process vouchers in chunks for better performance
+        $chunkSize = 500;
+        $now = now();
+        
+        for ($chunk = 0; $chunk < $quantity; $chunk += $chunkSize) {
+            $chunkQuantity = min($chunkSize, $quantity - $chunk);
+            $voucherData = [];
+            
+            for ($i = 0; $i < $chunkQuantity; $i++) {
+                $voucherData[] = [
+                    'merchant_offer_id' => $offer->id,
+                    'code' => MerchantOfferVoucher::generateCode(),
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+            }
+            
+            if (!empty($voucherData)) {
+                MerchantOfferVoucher::insert($voucherData);
+            }
+        }
 
         return $offer;
     }

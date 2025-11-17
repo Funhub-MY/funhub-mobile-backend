@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Jobs\CreateMerchantOfferJob;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferCampaign;
@@ -135,20 +136,60 @@ class UpdateCampaignSchedules extends Command
                     $this->info("Moved " . $moveQuantity . " vouchers to schedule " . ($i + 1));
                 }
 
-                // Generate new vouchers for remaining quantity
+                // Generate new vouchers for remaining quantity with agreement_quantity validation
                 if ($newQuantity > 0) {
-                    $voucherData = [];
-                    for ($j = 0; $j < $newQuantity; $j++) {
-                        $voucherData[] = [
-                            'merchant_offer_id' => $newOffer->id,
-                            'code'              => MerchantOfferVoucher::generateCode(),
-                            'created_at'        => now(),
-                            'updated_at'        => now(),
-                        ];
+                    $quantityToCreate = $newQuantity;
+                    
+                    // Validate against agreement_quantity if set
+                    if ($campaign->agreement_quantity > 0) {
+                        $currentVoucherCount = MerchantOfferVoucher::whereHas('merchant_offer', function ($query) use ($campaign) {
+                            $query->where('merchant_offer_campaign_id', $campaign->id);
+                        })->count();
+                        
+                        $maxAllowed = $campaign->agreement_quantity - $currentVoucherCount;
+                        $quantityToCreate = min($newQuantity, $maxAllowed);
+                        
+                        if ($quantityToCreate <= 0) {
+                            Log::warning('[UpdateCampaignSchedules] Cannot create vouchers - agreement quantity reached', [
+                                'campaign_id' => $campaign->id,
+                                'agreement_quantity' => $campaign->agreement_quantity,
+                                'current_vouchers' => $currentVoucherCount,
+                                'schedule_id' => $schedule->id,
+                            ]);
+                            $this->warn("Cannot create new vouchers for schedule " . ($i + 1) . " - agreement quantity reached");
+                        } else if ($quantityToCreate < $newQuantity) {
+                            $this->warn("Only creating {$quantityToCreate} vouchers instead of {$newQuantity} due to agreement limit");
+                        }
                     }
-                    MerchantOfferVoucher::insert($voucherData);
-                    $newCount += $newQuantity;
-                    $this->info("Created " . $newQuantity . " new vouchers for schedule " . ($i + 1));
+                    
+                    // Process vouchers in chunks for better performance
+                    if ($quantityToCreate > 0) {
+                        $chunkSize = 500;
+                        $now = now();
+                        $createdInChunk = 0;
+                        
+                        for ($chunk = 0; $chunk < $quantityToCreate; $chunk += $chunkSize) {
+                            $chunkQuantity = min($chunkSize, $quantityToCreate - $chunk);
+                            $voucherData = [];
+                            
+                            for ($j = 0; $j < $chunkQuantity; $j++) {
+                                $voucherData[] = [
+                                    'merchant_offer_id' => $newOffer->id,
+                                    'code'              => MerchantOfferVoucher::generateCode(),
+                                    'created_at'        => $now,
+                                    'updated_at'        => $now,
+                                ];
+                            }
+                            
+                            if (!empty($voucherData)) {
+                                MerchantOfferVoucher::insert($voucherData);
+                                $createdInChunk += count($voucherData);
+                            }
+                        }
+                        
+                        $newCount += $createdInChunk;
+                        $this->info("Created " . $createdInChunk . " new vouchers for schedule " . ($i + 1));
+                    }
                 }
 
                 $this->info("Schedule " . ($i + 1) . "/" . $numberOfSchedules .
@@ -166,7 +207,7 @@ class UpdateCampaignSchedules extends Command
             DB::commit();
             $this->info('Successfully updated campaign schedules!');
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             $this->error('Error updating campaign schedules: ' . $e->getMessage());
             Log::error('UpdateCampaignSchedules failed', [

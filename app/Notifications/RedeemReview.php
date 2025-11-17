@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Merchant;
 use App\Models\User;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
@@ -63,7 +64,7 @@ class RedeemReview extends Notification
         $name = '';
         $userId = $this->offer->user_id;
         if ($userId) {
-            $merchant = \App\Models\Merchant::where('user_id', $userId)->first();
+            $merchant = Merchant::where('user_id', $userId)->first();
             if ($merchant) {
                 $name = $merchant->brand_name ?? $merchant->name;
             } else {

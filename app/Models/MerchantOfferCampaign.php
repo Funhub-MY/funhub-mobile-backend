@@ -41,6 +41,11 @@ class MerchantOfferCampaign extends BaseModel implements HasMedia, Auditable
         return $this->belongsTo(User::class);
     }
 
+    public function merchant()
+    {
+        return $this->belongsTo(Merchant::class);
+    }
+
     public function merchantOffers()
     {
         return $this->hasMany(MerchantOffer::class);

@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use Exception;
 use App\Models\PointLedger;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +30,7 @@ class PointService
      * @param $title
      * @param $remarks
      * @return PointLedger
-     * @throws \Exception
+     * @throws Exception
      */
     public function debit($pointable, $user, $amount, $title, $remarks = null) : PointLedger
     {
@@ -45,7 +46,7 @@ class PointService
             $userBalance = $this->getBalanceOfUser($user);
 
             if ($userBalance < $amount) {
-                throw new \Exception('Insufficient balance');
+                throw new Exception('Insufficient balance');
             }
 
             $pointLedger = new PointLedger;
@@ -74,7 +75,7 @@ class PointService
      * @param $title
      * @param $remarks
      * @return PointLedger
-     * @throws \Exception
+     * @throws Exception
      */
     public function credit($pointable, $user, $amount, $title, $remarks = null) : PointLedger
     {

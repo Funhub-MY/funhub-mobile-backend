@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Exception;
+use App\Models\MerchantOfferVoucher;
 use App\Models\User;
 use Carbon\Carbon;
 use GeneaLabs\LaravelMixpanel\Facades\Mixpanel;
@@ -12,7 +14,7 @@ class MixpanelService
     /**
      * track voucher sale data in Mixpanel
      *
-     * @param \App\Models\MerchantOfferVoucher $voucher the voucher to track
+     * @param MerchantOfferVoucher $voucher the voucher to track
      * @param bool $dryRun whether to run in dry-run mode (no actual tracking)
      * @return bool success or failure
      */
@@ -126,7 +128,7 @@ class MixpanelService
             $mixpanel->track($eventName, $properties, $distinctId);
             
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('error tracking voucher sale: ' . $e->getMessage(), [
                 'voucher_id' => $voucher->id ?? null,
                 'exception' => $e
@@ -138,7 +140,7 @@ class MixpanelService
     /**
      * Track user data in Mixpanel
      *
-     * @param \App\Models\User $user The user to track
+     * @param User $user The user to track
      * @param bool $dryRun Whether to run in dry-run mode (no actual tracking)
      * @return bool Success or failure
      */
@@ -205,7 +207,7 @@ class MixpanelService
             $mixpanel->track($eventName, $properties, $distinctId);
             
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('error tracking user data: ' . $e->getMessage(), [
                 'user_id' => $user->id ?? null,
                 'exception' => $e

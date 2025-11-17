@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -45,7 +46,7 @@ class UpdateLastRatedForMerchantOfferClaim implements ShouldQueue
                 'store_id' => $store->id,
                 'user_id' => $user->id,
             ]);
-       } catch (\Exception $e) {
+       } catch (Exception $e) {
            // Log the error
            Log::error('Error updating last rated at for merchant offer claim', [
                'store_id' => $store->id,

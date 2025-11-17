@@ -2,6 +2,11 @@
 
 namespace App\Listeners;
 
+use App\Events\CompletedProfile;
+use App\Events\PurchasedMerchantOffer;
+use App\Events\RatedStore;
+use App\Events\ClosedSupportTicket;
+use Exception;
 use App\Models\Article;
 use App\Models\Comment;
 use App\Models\Mission;
@@ -58,13 +63,13 @@ class MissionEventListener
                 $event instanceof CommentLiked => $this->handleCommentLiked($event),
                 $event instanceof ArticleCreated => $this->handleArticleCreated($event),
                 $event instanceof FollowedUser => $this->handleFollowings($event),
-                $event instanceof \App\Events\CompletedProfile => $this->handleProfileCompleted($event),
-                $event instanceof \App\Events\PurchasedMerchantOffer => $this->handlePurchasedMerchantOffer($event),
-                $event instanceof \App\Events\RatedStore => $this->handleRatedStore($event),
-                $event instanceof \App\Events\ClosedSupportTicket => $this->handleClosedSupportTicket($event),
+                $event instanceof CompletedProfile => $this->handleProfileCompleted($event),
+                $event instanceof PurchasedMerchantOffer => $this->handlePurchasedMerchantOffer($event),
+                $event instanceof RatedStore => $this->handleRatedStore($event),
+                $event instanceof ClosedSupportTicket => $this->handleClosedSupportTicket($event),
                 default => null,
             };
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error handling mission event', [
                 'event' => get_class($event),
                 'error' => $e->getMessage(),
@@ -173,7 +178,7 @@ class MissionEventListener
                     
                     $this->missionService->handleEvent('accumulated_likes_for_ratings', $ratingOwner, $contextData);
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('Error handling accumulated interaction event', [
                     'event' => get_class($event),
                     'error' => $e->getMessage(),
@@ -218,7 +223,7 @@ class MissionEventListener
         // accumulated comment for article owner
         try {
             $this->missionService->handleEvent('accumulated_comments', $event->comment->commentable->user, ['comment' => $event->comment]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('accumulated_comments Error handling mission event ', [
                 'event' => get_class($event),
                 'error' => $e->getMessage(),
@@ -261,12 +266,12 @@ class MissionEventListener
         $this->missionService->handleEvent('accumulated_followers', $event->followedUser);
     }
 
-    protected function handleProfileCompleted(\App\Events\CompletedProfile $event): void
+    protected function handleProfileCompleted(CompletedProfile $event): void
     {
         $this->missionService->handleEvent('completed_profile_setup', $event->user);
     }
 
-    protected function handlePurchasedMerchantOffer(\App\Events\PurchasedMerchantOffer $event): void
+    protected function handlePurchasedMerchantOffer(PurchasedMerchantOffer $event): void
     {
         $eventType = $event->paymentMethod === 'points'
             ? 'purchased_merchant_offer_points'
@@ -278,7 +283,7 @@ class MissionEventListener
         $this->missionService->handleEvent($eventType, $event->user);
     }
 
-    protected function handleRatedStore(\App\Events\RatedStore $event): void
+    protected function handleRatedStore(RatedStore $event): void
     {
         // if ($this->isSpamRating($event->user, $event->store)) {
         //     Log::warning('Spam rating detected', [
@@ -291,7 +296,7 @@ class MissionEventListener
         $this->missionService->handleEvent('reviewed_store', $event->user);
     }
 
-    protected function handleClosedSupportTicket(\App\Events\ClosedSupportTicket $event): void
+    protected function handleClosedSupportTicket(ClosedSupportTicket $event): void
     {
         $supportRequest = $event->supportRequest;
         $supportType = $supportRequest->category->type;
@@ -399,7 +404,7 @@ class MissionEventListener
     {
         // Check if user has rated this store before (even if rating was updated)
         // If exists() is false, it means it's a new rating (not spam)
-        return \App\Models\StoreRating::where('user_id', $user->id)
+        return StoreRating::where('user_id', $user->id)
             ->where('store_id', $store->id)
             ->where('created_at', '<', now()) // Only check for ratings created before this one
             ->exists();

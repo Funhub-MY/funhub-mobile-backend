@@ -2,13 +2,19 @@
 
 namespace App\Http\Livewire;
 
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Exception;
+use Filament\Schemas\Components\Grid;
 use App\Models\Country;
 use App\Models\Merchant;
 use App\Models\User;
 use App\Models\State;
 use App\Models\Store;
 use Closure;
-use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -23,15 +29,11 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Tabs;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TimePicker;
 use Filament\Tables\Columns\TextInputColumn;
 use Filament\Resources\Resource;
@@ -50,11 +52,11 @@ class MerchantDetails extends Page implements HasForms
 
     protected static ?string $model = Merchant::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-user';
 
-    protected static ?string $navigationGroup = 'Merchant';
+    protected static string | \UnitEnum | null $navigationGroup = 'Merchant';
 
-    protected static string $view = 'livewire.merchant-details';
+    protected string $view = 'livewire.merchant-details';
     
     public function mount(): void
     {
@@ -130,7 +132,7 @@ class MerchantDetails extends Page implements HasForms
         return [
             Tabs::make('Tabs')
             ->tabs([
-                Tabs\Tab::make('Company Details')
+                Tab::make('Company Details')
                     ->schema([
                         Group::make([
                             Section::make('Company Details')     
@@ -221,14 +223,14 @@ class MerchantDetails extends Page implements HasForms
                                 ->maxFiles(1)
                                 ->collection(Merchant::MEDIA_COLLECTION_NAME)
                                 ->required()
-                                ->afterStateUpdated(function ($state, Merchant $merchant, \Filament\Forms\Get $get) {
+                                ->afterStateUpdated(function ($state, Merchant $merchant, Get $get) {
                                     //find the merchant
                                     $merchant_id = $get('merchant_id');
                                     $merchant = Merchant::find($merchant_id);
                                     try {
                                         $merchant->addMediaFromDisk($state->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
                                         ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME);
-                                    } catch (\Exception $e) {
+                                    } catch (Exception $e) {
                                         Log::error('[MerchantDetailsEdit] Company logo upload failed: ' . $e->getMessage());
                                     }
 
@@ -245,7 +247,7 @@ class MerchantDetails extends Page implements HasForms
                                     ->schema([
                                         Placeholder::make('company_logo')
                                             ->label('')
-                                            ->content(function ($state, \Filament\Forms\Get $get, Merchant $merchant) {
+                                            ->content(function ($state, Get $get, Merchant $merchant) {
                                                 $merchant_id = $get('../../merchant_id');
                                                 $merchant = Merchant::find($merchant_id);
                                                 $merchant_logos = $merchant->getMedia(Merchant::MEDIA_COLLECTION_NAME);
@@ -291,7 +293,7 @@ class MerchantDetails extends Page implements HasForms
                                         ])
                                 ])->columnSpan('full'),
                     ]),
-                Tabs\Tab::make('PIC Details')
+                Tab::make('PIC Details')
                     ->schema([
                         Group::make([
                             Section::make('Person In Charge Details')
@@ -331,7 +333,7 @@ class MerchantDetails extends Page implements HasForms
                         ]),
                     ]),
                     
-                Tabs\Tab::make('Store Details')
+                Tab::make('Store Details')
                     ->schema([
                         Repeater::make('stores')
                         ->schema([

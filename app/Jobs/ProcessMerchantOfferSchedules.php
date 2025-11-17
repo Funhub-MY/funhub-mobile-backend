@@ -203,25 +203,73 @@ class ProcessMerchantOfferSchedules implements ShouldQueue
     }
     
     /**
-     * Create vouchers for a new offer
+     * Create vouchers for a new offer using chunking for better performance
      */
     private function createVouchersForOffer(MerchantOffer $offer, int $quantity)
     {
-        for ($i = 0; $i < $quantity; $i++) {
-            MerchantOfferVoucher::create([
-                'merchant_offer_id' => $offer->id,
-                'code' => MerchantOfferVoucher::generateCode(),
-            ]);
+        // Validate against agreement_quantity if set
+        $campaign = $offer->merchantOfferCampaign;
+        if ($campaign->agreement_quantity > 0) {
+            $currentVoucherCount = MerchantOfferVoucher::whereHas('merchant_offer', function ($query) use ($campaign) {
+                $query->where('merchant_offer_campaign_id', $campaign->id);
+            })->count();
+            
+            $maxAllowed = $campaign->agreement_quantity - $currentVoucherCount;
+            $quantity = min($quantity, $maxAllowed);
+            
+            if ($quantity <= 0) {
+                Log::warning('[ProcessMerchantOfferSchedules] Cannot create vouchers - agreement quantity reached', [
+                    'campaign_id' => $campaign->id,
+                    'agreement_quantity' => $campaign->agreement_quantity,
+                    'current_vouchers' => $currentVoucherCount,
+                    'offer_id' => $offer->id,
+                ]);
+                return;
+            }
+        }
+        
+        // Process vouchers in chunks to avoid memory issues and reduce DB connections
+        $chunkSize = 500; // Process 500 vouchers at a time
+        $totalCreated = 0;
+        $now = now();
+        
+        for ($chunk = 0; $chunk < $quantity; $chunk += $chunkSize) {
+            $chunkQuantity = min($chunkSize, $quantity - $chunk);
+            $voucherData = [];
+            
+            // Prepare bulk insert data
+            for ($i = 0; $i < $chunkQuantity; $i++) {
+                $voucherData[] = [
+                    'merchant_offer_id' => $offer->id,
+                    'code' => MerchantOfferVoucher::generateCode(),
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+            }
+            
+            // Bulk insert the chunk
+            if (!empty($voucherData)) {
+                MerchantOfferVoucher::insert($voucherData);
+                $totalCreated += count($voucherData);
+                
+                Log::info('[ProcessMerchantOfferSchedules] Created voucher chunk', [
+                    'offer_id' => $offer->id,
+                    'chunk_size' => count($voucherData),
+                    'total_created' => $totalCreated,
+                    'remaining' => $quantity - $totalCreated,
+                ]);
+            }
         }
         
         Log::info('[ProcessMerchantOfferSchedules] Created vouchers for new offer', [
             'offer_id' => $offer->id,
-            'quantity' => $quantity,
+            'quantity_requested' => $quantity,
+            'quantity_created' => $totalCreated,
         ]);
     }
     
     /**
-     * Update vouchers for an existing offer
+     * Update vouchers for an existing offer using chunking
      */
     private function updateVouchersForOffer(MerchantOffer $offer, MerchantOfferCampaignSchedule $schedule)
     {
@@ -230,36 +278,106 @@ class ProcessMerchantOfferSchedules implements ShouldQueue
         // If schedule quantity > existing vouchers, create new vouchers
         if ($schedule->quantity > $existingVouchers) {
             $diff = $schedule->quantity - $existingVouchers;
-            for ($i = 0; $i < $diff; $i++) {
-                MerchantOfferVoucher::create([
-                    'merchant_offer_id' => $offer->id,
-                    'code' => MerchantOfferVoucher::generateCode(),
-                ]);
+            
+            // Validate against agreement_quantity if set
+            $campaign = $offer->merchantOfferCampaign;
+            if ($campaign->agreement_quantity > 0) {
+                $currentVoucherCount = MerchantOfferVoucher::whereHas('merchant_offer', function ($query) use ($campaign) {
+                    $query->where('merchant_offer_campaign_id', $campaign->id);
+                })->count();
+                
+                $maxAllowed = $campaign->agreement_quantity - $currentVoucherCount;
+                $diff = min($diff, $maxAllowed);
+                
+                if ($diff <= 0) {
+                    Log::warning('[ProcessMerchantOfferSchedules] Cannot add vouchers - agreement quantity reached', [
+                        'campaign_id' => $campaign->id,
+                        'agreement_quantity' => $campaign->agreement_quantity,
+                        'current_vouchers' => $currentVoucherCount,
+                        'offer_id' => $offer->id,
+                        'schedule_id' => $schedule->id,
+                    ]);
+                    // Update quantities even if we can't add vouchers
+                    $this->updateOfferQuantities($offer, $schedule);
+                    return;
+                }
+            }
+            
+            // Process vouchers in chunks
+            $chunkSize = 500;
+            $totalCreated = 0;
+            $now = now();
+            
+            for ($chunk = 0; $chunk < $diff; $chunk += $chunkSize) {
+                $chunkQuantity = min($chunkSize, $diff - $chunk);
+                $voucherData = [];
+                
+                // Prepare bulk insert data
+                for ($i = 0; $i < $chunkQuantity; $i++) {
+                    $voucherData[] = [
+                        'merchant_offer_id' => $offer->id,
+                        'code' => MerchantOfferVoucher::generateCode(),
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
+                }
+                
+                // Bulk insert the chunk
+                if (!empty($voucherData)) {
+                    MerchantOfferVoucher::insert($voucherData);
+                    $totalCreated += count($voucherData);
+                }
             }
 
             Log::info('[ProcessMerchantOfferSchedules] Created new vouchers as adjusted in schedule', [
                 'offer_id' => $offer->id,
                 'schedule_id' => $schedule->id,
-                'quantity_added' => $diff,
+                'quantity_added' => $totalCreated,
+                'quantity_requested' => $diff,
             ]);
         } 
         // If schedule quantity < existing vouchers, remove unclaimed vouchers
         else if ($schedule->quantity < $existingVouchers) {
             $diff = $existingVouchers - $schedule->quantity;
-            $vouchersToDelete = $offer->vouchers()->whereNull('owned_by_id')->limit($diff)->get();
+            
+            // Delete in chunks to avoid memory issues
+            $chunkSize = 500;
+            $totalDeleted = 0;
+            
+            while ($totalDeleted < $diff) {
+                $remaining = $diff - $totalDeleted;
+                $deleteCount = min($chunkSize, $remaining);
+                
+                $deleted = $offer->vouchers()
+                    ->whereNull('owned_by_id')
+                    ->limit($deleteCount)
+                    ->delete();
+                
+                $totalDeleted += $deleted;
+                
+                // If no more vouchers to delete, break
+                if ($deleted == 0) {
+                    break;
+                }
+            }
 
-            Log::info('[ProcessMerchantOfferSchedules] Deleting unclaimed vouchers as adjusted in schedule', [
+            Log::info('[ProcessMerchantOfferSchedules] Deleted unclaimed vouchers as adjusted in schedule', [
                 'offer_id' => $offer->id,
                 'schedule_id' => $schedule->id,
-                'quantity_to_delete' => $diff,
-                'vouchers_found' => $vouchersToDelete->count(),
+                'quantity_deleted' => $totalDeleted,
+                'quantity_requested' => $diff,
             ]);
-
-            // Delete unclaimed vouchers
-            $offer->vouchers()->whereNull('owned_by_id')->limit($diff)->delete();
         }
 
         // Update final quantities
+        $this->updateOfferQuantities($offer, $schedule);
+    }
+    
+    /**
+     * Update offer and schedule quantities
+     */
+    private function updateOfferQuantities(MerchantOffer $offer, MerchantOfferCampaignSchedule $schedule)
+    {
         $actualVoucherCount = $offer->vouchers()->count();
         $unclaimedVoucherCount = $offer->unclaimedVouchers()->count();
         

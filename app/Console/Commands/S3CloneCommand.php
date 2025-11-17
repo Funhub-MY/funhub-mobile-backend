@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
@@ -30,7 +31,7 @@ class S3CloneCommand extends Command
                 ->copyDirectory($localPath, $s3Path, $visibility);
 
             $this->info('Files and folders cloned successfully to S3.');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error('An error occurred while cloning files and folders to S3: ' . $e->getMessage());
         }
     }

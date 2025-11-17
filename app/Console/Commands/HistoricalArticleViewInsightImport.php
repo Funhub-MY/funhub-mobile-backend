@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\Article;
 use App\Models\View;
 use Illuminate\Console\Command;
@@ -83,7 +84,7 @@ class HistoricalArticleViewInsightImport extends Command
 
         try {
             $response = $this->insights->sendEvents($insightsArray);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[HistoricalArticleViewInsightImport] Error sending events to Algolia', ['error' => $e->getMessage()]);
         }
     }

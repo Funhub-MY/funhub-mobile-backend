@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use GuzzleHttp\Client;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StateResource;
 use App\Models\State;
@@ -13,15 +16,14 @@ class StateController extends Controller
 {
     /**
      * Get States
-     * 
-     * @return \Illuminate\Http\JsonResponse
-     * 
+     *
+     * @return JsonResponse
+     *
      * @group Other
      * @subgroup State
      * @response scenario="success" {
      * ["id" => 1, "name" => "Abia", "code" => "AB", "country_id" => 1],
      * }
-     * 
      */
     public function getStates()
     {
@@ -49,18 +51,18 @@ class StateController extends Controller
 
     /**
      * Get State by User Location
-     * 
+     *
      * Get state information based on user's latitude and longitude coordinates
-     * 
+     *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * 
+     * @return JsonResponse
+     *
      * @group Other
      * @subgroup State
-     * 
+     *
      * @bodyParam lat numeric required The latitude coordinate. Example: 3.140853
      * @bodyParam lng numeric required The longitude coordinate. Example: 101.693207
-     * 
+     *
      * @response scenario="success" {
      *     "error": false,
      *     "message": "Success",
@@ -125,7 +127,7 @@ class StateController extends Controller
             }
 
             // if not in cache, call Google Maps API
-            $client = new \GuzzleHttp\Client();
+            $client = new Client();
             $response = $client->get('https://maps.googleapis.com/maps/api/geocode/json', [
                 'query' => [
                     'latlng' => $request->lat . ',' . $request->lng,
@@ -229,7 +231,7 @@ class StateController extends Controller
                 'message' => 'State not found in our database'
             ], 404);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error in getStateByUserLocation: ' . $e->getMessage());
             return response()->json([
                 'error' => true,

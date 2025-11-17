@@ -19,22 +19,22 @@ class MissionCompletedEvent
     /**
      * The mission instance.
      *
-     * @var \App\Models\Mission
+     * @var Mission
      */
     public $mission;
 
     /**
      * The user instance.
      *
-     * @var \App\Models\User
+     * @var User
      */
     public $user;
 
     /**
      * Create a new event instance.
      *
-     * @param  \App\Models\Mission  $mission
-     * @param  \App\Models\User  $user
+     * @param Mission $mission
+     * @param User $user
      * @return void
      */
     public function __construct(Mission $mission, User $user)
@@ -46,7 +46,7 @@ class MissionCompletedEvent
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * @return Channel|array
      */
     public function broadcastOn()
     {

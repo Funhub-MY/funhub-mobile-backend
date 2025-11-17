@@ -213,7 +213,18 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
 
     public function merchant()
     {
-        // hasOneThrough user -> merchant
+        // Direct relationship using merchant_id (preferred)
+        // This will work for records with merchant_id populated
+        // For legacy records without merchant_id, use merchantThroughUser() method
+        return $this->belongsTo(Merchant::class, 'merchant_id');
+    }
+    
+    /**
+     * Get merchant through user (legacy method for records without merchant_id)
+     * @deprecated Use merchant() relationship instead after merchant_id is populated
+     */
+    public function merchantThroughUser()
+    {
         return $this->hasOneThrough(Merchant::class, User::class, 'id', 'id', 'user_id', 'merchant_id');
     }
 

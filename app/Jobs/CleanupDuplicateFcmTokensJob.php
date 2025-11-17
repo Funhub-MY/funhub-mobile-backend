@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -54,7 +55,7 @@ class CleanupDuplicateFcmTokensJob implements ShouldQueue
                 // clean up specific token for a specific user
                 $this->cleanupSpecificToken();
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error cleaning up duplicate FCM tokens: ' . $e->getMessage(), [
                 'fcm_token' => $this->fcmToken,
                 'user_id' => $this->userId,

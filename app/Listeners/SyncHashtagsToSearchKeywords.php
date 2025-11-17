@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Models\SearchKeyword;
 use App\Models\Article;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -30,7 +31,7 @@ class SyncHashtagsToSearchKeywords implements ShouldQueue
         if ($this->article->tags) {
             $this->article->tags->each(function ($tag) {
                 // check if the hashtag exists in the search_keywords table
-                $searchKeyword = \App\Models\SearchKeyword::where('keyword', $tag->name)->first();
+                $searchKeyword = SearchKeyword::where('keyword', $tag->name)->first();
 
                 //TODO: use service check for explicit keywords
 
@@ -44,7 +45,7 @@ class SyncHashtagsToSearchKeywords implements ShouldQueue
                     $tag_name = str_replace('#', '', $tag->name);
                     $tag_name = trim($tag->name);
 
-                    $newSearchKeyword = \App\Models\SearchKeyword::create([
+                    $newSearchKeyword = SearchKeyword::create([
                         'keyword' => $tag_name,
                     ]);
 

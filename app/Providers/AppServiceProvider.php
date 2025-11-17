@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Observers\MerchantOfferObserver;
+use App\Observers\ArticleFeedWhitelistUserObserver;
+use App\Observers\SettingObserver;
 use App\Filament\Macros\TranslationsMacro;
 use App\Models\ArticleFeedWhitelistUser;
 use App\Models\MerchantOffer;
@@ -13,6 +16,9 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Http\Request;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\ServiceProvider;
 
@@ -43,10 +49,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Configure API rate limiting
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(config('app.rate_limit', 600))
+                ->by($request->user()?->id ?: $request->ip());
+        });
 
-        MerchantOffer::observe(\App\Observers\MerchantOfferObserver::class);
-        ArticleFeedWhitelistUser::observe(\App\Observers\ArticleFeedWhitelistUserObserver::class);
-        Setting::observe(\App\Observers\SettingObserver::class);
+        MerchantOffer::observe(MerchantOfferObserver::class);
+        ArticleFeedWhitelistUser::observe(ArticleFeedWhitelistUserObserver::class);
+        Setting::observe(SettingObserver::class);
         // \App\Models\MerchantOfferVoucher::observe(\App\Observers\MerchantOfferVoucherObserver::class);
 
         // TextInput::macro('translations', function ($fieldName) {
@@ -120,7 +131,7 @@ class AppServiceProvider extends ServiceProvider
                         <script>
                             document.addEventListener('DOMContentLoaded', function(){
                             let sidebar_item = document.querySelector('.filament-sidebar-item-active');
-                                f( sidebar_item ) {
+                                if( sidebar_item ) {
                                     sidebar_item.scrollIntoView({ behavior: \"auto\", block: \"center\", inline: \"center\" });
                             }
                     });

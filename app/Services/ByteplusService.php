@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Services\Byteplus\SignatureV4;
@@ -55,7 +56,7 @@ class ByteplusService
             ]);
 
             return [];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Byteplus upload error', [
                 'message' => $e->getMessage(),
                 'params' => $params
@@ -98,7 +99,7 @@ class ByteplusService
             ]);
 
             return [];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Byteplus workflow error', [
                 'message' => $e->getMessage(),
                 'params' => $params
@@ -140,7 +141,7 @@ class ByteplusService
             ]);
 
             return [];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Byteplus query upload task error', [
                 'message' => $e->getMessage(),
                 'jobId' => $jobId
@@ -182,7 +183,7 @@ class ByteplusService
             ]);
 
             return [];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Byteplus get workflow execution error', [
                 'message' => $e->getMessage(),
                 'runId' => $runId
@@ -265,7 +266,7 @@ class ByteplusService
 
             return $playbackLinks;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Byteplus get play info error', [
                 'message' => $e->getMessage(),
                 'vid' => $vid
@@ -308,7 +309,7 @@ class ByteplusService
 
             return true;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Byteplus publish video error', [
                 'message' => $e->getMessage(),
                 'vid' => $vid

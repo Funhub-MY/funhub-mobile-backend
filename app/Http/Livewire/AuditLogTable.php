@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
 use Livewire\Component;
 use OwenIt\Auditing\Models\Audit;
 use Illuminate\Support\HtmlString;
@@ -12,8 +14,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
-class AuditLogTable extends Component implements HasTable
+class AuditLogTable extends Component implements HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
 
     public $currentRouteId;

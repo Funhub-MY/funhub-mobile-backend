@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Services\Sms;
+use App\Events\UserSettingsUpdated;
+use App\Events\UserReferred;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserSettingsRequest;
 use App\Models\ArticleCategory;
@@ -20,7 +24,7 @@ class UserSettingsController extends Controller
     protected $smsService;
     public function __construct()
     {
-        $this->smsService = new \App\Services\Sms(
+        $this->smsService = new Sms(
             [
                 'url' => config('services.byteplus.sms_url'),
                 'username' => config('services.byteplus.sms_account'),
@@ -37,7 +41,7 @@ class UserSettingsController extends Controller
     /**
      * Get settings of logged in user
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User Settings
      * @response status=200 scenario="success" {
@@ -87,7 +91,7 @@ class UserSettingsController extends Controller
      * Update User Email
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User Settings
      * @bodyParam email string required Email of the user. Example: john@gmail.com
@@ -169,7 +173,7 @@ class UserSettingsController extends Controller
         $user->markEmailAsVerified();
 
         // fire event
-        event(new \App\Events\UserSettingsUpdated($user));
+        event(new UserSettingsUpdated($user));
 
         return response()->json(['message' => __('messages.success.user_settings_controller.Email_Verified')], 200);
     }
@@ -178,7 +182,7 @@ class UserSettingsController extends Controller
      * Update User Name
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User Settings
      * @bodyParam name string required Name of the user. Example: John Doe
@@ -199,7 +203,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         // fire event
-        event(new \App\Events\UserSettingsUpdated($user));
+        event(new UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Name_updated'),
@@ -211,7 +215,7 @@ class UserSettingsController extends Controller
      * Update User Username
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User Settings
      * @bodyParam username string required Username of the user. Example: johndoe
@@ -235,7 +239,7 @@ class UserSettingsController extends Controller
         }
 
         // Check if username already exists
-        $usernameExists = \App\Models\User::where('username', $request->username)
+        $usernameExists = User::where('username', $request->username)
             ->where('id', '!=', $user->id)
             ->exists();
 
@@ -256,7 +260,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         // fire event
-        event(new \App\Events\UserSettingsUpdated($user));
+        event(new UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Username_updated'),
@@ -268,7 +272,7 @@ class UserSettingsController extends Controller
      * Update User Bio
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User Settings
      * @bodyParam bio string required Bio of the user. Example: I am a software engineer
@@ -289,7 +293,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         // fire event
-        event(new \App\Events\UserSettingsUpdated($user));
+        event(new UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Bio_updated'),
@@ -301,7 +305,7 @@ class UserSettingsController extends Controller
      * Update User Job title
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User Settings
      * @bodyParam job_title string required Job title of the user. Example: Software Engineer
@@ -322,7 +326,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         // fire event
-        event(new \App\Events\UserSettingsUpdated($user));
+        event(new UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Job_Title_updated'),
@@ -334,7 +338,7 @@ class UserSettingsController extends Controller
      * Update User Date of Birth
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User Settings
      * @bodyParam day integer required Day of the date of birth. Example: 1
@@ -360,7 +364,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         // fire event
-        event(new \App\Events\UserSettingsUpdated($user));
+        event(new UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Date_of_birth_updated'),
@@ -372,7 +376,7 @@ class UserSettingsController extends Controller
      * Update User Save Gender
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User Settings
      * @bodyParams gender string required Male or Female. Example: male,female
@@ -393,7 +397,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         // fire event
-        event(new \App\Events\UserSettingsUpdated($user));
+        event(new UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Gender_updated'),
@@ -405,7 +409,7 @@ class UserSettingsController extends Controller
      * Update User Location
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User Settings
      * @bodyParam country_id integer required Country id of the user. Example: 1
@@ -432,7 +436,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         // fire event
-        event(new \App\Events\UserSettingsUpdated($user));
+        event(new UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Location_updated'),
@@ -445,7 +449,7 @@ class UserSettingsController extends Controller
      * Link Article Categories to User (used for interest tagging)
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User Settings
      * @bodyParam category_ids array required Array of article category ids. Example: [1,2,3]
@@ -483,7 +487,7 @@ class UserSettingsController extends Controller
         $user->articleCategoriesInterests()->sync($categoryIds);
 
         // fire event
-        event(new \App\Events\UserSettingsUpdated($user));
+        event(new UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Article_categories_linked_to_user'),
@@ -495,7 +499,7 @@ class UserSettingsController extends Controller
      * Upload or Update User Profile Picture
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User Settings
      * @bodyParam avatar file required One image file to upload.
@@ -538,7 +542,7 @@ class UserSettingsController extends Controller
         // bust avatar cache
         cache()->forget('user_avatar_' . $user->id);
 
-        event(new \App\Events\UserSettingsUpdated($user));
+        event(new UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Avatar_uploaded'),
@@ -552,7 +556,7 @@ class UserSettingsController extends Controller
      * Upload or Update User Cover
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User Settings
      * @bodyParam cover file required One image file to upload.
@@ -604,7 +608,7 @@ class UserSettingsController extends Controller
     /**
      * Update user fcm token
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @return JsonResponse
      *
      * @group Notifications
@@ -624,7 +628,7 @@ class UserSettingsController extends Controller
      * Update user password (only for login with OTP)
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User Settings
      * @bodyParam old_password string required The old password of the user. Example: abcd1234
@@ -948,7 +952,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         // fire event
-        event(new \App\Events\UserReferred($user, $referredBy));
+        event(new UserReferred($user, $referredBy));
 
         return response()->json(['message' => __('messages.success.user_settings_controller.Referral_saved')]);
     }
@@ -1089,7 +1093,7 @@ class UserSettingsController extends Controller
      * Get User Cards
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User Settings
      * @subgroup Card
@@ -1117,7 +1121,7 @@ class UserSettingsController extends Controller
      * Remove a Card
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User Settings
      * @subgroup Card

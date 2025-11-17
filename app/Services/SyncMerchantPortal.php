@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -76,7 +77,7 @@ class SyncMerchantPortal
                 ];
             }
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Log the error and return a response
             Log::error('['.$action.'] API request failed: ' . $e->getMessage());
             return [

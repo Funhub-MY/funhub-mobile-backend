@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use Exception;
 use Illuminate\Support\Facades\Log;
 
 class ArticleFeedWhitelistUserObserver
@@ -17,7 +18,7 @@ class ArticleFeedWhitelistUserObserver
             Log::info('[ArticleFeedWhitelistUserObserver] After deleted, user articles removed from search index(algolia)', [
                 'user_id' => $articleFeedWhitelistUser->user_id,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[ArticleFeedWhitelistUserObserver] After deleted, unable to re-index whitelisted user articles', [
                 'error' => $e->getMessage()
             ]);

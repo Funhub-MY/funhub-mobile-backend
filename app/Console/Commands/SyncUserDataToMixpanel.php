@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\User;
 use App\Services\MixpanelService;
 use Carbon\Carbon;
@@ -152,7 +153,7 @@ class SyncUserDataToMixpanel extends Command
                             $failedIds[] = $user->id;
                             $this->error("Failed to sync user ID: {$user->id}");
                         }
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $failed++;
                         $failedIds[] = $user->id;
                         $this->error("Error syncing user ID {$user->id}: {$e->getMessage()}");
@@ -181,7 +182,7 @@ class SyncUserDataToMixpanel extends Command
             }
             
             return Command::SUCCESS;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error("Command failed: {$e->getMessage()}");
             Log::error("User data sync command failed", [
                 'error' => $e->getMessage(),

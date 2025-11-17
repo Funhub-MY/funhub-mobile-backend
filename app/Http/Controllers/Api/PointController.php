@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Auth\Access\AuthorizationException;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +32,7 @@ class PointController extends Controller
     /**
      * Get the point & point components balance of the logged in user.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Point
      * @response scenario=success {
@@ -100,10 +103,10 @@ class PointController extends Controller
     /**
      * Get the point balance of the user.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      *
      * @group Point
      * @response scenario=success {
@@ -132,10 +135,10 @@ class PointController extends Controller
     /**
      * Get the point component balance of the user.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      *
      * @group Point
      * @bodyParam type string required The type of point component. Example: egg
@@ -144,7 +147,6 @@ class PointController extends Controller
      * "type": "egg",
      * "balance": 100
      * }
-     *
      */
     public function getPointComponentBalance(Request $request)
     {
@@ -180,8 +182,8 @@ class PointController extends Controller
     /**
      * Combine Points Component to Form a Reward
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      *
      * @group Point
      * @bodyParam quantity integer required The quantity of the reward to form. Example: 1
@@ -250,7 +252,7 @@ class PointController extends Controller
             
             DB::commit();
             Log::info('Reward Formed', ['user_id' => $user->id, 'reward_id' => $reward->id, 'quantity' => $request->quantity]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             Log::error($e->getMessage(), ['user_id' => $user->id, 'reward_id' => $reward->id, 'quantity' => $request->quantity]);
             return response()->json(['message' => __('messages.error.point_controller.Error_while_deducting_points_from_user')], 422);
@@ -265,10 +267,10 @@ class PointController extends Controller
     /**
      * Get Rewards Available.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      *
      * @group Point
      * @response scenario=success {

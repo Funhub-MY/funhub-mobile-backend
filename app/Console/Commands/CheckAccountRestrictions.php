@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\User;
 use App\Notifications\AccountUnrestrictedNotification;
 use App\Events\OnAccountRestricted;
@@ -97,7 +98,7 @@ class CheckAccountRestrictions extends Command
 			}
 
 			return 0;
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->error("[CheckAccountRestrictions]Error checking account restrictions: {$e->getMessage()}");
 			Log::error("[CheckAccountRestrictions]Error in CheckAccountRestrictions command", [
 				'error' => $e->getMessage(),

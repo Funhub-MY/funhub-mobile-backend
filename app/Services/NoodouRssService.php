@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use DOMDocument;
+use Exception;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\ArticleImport;
@@ -35,7 +37,7 @@ class NoodouRssService
             ])->get($channel->channel_url);
             // check response
             if ($response->ok() || $response->status() === 200) {
-                    $body = new \DOMDocument();
+                    $body = new DOMDocument();
                     $body->loadXML($response->body());
                     $items = $body->getElementsByTagName('item');
                     $articles = [];
@@ -198,7 +200,7 @@ class NoodouRssService
                     $import->article_pub_date = Carbon::parse($articles[0]['pub_date']);
                     $import->save();
                 }
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 // Log messages
                 $this->error_messages[] = $exception->getMessage();
                 Log::info('Processing Articles of Channel ID: '.$channel->id .'\n'.'Channel Name: '.$channel->channel_name);

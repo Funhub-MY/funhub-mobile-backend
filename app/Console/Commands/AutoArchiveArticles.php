@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\Article;
 use App\Models\AutoArchiveKeyword;
 use Illuminate\Console\Command;
@@ -61,7 +62,7 @@ class AutoArchiveArticles extends Command
                     'article_status' => $matchArticle->status,
                 ]);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Log any exceptions that occur during execution
             Log::error('[AutoArchiveArticles]', [
                 'error_message' => $e->getMessage(),

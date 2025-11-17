@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Exception;
 use App\Models\MerchantOffer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -83,7 +84,7 @@ class IndexMerchantOffer implements ShouldQueue
                     ]);
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[IndexMerchantOffer] Error indexing merchant offer', [
                 'offer_id' => $this->merchantOfferId,
                 'error' => $e->getMessage()

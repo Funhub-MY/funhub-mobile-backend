@@ -1,11 +1,11 @@
 <?php
 namespace App\Filament\Actions;
 
+use Filament\Schemas\Schema;
 use App\Filament\ArticleCustomImport;
 use App\Filament\CustomImport;
 use App\Models\Article;
 use App\Models\Store;
-use Filament\Forms\ComponentContainer;
 use Konnco\FilamentImport\Actions\ImportAction;
 use Konnco\FilamentImport\Actions\ImportField;
 
@@ -34,8 +34,8 @@ class SyncArticleCategoriesAction extends ImportAction
 					->required(),
             ]);
 
-        $this->action(function (ComponentContainer $form): void {
-            $data = $form->getState();
+        $this->action(function (Schema $schema): void {
+            $data = $schema->getState();
 
             $selectedField = collect($data)
                 ->except('fileRealPath', 'file', 'skipHeader');

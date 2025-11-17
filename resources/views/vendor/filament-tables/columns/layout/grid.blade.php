@@ -1,15 +1,18 @@
 @php
     $columns = $getGridColumns();
+    $gridAttributes = (new \Illuminate\View\ComponentAttributeBag())->grid([
+        'default' => $columns['default'] ?? 1,
+        'sm' => $columns['sm'] ?? null,
+        'md' => $columns['md'] ?? null,
+        'lg' => $columns['lg'] ?? null,
+        'xl' => $columns['xl'] ?? null,
+        '2xl' => $columns['2xl'] ?? null,
+    ]);
 @endphp
 
 <div {{ $attributes->merge($getExtraAttributes(), escape: false) }}>
-    <x-filament::grid
-        :default="$columns['default'] ?? 1"
-        :sm="$columns['sm'] ?? null"
-        :md="$columns['md'] ?? null"
-        :lg="$columns['lg'] ?? null"
-        :xl="$columns['xl'] ?? null"
-        :two-xl="$columns['2xl'] ?? null"
+    <div
+        {{ $gridAttributes }}
         @class([
             (($columns['default'] ?? 1) === 1) ? 'gap-1' : 'gap-3',
             ($columns['sm'] ?? null) ? (($columns['sm'] === 1) ? 'sm:gap-1' : 'sm:gap-3') : null,
@@ -25,5 +28,5 @@
             :record="$getRecord()"
             :record-key="$recordKey"
         />
-    </x-filament::grid>
+    </div>
 </div>

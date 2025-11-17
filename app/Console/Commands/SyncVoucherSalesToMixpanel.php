@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\MerchantOfferVoucher;
 use App\Services\MixpanelService;
 use Carbon\Carbon;
@@ -119,7 +120,7 @@ class SyncVoucherSalesToMixpanel extends Command
                             $failedIds[] = $voucher->id;
                             $this->error("failed to sync voucher ID: {$voucher->id}");
                         }
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $failed++;
                         $failedIds[] = $voucher->id;
                         $this->error("error syncing voucher ID {$voucher->id}: {$e->getMessage()}");
@@ -147,7 +148,7 @@ class SyncVoucherSalesToMixpanel extends Command
             }
             
             return Command::SUCCESS;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error("command failed: {$e->getMessage()}");
             Log::error("voucher sales sync command failed", [
                 'error' => $e->getMessage(),

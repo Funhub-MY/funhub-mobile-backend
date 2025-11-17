@@ -62,22 +62,63 @@ class GenerateMissingVouchers extends Command
                 Log::info($logMessage);
 
                 if (!$isDryRun) {
-                    // Generate voucher data
-                    $voucherData = [];
-                    for ($i = 0; $i < $missingCount; $i++) {
-                        $voucherData[] = [
-                            'merchant_offer_id' => $offer->id,
-                            'code' => MerchantOfferVoucher::generateCode(),
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ];
+                    $quantityToCreate = $missingCount;
+                    
+                    // Validate against agreement_quantity if offer has a campaign
+                    if ($offer->merchant_offer_campaign_id && $offer->campaign) {
+                        $campaign = $offer->campaign;
+                        if ($campaign->agreement_quantity > 0) {
+                            $currentVoucherCount = MerchantOfferVoucher::whereHas('merchant_offer', function ($query) use ($campaign) {
+                                $query->where('merchant_offer_campaign_id', $campaign->id);
+                            })->count();
+                            
+                            $maxAllowed = $campaign->agreement_quantity - $currentVoucherCount;
+                            $quantityToCreate = min($missingCount, $maxAllowed);
+                            
+                            if ($quantityToCreate <= 0) {
+                                Log::warning('[GenerateMissingVouchers] Cannot create vouchers - agreement quantity reached', [
+                                    'campaign_id' => $campaign->id,
+                                    'agreement_quantity' => $campaign->agreement_quantity,
+                                    'current_vouchers' => $currentVoucherCount,
+                                    'offer_id' => $offer->id,
+                                    'missing_count' => $missingCount,
+                                ]);
+                                $this->warn("Skipping offer {$offer->id} - agreement quantity reached (missing: {$missingCount})");
+                                continue;
+                            }
+                            
+                            if ($quantityToCreate < $missingCount) {
+                                $this->warn("Only creating {$quantityToCreate} vouchers instead of {$missingCount} due to agreement limit");
+                            }
+                        }
+                    }
+                    
+                    // Process vouchers in chunks for better performance
+                    $chunkSize = 500;
+                    $now = now();
+                    $totalCreated = 0;
+                    
+                    for ($chunk = 0; $chunk < $quantityToCreate; $chunk += $chunkSize) {
+                        $chunkQuantity = min($chunkSize, $quantityToCreate - $chunk);
+                        $voucherData = [];
+                        
+                        for ($i = 0; $i < $chunkQuantity; $i++) {
+                            $voucherData[] = [
+                                'merchant_offer_id' => $offer->id,
+                                'code' => MerchantOfferVoucher::generateCode(),
+                                'created_at' => $now,
+                                'updated_at' => $now,
+                            ];
+                        }
+                        
+                        if (!empty($voucherData)) {
+                            MerchantOfferVoucher::insert($voucherData);
+                            $totalCreated += count($voucherData);
+                        }
                     }
 
-                    // Insert vouchers
-                    MerchantOfferVoucher::insert($voucherData);
-
-                    $this->info("Generated {$missingCount} vouchers for merchant offer ID: {$offer->id}");
-                    Log::info("Successfully generated {$missingCount} vouchers for merchant offer ID: {$offer->id}");
+                    $this->info("Generated {$totalCreated} vouchers for merchant offer ID: {$offer->id}");
+                    Log::info("Successfully generated {$totalCreated} vouchers for merchant offer ID: {$offer->id}");
                 }
 
                 $totalFixed++;

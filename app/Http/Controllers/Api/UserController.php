@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PublicArticleResource;
 use App\Http\Resources\PublicUserResource;
@@ -39,7 +41,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -49,8 +51,8 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -60,15 +62,14 @@ class UserController extends Controller
     /**
      * Get a user
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @return Response
      *
      * @group User
      * @urlParam user required The id of the user. Example: 1
      * @response scenario=success {
      * "data": {
      * }
-     *
      */
     public function show(User $user)
     {
@@ -82,15 +83,15 @@ class UserController extends Controller
             return response()->json(['message' => __('messages.error.user_controller.User_not_found')], 404);
         }
 
-        return new \App\Http\Resources\UserResource($user, false);
+        return new UserResource($user, false);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param User $user
+     * @return Response
      */
     public function update(Request $request, User $user)
     {
@@ -100,8 +101,8 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @return Response
      */
     public function destroy(User $user)
     {
@@ -111,7 +112,7 @@ class UserController extends Controller
     /**
      * Report a user
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @return JsonResponse
      *
      * @group User
@@ -169,7 +170,7 @@ class UserController extends Controller
     /**
      * Block a user
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @return JsonResponse
      *
      * @group User
@@ -282,7 +283,7 @@ class UserController extends Controller
     /**
      * Get Users By IDs
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @return JsonResponse
      *
      * @group User
@@ -306,7 +307,7 @@ class UserController extends Controller
 
         $users = User::whereIn('id', $user_ids)->get();
 
-        return \App\Http\Resources\UserResource::collection($users);
+        return UserResource::collection($users);
     }
 
     /**
@@ -333,7 +334,7 @@ class UserController extends Controller
 
         try {
             $otpService->sendOtp($user->id, $user->phone_country_code, $user->phone_no, 'delete_account');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error sending OTP for delete account', ['error' => $e->getMessage()]);
             return response()->json(['message' => __('messages.error.user_controller.Error_sending_otp')], 422);
         }
@@ -442,8 +443,8 @@ class UserController extends Controller
     /**
      * Get auth user details
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @return Response
      *
      * @group User
      *
@@ -451,7 +452,6 @@ class UserController extends Controller
      * "user": {
      * },
      * "token": ""
-     *
      */
     public function getAuthUserDetails()
     {
@@ -489,15 +489,14 @@ class UserController extends Controller
     /**
      * Get a public user
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @return Response
      *
      * @group User
      * @urlParam user required The id of the user. Example: 1
      * @response scenario=success {
      * "user": {
      * }
-     *
      */
     public function getPublicUser(User $user)
     {
@@ -511,14 +510,14 @@ class UserController extends Controller
             return response()->json(['message' => __('messages.error.user_controller.User_not_found')], 404);
         }
 
-        return new \App\Http\Resources\UserResource($user, false);
+        return new UserResource($user, false);
     }
 
     /**
      * Update User Details (name, username, bio, job_title, dob, gender, location, avatar, cover, article_categories)
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User
      * @bodyParam update_type string required Field to update. Example: job_title
@@ -607,7 +606,7 @@ class UserController extends Controller
                             'message' => __('messages.error.user_controller.Invalid_update_type'),
                         ], 422);
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return response()->json([
                     'message' => __('messages.error.user_controller.Error_updating_user_details'),
                     'error' => $e->getMessage(),
@@ -619,7 +618,7 @@ class UserController extends Controller
      * Update user password (only for login with OTP)
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User
      * @bodyParam old_password string required The old password of the user. Example: abcd1234
@@ -709,7 +708,7 @@ class UserController extends Controller
      * Update User Email
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User
      * @bodyParam new_email string required Email of the user. Example: john@gmail.com
@@ -1185,7 +1184,7 @@ class UserController extends Controller
      * Update Last Known Location
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group User
      * @bodyParam lat string required The lat of the user's last known location. Example: 3.123456
@@ -1241,7 +1240,7 @@ class UserController extends Controller
 
                 // dispatch the job to populate the location address asynchronously
                 dispatch(new PopulateLocationAddressForUser($loc));
-           } catch (\Exception $e) {
+           } catch (Exception $e) {
                 Log::error('[UserController] Error updating user last location: ' . $e->getMessage());
                 return response()->json([
                     'message' => 'Something went wrong'

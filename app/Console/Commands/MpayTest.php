@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\Mpay;
 use Illuminate\Console\Command;
 
 class MpayTest extends Command
@@ -26,7 +27,7 @@ class MpayTest extends Command
     {
         parent::__construct();
 
-        $this->mpay = new \App\Services\Mpay(
+        $this->mpay = new Mpay(
             config('services.mpay.mid'),
             config('services.mpay.hash_key')
         );

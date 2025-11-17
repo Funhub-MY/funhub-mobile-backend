@@ -3,7 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-
+use Exception;
+use Throwable;
 use App\Jobs\SyncUserWithOneSignal;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -86,7 +87,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         return true; // or your custom logic
     }
 
-    public function canAccessFilament(\Filament\Panel $panel): bool
+    public function canAccessFilament(Panel $panel): bool
     {
         return $this->hasRole('staff') || $this->hasRole('admin') || $this->hasRole('super_admin') || $this->hasRole('merchant');
     }
@@ -110,7 +111,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
                 'email' => $user->email,
                 'token' => $token,
             ]);
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             Log::error('[Error] Send email verification notification ', [
                 'user' => $user,
                 'error' => $ex->getMessage()
@@ -543,7 +544,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
                     // random 6 character username with 3 numbers
                     $this->attributes['username'] = strtolower( Str::random(6) . rand(100, 999));
                 }
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 Log::error('[Error] Username invalid when set name attribute ', [
                     'name' => $value,
                     'username' => $this->username,

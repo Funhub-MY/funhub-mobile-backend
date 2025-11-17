@@ -1,6 +1,8 @@
 <?php
 namespace App\Traits;
 
+use Exception;
+
 /**
  * A class handles filter, sort, limit, offset, and pagination
  */
@@ -18,7 +20,7 @@ trait QueryBuilderTrait {
      * @param $query
      * @param $request
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function filter($query, $request)
     {
@@ -29,7 +31,7 @@ trait QueryBuilderTrait {
         $filterable = $model::FILTERABLE ?? [];
 
         if (count($filterable) == 0) {
-            throw new \Exception('No filterable columns found in model, please set FILTERABLE array const');
+            throw new Exception('No filterable columns found in model, please set FILTERABLE array const');
             return;
         }
 

@@ -125,9 +125,9 @@ class SyncArticleRatingsToStoreRatings extends Command
                         continue;
                     }
 
-                    \App\Models\Store::whereHas('storeRatings')->where('ratings', 0)->get()->each(function($store) {
+                    Store::whereHas('storeRatings')->where('ratings', 0)->get()->each(function($store) {
                         $store->update([
-                            'ratings' => \App\Models\StoreRating::where('store_id', $store->id)->avg('rating')
+                            'ratings' => StoreRating::where('store_id', $store->id)->avg('rating')
                         ]);
                     });
 

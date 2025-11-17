@@ -2,6 +2,10 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Mission;
+use Illuminate\Http\Request;
+use Illuminate\Contracts\Support\Arrayable;
+use JsonSerializable;
 use App\Models\Article;
 use App\Models\Comment;
 use App\Models\Interaction;
@@ -15,8 +19,8 @@ class NotificationResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param Request $request
+     * @return array|Arrayable|JsonSerializable
      */
     public function toArray($request)
     {
@@ -61,7 +65,7 @@ class NotificationResource extends JsonResource
                         $article_cover = $media->getFullUrl();
                     }
                 }
-            } else if ($this->data['object'] == \App\Models\Mission::class) {
+            } else if ($this->data['object'] == Mission::class) {
                 // get if user claimed this mission before or not
                 $missionUser = DB::table('missions_users')->where('mission_id', $this->data['object_id'])
                     ->where('user_id', auth()->id())

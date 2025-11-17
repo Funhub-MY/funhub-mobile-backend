@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\PromotionCode;
+use Illuminate\Http\JsonResponse;
 use App\Events\MerchantOfferClaimed;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MerchantOfferClaimResource;
@@ -44,7 +46,7 @@ class ProductController extends Controller
      * Get Products for Sale (Gift Cards)
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Product
      * @response scenario=success {
@@ -67,7 +69,7 @@ class ProductController extends Controller
      * Get Products for Sale (Limited Gift Cards)
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Product
      * @response scenario=success {
@@ -90,14 +92,13 @@ class ProductController extends Controller
      * Get Product By ID
      *
      * @param Product $product
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Product
      * @queryParam product_id integer required Product ID. Example: 1
      * @response scenario=success {
      * "data": {}
      * }
-     *
      */
     public function show($id)
     {
@@ -116,7 +117,7 @@ class ProductController extends Controller
      * Get Total Quantity of Funcard purchased by user
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Product
      * @queryParam from_date string optional Filter by transaction created from this date (Y-m-d format). Example: 2025-01-01
@@ -126,7 +127,6 @@ class ProductController extends Controller
      *     "quantity": 10
      * }
      */
-
     public function getTotalPurchasedByUser(Request $request) {
         // base query builder for date filtering
         $dateQuery = function ($query) use ($request) {
@@ -160,14 +160,13 @@ class ProductController extends Controller
      * Get Funcard or Funbox for last 30 days Transactions History
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Product
      * @response scenario=success {
      * "data": []
      * }
      */
-
     public function getHistory(Request $request) {
 
         $query = Transaction::where('transactions.user_id', auth()->user()->id)
@@ -191,7 +190,7 @@ class ProductController extends Controller
      * Post Checkout
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Product
      * @subgroup Product Rewards
@@ -271,7 +270,7 @@ class ProductController extends Controller
         $appliedPromotionCode = null;
         
         if ($request->has('promotion_code') && $request->promotion_code != null) {
-			$promotionCode = \App\Models\PromotionCode::where('code', $request->promotion_code)
+			$promotionCode = PromotionCode::where('code', $request->promotion_code)
 //                ->where('is_redeemed', false)
                 ->where('status', true)
                 ->first();
@@ -353,7 +352,7 @@ class ProductController extends Controller
         // if gateway is mpay call mpay service generate Hash for frontend form
         if ($transaction->gateway == 'mpay') {
 
-            $mpayService = new \App\Services\Mpay(
+            $mpayService = new Mpay(
                 config('services.mpay.mid'),
                 config('services.mpay.hash_key'),
                 ($request->fiat_payment_method) ? $request->fiat_payment_method : false,
@@ -390,7 +389,7 @@ class ProductController extends Controller
      * Cancel Product Checkout
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Product
      * @bodyParam transaction_no string required Transaction No. Example: 11234455

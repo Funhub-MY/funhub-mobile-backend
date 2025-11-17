@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use App\Models\Article;
 use App\Models\ViewQueue; // Keep for potential direct use elsewhere if needed
@@ -64,7 +65,7 @@ class PublishArticle extends Command
                     // Use the service to schedule views
                     $this->scheduler->scheduleViews($article);
 
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Log::error('[PublishArticle] Failed to publish or schedule views for article', [
                         'article_id' => $article->id,
                         'error' => $e->getMessage()

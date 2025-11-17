@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Filament\Resources\MerchantOffers\Pages;
+
+use Filament\Actions\DeleteAction;
+use App\Filament\Resources\MerchantOffers\MerchantOfferResource;
+use Filament\Pages\Actions;
+use Filament\Pages\Actions\SelectAction;
+use Filament\Resources\Pages\EditRecord;
+use Filament\Pages\Actions\Action;
+use Filament\Forms\Components\Select;
+
+class EditMerchantOffer extends EditRecord
+{
+    protected static string $resource = MerchantOfferResource::class;
+    public $language;
+    public $current_locale;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            DeleteAction::make(),
+        ];
+    }
+
+	protected function mutateFormDataBeforeFill(array $data): array
+	{
+		if (isset($data['highlight_messages']) && is_string($data['highlight_messages'])) {
+			$decodedMessages = json_decode($data['highlight_messages'], true);
+
+			if ($decodedMessages !== null) {
+				$data['highlight_messages'] = $decodedMessages;
+			}
+		}
+		return $data;
+	}
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // $language = $this->current_locale ?? app()->getLocale();
+
+        // foreach ($this->getResource()::getTranslatableAttributes() as $attribute) {
+        //     $existingTranslations = json_decode($data[$attribute . '_translations'] ?? '{}', true);
+        //     $existingTranslations[$language] = $data[$attribute];
+        //     $data[$attribute . '_translations'] = json_encode($existingTranslations);
+        // }
+
+        $data['currency'] = 'MYR';
+        return $data;
+    }
+
+
+}

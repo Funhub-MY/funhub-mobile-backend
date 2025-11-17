@@ -2,8 +2,17 @@
 
 namespace App\Filament\Pages;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Exception;
+use Carbon\Carbon;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Grid;
 use Filament\Pages\Page;
-use App\Filament\Resources\MerchantResource;
+use App\Filament\Resources\Merchants\MerchantResource;
 // use Filament\Resources\Pages\Page;
 use App\Models\Country;
 use App\Models\Merchant;
@@ -11,7 +20,6 @@ use App\Models\User;
 use App\Models\State;
 use App\Models\Store;
 use Closure;
-use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -22,17 +30,13 @@ use Filament\Forms\Components\Actions;
 // use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Tabs;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TimePicker;
 use Filament\Tables\Columns\TextInputColumn;
 use Filament\Resources\Resource;
@@ -58,13 +62,13 @@ class MerchantDetails extends Page implements HasForms
     protected $merchant;
     protected static string $resource = MerchantResource::class;
     protected static ?string $model = Merchant::class;
-    protected static ?string $navigationIcon = 'heroicon-o-user';
-    protected static ?string $navigationGroup = 'Merchant';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-user';
+    protected static string | \UnitEnum | null $navigationGroup = 'Merchant';
     protected static ?string $title = 'Merchant Details';
     protected static ?string $navigationLabel = 'Merchant Details';
     protected static ?string $slug = 'merchant-details';
     // protected static string $view = 'livewire.merchant-details';
-    protected static string $view = 'filament.pages.merchant-details';
+    protected string $view = 'filament.pages.merchant-details';
 
     public static function shouldRegisterNavigation(array $parameters = []): bool
     {
@@ -76,7 +80,7 @@ class MerchantDetails extends Page implements HasForms
         $user_id = auth()->user()->id;
         try {
             $user = User::findOrFail($user_id);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             session()->flash('error', 'Error occurred while updating company details. Please try again later.');
             return response()->json(['error' => 'User not found.'], 404);
         }
@@ -85,7 +89,7 @@ class MerchantDetails extends Page implements HasForms
         $merchant_id = $this->merchant_id;
         try {
             $merchant = Merchant::findOrFail($merchant_id);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             session()->flash('error', 'Error occurred while updating company details. Please try again later.');
             return response()->json(['error' => 'Merchant not found.'], 404);
         }
@@ -116,7 +120,7 @@ class MerchantDetails extends Page implements HasForms
                 $merchant->update($company_details_data);
                 session()->flash('message', 'Company details updated successfully!');
                 return redirect()->route('filament.pages.merchant-details');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('[MerchantDetailsEdit] Company details update failed: ' . $e->getMessage());
                 session()->flash('error', 'Failed to update company details. Please try again later.');
             }
@@ -160,7 +164,7 @@ class MerchantDetails extends Page implements HasForms
             try {
                 $merchant->update($pic_details_data);
                 session()->flash('message', 'Company details updated successfully!');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('[MerchantDetailsEdit] PIC details update failed: ' . $e->getMessage());
                 session()->flash('error', 'Failed to update company details. Please try again later.');
             }
@@ -187,8 +191,8 @@ class MerchantDetails extends Page implements HasForms
             $businessHours = [];
             foreach ($store_to_update['business_hours'] as $businessHour) {
                 $businessHours[$businessHour['day']] = [
-                    'open_time' => \Carbon\Carbon::parse($businessHour['open_time'])->format('H:i'),
-                    'close_time' => \Carbon\Carbon::parse($businessHour['close_time'])->format('H:i'),
+                    'open_time' => Carbon::parse($businessHour['open_time'])->format('H:i'),
+                    'close_time' => Carbon::parse($businessHour['close_time'])->format('H:i'),
                 ];
             }
             //update $store_to_update['business_hours']
@@ -200,7 +204,7 @@ class MerchantDetails extends Page implements HasForms
                     $store_id = $store_to_update['id'];
                     $store = Store::findOrFail($store_id);
                     $store->update($store_to_update);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Log::error('[MerchantDetailsEdit] Store details update failed: ' . $e->getMessage());
                     session()->flash('error', 'Failed to update store details. Please try again later.');
                 }
@@ -263,7 +267,7 @@ class MerchantDetails extends Page implements HasForms
                     Log::info('[MerchantDetailsEdit] Store details created: ' . $store);
 
                     session()->flash('message', 'Company details updated successfully!');
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Log::error('[MerchantDetailsEdit] Store details create failed: ' . $e->getMessage());
                     session()->flash('error', 'Failed to create store details. Please try again later.');
                 }
@@ -286,13 +290,13 @@ class MerchantDetails extends Page implements HasForms
         try {
             $user->email = $merchant_login_email;
             $user->save();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[MerchantDetailsEdit] Company email update failed: ' . $e->getMessage());
         }
         try{
             $merchant->email = $merchant_login_email;
             $merchant->save();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[MerchantDetailsEdit] Company email update failed: ' . $e->getMessage());
         }
 
@@ -418,7 +422,7 @@ class MerchantDetails extends Page implements HasForms
         return [
             Tabs::make('Tabs')
             ->tabs([
-                Tabs\Tab::make('Company Details')
+                Tab::make('Company Details')
                     ->schema([
                         Group::make([
                             Section::make('Company Details')     
@@ -509,14 +513,14 @@ class MerchantDetails extends Page implements HasForms
                                 ->maxFiles(1)
                                 ->collection(Merchant::MEDIA_COLLECTION_NAME)
                                 ->required()
-                                ->afterStateUpdated(function ($state, Merchant $merchant, \Filament\Forms\Get $get) {
+                                ->afterStateUpdated(function ($state, Merchant $merchant, Get $get) {
                                     //find the merchant
                                     $merchant_id = $get('merchant_id');
                                     $merchant = Merchant::find($merchant_id);
                                     try {
                                         $merchant->addMediaFromDisk($state->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
                                         ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME);
-                                    } catch (\Exception $e) {
+                                    } catch (Exception $e) {
                                         Log::error('[MerchantDetailsEdit] Company logo upload failed: ' . $e->getMessage());
                                     }
 
@@ -533,7 +537,7 @@ class MerchantDetails extends Page implements HasForms
                                     ->schema([
                                         Placeholder::make('company_logo')
                                             ->label('')
-                                            ->content(function ($state, \Filament\Forms\Get $get, Merchant $merchant) {
+                                            ->content(function ($state, Get $get, Merchant $merchant) {
                                                 $merchant_id = $get('../../merchant_id');
                                                 $merchant = Merchant::find($merchant_id);
                                                 $merchant_logos = $merchant->getMedia(Merchant::MEDIA_COLLECTION_NAME);
@@ -558,7 +562,7 @@ class MerchantDetails extends Page implements HasForms
                                     ->maxFiles(7)
                                     ->collection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)
                                     ->required()
-                                    ->afterStateUpdated(function ($state, Merchant $merchant, \Filament\Forms\Get $get) {
+                                    ->afterStateUpdated(function ($state, Merchant $merchant, Get $get) {
                                         //find the merchant
                                         $merchant_id = $get('merchant_id');
                                         $merchant = Merchant::find($merchant_id);
@@ -571,7 +575,7 @@ class MerchantDetails extends Page implements HasForms
                                             
                                             $merchant->addMediaFromDisk($state->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
                                             ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
-                                        } catch (\Exception $e) {
+                                        } catch (Exception $e) {
                                             Log::error('[MerchantDetailsEdit] Company logo upload failed: ' . $e->getMessage());
                                         }
     
@@ -588,7 +592,7 @@ class MerchantDetails extends Page implements HasForms
                                     ->schema([
                                         Placeholder::make('company_photo')
                                             ->label('')
-                                            ->content(function ($state, \Filament\Forms\Get $get, Merchant $merchant) {
+                                            ->content(function ($state, Get $get, Merchant $merchant) {
                                                 $merchant_id = $get('../../merchant_id');
                                                 $merchant = Merchant::find($merchant_id);
                                                 $merchant_photos = $merchant->getMedia(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
@@ -648,7 +652,7 @@ class MerchantDetails extends Page implements HasForms
                                 ->columnSpan('full'),
 
                     ]),
-                Tabs\Tab::make('PIC Details')
+                Tab::make('PIC Details')
                     ->schema([
                         Group::make([
                             Section::make('Person In Charge Details')
@@ -691,7 +695,7 @@ class MerchantDetails extends Page implements HasForms
                         ]),
                     ]),
                     
-                Tabs\Tab::make('Store Details')
+                Tab::make('Store Details')
                     ->schema([
                         Repeater::make('stores')
                         ->schema([

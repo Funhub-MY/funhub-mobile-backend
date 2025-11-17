@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Exception;
+use Carbon\Carbon;
 use App\Models\Article;
 use App\Models\ArticleImport;
 use App\Models\ArticleTag;
@@ -210,7 +212,7 @@ class GoodyMyRssService
                     $import->article_pub_date = $articles[0]['pub_date'];
                     $import->save();
                 }
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 // Log messages
                 $this->error_messages[] = $exception->getMessage();
                 Log::info('Processing Articles of Channel ID: ' . $channel->id . '\n' . 'Channel Name: ' . $channel->channel_name);
@@ -235,7 +237,7 @@ class GoodyMyRssService
         }
         $latest_articles = array_filter($articles, function ($item) use ($channel_import) {
             // carbon parse string to timestamps first in order to compare.
-            $article_date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $item['pub_date']);
+            $article_date = Carbon::createFromFormat('Y-m-d H:i:s', $item['pub_date']);
             return $article_date->gt($channel_import->article_pub_date);
         });
         // use array_values here to re-index the articles key.

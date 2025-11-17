@@ -13,7 +13,7 @@ class RedemptionTrend extends LineChartWidget
 {
     use HasPeriodTrait, HasWidgetShield;
 
-    protected static ?string $heading = 'Voucher Redemptions';
+    protected ?string $heading = 'Voucher Redemptions';
     protected int | string | array $columnSpan = 'full';
 
     protected function getFormSchema(): array

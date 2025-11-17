@@ -2,6 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Exports\PromotionCodesExport;
+use Filament\Actions\Action;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -38,7 +41,7 @@ class ExportPromotionCodesJob implements ShouldQueue
 		$disk = in_array($defaultDisk, ['s3', 's3_public']) ? 's3_public' : 'public';
 
 		Excel::store(
-			new \App\Exports\PromotionCodesExport($this->promotionCodeGroup, $this->promotionCodeIds),
+			new PromotionCodesExport($this->promotionCodeGroup, $this->promotionCodeIds),
 			$filePath,
 			$disk,
 			\Maatwebsite\Excel\Excel::CSV,
@@ -66,12 +69,12 @@ class ExportPromotionCodesJob implements ShouldQueue
 			->title('Export Ready')
 			->body('Your promotion codes export is ready.')
 			->actions([
-				\Filament\Notifications\Actions\Action::make('download')
+				Action::make('download')
 					->label('Download')
 					->url($downloadUrl),
 			])
 			->success()
-			->sendToDatabase(\App\Models\User::find($this->userId));
+			->sendToDatabase(User::find($this->userId));
 
 		Log::info('[ExportPromotionCodesJob] Promotion codes Export completed', [
 			'file_path' => $filePath,

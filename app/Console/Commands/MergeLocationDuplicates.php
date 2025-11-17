@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Models\Location;
 use App\Models\Store;
 use App\Models\LocationRating;
@@ -118,7 +119,7 @@ class MergeLocationDuplicates extends Command
 
                     $this->info("Successfully merged locations");
 
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     DB::rollBack();
                     $this->error("Error merging locations: {$e->getMessage()}");
                     Log::error('Error merging locations', [

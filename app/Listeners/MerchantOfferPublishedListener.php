@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Models\Store;
@@ -55,11 +56,11 @@ class MerchantOfferPublishedListener implements ShouldQueue
                 try {
                     $locale = $user->last_lang ?? config('app.locale');
                     $user->notify((new NewMerchantOfferListed($offer))->locale($locale));
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Log::error('[PublishMerchantOffer] Notification error when bookmarked merchant offer published: '.$offer->id.' to user: '.$user->id);
                 }
             }
-       } catch (\Exception $e) {
+       } catch (Exception $e) {
            Log::error('[MerchantOfferPublishedListener] Error when bookmarked merchant offer published', [
                'error' => $e->getMessage(),
            ]);

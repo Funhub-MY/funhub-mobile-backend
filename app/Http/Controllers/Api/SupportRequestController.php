@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
+use Illuminate\Http\JsonResponse;
 use App\Models\Article;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -133,7 +135,7 @@ class SupportRequestController extends Controller
                 'support_request_id' =>  $supportRequest->id,
                 'message' => "你好，我们已收到你的反馈。\n客服服务时间：星期一至星期五 11.00am - 7.00pm\n我们会在24小时内尽快回复你。\n若遇到周末和公假，回复时间会比较长。还请理解，非常感谢"
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Catch error if no user with the role 'Support' is found
             Log::error('No user with support role is found');
         }
@@ -297,7 +299,7 @@ class SupportRequestController extends Controller
      * Upload Attachments(Images) for Support Messages
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Help Center
      * @subgroup Support Requests

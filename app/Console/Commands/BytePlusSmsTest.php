@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 
@@ -50,7 +51,7 @@ class BytePlusSmsTest extends Command
                 'Content-Type' => 'application/json;charset=utf-8',
                 'Authorization' => 'Basic ' . base64_encode($username . ':' . $password),
             ])->post($url, $params);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error('Error: ' . $e->getMessage());
             return;
         }

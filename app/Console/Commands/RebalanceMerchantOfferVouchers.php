@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use App\Models\MerchantOfferCampaign;
 use App\Models\MerchantOfferCampaignSchedule;
@@ -278,7 +279,7 @@ class RebalanceMerchantOfferVouchers extends Command
                 DB::commit();
                 $this->info("Successfully fixed duplicate schedules for campaign {$campaign->id}");
                 return true;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 DB::rollBack();
                 $this->error("Error fixing duplicate schedules for campaign {$campaign->id}: " . $e->getMessage());
                 Log::error("Error fixing duplicate schedules for campaign {$campaign->id}: " . $e->getMessage());
@@ -367,7 +368,7 @@ class RebalanceMerchantOfferVouchers extends Command
                 
                 DB::commit();
                 $this->info("Successfully removed {$unownedVouchers->count()} excess vouchers from campaign {$campaign->id}");
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 DB::rollBack();
                 $this->error("Error removing excess vouchers for campaign {$campaign->id}: " . $e->getMessage());
                 Log::error("Error removing excess vouchers for campaign {$campaign->id}: " . $e->getMessage());
@@ -458,7 +459,7 @@ class RebalanceMerchantOfferVouchers extends Command
                 
                 DB::commit();
                 $this->info("Successfully added {$vouchersAdded} vouchers to campaign {$campaign->id}");
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 DB::rollBack();
                 $this->error("Error adding vouchers to campaign {$campaign->id}: " . $e->getMessage());
                 Log::error("Error adding vouchers to campaign {$campaign->id}: " . $e->getMessage());

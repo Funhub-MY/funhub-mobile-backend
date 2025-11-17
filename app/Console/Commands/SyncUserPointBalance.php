@@ -2,6 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
+use App\Services\PointService;
+use Illuminate\Support\Facades\Log;
+use Exception;
 use Illuminate\Console\Command;
 
 class SyncUserPointBalance extends Command
@@ -28,9 +32,9 @@ class SyncUserPointBalance extends Command
     public function handle()
     {
         // remap all user point balance from point_ledgers table
-        $users = \App\Models\User::whereHas('pointLedgers')->get();
+        $users = User::whereHas('pointLedgers')->get();
         $this->info('Total users to sync with point ledgers: ' . $users->count());
-        $pointService = new \App\Services\PointService();
+        $pointService = new PointService();
         foreach ($users as $user) {
             try {
                 $pointBalance = $pointService->getBalanceOfUser($user);
@@ -41,9 +45,9 @@ class SyncUserPointBalance extends Command
                 $user->save();
 
                 $this->info('Synced user point balance: ' . $user->id . ' to ' . $pointBalance);
-                \Illuminate\Support\Facades\Log::info('Synced user point balance: ' . $user->id . ' to ' . $pointBalance);
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('Failed to sync user point balance: ' . $e->getMessage());
+                Log::info('Synced user point balance: ' . $user->id . ' to ' . $pointBalance);
+            } catch (Exception $e) {
+                Log::error('Failed to sync user point balance: ' . $e->getMessage());
             }
         }
         return Command::SUCCESS;

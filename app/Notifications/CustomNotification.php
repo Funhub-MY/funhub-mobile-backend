@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use Exception;
 use App\Models\Article;
 use Illuminate\Bus\Queueable;
 use App\Models\SystemNotification;
@@ -51,7 +52,7 @@ class CustomNotification extends Notification implements ShouldQueue
             $title = json_decode($this->customNotification->title);
             // based on userLocale return correct title {en: 'abc', zh: 'xyz'}
             $title = $title->{$this->userLocale} ?? $this->customNotification->title;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $title = $this->customNotification->title;
         }
         // check if title and content is json array by attempting decoding it first
@@ -60,7 +61,7 @@ class CustomNotification extends Notification implements ShouldQueue
             $content = json_decode($this->customNotification->content);
             // based on userLocale return correct title {en: 'abc', zh: 'xyz'}
             $content = $content->{$this->userLocale} ?? $this->customNotification->content;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $content = $this->customNotification->content;
         }
 
@@ -74,7 +75,7 @@ class CustomNotification extends Notification implements ShouldQueue
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toFcm($notifiable)
     {
@@ -106,7 +107,7 @@ class CustomNotification extends Notification implements ShouldQueue
 				if ($article) {
 					$data['article_type'] = $article->type ?? null;
 				} else {
-					\Illuminate\Support\Facades\Log::error('Article not found', ['article_id' => $this->customNotification->content_id]);
+					Log::error('Article not found', ['article_id' => $this->customNotification->content_id]);
 					$data['article_type'] = null;
 				}
 			}
@@ -160,11 +161,11 @@ class CustomNotification extends Notification implements ShouldQueue
 				if ($article) {
 					$toArrayData['article_type'] = $article->type ?? null;
 				} else {
-					\Illuminate\Support\Facades\Log::error('Article not found', ['article_id' => $this->customNotification->content_id]);
+					Log::error('Article not found', ['article_id' => $this->customNotification->content_id]);
 					$toArrayData['article_type'] = null;
 				}
 			}
-			\Illuminate\Support\Facades\Log::info('Final toArrayData', ['toArrayData' => $toArrayData]);
+			Log::info('Final toArrayData', ['toArrayData' => $toArrayData]);
 
 		}
 		return $toArrayData;

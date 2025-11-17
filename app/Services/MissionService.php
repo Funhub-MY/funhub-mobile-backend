@@ -2,6 +2,11 @@
 
 namespace App\Services;
 
+use Exception;
+use Illuminate\Database\Eloquent\Collection;
+use App\Models\Reward;
+use App\Models\RewardComponent;
+use App\Notifications\MissionStarted;
 use App\Models\Mission;
 use App\Models\MissionRewardDisbursement;
 use App\Models\User;
@@ -67,7 +72,7 @@ class MissionService
             }
 
             DB::commit();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             Log::error('Failed to handle mission event', [
                 'event' => $eventType,
@@ -82,7 +87,7 @@ class MissionService
     /**
      * Get eligible missions for the event
      */
-    private function getEligibleMissions(string $eventType, User $user): \Illuminate\Database\Eloquent\Collection
+    private function getEligibleMissions(string $eventType, User $user): Collection
     {
         // first get missions that have no predecessors
         $missionsWithNoPredecessors = Mission::enabled()
@@ -473,7 +478,7 @@ class MissionService
                 'usermission_data' => $userMission
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Failed to update mission progress', [
                 'mission_id' => $mission->id,
                 'error' => $e->getMessage(),
@@ -547,9 +552,9 @@ class MissionService
     {
         $description = "Mission Completed - {$mission->name}";
 
-        if ($mission->missionable_type === \App\Models\Reward::class) {
+        if ($mission->missionable_type === Reward::class) {
             $this->pointService->credit($mission, $user, $mission->reward_quantity, $description);
-        } elseif ($mission->missionable_type === \App\Models\RewardComponent::class) {
+        } elseif ($mission->missionable_type === RewardComponent::class) {
             $this->pointComponentService->credit(
                 $mission,
                 $mission->missionable,
@@ -606,13 +611,13 @@ class MissionService
     {
         try {
             $locale = $user->last_lang ?? config('app.locale');
-            $user->notify((new \App\Notifications\MissionStarted(
+            $user->notify((new MissionStarted(
                 $mission,
                 $user,
                 1,
                 json_encode($mission->events)
             ))->locale($locale));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Failed to send mission started notification', [
                 'mission_id' => $mission->id,
                 'user_id' => $user->id,
@@ -633,7 +638,7 @@ class MissionService
             
             // dispatch event for mission completion
             event(new MissionCompletedEvent($mission, $user));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Failed to send mission completed notification', [
                 'mission_id' => $mission->id,
                 'user_id' => $user->id,
@@ -652,7 +657,7 @@ class MissionService
                 $mission->name,
                 $mission
             ));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Failed to send reward received notification', [
                 'mission_id' => $mission->id,
                 'user_id' => $user->id,

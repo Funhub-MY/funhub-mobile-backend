@@ -12,7 +12,7 @@ class OtpRequestService
 
     public function __construct()
     {
-        $this->smsService = new \App\Services\Sms(
+        $this->smsService = new Sms(
             [
                 'url' => config('services.byteplus.sms_url'),
                 'username' => config('services.byteplus.sms_account'),

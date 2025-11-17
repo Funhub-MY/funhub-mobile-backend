@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
 use Illuminate\Console\Command;
 
 class RevertUserSuspension extends Command
@@ -27,10 +28,10 @@ class RevertUserSuspension extends Command
      */
     public function handle()
     {
-        $users = \App\Models\User::where('suspended_until', '<=', now())->get();
+        $users = User::where('suspended_until', '<=', now())->get();
         foreach ($users as $user) {
             $user->suspended_until = null;
-            $user->status = \App\Models\User::STATUS_ACTIVE;
+            $user->status = User::STATUS_ACTIVE;
             $user->save();
         }
         return Command::SUCCESS;

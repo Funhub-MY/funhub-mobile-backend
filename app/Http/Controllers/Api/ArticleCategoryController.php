@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ArticleCategoryResource;
 use App\Models\ArticleCategory;
@@ -16,7 +17,7 @@ class ArticleCategoryController extends Controller
      * Get popular Article Categories
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Article
      * @subgroup Article Categories
@@ -54,7 +55,7 @@ class ArticleCategoryController extends Controller
      * Get Article Categories by article id
      *
      * @param $article_id integer
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Article
      * @subgroup Article Categories
@@ -77,7 +78,7 @@ class ArticleCategoryController extends Controller
      * Get All Article Categories
      *
      * @param $article_slug string
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @group Article
      * @subgroup Article Categories

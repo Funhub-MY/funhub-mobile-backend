@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Exception;
 use App\Jobs\IndexStore;
 use App\Models\Country;
 use App\Models\FailedStoreImport;
@@ -201,7 +202,7 @@ class CreateLocationFromStoreImport implements ShouldQueue
                             'status_code' => $response->getStatusCode()
                         ]);
                     }
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Log::error("Exception while fetching place details for Google Place ID: {$googlePlaceId}", [
                         'store_id' => $store->id,
                         'error' => $e->getMessage()
@@ -239,7 +240,7 @@ class CreateLocationFromStoreImport implements ShouldQueue
                     } else {
                         Log::error("Geocode by name API request failed", ['status_code' => $responseByName->getStatusCode()]);
                     }
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Log::error("Exception during geocode by name", ['error' => $e->getMessage()]);
                 }
 
@@ -280,7 +281,7 @@ class CreateLocationFromStoreImport implements ShouldQueue
                             } else {
                                 Log::error("Geocode by address API request failed", ['status_code' => $responseByAddress->getStatusCode()]);
                             }
-                        } catch (\Exception $e) {
+                        } catch (Exception $e) {
                             Log::error("Exception during geocode by address", ['error' => $e->getMessage()]);
                         }
                     } else {
@@ -444,7 +445,7 @@ class CreateLocationFromStoreImport implements ShouldQueue
                 ]);
             }
             
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('[CreateLocationFromStoreImport] Error processing location', [
                 'store_id' => $this->storeId,
                 'error' => $e->getMessage(),
