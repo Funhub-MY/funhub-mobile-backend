@@ -20,6 +20,7 @@ class CampaignResource extends JsonResource
             'title' => $this->title,
             'url' => $this->url,
             'description' => $this->description,
+            'is_visible' => $this->is_visible,
             'banner' => $this->getFirstMediaUrl(Campaign::BANNER_COLLECTION) ?? null,
             'icon' => $this->getFirstMediaUrl(Campaign::ICON_COLLECTION) ?? null,
             'event_banner' => $this->getFirstMediaUrl(Campaign::EVENT_COLLECTION) ?? null,
