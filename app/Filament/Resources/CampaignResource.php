@@ -10,6 +10,7 @@ use Filament\Resources\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
@@ -98,10 +99,16 @@ class CampaignResource extends Resource
                             ->rules('image')
                             ->required(),
 
-
-                        Toggle::make('is_active')
-                            ->autofocus()
-                            ->required(),
+                        Grid::make(2)
+                            ->schema([
+                                Toggle::make('is_active')
+                                    ->autofocus()
+                                    ->required(),
+                                Toggle::make('is_visible')
+                                    ->label('Is visible')
+                                    ->autofocus()
+                                    ->required(),
+                            ]),
                     ]),
             ]);
     }
@@ -117,6 +124,10 @@ class CampaignResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\ToggleColumn::make('is_active')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\ToggleColumn::make('is_visible')
+                    ->label('Is visible')
                     ->sortable()
                     ->searchable(),
             ])
