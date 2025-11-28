@@ -840,13 +840,6 @@ class UserSettingsController extends Controller
         $user->phone_no = $request->phone_no;
         $user->save();
 
-        $rsvp_user = DB::table('rsvp_users')->where('phone_no',$request->phone_no)->first();
-
-        if ($user && $rsvp_user){
-            $user->rsvp = 1;
-            $user->save();
-        }
-
         return response()->json([
             'success' => true,
             'message' => __('messages.success.user_settings_controller.Phone_updated')

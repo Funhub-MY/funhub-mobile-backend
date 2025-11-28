@@ -219,6 +219,47 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         return $this->hasMany(ArticleTag::class);
     }
 
+    /**
+     * Badges earned by this user
+     */
+    public function badges()
+    {
+        return $this->belongsToMany(Badge::class, 'user_badges')
+            ->withPivot(['earned_at', 'reservation_id', 'progress_value', 'metadata', 'is_active']);
+    }
+
+    /**
+     * User badges (direct access to pivot records)
+     */
+    public function userBadges()
+    {
+        return $this->hasMany(UserBadge::class);
+    }
+
+    /**
+     * Get the user's showcase/active badge
+     */
+    public function getShowcaseBadge()
+    {
+        return $this->badges()->wherePivot('is_active', true)->first();
+    }
+
+    /**
+     * Check if user has a specific badge
+     */
+    public function hasBadge($badgeId): bool
+    {
+        return $this->badges()->where('badges.id', $badgeId)->exists();
+    }
+
+    /**
+     * Reservations made by this user
+     */
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
     public function merchant()
     {
         return $this->hasOne(Merchant::class);
