@@ -99,13 +99,18 @@ class CampaignResource extends Resource
                             ->rules('image')
                             ->required(),
 
-                        Grid::make(2)
+                        Grid::make(3)
                             ->schema([
                                 Toggle::make('is_active')
                                     ->autofocus()
                                     ->required(),
                                 Toggle::make('is_visible')
                                     ->label('Is visible')
+                                    ->autofocus()
+                                    ->required(),
+                                Toggle::make('requires_approval')
+                                    ->label('Requires Approval')
+                                    ->helperText('If enabled, reservations for this campaign will require admin approval')
                                     ->autofocus()
                                     ->required(),
                             ]),
@@ -128,6 +133,10 @@ class CampaignResource extends Resource
                     ->searchable(),
                 Tables\Columns\ToggleColumn::make('is_visible')
                     ->label('Is visible')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\ToggleColumn::make('requires_approval')
+                    ->label('Requires Approval')
                     ->sortable()
                     ->searchable(),
             ])

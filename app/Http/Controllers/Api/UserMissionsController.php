@@ -52,13 +52,11 @@ class UserMissionsController extends Controller
             }
         }
 
-        if ($allCompleted) {
-            $mission->where('cycle', 0)->update([
+        if ($allCompleted && $mission->cycle == 0) {
+            $mission->update([
                 'draw_chance' => 1,
                 'cycle' => 1
             ]);
-            
-            $mission->refresh();
 
             return response()->json([
                 'success' => true,

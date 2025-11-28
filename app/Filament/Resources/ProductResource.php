@@ -172,6 +172,24 @@ class ProductResource extends Resource
                                             ->helperText('Optional URL to redirect users when they tap on the notification')
                                             ->hidden(function ($get) { return !$get('enable_purchase_notification'); }),
                                     ])
+                            ]),
+                        Section::make('Lucky Draw Settings')
+                            ->schema([
+                                Checkbox::make('is_luckydraw_enabled')
+                                    ->label('Enable Lucky Draw')
+                                    ->helperText('When enabled, purchasing this product will award lucky draw chances')
+                                    ->reactive()
+                                    ->default(false),
+                                    
+                                TextInput::make('luckydraw_chance')
+                                    ->label('Draw Chances Per Purchase')
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->maxValue(100)
+                                    ->default(1)
+                                    ->helperText('Number of lucky draw chances awarded when this product is purchased')
+                                    ->required(fn ($get) => $get('is_luckydraw_enabled'))
+                                    ->hidden(fn ($get) => !$get('is_luckydraw_enabled')),
                             ])
                 ])->columnSpan(['lg' => 2]),
                 // Forms\Components\Group::make()
@@ -212,6 +230,17 @@ class ProductResource extends Resource
                     ->sortable()
                     ->prefix('RM'),
                 TextColumn::make('quantity'),
+                Tables\Columns\IconColumn::make('is_luckydraw_enabled')
+                    ->label('Lucky Draw')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('gray'),
+                TextColumn::make('luckydraw_chance')
+                    ->label('Draw Chances')
+                    ->formatStateUsing(fn ($state, $record) => $record->is_luckydraw_enabled ? $state : '-')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\BadgeColumn::make('status')
                 ->enum(Product::STATUS)
                 ->colors([

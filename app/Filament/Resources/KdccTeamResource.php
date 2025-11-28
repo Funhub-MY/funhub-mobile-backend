@@ -21,7 +21,9 @@ class KdccTeamResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
-    protected static ?string $navigationGroup = 'Events';
+    protected static ?string $navigationGroup = 'Campaigns';
+
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Form $form): Form
     {
