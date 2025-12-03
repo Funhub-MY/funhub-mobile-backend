@@ -37,22 +37,40 @@ class PruneFailedJobs extends Command
         $bar = $this->output->createProgressBar($totalCount);
         $bar->start();
         
-        // Delete in chunks
-        do {
-            $deleted = DB::table('failed_jobs')
+        // Delete in chunks - process all records including remainder
+        // Use chunkById to ensure reliable processing of all records
+        $lastId = 0;
+        $hasMore = true;
+        
+        while ($hasMore) {
+            // Get IDs of records to delete in this chunk
+            $ids = DB::table('failed_jobs')
                 ->where('failed_at', '<', $date)
+                ->where('id', '>', $lastId)
+                ->orderBy('id')
                 ->limit($chunkSize)
+                ->pluck('id')
+                ->toArray();
+            
+            if (empty($ids)) {
+                $hasMore = false;
+                break;
+            }
+            
+            // Delete the records by IDs
+            $deleted = DB::table('failed_jobs')
+                ->whereIn('id', $ids)
                 ->delete();
             
             $totalDeleted += $deleted;
             $bar->advance($deleted);
             
-            // Small delay to prevent overwhelming the database
-            if ($deleted > 0) {
-                usleep(100000); // 0.1 second delay
-            }
+            // Update lastId for next iteration
+            $lastId = max($ids);
             
-        } while ($deleted > 0);
+            // Small delay to prevent overwhelming the database
+            usleep(100000); // 0.1 second delay
+        }
         
         $bar->finish();
         $this->newLine(2);
