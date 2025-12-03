@@ -60,6 +60,9 @@ class Kernel extends ConsoleKernel
         }
 		$schedule->command('articles:check-expired')->dailyAt('01:00')->onOneServer();
 		$schedule->command('user:check-account-restrictions')->dailyAt('00:15')->onOneServer();
+        
+        // Algolia reindexing for MerchantOffer
+        $schedule->command('scout:import "App\Models\MerchantOffer"')->dailyAt('00:30')->withoutOverlapping(expiresAt: 30)->onOneServer();
 
         // Every Two Hours
         $schedule->command('generate:article-views')->everyTwoHours()->onOneServer();
