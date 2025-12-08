@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Notification;
 use App\Models\UserMission;
+use App\Models\UserDrawChanceLog;
 
 class PaymentController extends Controller
 {
@@ -1059,13 +1060,47 @@ class PaymentController extends Controller
     }
 
     public function updateExtraDrawChance($transaction){
-        if(in_array($transaction->transactionable_id,[26,27,28,29])){
-            UserMission::firstOrCreate(['user_id' => $transaction->user_id]);
-            UserMission::where('user_id',$transaction->user_id)->increment('extra_chance',1);
-            Log::info('[Payment Controller success] Extra draw chance given to', [
-                    'user_id' => $transaction->user_id,
-            ]);
+        // Check if transaction is for a Product
+        if ($transaction->transactionable_type !== Product::class) {
+            return;
         }
+
+        $product = Product::find($transaction->transactionable_id);
+        
+        if (!$product) {
+            return;
+        }
+
+        // Check if product has lucky draw enabled
+        if (!$product->awardsLuckydrawChances()) {
+            return;
+        }
+
+        $chancesToAward = $product->getLuckydrawChanceCount();
+        
+        // Create or get user mission record
+        UserMission::firstOrCreate(['user_id' => $transaction->user_id]);
+        
+        // Increment extra chance
+        UserMission::where('user_id', $transaction->user_id)
+            ->increment('extra_chance', $chancesToAward);
+        
+        // Log to user_draw_chance_logs table for audit
+        UserDrawChanceLog::create([
+            'user_id' => $transaction->user_id,
+            'product_id' => $product->id,
+            'transaction_id' => $transaction->id,
+            'chances_awarded' => $chancesToAward,
+            'source' => UserDrawChanceLog::SOURCE_PRODUCT_PURCHASE,
+            'notes' => "Awarded {$chancesToAward} chance(s) from purchasing {$product->name}",
+        ]);
+
+        Log::info('[Payment Controller success] Extra draw chance given to', [
+            'user_id' => $transaction->user_id,
+            'product_id' => $product->id,
+            'product_name' => $product->name,
+            'chances_awarded' => $chancesToAward,
+        ]);
     }
 
     public function processEncrypt($data)

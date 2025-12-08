@@ -91,4 +91,36 @@ class Product extends BaseModel implements HasMedia, Auditable
     {
         $query->where('type', 'limited');
     }
+
+    /**
+     * Check if product awards lucky draw chances
+     */
+    public function awardsLuckydrawChances(): bool
+    {
+        return $this->is_luckydraw_enabled && $this->luckydraw_chance > 0;
+    }
+
+    /**
+     * Get the number of draw chances this product awards
+     */
+    public function getLuckydrawChanceCount(): int
+    {
+        return $this->is_luckydraw_enabled ? ($this->luckydraw_chance ?? 1) : 0;
+    }
+
+    /**
+     * Draw chance logs for this product
+     */
+    public function drawChanceLogs()
+    {
+        return $this->hasMany(UserDrawChanceLog::class);
+    }
+
+    /**
+     * Scope products with lucky draw enabled
+     */
+    public function scopeLuckydrawEnabled(Builder $query): void
+    {
+        $query->where('is_luckydraw_enabled', true);
+    }
 }

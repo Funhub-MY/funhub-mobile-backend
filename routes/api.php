@@ -372,6 +372,15 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::get('/respondant_details', [\App\Http\Controllers\Api\CampaignController::class, 'getRespondantDetails']);
         });
 
+        Route::prefix('/reservations')->group(function () {
+            Route::get('/form-fields/{campaign_id}', [\App\Http\Controllers\Api\ReservationController::class, 'getFormFields']);
+            Route::get('/', [\App\Http\Controllers\Api\ReservationController::class, 'index']);
+            Route::post('/', [\App\Http\Controllers\Api\ReservationController::class, 'store']);
+            Route::get('/{id}', [\App\Http\Controllers\Api\ReservationController::class, 'show']);
+            Route::put('/{id}', [\App\Http\Controllers\Api\ReservationController::class, 'update']);
+            Route::post('/{id}/cancel', [\App\Http\Controllers\Api\ReservationController::class, 'cancel']);
+        });
+
         // Maintenance
         Route::get('/maintenance', [MaintenanceController::class, 'getMaintenanceInfo']);
 

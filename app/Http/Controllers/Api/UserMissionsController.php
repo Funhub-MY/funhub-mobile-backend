@@ -16,7 +16,9 @@ class UserMissionsController extends Controller
         if ($missionId < UserMission::MISSION_ONE || $missionId > UserMission::MISSION_FOUR) {
             return response()->json([
                 'success' => false,
-                'campaign_id' => 66,
+                'data' => [
+                    'campaign_id' => 66,
+                ],
                 'message' => 'Invalid mission number.'
             ], 400);
         }
@@ -28,7 +30,9 @@ class UserMissionsController extends Controller
         if ($mission->$mission_column == 1) {
             return response()->json([
                 'success' => false,
-                'campaign_id' => 66,
+                'data' => [
+                    'campaign_id' => 66,
+                ],
                 'message' => 'Mission already completed.'
             ]);
         }
@@ -48,13 +52,11 @@ class UserMissionsController extends Controller
             }
         }
 
-        if ($allCompleted) {
-            $mission->where('cycle', 0)->update([
+        if ($allCompleted && $mission->cycle == 0) {
+            $mission->update([
                 'draw_chance' => 1,
                 'cycle' => 1
             ]);
-            
-            $mission->refresh();
 
             return response()->json([
                 'success' => true,
@@ -114,7 +116,9 @@ class UserMissionsController extends Controller
         if(!$mission){
             return response()->json([
                 'success' => false,
-                'campaign_id' => 66,
+                'data' => [
+                    'campaign_id' => 66,
+                ],
                 'message' => 'User Mission not found!',
             ]);
         }
@@ -122,7 +126,9 @@ class UserMissionsController extends Controller
         if($mission->draw_chance == 0 && $mission->extra_chance == 0){
             return response()->json([
                 'success' => false,
-                'campaign_id' => 66,
+                'data' => [
+                    'campaign_id' => 66,
+                ],
                 'message' => 'Complete mission or puchase more fun card to get more lucky draw chance!',
             ]);
         }

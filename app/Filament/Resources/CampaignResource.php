@@ -10,6 +10,7 @@ use Filament\Resources\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
@@ -98,10 +99,21 @@ class CampaignResource extends Resource
                             ->rules('image')
                             ->required(),
 
-
-                        Toggle::make('is_active')
-                            ->autofocus()
-                            ->required(),
+                        Grid::make(3)
+                            ->schema([
+                                Toggle::make('is_active')
+                                    ->autofocus()
+                                    ->required(),
+                                Toggle::make('is_visible')
+                                    ->label('Is visible')
+                                    ->autofocus()
+                                    ->required(),
+                                Toggle::make('requires_approval')
+                                    ->label('Requires Approval')
+                                    ->helperText('If enabled, reservations for this campaign will require admin approval')
+                                    ->autofocus()
+                                    ->required(),
+                            ]),
                     ]),
             ]);
     }
@@ -117,6 +129,14 @@ class CampaignResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\ToggleColumn::make('is_active')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\ToggleColumn::make('is_visible')
+                    ->label('Is visible')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\ToggleColumn::make('requires_approval')
+                    ->label('Requires Approval')
                     ->sortable()
                     ->searchable(),
             ])
