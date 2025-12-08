@@ -381,12 +381,6 @@ class AuthController extends Controller
             ->where('otp', $request->otp)
             ->first();
 
-        $rsvp_user = DB::table('rsvp_users')->where('phone_no',$request->phone_no)->first();
-
-        if ($user && $rsvp_user){
-            $user->update(['rsvp' => 1]);
-        }
-
         if ($user) {
             // user exists in system
             // update otp to null
@@ -590,12 +584,6 @@ class AuthController extends Controller
 
         // mark as verified email
         $user->markEmailAsVerified();
-
-        $rsvp_user = DB::table('rsvp_users')->where('email',$user->email)->first();
-
-        if ($user && $rsvp_user){
-            $user->update(['rsvp' => 1]);
-        }
 
         return response()->json(['message' => __('messages.success.auth_controller.Email_Verified')], 200);
     }
