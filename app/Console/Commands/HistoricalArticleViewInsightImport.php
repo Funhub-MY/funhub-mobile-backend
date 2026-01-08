@@ -22,7 +22,7 @@ class HistoricalArticleViewInsightImport extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'DISABLED: Import historical article view insights to Algolia (disabled to prevent API spam)';
 
     protected $insights;
 
@@ -33,40 +33,51 @@ class HistoricalArticleViewInsightImport extends Command
      */
     public function handle()
     {
-        // check if algolia is enabled
-        if (!config('scout.algolia.id') || !config('scout.algolia.secret')) {
-            return Command::FAILURE;
-        }
-
-        // check if scout package is installed
-        if (!class_exists(InsightsClient::class)) {
-            return Command::FAILURE;
-        }
-
-        $this->insights = InsightsClient::create(
-            config('scout.algolia.id'),
-            config('scout.algolia.secret')
-        );
-
-        // get numer of view records can be synced
-        $totalViews = View::where('viewable_type', Article::class)
-            ->where('is_system_generated', false)
-            ->count();
-
-        $this->info('Total Views Records to Sync: ' . $totalViews);
-
-        // get views by batches
-        $views = View::where('viewable_type', Article::class)
-            ->where('is_system_generated', false)
-            ->orderBy('id')
-            ->chunk(500, function ($views) {
-                $this->batchSendInsights($views);
-                $views->each(function ($view) {
-                    $this->info('Processing ID:' .$view->id);
-                });
-            });
-
+        // Command disabled to prevent Algolia API spam
+        // This command was causing rate limit issues when importing historical view data
+        $this->warn('This command has been disabled to prevent Algolia API spam.');
+        $this->warn('Algolia Insights import is not needed as recommendations use local database data.');
+        $this->info('If you need to re-enable this command, please add throttling and rate limiting first.');
+        
         return Command::SUCCESS;
+
+        // ============================================================================
+        // ORIGINAL CODE COMMENTED OUT - DISABLED TO PREVENT ALGOLIA API SPAM
+        // ============================================================================
+        // // check if algolia is enabled
+        // if (!config('scout.algolia.id') || !config('scout.algolia.secret')) {
+        //     return Command::FAILURE;
+        // }
+
+        // // check if scout package is installed
+        // if (!class_exists(InsightsClient::class)) {
+        //     return Command::FAILURE;
+        // }
+
+        // $this->insights = InsightsClient::create(
+        //     config('scout.algolia.id'),
+        //     config('scout.algolia.secret')
+        // );
+
+        // // get numer of view records can be synced
+        // $totalViews = View::where('viewable_type', Article::class)
+        //     ->where('is_system_generated', false)
+        //     ->count();
+
+        // $this->info('Total Views Records to Sync: ' . $totalViews);
+
+        // // get views by batches
+        // $views = View::where('viewable_type', Article::class)
+        //     ->where('is_system_generated', false)
+        //     ->orderBy('id')
+        //     ->chunk(500, function ($views) {
+        //         $this->batchSendInsights($views);
+        //         $views->each(function ($view) {
+        //             $this->info('Processing ID:' .$view->id);
+        //         });
+        //     });
+
+        // return Command::SUCCESS;
     }
 
     protected function batchSendInsights($views) {
