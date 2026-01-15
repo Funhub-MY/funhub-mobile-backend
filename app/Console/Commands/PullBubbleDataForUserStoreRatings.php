@@ -57,6 +57,17 @@ class PullBubbleDataForUserStoreRatings extends Command
             
             $this->info("Found " . count($existingReviewIds) . " existing reviews in our database");
             
+            // Get the most recent sync date to only fetch new reviews
+            $lastSyncedDate = StoreRating::whereNotNull('external_review_id')
+                ->orderBy('created_at', 'desc')
+                ->value('created_at');
+            
+            if ($lastSyncedDate) {
+                $this->info("Last synced review date: " . $lastSyncedDate->toDateTimeString());
+            } else {
+                $this->info("No previous sync found - will sync all reviews");
+            }
+            
             // Initialize pagination variables for reviews
             $cursor = 0;
             $batchSize = 50; // Process reviews in batches of 50
@@ -68,11 +79,25 @@ class PullBubbleDataForUserStoreRatings extends Command
             while ($hasMoreReviews) {
                 $this->info("\nFetching reviews batch from Bubble API (cursor: {$cursor}, limit: {$batchSize})");
                 
-                // Prepare constraints to exclude existing reviews
+                // Prepare constraints to exclude existing reviews and only fetch new ones
                 $constraints = [];
                 
-                // Only add not_in constraint if we have existing reviews
-                if (!empty($existingReviewIds)) {
+                // Add date constraint to only fetch reviews created after the last sync
+                // This prevents fetching all reviews from the beginning every time
+                if ($lastSyncedDate) {
+                    // Format date for Bubble API (ISO 8601 format)
+                    $dateString = $lastSyncedDate->toIso8601String();
+                    $constraints[] = [
+                        'key' => 'Created Date',
+                        'constraint_type' => 'greater than',
+                        'value' => $dateString
+                    ];
+                    $this->info("Using date filter: Created Date > " . $dateString);
+                }
+                
+                // Only add not_in constraint if we have existing reviews and no date filter
+                // (date filter should handle most cases, but keep this as a fallback for edge cases)
+                if (!empty($existingReviewIds) && !$lastSyncedDate) {
                     // Due to potential API limitations with large arrays, we'll limit the number of IDs per request
                     // If there are too many IDs, we'll just use the filter method later
                     if (count($existingReviewIds) <= 100) {
@@ -113,14 +138,18 @@ class PullBubbleDataForUserStoreRatings extends Command
                     break;
                 }
                 
-                // If we have too many existing IDs or couldn't use the constraint, filter them out here
-                if (!empty($existingReviewIds) && (count($existingReviewIds) > 100 || empty($constraints))) {
+                // Always filter out duplicates by external_review_id as a safety measure
+                // Even with date constraints, there might be edge cases (same timestamp, etc.)
+                if (!empty($existingReviewIds)) {
                     $newReviews = $reviews->filter(function ($review) use ($existingReviewIds) {
                         return !in_array($review['_id'], $existingReviewIds);
                     });
-                    $this->info("Filtered out " . ($reviews->count() - $newReviews->count()) . " already existing reviews");
+                    $filteredCount = $reviews->count() - $newReviews->count();
+                    if ($filteredCount > 0) {
+                        $this->info("Filtered out " . $filteredCount . " already existing reviews");
+                    }
                 } else {
-                    // If we used constraints, all reviews should be new
+                    // No existing reviews, so all fetched reviews are new
                     $newReviews = $reviews;
                 }
                 
