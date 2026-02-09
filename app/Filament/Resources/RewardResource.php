@@ -51,7 +51,8 @@ class RewardResource extends Resource
 
                 // points double
                 TextInput::make('points')
-                    ->label('Single Value')
+                    ->label('Points Per Unit')
+                    ->helperText('The point value for one unit of this reward (e.g., 1 funbox = 1 point)')
                     ->rules('required', 'numeric')
                     ->required(),
                 
@@ -77,7 +78,7 @@ class RewardResource extends Resource
                     ->sortable(),
 
                 TextColumn::make('points')
-                    ->label('Single Value')
+                    ->label('Points Per Unit')
                     ->searchable()
                     ->sortable(),
             ])

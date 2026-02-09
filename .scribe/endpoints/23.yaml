@@ -1,0 +1,157 @@
+name: 'Promotion Code'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/promotion-codes/redeem
+    metadata:
+      groupName: 'Promotion Code'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Redeem a promotion code'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      code:
+        name: code
+        description: 'The code to redeem.'
+        required: true
+        example: ABCD123ABCDD
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      code: ABCD123ABCDD
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Code redeemed successfully",
+          "rewards": [
+            {
+              "id": 1,
+              "name": "Funhub",
+              "description": "Funhub",
+              "components": [],
+            }
+          ],
+          "reward_components": [
+            {
+              "id": 1,
+              "name": "Funhub",
+              "description": "Funhub",
+              "components": [],
+            }
+          ]
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer kf4E8a63VhZa1DPecbg5dv6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/promotion-codes/check_promo_code
+    metadata:
+      groupName: 'Promotion Code'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Check if a promotion code is valid for checkout'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      product_id:
+        name: product_id
+        description: ''
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      code:
+        name: code
+        description: 'The code to check.'
+        required: true
+        example: ABCD123ABCDD
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      payment_method:
+        name: payment_method
+        description: ''
+        required: true
+        example: non
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      product_ids:
+        name: product_ids
+        description: 'optional The product IDs to check against.'
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      product_id: 10
+      code: ABCD123ABCDD
+      payment_method: non
+      product_ids:
+        - 1
+        - 2
+        - 3
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 83ebhDE5dZ6aPc1kfV6ga4v'
+    controller: null
+    method: null
+    route: null
+    custom: []

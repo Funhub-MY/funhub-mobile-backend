@@ -75,7 +75,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z6e1Eh45gVcv83dDPfkaa6b'
+      - 'Bearer akfE5v4Ph6Db8ga36deZV1c'
     controller: null
     method: null
     route: null
@@ -216,7 +216,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4cgavP5eEabZ3fk866dV1hD'
+      - 'Bearer 4kV861Egca5Dvb6Zh3Pdafe'
     controller: null
     method: null
     route: null
@@ -320,61 +320,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5cdZ8g6aPhaVf1E6b4kve3D'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v1/interactions/{id}'
-    metadata:
-      groupName: Interactions
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Show one interaction by ID'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The id of the interaction.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer fZ36Eka41eDhcabv6VP5dg8'
+      - 'Bearer Z6143gaEdhkbvcDaePf56V8'
     controller: null
     method: null
     route: null
@@ -469,7 +415,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4Zb31PcdfeEaa6ghD5vk68V'
+      - 'Bearer kbgEZ8cv4DdVea6651Pafh3'
     controller: null
     method: null
     route: null

@@ -1,16 +1,16 @@
-name: Payment
+name: Reservations
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/payment/available_payment_types
+    uri: 'api/v1/reservations/form-fields/{campaign_id}'
     metadata:
-      groupName: Payment
+      groupName: Reservations
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get available payment types'
+      title: 'Get Form Fields for Campaign'
       description: ''
       authenticated: true
       custom: []
@@ -18,8 +18,19 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      campaign_id:
+        name: campaign_id
+        description: 'Campaign ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      campaign_id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -30,21 +41,18 @@ endpoints:
         status: 200
         content: |-
           {
-           "availablePaymentTypes": [
-               "fpx",
-               "card"
-           ],
-           "server_time": "2023-10-01 12:00:00",
-           "last_payment_method": "FPX-CIMB"
+          "campaign": {},
+          "form_fields": [],
+          "requires_approval": true
           }
         headers: []
-        description: ''
+        description: success
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer DeaZ1bd6v5afE6gkhc43P8V'
+      - 'Bearer D16hfgEd83VPb6a4Zak5vce'
     controller: null
     method: null
     route: null
@@ -52,13 +60,78 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/payment/funbox_ringgit_value
+    uri: api/v1/reservations
     metadata:
-      groupName: Payment
+      groupName: Reservations
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get Funbox Ringgit Value'
+      title: 'Get User Reservations'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      campaign_id:
+        name: campaign_id
+        description: 'optional Filter by campaign.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: 'optional Filter by status.'
+        required: false
+        example: pending
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      campaign_id: 1
+      status: pending
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "reservations": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer PdZcvfV6h8gE546a1abD3ke'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/reservations
+    metadata:
+      groupName: Reservations
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create Reservation'
       description: ''
       authenticated: true
       custom: []
@@ -70,6 +143,109 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
+    bodyParameters:
+      campaign_id:
+        name: campaign_id
+        description: 'Campaign ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      reservation_date:
+        name: reservation_date
+        description: 'Reservation date.'
+        required: true
+        example: '2025-12-01 10:00:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      form_data:
+        name: form_data
+        description: 'Form field values.'
+        required: true
+        example:
+          name: 'John Doe'
+          email: john@example.com
+        type: object
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      files:
+        name: files
+        description: 'optional File uploads.'
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      campaign_id: 1
+      reservation_date: '2025-12-01 10:00:00'
+      form_data:
+        name: 'John Doe'
+        email: john@example.com
+      files: null
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Reservation created successfully",
+          "reservation": {}
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer dak1bE6cPega45ZfD3vVh86'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/reservations/{id}'
+    metadata:
+      groupName: Reservations
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Reservation Details'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'Reservation ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -78,16 +254,149 @@ endpoints:
         status: 200
         content: |-
           {
-           "funbox_ringgit_value": 5
+          "reservation": {}
           }
         headers: []
-        description: ''
+        description: success
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Veh5ZaE4gvakf3cP81Db6d'
+      - 'Bearer 8Z6f4eDkhaPE536cbVgdv1a'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: 'api/v1/reservations/{id}'
+    metadata:
+      groupName: Reservations
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update Reservation (for user to update their own reservation)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'Reservation ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      reservation_date:
+        name: reservation_date
+        description: 'optional Reservation date.'
+        required: false
+        example: '2025-12-01 10:00:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      form_data:
+        name: form_data
+        description: 'optional Form field values.'
+        required: false
+        example:
+          name: 'John Doe'
+        type: object
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      reservation_date: '2025-12-01 10:00:00'
+      form_data:
+        name: 'John Doe'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Reservation updated successfully",
+          "reservation": {}
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 35vDdEZaVPfca4b1ke66h8g'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v1/reservations/{id}/cancel'
+    metadata:
+      groupName: Reservations
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Cancel Reservation'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'Reservation ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Reservation cancelled successfully"
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Egv1edfV8646cDPakha35Zb'
     controller: null
     method: null
     route: null

@@ -40,6 +40,7 @@ use App\Observers\ArticleTagObserver;
 use App\Observers\SupportRequestMessageObserver;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAdded;
+use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -50,6 +51,10 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
+        NotificationFailed::class => [
+            \App\Listeners\ClearInvalidFcmTokenListener::class,
+        ],
+
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
