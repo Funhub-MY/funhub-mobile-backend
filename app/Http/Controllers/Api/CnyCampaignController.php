@@ -104,6 +104,7 @@ class CnyCampaignController extends Controller
      */
     public function getMyPicks(Request $request): JsonResponse
     {
+        /** @var \App\Models\User $user */
         $user = auth()->user();
         $perPage = min((int) $request->get('per_page', 15), 50);
         $picks = $user->cnyFortunePicks()
@@ -216,6 +217,7 @@ class CnyCampaignController extends Controller
      */
     public function getMyLuckyDraws(Request $request): JsonResponse
     {
+        /** @var \App\Models\User $user */
         $user = auth()->user();
         $perPage = min((int) $request->get('per_page', 15), 50);
         $draws = $user->cnyLuckyDraws()
