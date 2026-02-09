@@ -372,6 +372,16 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::get('/respondant_details', [\App\Http\Controllers\Api\CampaignController::class, 'getRespondantDetails']);
         });
 
+        // CNY (Chinese New Year) Campaign – fortune pick (once/day) & lucky draw (once/day)
+        Route::prefix('/cny')->group(function () {
+            Route::get('/pick-balance', [\App\Http\Controllers\Api\CnyCampaignController::class, 'getPickBalance']);
+            Route::post('/fortune-pick', [\App\Http\Controllers\Api\CnyCampaignController::class, 'postFortunePick']);
+            Route::get('/my-picks', [\App\Http\Controllers\Api\CnyCampaignController::class, 'getMyPicks']);
+            Route::get('/lucky-draw-balance', [\App\Http\Controllers\Api\CnyCampaignController::class, 'getLuckyDrawBalance']);
+            Route::post('/lucky-draw', [\App\Http\Controllers\Api\CnyCampaignController::class, 'postLuckyDraw']);
+            Route::get('/my-lucky-draws', [\App\Http\Controllers\Api\CnyCampaignController::class, 'getMyLuckyDraws']);
+        });
+
         Route::prefix('/reservations')->group(function () {
             Route::get('/form-fields/{campaign_id}', [\App\Http\Controllers\Api\ReservationController::class, 'getFormFields']);
             Route::get('/', [\App\Http\Controllers\Api\ReservationController::class, 'index']);

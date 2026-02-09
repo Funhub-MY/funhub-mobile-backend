@@ -114,6 +114,9 @@ return [
     'algolia' => [
         'id' => env('ALGOLIA_APP_ID', ''),
         'secret' => env('ALGOLIA_SECRET', ''),
+        // Disable deleteByQuery in local environment to avoid rate limits
+        // Only allow it in production
+        'use_deprecated_delete_by' => env('APP_ENV') !== 'local',
     ],
 
     /*
