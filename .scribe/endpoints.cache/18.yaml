@@ -42,7 +42,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hDfPZebv66V1kgaEac4d385'
+      - 'Bearer PeDavZEgkah85db63f4V16c'
     controller: null
     method: null
     route: null
@@ -69,14 +69,14 @@ endpoints:
         name: campaign_id
         description: 'The ID of the campaign.'
         required: true
-        example: cum
+        example: vero
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      campaign_id: cum
+      campaign_id: vero
     queryParameters:
       campaign_id:
         name: campaign_id
@@ -107,7 +107,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z6dkV4v3fh1D58gcaPEabe6'
+      - 'Bearer vhd66ag31DEP4V85bacfeZk'
     controller: null
     method: null
     route: null
@@ -172,7 +172,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V64gPcadD615Z8aEhb3kefv'
+      - 'Bearer kDd4aPva6f6ce5gVbE38Zh1'
     controller: null
     method: null
     route: null
@@ -238,7 +238,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4dgDVEfc5eava6kh13Zb8P6'
+      - 'Bearer 6D85e1cakPZhEfv64bgdaV3'
     controller: null
     method: null
     route: null
@@ -293,7 +293,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kc6dvZ1h84gVa3Pf6b5eaED'
+      - 'Bearer fE6e4VPava3gbcdhDZk8615'
     controller: null
     method: null
     route: null
@@ -359,7 +359,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E8b3kPa651gadD4hvZef6Vc'
+      - 'Bearer 1Pc85dfE6Va3a46evDgkbhZ'
     controller: null
     method: null
     route: null
@@ -410,7 +410,7 @@ endpoints:
         name: email
         description: 'The email of the respondant. Example:'
         required: true
-        example: koss.marcelle@example.org
+        example: heathcote.miles@example.com
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -449,7 +449,7 @@ endpoints:
     cleanBodyParameters:
       campaign_id: 1
       name: 'John Doe'
-      email: koss.marcelle@example.org
+      email: heathcote.miles@example.com
       phone: '0123456789'
       ic: '123456789012'
       address: '123, Jalan ABC, 12345, Kuala Lumpur'
@@ -468,7 +468,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gb81Zcfh46kaaVP56D3vdeE'
+      - 'Bearer v8aD5VchfE6Zgb6ad3Pek14'
     controller: null
     method: null
     route: null
@@ -523,7 +523,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer abV6g1DdP65Z43Eeh8kcfav'
+      - 'Bearer 1e6kgPvabVhZ83dEaD56f4c'
     controller: null
     method: null
     route: null

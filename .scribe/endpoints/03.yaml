@@ -1,508 +1,17 @@
-name: Location
+name: Stores
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/external/locations
+    uri: api/v1/external/stores
     metadata:
-      groupName: Location
+      groupName: Stores
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get Locations'
+      title: 'Get Stores'
       description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      location_ids:
-        name: location_ids
-        description: 'optional Location Ids to Filter. Example [1,2,3]'
-        required: false
-        example:
-          - totam
-        type: 'string[]'
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      name:
-        name: name
-        description: 'optional Search query.'
-        required: false
-        example: '"KFC SS15"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      state_id:
-        name: state_id
-        description: 'optional Filter by state id.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      country_id:
-        name: country_id
-        description: 'optional Filter by country id.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      city:
-        name: city
-        description: 'optional Filter by city.'
-        required: false
-        example: '"Subang Jaya"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      lat:
-        name: lat
-        description: 'optional Latitude of User GeoLoc.'
-        required: false
-        example: 3.073065
-        type: number
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      lng:
-        name: lng
-        description: 'optional Longitude of User GeoLoc.'
-        required: false
-        example: 101.607787
-        type: number
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      radius:
-        name: radius
-        description: 'optional Radius (KM) of search if lat,lng provided.'
-        required: false
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      location_ids:
-        - totam
-      name: '"KFC SS15"'
-      state_id: 1
-      country_id: 1
-      city: '"Subang Jaya"'
-      lat: 3.073065
-      lng: 101.607787
-      radius: 10
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "data": [],
-           "links": {},
-           "meta": {
-              "current_page": 1,
-            }
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer Pav84gZ6Da3Eb6kfc1e5Vdh'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/locations/rating
-    metadata:
-      groupName: Location
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Rate a Location and Create/Update Store'
-      description: |-
-        This endpoint allows users to rate a location and automatically creates or updates an associated store.
-        If the location doesn't exist, it will be created. Similarly, if no store exists for the location,
-        a new store will be created with the location's details.
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      lat:
-        name: lat
-        description: 'Latitude of the location.'
-        required: true
-        example: 3.073065
-        type: number
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      lng:
-        name: lng
-        description: 'Longitude of the location.'
-        required: true
-        example: 101.607787
-        type: number
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      google_id:
-        name: google_id
-        description: 'required|nullable Google Place ID for the location.'
-        required: false
-        example: ChIJN1t_tDeuEmsRUsoyG83frY4
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      address:
-        name: address
-        description: 'required|nullable Street address of the location.'
-        required: false
-        example: '47, Jalan SS 15/4g'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      address_2:
-        name: address_2
-        description: 'optional Additional address details.'
-        required: false
-        example: 'Subang Jaya'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: true
-        custom: []
-      postcode:
-        name: postcode
-        description: 'required|nullable Postal code of the location.'
-        required: false
-        example: '47500'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      city:
-        name: city
-        description: 'required|nullable City name.'
-        required: false
-        example: 'Subang Jaya'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      state:
-        name: state
-        description: 'required|nullable State name or ID.'
-        required: false
-        example: Selangor
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      country:
-        name: country
-        description: 'required|nullable Country name.'
-        required: false
-        example: Malaysia
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      rating:
-        name: rating
-        description: 'Rating value between 1 and 5.'
-        required: true
-        example: 4
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      comment:
-        name: comment
-        description: 'optional Review comment.'
-        required: false
-        example: 'Great service and ambiance'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: true
-        custom: []
-      name:
-        name: name
-        description: 'Name of the location.'
-        required: true
-        example: 'KFC SS15'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      ratingCategories:
-        name: ratingCategories
-        description: 'optional Comma-separated category IDs for the rating.'
-        required: false
-        example: '1,2,3'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: true
-        custom: []
-    cleanBodyParameters:
-      lat: 3.073065
-      lng: 101.607787
-      google_id: ChIJN1t_tDeuEmsRUsoyG83frY4
-      address: '47, Jalan SS 15/4g'
-      address_2: 'Subang Jaya'
-      postcode: '47500'
-      city: 'Subang Jaya'
-      state: Selangor
-      country: Malaysia
-      rating: 4
-      comment: 'Great service and ambiance'
-      name: 'KFC SS15'
-      ratingCategories: '1,2,3'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "success": true,
-           "message": "Location and store rated successfully",
-           "data": {
-             "location": {
-               "id": 1,
-               "name": "KFC SS15",
-               "google_id": "ChIJN1t_tDeuEmsRUsoyG83frY4",
-               "lat": 3.073065,
-               "lng": 101.607787,
-               "address": "47, Jalan SS 15/4g",
-               "city": "Subang Jaya",
-               "state": "Selangor",
-               "country": "Malaysia"
-             },
-             "store": {
-               "id": 1,
-               "name": "KFC SS15",
-               "status": "active",
-               "ratings": 4
-             },
-             "rating": {
-               "id": 1,
-               "rating": 4,
-               "comment": "Great service and ambiance",
-               "categories": [1, 2, 3],
-               "likes_count": 0,
-               "dislikes_count": 0
-             }
-           }
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer vdV6ba1hc8ZkEP5gae3D64f'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/locations
-    metadata:
-      groupName: Location
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Locations'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      location_ids:
-        name: location_ids
-        description: 'optional Location Ids to Filter. Example [1,2,3]'
-        required: false
-        example:
-          - hic
-        type: 'string[]'
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      name:
-        name: name
-        description: 'optional Search query.'
-        required: false
-        example: '"KFC SS15"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      state_id:
-        name: state_id
-        description: 'optional Filter by state id.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      country_id:
-        name: country_id
-        description: 'optional Filter by country id.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      city:
-        name: city
-        description: 'optional Filter by city.'
-        required: false
-        example: '"Subang Jaya"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      lat:
-        name: lat
-        description: 'optional Latitude of User GeoLoc.'
-        required: false
-        example: 3.073065
-        type: number
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      lng:
-        name: lng
-        description: 'optional Longitude of User GeoLoc.'
-        required: false
-        example: 101.607787
-        type: number
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      radius:
-        name: radius
-        description: 'optional Radius (KM) of search if lat,lng provided.'
-        required: false
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      location_ids:
-        - hic
-      name: '"KFC SS15"'
-      state_id: 1
-      country_id: 1
-      city: '"Subang Jaya"'
-      lat: 3.073065
-      lng: 101.607787
-      radius: 10
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "data": [],
-           "links": {},
-           "meta": {
-              "current_page": 1,
-            }
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer kd3cf6g45v8PaeE1h6bZDVa'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v1/locations/{location_id}'
-    metadata:
-      groupName: Location
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get One Location'
-      description: 'Locaiton will auto load state, coutry, articles, merchant offers, ratings'
       authenticated: true
       custom: []
     headers:
@@ -510,29 +19,73 @@ endpoints:
       Content-Type: application/json
       Accept: application/json
     urlParameters:
-      location_id:
-        name: location_id
-        description: 'The ID of the location.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      location:
-        name: location
-        description: 'Location ID.'
-        required: true
-        example: '1'
+      categories_id:
+        name: categories_id
+        description: 'optional Categories ID.'
+        required: false
+        example: '1,2,3'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
+      merchant_ids:
+        name: merchant_ids
+        description: 'optional Merchant IDs.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      store_ids:
+        name: store_ids
+        description: 'optional Store IDs.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      include_unlisted:
+        name: include_unlisted
+        description: 'optional Include unlisted stores, must have store_ids specified else all will be LISTED store only.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      include_listed_unlisted:
+        name: include_listed_unlisted
+        description: 'optional Include all listed and unlisted stores.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Per Page Limit.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
     cleanUrlParameters:
-      location_id: 1
-      location: '1'
+      categories_id: '1,2,3'
+      merchant_ids: '1,2,3'
+      store_ids: '1,2,3'
+      include_unlisted: 1
+      include_listed_unlisted: 1
+      limit: 10
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -543,8 +96,8 @@ endpoints:
         status: 200
         content: |-
           {
-          "data": {
-          }
+          "current_page": 1,
+          "data": []
           }
         headers: []
         description: success
@@ -553,7 +106,966 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 83e64ada1VZ6hfcDgbP5vEk'
+      - 'Bearer 6cZga3P81kvEbaf4DhV5d6e'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/stores
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Stores'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      categories_id:
+        name: categories_id
+        description: 'optional Categories ID.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      merchant_ids:
+        name: merchant_ids
+        description: 'optional Merchant IDs.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      store_ids:
+        name: store_ids
+        description: 'optional Store IDs.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      include_unlisted:
+        name: include_unlisted
+        description: 'optional Include unlisted stores, must have store_ids specified else all will be LISTED store only.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      include_listed_unlisted:
+        name: include_listed_unlisted
+        description: 'optional Include all listed and unlisted stores.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Per Page Limit.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      categories_id: '1,2,3'
+      merchant_ids: '1,2,3'
+      store_ids: '1,2,3'
+      include_unlisted: 1
+      include_listed_unlisted: 1
+      limit: 10
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "current_page": 1,
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 866vPEah1fk3bgVDZ54adec'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/stores/followings_been_here
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Stores Following Been Here'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      store_ids:
+        name: store_ids
+        description: 'The store ids.'
+        required: true
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      store_ids: '1,2,3'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      store_ids:
+        name: store_ids
+        description: ''
+        required: true
+        example: cum
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      store_ids: cum
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"data": [{"id": 1, "name": "John Doe"}, {"id": 2, "name": "John Doe"}]}'
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer c146hegd3V58kEZaafvP6Db'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/stores/rating_categories
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Store Rating Categories'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          data: []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 1Pag6dk6hZ8e4VDEcfv3b5a'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/stores/find_by_location
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Check if store exists at given location'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      lat:
+        name: lat
+        description: 'optional Latitude coordinate.'
+        required: false
+        example: 3.139
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lng:
+        name: lng
+        description: 'optional Longitude coordinate.'
+        required: false
+        example: 101.6869
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      location_name:
+        name: location_name
+        description: 'optional Location name to search.'
+        required: false
+        example: '"KLCC"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      lat: 3.139
+      lng: 101.6869
+      location_name: '"KLCC"'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "exists": true,
+            "store": {
+              "id": 1,
+              "name": "Store Name",
+              ...
+            }
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Either coordinates (lat, lng) or location_name must be provided"
+          }
+        headers: []
+        description: error
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer h1ZfkDVevbcEag563a46dP8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/stores/locations
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Store Locations by Store IDS'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      store_ids:
+        name: store_ids
+        description: 'Store IDs.'
+        required: true
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      store_ids: '1,2,3'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      store_ids:
+        name: store_ids
+        description: ''
+        required: true
+        example: quam
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      store_ids: quam
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "current_page": 1,
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer dc3Ea1Daekv685hZgPbV46f'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/stores/stores_by_location
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Stores by Location ID'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      location_id:
+        name: location_id
+        description: 'Location ID.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      location_id: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      location_id:
+        name: location_id
+        description: ''
+        required: true
+        example: expedita
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      location_id: expedita
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "current_page": 1,
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 4PZ6c8h3begE1vVdfa5aDk6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/stores/check_reviewed
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Check if User Has Reviewed Stores'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      store_ids:
+        name: store_ids
+        description: 'Comma separated store IDs to check.'
+        required: true
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      store_ids: '1,2,3'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "data": {
+                  "1": {
+                      "store_id": 1,
+                      "store_name": "Store Name",
+                      "has_reviewed": true,
+                      "last_reviewed_at": "2025-01-16 11:40:23"
+                  }
+              }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ceb1D4dfEa5Z3a6kg8P6Vvh'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/stores/by_claim
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Stores by Merchant Offer Claim ID'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      claim_id:
+        name: claim_id
+        description: 'The merchant offer claim ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      claim_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      claim_id:
+        name: claim_id
+        description: ''
+        required: true
+        example: 8
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      claim_id: 8
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": {
+              "id": 1,
+              "name": "Store Name",
+              ...
+            }
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Claim not found"
+          }
+        headers: []
+        description: error
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hP58d6ZeDaaEgfb6Vk34cv1'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/stores/{store_id}/ratings'
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Stores Ratings'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      store_id:
+        name: store_id
+        description: 'The ID of the store.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      store:
+        name: store
+        description: 'Store ID.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      only_mine:
+        name: only_mine
+        description: 'boolean optional Only show my ratings.'
+        required: false
+        example: 'true'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      user_id:
+        name: user_id
+        description: 'optional Only load specific user ratings.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      merchant_id:
+        name: merchant_id
+        description: 'optional Only load specific merchant ratings.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, rating, created_at, updated_at'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      store_id: 1
+      store: '1'
+      only_mine: 'true'
+      user_id: 1
+      merchant_id: 1
+      sort: 'Sortable columns are: id, rating, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "current_page": 1,
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer V6gaaeP41ZDEv5c68hfkd3b'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v1/stores/{store_id}/ratings'
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Rate a Store'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      store_id:
+        name: store_id
+        description: 'The ID of the store.'
+        required: true
+        example: 13
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      store:
+        name: store
+        description: 'Store ID.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      store_id: 13
+      store: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      rating:
+        name: rating
+        description: Rating.
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      comment:
+        name: comment
+        description: 'optional Comment.'
+        required: false
+        example: 'Good service'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      rating_category_ids:
+        name: rating_category_ids
+        description: 'optional Rating Category IDs.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      rating: 5
+      comment: 'Good service'
+      rating_category_ids: '1,2,3'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          data: {}
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 568cEfg1ah6akb4DZVe3dPv'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/stores/{store_id}/menus'
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Merchant Menus via Store'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      store_id:
+        name: store_id
+        description: 'The ID of the store.'
+        required: true
+        example: 7
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      store:
+        name: store
+        description: 'Store ID.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      store_id: 7
+      store: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          [
+          {'name': 'Menu 1', 'url': 'http://example.com/menu1.jpg'},
+          ]
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer d485Veh6vkgfZc3a6EPDb1a'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/stores/{store_id}/ratings/ratings_categories'
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Top X Store Rating Categories of'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      store_id:
+        name: store_id
+        description: 'The ID of the store.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      store:
+        name: store
+        description: 'Store ID.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Limit.'
+        required: false
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      only_with_ratings:
+        name: only_with_ratings
+        description: 'boolean optional Only with ratings.'
+        required: false
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      store_id: 5
+      store: '1'
+      limit: 3
+      only_with_ratings: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          data: []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Z1h3kfdDe8b6gP4aa6vVEc5'
     controller: null
     method: null
     route: null

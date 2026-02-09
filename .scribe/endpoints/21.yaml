@@ -1,16 +1,16 @@
-name: 'Promotion Code'
+name: Maintenance
 description: ''
 endpoints:
   -
     httpMethods:
-      - POST
-    uri: api/v1/promotion-codes/redeem
+      - GET
+    uri: api/v1/maintenance
     metadata:
-      groupName: 'Promotion Code'
+      groupName: Maintenance
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Redeem a promotion code'
+      title: 'Get maintenance info'
       description: ''
       authenticated: true
       custom: []
@@ -22,42 +22,15 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters:
-      code:
-        name: code
-        description: 'The code to redeem.'
-        required: true
-        example: ABCD123ABCDD
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      code: ABCD123ABCDD
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "Code redeemed successfully",
-          "rewards": [
-            {
-              "id": 1,
-              "name": "Funhub",
-              "description": "Funhub",
-              "components": [],
-            }
-          ],
-          "reward_components": [
-            {
-              "id": 1,
-              "name": "Funhub",
-              "description": "Funhub",
-              "components": [],
-            }
-          ]
+           "data": [],
           }
         headers: []
         description: success
@@ -66,7 +39,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1hZPc5VabfE84kvg6d6Dea3'
+      - 'Bearer Pg6Ec6abf5ZeahDVv184dk3'
     controller: null
     method: null
     route: null
