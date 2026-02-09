@@ -1,16 +1,16 @@
-name: Maintenance
+name: 'CNY Campaign'
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/maintenance
+    uri: api/v1/cny/pick-balance
     metadata:
-      groupName: Maintenance
+      groupName: 'CNY Campaign'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get maintenance info'
+      title: 'Get CNY fortune pick balance for today (once per day)'
       description: ''
       authenticated: true
       custom: []
@@ -30,7 +30,9 @@ endpoints:
         status: 200
         content: |-
           {
-           "data": [],
+            "fortune_pick_available": true,
+            "fortune_picks_used_today": 0,
+            "date": "2026-02-10"
           }
         headers: []
         description: success
@@ -39,7 +41,142 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a65gE8va4f3k6deV1bhcZPD'
+      - 'Bearer 65gea38fPkdbc4avVEh6D1Z'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/cny/fortune-pick
+    metadata:
+      groupName: 'CNY Campaign'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Perform one fortune pick (once per day). Returns fortune + fortune reward (nothing | promo code).'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "fortune": { "category": "peace", "title": "平安顺心", "description": "..." },
+            "fortune_reward": { "fortune_reward_type": "promo_49", "code": "AB1234", ... }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer cZPegbv51k6Dafa3EV8dh64'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/cny/lucky-draw-balance
+    metadata:
+      groupName: 'CNY Campaign'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get CNY lucky draw balance for today (no base draw; total draws = Fun cards purchased today, e.g. 3 purchases = 3 draws)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "lucky_draw_available": true,
+            "lucky_draws_available": 3,
+            "lucky_draws_used_today": 0,
+            "total_draws_today": 3,
+            "has_funcard_draw_entry": true,
+            "date": "2026-02-10"
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 1bdh4DEca356fe8agZ6PvVk'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/cny/lucky-draw
+    metadata:
+      groupName: 'CNY Campaign'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Perform one lucky draw (when user has entries from Fun card purchases today; 1 draw per purchase). Returns reward: nothing | promo code | merchandise.'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "lucky_draw": { "reward_type": "promo_code", "code": "XY5678", ... }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Pbd18ve5gZhV36fa4EkcDa6'
     controller: null
     method: null
     route: null

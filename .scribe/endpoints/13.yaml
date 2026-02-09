@@ -40,7 +40,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gh64f31e8abdkD56EPZavVc'
+      - 'Bearer v4P8agVa6Ehb5Ddkc16eZf3'
     controller: null
     method: null
     route: null
@@ -84,7 +84,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6a35d4ED6fevcbg8kZaPV1h'
+      - 'Bearer ed16f6Z8k5acb4a3VEhDgPv'
     controller: null
     method: null
     route: null
@@ -127,7 +127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZVg4defD6kh1356Evaac8bP'
+      - 'Bearer cVh36kDZvEg146bda5afe8P'
     controller: null
     method: null
     route: null
@@ -203,7 +203,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer akDchg35dbEfea8466PVv1Z'
+      - 'Bearer aE4bc8h6Zg1vf6ekV3PdD5a'
     controller: null
     method: null
     route: null
@@ -284,7 +284,17 @@ endpoints:
         name: referral_code
         description: ''
         required: false
-        example: nobis
+        example: perspiciatis
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      promotion_code:
+        name: promotion_code
+        description: 'The <code>code</code> of an existing record in the promotion_codes table.'
+        required: false
+        example: aperiam
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -306,7 +316,8 @@ endpoints:
       fiat_payment_method: fpx/card
       card_id: 1
       quantity: 1
-      referral_code: nobis
+      referral_code: perspiciatis
+      promotion_code: aperiam
       wallet_type: TNG/FPX-CIMB
     fileParameters: []
     responses:
@@ -354,7 +365,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b1dZa6heDV8E653Pfcavgk4'
+      - 'Bearer gVaEe8fPZ1k65hcbDv46ad3'
     controller: null
     method: null
     route: null
@@ -408,7 +419,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d5EPV368avDae1gh6kZbcf4'
+      - 'Bearer 18cVDPZa4366eadhvb5Efgk'
     controller: null
     method: null
     route: null
@@ -435,14 +446,14 @@ endpoints:
         name: product_id
         description: 'The ID of the product.'
         required: true
-        example: ullam
+        example: adipisci
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      product_id: ullam
+      product_id: adipisci
     queryParameters:
       product_id:
         name: product_id
@@ -473,7 +484,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ged3k6cahabD1ZEvP54Vf68'
+      - 'Bearer cDE5hkvVe3g46ZPbaafd681'
     controller: null
     method: null
     route: null
