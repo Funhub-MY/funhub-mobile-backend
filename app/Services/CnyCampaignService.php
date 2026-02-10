@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Mail\MerchandiseWinEmail;
+use App\Mail\PromoCodeRewardEmail;
 use App\Models\CnyFortunePick;
 use App\Models\CnyLuckyDraw;
 use App\Models\CnyMerchandise;
@@ -12,6 +14,8 @@ use App\Models\Transaction;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class CnyCampaignService
 {
@@ -353,6 +357,17 @@ class CnyCampaignService
                     'cny_merchandise_id' => $merch->id,
                     'cny_lucky_draw_id' => $draw->id,
                 ]);
+                if ($user->email) {
+                    try {
+                        Mail::to($user->email)->queue(new MerchandiseWinEmail($user, $merch, 'CNY Campaign'));
+                    } catch (\Throwable $e) {
+                        Log::warning('[CnyCampaignService] Failed to queue merchandise win email', [
+                            'user_id' => $user->id,
+                            'cny_merchandise_id' => $merch->id,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
+                }
             }
 
             $response = $this->formatLuckyDrawResponse($result);
@@ -396,7 +411,21 @@ class CnyCampaignService
         }
 
         $code->update(['claimed_by_id' => $user->id]);
-        return $code->fresh();
+        $code = $code->fresh();
+
+        if ($user->email) {
+            try {
+                Mail::to($user->email)->queue(new PromoCodeRewardEmail($user, $code, 'CNY Campaign'));
+            } catch (\Throwable $e) {
+                Log::warning('[CnyCampaignService] Failed to queue promo code reward email', [
+                    'user_id' => $user->id,
+                    'promotion_code_id' => $code->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        return $code;
     }
 
     protected function drawMerchandise(float $roll): ?CnyMerchandise
