@@ -374,6 +374,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
         // CNY (Chinese New Year) Campaign – fortune pick (once/day) & lucky draw (once/day)
         Route::prefix('/cny')->group(function () {
+            Route::get('/funcard-mission', [\App\Http\Controllers\Api\CnyCampaignController::class, 'getFuncardMission']);
             Route::get('/pick-balance', [\App\Http\Controllers\Api\CnyCampaignController::class, 'getPickBalance']);
             Route::post('/fortune-pick', [\App\Http\Controllers\Api\CnyCampaignController::class, 'postFortunePick']);
             Route::get('/my-picks', [\App\Http\Controllers\Api\CnyCampaignController::class, 'getMyPicks']);

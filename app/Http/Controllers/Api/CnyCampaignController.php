@@ -31,6 +31,30 @@ class CnyCampaignController extends Controller
     }
 
     /**
+     * Get CNY campaign funcard mission status: true if user purchased any funcard product, plus total purchase count.
+     *
+     * @return JsonResponse
+     *
+     * @group CNY Campaign
+     * @response scenario="success" {
+     *   "has_purchased_funcard": true,
+     *   "total_funcard_purchases": 5,
+     *   "campaign_id": 69
+     * }
+     */
+    public function getFuncardMission(): JsonResponse
+    {
+        $user = auth()->user();
+        $config = $this->getCnyConfig();
+        $status = $this->cnyService->getFuncardMissionStatus($user, $config);
+
+        return response()->json([
+            'success' => true,
+            'data' => array_merge($status, ['campaign_id' => $config['campaign_id']]),
+        ]);
+    }
+
+    /**
      * Get CNY fortune pick balance for today (once per day)
      *
      * @return JsonResponse

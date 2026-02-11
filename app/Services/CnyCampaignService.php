@@ -128,6 +128,30 @@ class CnyCampaignService
             ->count();
     }
 
+    /**
+     * Total count of Fun card purchases (all time) for mission check.
+     *
+     * @return array{has_purchased_funcard: bool, total_funcard_purchases: int}
+     */
+    public function getFuncardMissionStatus(User $user, array $config): array
+    {
+        $productIds = $config['funcard_product_ids'] ?? [1];
+        if (empty($productIds)) {
+            return ['has_purchased_funcard' => false, 'total_funcard_purchases' => 0];
+        }
+
+        $total = (int) Transaction::where('user_id', $user->id)
+            ->where('status', Transaction::STATUS_SUCCESS)
+            ->where('transactionable_type', Product::class)
+            ->whereIn('transactionable_id', $productIds)
+            ->count();
+
+        return [
+            'has_purchased_funcard' => $total > 0,
+            'total_funcard_purchases' => $total,
+        ];
+    }
+
     // ---------- Fortune pick (once per day) ----------
 
     public function fortunePicksUsedOnDate(User $user, Carbon $date): int

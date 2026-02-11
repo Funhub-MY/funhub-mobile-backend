@@ -1147,6 +1147,7 @@ class MerchantOfferController extends Controller
      * @urlParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @urlParam available_only boolean optional Filter by Available Only. Example: true or 0
      * @urlParam coming_soon_only boolean optional Filter by Coming Soon Only. Example: true or 0
+     * @urlParam per_page integer optional Items per page (default 10, max 100). Example: 50
      */
     public function getPublicOffers(Request $request)
     {
@@ -1284,7 +1285,10 @@ class MerchantOfferController extends Controller
 
         $this->buildQuery($query, $request);
 
-        $data = $query->paginate(config('app.paginate_per_page'));
+        $perPage = (int) ($request->input('per_page') ?? $request->input('limit') ?? config('app.paginate_per_page'));
+        $perPage = min(max($perPage, 1), 100);
+
+        $data = $query->paginate($perPage);
 
         return PublicMerchantOfferResource::collection($data);
     }
