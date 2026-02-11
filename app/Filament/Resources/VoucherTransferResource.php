@@ -150,55 +150,76 @@ class VoucherTransferResource extends Resource
                         }
 
                         $offer = $record->merchantOffer;
+                        if (! $offer) {
+                            Notification::make()
+                                ->title('Voucher Transfer Failed')
+                                ->message('This transfer has no merchant offer. Please edit and select an offer.')
+                                ->danger()
+                                ->send();
+                            return;
+                        }
 
-                        $unclaimedVouchers = $record->merchantOffer->unclaimedVouchers()->get();
-                        // get latest available vouchers
-                        for($i = 0; $i < $record->quantity; $i++) {
-                            $voucher = $offer->unclaimedVouchers()->orderBy('id', 'asc')->first();
-                            if (!$voucher) {
-                                Notification::make()
-                                    ->title('Voucher Transfer Failed')
-                                    ->message('No more available vouchers to claim.')
-                                    ->danger()
-                                    ->send();
-                                return;
+                        try {
+                            for ($i = 0; $i < $record->quantity; $i++) {
+                                $voucher = $offer->unclaimedVouchers()->orderBy('id', 'asc')->first();
+                                if (! $voucher) {
+                                    Notification::make()
+                                        ->title('Voucher Transfer Failed')
+                                        ->message('No more available vouchers to claim.')
+                                        ->danger()
+                                        ->send();
+                                    return;
+                                }
+
+                                // create claim first
+                                $offer->claims()->attach($record->to_user_id, [
+                                    'order_no' => 'T' . now()->format('Ymd') . $record->to_user_id,
+                                    'user_id' => $record->to_user_id,
+                                    'quantity' => 1,
+                                    'unit_price' => $offer->unit_price,
+                                    'total' => $offer->unit_price,
+                                    'purchase_method' => 'manual_transfer',
+                                    'discount' => 0,
+                                    'tax' => 0,
+                                    'net_amount' => $offer->unit_price,
+                                    'voucher_id' => $voucher->id,
+                                    'status' => MerchantOffer::CLAIM_SUCCESS,
+                                ]);
+
+                                // update the same voucher we attached (not from a separate collection)
+                                $voucher->update([
+                                    'owned_by_id' => $record->to_user_id,
+                                ]);
+
+                                Log::info('[VoucherTransferResource] Voucher Transfer Approved', [
+                                    'merchant_offer_id' => $record->merchant_offer_id,
+                                    'voucher_id' => $voucher->id,
+                                    'from_user_id' => $record->from_user_id,
+                                    'to_user_id' => $record->to_user_id,
+                                ]);
                             }
 
-                            // create claim first
-                            $offer->claims()->attach($record->to_user_id, [
-                                // order no is CLAIM(YMd)
-                                'order_no' => 'T'.now()->format('Ymd').$record->to_user_id,
-                                'user_id' => $record->to_user_id,
-                                'quantity' => 1, // one by one
-                                'unit_price' => $offer->unit_price,
-                                'total' => $offer->unit_price, // since one only
-                                'purchase_method' => 'manual_transfer',
-                                'discount' => 0,
-                                'tax' => 0,
-                                'net_amount' => $offer->unit_price, // since one by one
-                                'voucher_id' => $voucher->id,
-                                'status' => MerchantOffer::CLAIM_SUCCESS // status set as 1 as right now the offer should be ready to claim.
+                            $record->update([
+                                'status' => 1,
+                                'transferred_on' => now(),
                             ]);
 
-                            $voucher = $unclaimedVouchers->first();
-                            $voucher->update([
-                                'owned_by_id' => $record->to_user_id,
+                            Notification::make()
+                                ->title('Voucher Transfer Approved')
+                                ->success()
+                                ->send();
+                        } catch (\Throwable $e) {
+                            Log::error('[VoucherTransferResource] Voucher transfer approve failed', [
+                                'voucher_transfer_id' => $record->id,
+                                'message' => $e->getMessage(),
+                                'trace' => $e->getTraceAsString(),
                             ]);
-                            $unclaimedVouchers->shift(); // so wont repeated same voucher
-
-                            Log::info('[VoucherTransferResource] Voucher Transfer Approved', [
-                                'merchant_iffer_id' => $record->merchant_offer_id,
-                                'voucher_id' => $voucher->id,
-                                'from_user_id' => $record->from_user_id,
-                                'to_user_id' => $record->to_user_id,
-                            ]);
-                        } // end of for loop
-
-                        // change to success status after all done
-                        $record->update([
-                            'status' => 1,
-                            'transferred_on' => now(),
-                        ]);
+                            Notification::make()
+                                ->title('Voucher Transfer Failed')
+                                ->message($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
                     }),
 
                 Tables\Actions\Action::make('reject')

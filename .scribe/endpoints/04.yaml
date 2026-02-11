@@ -1,298 +1,18 @@
-name: Stores
+name: Endpoints
 description: ''
 endpoints:
   -
     httpMethods:
-      - GET
-    uri: api/v1/external/stores
+      - POST
+    uri: api/v1/external/merchant/dashboard
     metadata:
-      groupName: Stores
+      groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get Stores'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      categories_id:
-        name: categories_id
-        description: 'optional Categories ID.'
-        required: false
-        example: '1,2,3'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      merchant_ids:
-        name: merchant_ids
-        description: 'optional Merchant IDs.'
-        required: false
-        example: '1,2,3'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      store_ids:
-        name: store_ids
-        description: 'optional Store IDs.'
-        required: false
-        example: '1,2,3'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      include_unlisted:
-        name: include_unlisted
-        description: 'optional Include unlisted stores, must have store_ids specified else all will be LISTED store only.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      include_listed_unlisted:
-        name: include_listed_unlisted
-        description: 'optional Include all listed and unlisted stores.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      limit:
-        name: limit
-        description: 'optional Per Page Limit.'
-        required: false
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      categories_id: '1,2,3'
-      merchant_ids: '1,2,3'
-      store_ids: '1,2,3'
-      include_unlisted: 1
-      include_listed_unlisted: 1
-      limit: 10
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "current_page": 1,
-          "data": []
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6kaE8ev36g5Vah4D1bfZPdc'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/stores
-    metadata:
-      groupName: Stores
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Stores'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      categories_id:
-        name: categories_id
-        description: 'optional Categories ID.'
-        required: false
-        example: '1,2,3'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      merchant_ids:
-        name: merchant_ids
-        description: 'optional Merchant IDs.'
-        required: false
-        example: '1,2,3'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      store_ids:
-        name: store_ids
-        description: 'optional Store IDs.'
-        required: false
-        example: '1,2,3'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      include_unlisted:
-        name: include_unlisted
-        description: 'optional Include unlisted stores, must have store_ids specified else all will be LISTED store only.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      include_listed_unlisted:
-        name: include_listed_unlisted
-        description: 'optional Include all listed and unlisted stores.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      limit:
-        name: limit
-        description: 'optional Per Page Limit.'
-        required: false
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      categories_id: '1,2,3'
-      merchant_ids: '1,2,3'
-      store_ids: '1,2,3'
-      include_unlisted: 1
-      include_listed_unlisted: 1
-      limit: 10
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "current_page": 1,
-          "data": []
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer b6PEchgaDVa51fe4Zd3k68v'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/stores/followings_been_here
-    metadata:
-      groupName: Stores
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Stores Following Been Here'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      store_ids:
-        name: store_ids
-        description: 'The store ids.'
-        required: true
-        example: '1,2,3'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      store_ids: '1,2,3'
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      store_ids:
-        name: store_ids
-        description: ''
-        required: true
-        example: voluptatum
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      store_ids: voluptatum
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: '{"data": [{"id": 1, "name": "John Doe"}, {"id": 2, "name": "John Doe"}]}'
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 3V5h64cab1DZ6EefvkdaP8g'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/stores/rating_categories
-    metadata:
-      groupName: Stores
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Store Rating Categories'
+      title: |-
+        Get Merchant's Dashboard
+        Merchant portal will call this api for reporting overview
       description: ''
       authenticated: true
       custom: []
@@ -307,514 +27,12 @@ endpoints:
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          data: []
-          }
-        headers: []
-        description: success
-        custom: []
+    responses: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer ZbDa154c6e8f6hgEvka3dPV'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/stores/find_by_location
-    metadata:
-      groupName: Stores
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Check if store exists at given location'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      lat:
-        name: lat
-        description: 'optional Latitude coordinate.'
-        required: false
-        example: 3.139
-        type: number
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      lng:
-        name: lng
-        description: 'optional Longitude coordinate.'
-        required: false
-        example: 101.6869
-        type: number
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      location_name:
-        name: location_name
-        description: 'optional Location name to search.'
-        required: false
-        example: '"KLCC"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      lat: 3.139
-      lng: 101.6869
-      location_name: '"KLCC"'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "exists": true,
-            "store": {
-              "id": 1,
-              "name": "Store Name",
-              ...
-            }
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 200
-        content: |-
-          {
-            "message": "Either coordinates (lat, lng) or location_name must be provided"
-          }
-        headers: []
-        description: error
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer h5f6aa6dV8g31Evkb4ecZPD'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/stores/locations
-    metadata:
-      groupName: Stores
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Store Locations by Store IDS'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      store_ids:
-        name: store_ids
-        description: 'Store IDs.'
-        required: true
-        example: '1,2,3'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      store_ids: '1,2,3'
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      store_ids:
-        name: store_ids
-        description: ''
-        required: true
-        example: aut
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      store_ids: aut
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "current_page": 1,
-          "data": []
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 45ahvZa6VkEb1cD8g36fPed'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/stores/stores_by_location
-    metadata:
-      groupName: Stores
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Stores by Location ID'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      location_id:
-        name: location_id
-        description: 'Location ID.'
-        required: true
-        example: '1'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      location_id: '1'
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      location_id:
-        name: location_id
-        description: ''
-        required: true
-        example: dolores
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      location_id: dolores
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "current_page": 1,
-          "data": []
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer ah64P65a3gdbvcD1VeEk8Zf'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/stores/check_reviewed
-    metadata:
-      groupName: Stores
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Check if User Has Reviewed Stores'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      store_ids:
-        name: store_ids
-        description: 'Comma separated store IDs to check.'
-        required: true
-        example: '1,2,3'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      store_ids: '1,2,3'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-              "data": {
-                  "1": {
-                      "store_id": 1,
-                      "store_name": "Store Name",
-                      "has_reviewed": true,
-                      "last_reviewed_at": "2025-01-16 11:40:23"
-                  }
-              }
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer c8fe1v63aVkPEhZg645adbD'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/stores/by_claim
-    metadata:
-      groupName: Stores
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Stores by Merchant Offer Claim ID'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      claim_id:
-        name: claim_id
-        description: 'The merchant offer claim ID.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      claim_id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      claim_id:
-        name: claim_id
-        description: ''
-        required: true
-        example: 14
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      claim_id: 14
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "data": {
-              "id": 1,
-              "name": "Store Name",
-              ...
-            }
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 200
-        content: |-
-          {
-            "message": "Claim not found"
-          }
-        headers: []
-        description: error
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 61kEvadabh4gce356fVDPZ8'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v1/stores/{store_id}/ratings'
-    metadata:
-      groupName: Stores
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Stores Ratings'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      store_id:
-        name: store_id
-        description: 'The ID of the store.'
-        required: true
-        example: 3
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      store:
-        name: store
-        description: 'Store ID.'
-        required: true
-        example: '1'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      only_mine:
-        name: only_mine
-        description: 'boolean optional Only show my ratings.'
-        required: false
-        example: 'true'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      user_id:
-        name: user_id
-        description: 'optional Only load specific user ratings.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      merchant_id:
-        name: merchant_id
-        description: 'optional Only load specific merchant ratings.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      sort:
-        name: sort
-        description: 'Column to Sort.'
-        required: false
-        example: 'Sortable columns are: id, rating, created_at, updated_at'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      order:
-        name: order
-        description: 'Direction to Sort.'
-        required: false
-        example: 'Sortable directions are: asc, desc'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      limit:
-        name: limit
-        description: 'Per Page Limit Override.'
-        required: false
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      store_id: 3
-      store: '1'
-      only_mine: 'true'
-      user_id: 1
-      merchant_id: 1
-      sort: 'Sortable columns are: id, rating, created_at, updated_at'
-      order: 'Sortable directions are: asc, desc'
-      limit: 10
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "current_page": 1,
-          "data": []
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6dg3bh1kZcaf45eEP6VD8av'
+      - 'Bearer akEgb8Z66D3f5VvcdPh4a1e'
     controller: null
     method: null
     route: null
@@ -822,13 +40,15 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: 'api/v1/stores/{store_id}/ratings'
+    uri: api/v1/external/merchant/merchant_overview
     metadata:
-      groupName: Stores
+      groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Rate a Store'
+      title: |-
+        Get Merchant's Reports
+        Merchant portal will call this api for reporting overview regarding merchant
       description: ''
       authenticated: true
       custom: []
@@ -836,97 +56,364 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters:
-      store_id:
-        name: store_id
-        description: 'The ID of the store.'
-        required: true
-        example: 3
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      store:
-        name: store
-        description: 'Store ID.'
-        required: true
-        example: '1'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      store_id: 3
-      store: '1'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer D6hc1ZEga4vf56bPV8ak3de'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/external/merchant/review_lists
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Get Merchant's Review lists
+        Merchant portal will call this api for review comment lists
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer g3adZaVhDcbv14568k6eEPf'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/external/merchant/offer_overview
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Get Merchant's Offer Overview
+        Merchant portal will call this api for reporting overview
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Z4PDbge5h1636cEkadV8afv'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/external/merchant/offer_code_lists
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Get Merchant's Offer Codes lists
+        Merchant portal will call this api for reporting
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer kD1g663vdVh4Zefbc5a8PEa'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/external/merchant/offer_lists
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Get Merchant's Offer lists
+        Merchant portal will call this api for reporting
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer e1Zha6PakvV5E4d683fbcDg'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/external/merchant/register
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Post Merchant Registration
+        Merchant portal send data to this api to register the merchant information in base portal
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6e5k68VcZhEDPdbaf1va4g3'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/external/merchant/update
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Post Merchant Update
+        Merchant portal send data to this api to update the merchant information in base portal
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ZVD6aPca5e81bvg3kEfh4d6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/external/merchant/logo
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Post Merchant Update Logo
+        Merchant portal send data to this api to update the merchant information in base portal
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6dkfh13c4gD8a6aPVeEvZb5'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/missions/complete
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Complete mission and disburse reward'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      rating:
-        name: rating
-        description: Rating.
+      mission_id:
+        name: mission_id
+        description: 'The <code>id</code> of an existing record in the missions table.'
         required: true
-        example: 5
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      comment:
-        name: comment
-        description: 'optional Comment.'
-        required: false
-        example: 'Good service'
+        example: et
         type: string
         enumValues: []
-        exampleWasSpecified: true
-        nullable: true
-        custom: []
-      rating_category_ids:
-        name: rating_category_ids
-        description: 'optional Rating Category IDs.'
-        required: false
-        example: '1,2,3'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
+        exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      rating: 5
-      comment: 'Good service'
-      rating_category_ids: '1,2,3'
+      mission_id: et
     fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          data: {}
-          }
-        headers: []
-        description: success
-        custom: []
+    responses: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer cf166hbaVPvaD3ZeE4d8kg5'
+      - 'Bearer 3Evf861agVa6d5D4cbkPhZe'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - GET
-    uri: 'api/v1/stores/{store_id}/menus'
+      - POST
+    uri: api/v1/postSettingsSwitch
     metadata:
-      groupName: Stores
+      groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get Merchant Menus via Store'
+      title: 'Update a setting value by key'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hZ6eg41fka5a638DvcEPdVb'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v1/mission/{missionId}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
       description: ''
       authenticated: true
       custom: []
@@ -935,64 +422,43 @@ endpoints:
       Content-Type: application/json
       Accept: application/json
     urlParameters:
-      store_id:
-        name: store_id
-        description: 'The ID of the store.'
+      missionId:
+        name: missionId
+        description: ''
         required: true
-        example: 3
-        type: integer
+        example: '6'
+        type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
-      store:
-        name: store
-        description: 'Store ID.'
-        required: true
-        example: '1'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
     cleanUrlParameters:
-      store_id: 3
-      store: '1'
+      missionId: '6'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          [
-          {'name': 'Menu 1', 'url': 'http://example.com/menu1.jpg'},
-          ]
-        headers: []
-        description: success
-        custom: []
+    responses: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer d6bZv8kDehaV4E3g6cf1a5P'
+      - 'Bearer 6vDeh54f6b8kEd3cPgaVa1Z'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - GET
-    uri: 'api/v1/stores/{store_id}/ratings/ratings_categories'
+      - POST
+    uri: api/v1/mission_lucky_draw
     metadata:
-      groupName: Stores
+      groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get Top X Store Rating Categories of'
+      title: ''
       description: ''
       authenticated: true
       custom: []
@@ -1000,72 +466,75 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters:
-      store_id:
-        name: store_id
-        description: 'The ID of the store.'
-        required: true
-        example: 3
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      store:
-        name: store
-        description: 'Store ID.'
-        required: true
-        example: '1'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      limit:
-        name: limit
-        description: 'optional Limit.'
-        required: false
-        example: 3
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      only_with_ratings:
-        name: only_with_ratings
-        description: 'boolean optional Only with ratings.'
-        required: false
-        example: '1'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      store_id: 3
-      store: '1'
-      limit: 3
-      only_with_ratings: '1'
+    urlParameters: []
+    cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          data: []
-          }
-        headers: []
-        description: success
-        custom: []
+    responses: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer g5864vVkbdEaef36hca1ZPD'
+      - 'Bearer eVdhfagPk1Db486Zc6va5E3'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/kdcc/vote
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Vote for a team in a specific category'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      team_id:
+        name: team_id
+        description: 'The <code>id</code> of an existing record in the kdcc_teams table.'
+        required: true
+        example: tempora
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      category_id:
+        name: category_id
+        description: ''
+        required: true
+        example: 9
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      team_id: tempora
+      category_id: 9
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 1684g6PcvEkD3Zada5bhVfe'
     controller: null
     method: null
     route: null

@@ -164,7 +164,7 @@ class CustomNotification extends Notification implements ShouldQueue
 					$toArrayData['article_type'] = null;
 				}
 			}
-			\Illuminate\Support\Facades\Log::info('Final toArrayData', ['toArrayData' => $toArrayData]);
+			//\Illuminate\Support\Facades\Log::info('Final toArrayData', ['toArrayData' => $toArrayData]);
 
 		}
 		return $toArrayData;

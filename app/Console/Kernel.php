@@ -38,9 +38,6 @@ class Kernel extends ConsoleKernel
 
 		// Every Thirty Minutes
 		$schedule->command('city-names:populate')->everyThirtyMinutes()->onOneServer();
-        if (config('app.auto_article_categories') == true) {
-            $schedule->command('articles:categorize')->everyThirtyMinutes()->onOneServer();
-        }
 
         // Hourly
         $schedule->command('fetch:news-feed')->hourly()->onOneServer();

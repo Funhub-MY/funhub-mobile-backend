@@ -402,6 +402,16 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
           ->withTimestamps();
     }
 
+    public function cnyFortunePicks()
+    {
+        return $this->hasMany(CnyFortunePick::class, 'user_id');
+    }
+
+    public function cnyLuckyDraws()
+    {
+        return $this->hasMany(CnyLuckyDraw::class, 'user_id');
+    }
+
     public function profilePrivacySettings()
     {
         return $this->hasMany(UserProfilePrivateSetting::class, 'user_id');
