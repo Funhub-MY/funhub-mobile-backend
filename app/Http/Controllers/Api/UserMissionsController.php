@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\UserMission;
+use App\Models\UserDrawBalance;
 use Carbon\Carbon;
 
 class UserMissionsController extends Controller
@@ -13,7 +13,7 @@ class UserMissionsController extends Controller
     {
         $userId = auth()->user()->id;
 
-        if ($missionId < UserMission::MISSION_ONE || $missionId > UserMission::MISSION_FOUR) {
+        if ($missionId < UserDrawBalance::MISSION_ONE || $missionId > UserDrawBalance::MISSION_FOUR) {
             return response()->json([
                 'success' => false,
                 'data' => [
@@ -23,7 +23,7 @@ class UserMissionsController extends Controller
             ], 400);
         }
 
-        $mission = UserMission::firstOrCreate(['user_id' => $userId]);
+        $mission = UserDrawBalance::firstOrCreate(['user_id' => $userId]);
         $mission_column = 'mission_' . $missionId;
 
         // Check if mission already completed
@@ -88,7 +88,7 @@ class UserMissionsController extends Controller
     public function getMissionProgress(){
         $userId = auth()->user()->id;
 
-        $mission = UserMission::firstOrCreate(['user_id' => $userId]);
+        $mission = UserDrawBalance::firstOrCreate(['user_id' => $userId]);
 
         $luckDrawChance = ($mission->draw_chance ?? 0) + ($mission->extra_chance ?? 0);
 
@@ -111,7 +111,7 @@ class UserMissionsController extends Controller
         $userId = auth()->user()->id;
         $luckDrawChance = 0;
 
-        $mission = UserMission::where('user_id',$userId)->first();
+        $mission = UserDrawBalance::where('user_id',$userId)->first();
 
         if(!$mission){
             return response()->json([
