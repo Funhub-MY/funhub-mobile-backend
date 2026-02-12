@@ -23,7 +23,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Notification;
-use App\Models\UserMission;
+use App\Models\UserDrawBalance;
 use App\Models\UserDrawChanceLog;
 
 class PaymentController extends Controller
@@ -1078,11 +1078,11 @@ class PaymentController extends Controller
 
         $chancesToAward = $product->getLuckydrawChanceCount();
         
-        // Create or get user mission record
-        UserMission::firstOrCreate(['user_id' => $transaction->user_id]);
+        // Create or get user draw balance record (current project table; independent of v2 user_missions)
+        UserDrawBalance::firstOrCreate(['user_id' => $transaction->user_id]);
         
-        // Increment extra chance
-        UserMission::where('user_id', $transaction->user_id)
+        // Increment extra chance from product purchase
+        UserDrawBalance::where('user_id', $transaction->user_id)
             ->increment('extra_chance', $chancesToAward);
         
         // Log to user_draw_chance_logs table for audit
