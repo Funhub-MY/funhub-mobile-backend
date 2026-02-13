@@ -48,11 +48,10 @@ class UpdateMerchantOfferBasicInfo implements ShouldQueue
                 foreach ($offers as $offer) {
                     $isArchived = $offer->status === MerchantOffer::STATUS_ARCHIVED;
 
+                    // Do not overwrite description/fine_print so per-offer edits in Merchant Offer edit are preserved.
                     $offer->update([
                         'name' => $campaign->name,
                         'highlight_messages' => $campaign->highlight_messages,
-                        'description' => $campaign->description,
-                        'fine_print' => $campaign->fine_print,
                         'available_for_web' => $campaign->available_for_web,
                         'redemption_policy' => $campaign->redemption_policy,
                         'cancellation_policy' => $campaign->cancellation_policy,
