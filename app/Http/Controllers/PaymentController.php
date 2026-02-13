@@ -25,6 +25,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Notification;
 use App\Models\UserDrawBalance;
 use App\Models\UserDrawChanceLog;
+use App\Services\CnyCampaignService;
 
 class PaymentController extends Controller
 {
@@ -33,8 +34,9 @@ class PaymentController extends Controller
 
     protected $smsService;
 
-    public function __construct()
-    {
+    public function __construct(
+        protected CnyCampaignService $cnyCampaignService
+    ) {
         $this->gateway = new Mpay(
             config('services.mpay.mid'),
             config('services.mpay.hash_key')
@@ -1062,6 +1064,11 @@ class PaymentController extends Controller
     public function updateExtraDrawChance($transaction){
         // Check if transaction is for a Product
         if ($transaction->transactionable_type !== Product::class) {
+            return;
+        }
+
+        // Lucky draw chance only for purchases within campaign window (e.g. 2026-02-14 00:00:00 to 2026-03-08 11:59:59)
+        if (!$this->cnyCampaignService->isWithinLuckyDrawCampaignWindow($transaction->created_at)) {
             return;
         }
 

@@ -102,7 +102,46 @@ class CnyCampaignService
     }
 
     /**
-     * Check if user has purchased at least one Fun card product (successful transaction).
+     * Lucky draw campaign window: only purchases between start and end (inclusive) get draw chances.
+     * Returns [start, end] as Carbon in app timezone.
+     *
+     * @return array{0: Carbon, 1: Carbon}|null Null if config not set or invalid.
+     */
+    public function getLuckyDrawCampaignWindow(): ?array
+    {
+        $tz = config('app.timezone', 'Asia/Kuala_Lumpur');
+        $start = config('cny.lucky_draw_campaign_start');
+        $end = config('cny.lucky_draw_campaign_end');
+        if (!$start || !$end) {
+            return null;
+        }
+        try {
+            return [
+                Carbon::parse($start, $tz),
+                Carbon::parse($end, $tz),
+            ];
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Whether a given datetime falls within the lucky draw campaign window (purchases in this window get draw chances).
+     */
+    public function isWithinLuckyDrawCampaignWindow(\DateTimeInterface $datetime): bool
+    {
+        $window = $this->getLuckyDrawCampaignWindow();
+        if (!$window) {
+            return false;
+        }
+        $tz = config('app.timezone', 'Asia/Kuala_Lumpur');
+        $dt = $datetime instanceof Carbon ? $datetime->copy() : Carbon::instance($datetime);
+        $dt->setTimezone($tz);
+        return $dt->between($window[0], $window[1]);
+    }
+
+    /**
+     * Check if user has purchased at least one Fun card product (successful transaction) within campaign window.
      */
     public function userHasPurchasedFuncard(User $user, array $config): bool
     {
@@ -111,6 +150,7 @@ class CnyCampaignService
 
     /**
      * Count how many Fun card products the user purchased on a given date (successful transactions).
+     * Only counts purchases within the lucky draw campaign window (2026-02-14 00:00:00 to 2026-03-08 11:59:59).
      * Each purchase = 1 lucky draw entry for that day.
      */
     public function funcardPurchasesCountOnDate(User $user, Carbon $date, array $config): int
@@ -120,16 +160,23 @@ class CnyCampaignService
             return 0;
         }
 
-        return (int) Transaction::where('user_id', $user->id)
+        $query = Transaction::where('user_id', $user->id)
             ->where('status', Transaction::STATUS_SUCCESS)
             ->where('transactionable_type', Product::class)
             ->whereIn('transactionable_id', $productIds)
-            ->whereDate('created_at', $date)
-            ->count();
+            ->whereDate('created_at', $date);
+
+        $window = $this->getLuckyDrawCampaignWindow();
+        if ($window) {
+            $query->where('created_at', '>=', $window[0])
+                ->where('created_at', '<=', $window[1]);
+        }
+
+        return (int) $query->count();
     }
 
     /**
-     * Total count of Fun card purchases (all time) for mission check.
+     * Total count of Fun card purchases within campaign window (for mission check).
      *
      * @return array{has_purchased_funcard: bool, total_funcard_purchases: int}
      */
@@ -140,11 +187,18 @@ class CnyCampaignService
             return ['has_purchased_funcard' => false, 'total_funcard_purchases' => 0];
         }
 
-        $total = (int) Transaction::where('user_id', $user->id)
+        $query = Transaction::where('user_id', $user->id)
             ->where('status', Transaction::STATUS_SUCCESS)
             ->where('transactionable_type', Product::class)
-            ->whereIn('transactionable_id', $productIds)
-            ->count();
+            ->whereIn('transactionable_id', $productIds);
+
+        $window = $this->getLuckyDrawCampaignWindow();
+        if ($window) {
+            $query->where('created_at', '>=', $window[0])
+                ->where('created_at', '<=', $window[1]);
+        }
+
+        $total = (int) $query->count();
 
         return [
             'has_purchased_funcard' => $total > 0,
