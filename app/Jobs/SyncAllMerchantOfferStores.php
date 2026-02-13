@@ -42,31 +42,26 @@ class SyncAllMerchantOfferStores implements ShouldQueue
             'store_count' => count($this->storeIds)
         ]);
 
-        // Get all offers for this campaign
-        $offers = MerchantOffer::where('merchant_offer_campaign_id', $this->campaignId)->get();
-        
         $count = 0;
-        $batchSize = 50; // Process in smaller batches
-        $totalOffers = $offers->count();
-        
-        // Process offers in batches to avoid memory issues
-        foreach ($offers->chunk($batchSize) as $offerChunk) {
-            foreach ($offerChunk as $offer) {
-                // Dispatch individual store sync job for each offer
+        $totalOffers = MerchantOffer::where('merchant_offer_campaign_id', $this->campaignId)->count();
+
+        // Use cursor to avoid loading all offers into memory
+        MerchantOffer::where('merchant_offer_campaign_id', $this->campaignId)
+            ->select('id')
+            ->cursor()
+            ->each(function ($offer) use (&$count, $totalOffers) {
                 SyncMerchantOfferStores::dispatch($offer->id, $this->storeIds);
                 $count++;
-            }
-            
-            // Log progress for large campaigns
-            if ($totalOffers > 100) {
-                Log::info("[SyncAllMerchantOfferStores] Progress", [
-                    'campaign_id' => $this->campaignId,
-                    'processed' => $count,
-                    'total' => $totalOffers,
-                    'percent' => round(($count / $totalOffers) * 100, 2) . '%'
-                ]);
-            }
-        }
+
+                if ($totalOffers > 100 && $count % 50 === 0) {
+                    Log::info("[SyncAllMerchantOfferStores] Progress", [
+                        'campaign_id' => $this->campaignId,
+                        'processed' => $count,
+                        'total' => $totalOffers,
+                        'percent' => round(($count / $totalOffers) * 100, 2) . '%'
+                    ]);
+                }
+            });
 
         Log::info("[SyncAllMerchantOfferStores] Completed", [
             'campaign_id' => $this->campaignId,

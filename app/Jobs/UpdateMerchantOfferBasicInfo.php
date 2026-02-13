@@ -40,42 +40,42 @@ class UpdateMerchantOfferBasicInfo implements ShouldQueue
             'campaign_name' => $this->campaign->name
         ]);
 
-        // Get all offers for this campaign
-        $offers = MerchantOffer::where('merchant_offer_campaign_id', $this->campaign->id)->get();
-        
         $count = 0;
-        foreach ($offers as $offer) {
-            // Preserve the status if the offer is archived
-            $isArchived = $offer->status === MerchantOffer::STATUS_ARCHIVED;
+        $campaign = $this->campaign;
 
-            $offer->update([
-                'name' => $this->campaign->name,
-                'highlight_messages' => $this->campaign->highlight_messages,
-                'description' => $this->campaign->description,
-                'fine_print' => $this->campaign->fine_print,
-                'available_for_web' => $this->campaign->available_for_web,
-                'redemption_policy' => $this->campaign->redemption_policy,
-                'cancellation_policy' => $this->campaign->cancellation_policy,
-                'purchase_method' => $this->campaign->purchase_method,
-                'unit_price' => $this->campaign->unit_price,
-                'discounted_point_fiat_price' => $this->campaign->discounted_point_fiat_price,
-                'point_fiat_price' => $this->campaign->point_fiat_price,
-                'discounted_fiat_price' => $this->campaign->discounted_fiat_price,
-                'fiat_price' => $this->campaign->fiat_price,
-                'expiry_days' => $this->campaign->expiry_days,
-                'user_id' => $this->campaign->user_id,
-            ]);
+        MerchantOffer::where('merchant_offer_campaign_id', $campaign->id)
+            ->chunkById(100, function ($offers) use ($campaign, &$count) {
+                foreach ($offers as $offer) {
+                    $isArchived = $offer->status === MerchantOffer::STATUS_ARCHIVED;
 
-            // If the offer was archived, restore its status to archived
-            if ($isArchived) {
-                $offer->update(['status' => MerchantOffer::STATUS_ARCHIVED]);
-            }
-            
-            $count++;
-        }
+                    $offer->update([
+                        'name' => $campaign->name,
+                        'highlight_messages' => $campaign->highlight_messages,
+                        'description' => $campaign->description,
+                        'fine_print' => $campaign->fine_print,
+                        'available_for_web' => $campaign->available_for_web,
+                        'redemption_policy' => $campaign->redemption_policy,
+                        'cancellation_policy' => $campaign->cancellation_policy,
+                        'purchase_method' => $campaign->purchase_method,
+                        'unit_price' => $campaign->unit_price,
+                        'discounted_point_fiat_price' => $campaign->discounted_point_fiat_price,
+                        'point_fiat_price' => $campaign->point_fiat_price,
+                        'discounted_fiat_price' => $campaign->discounted_fiat_price,
+                        'fiat_price' => $campaign->fiat_price,
+                        'expiry_days' => $campaign->expiry_days,
+                        'user_id' => $campaign->user_id,
+                    ]);
+
+                    if ($isArchived) {
+                        $offer->update(['status' => MerchantOffer::STATUS_ARCHIVED]);
+                    }
+
+                    $count++;
+                }
+            });
 
         Log::info("[UpdateMerchantOfferBasicInfo] Completed", [
-            'campaign_id' => $this->campaign->id,
+            'campaign_id' => $campaign->id,
             'offers_updated' => $count
         ]);
     }

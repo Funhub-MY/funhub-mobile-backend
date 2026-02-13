@@ -40,22 +40,17 @@ class SyncMerchantOfferCategories implements ShouldQueue
             'campaign_name' => $this->campaign->name
         ]);
 
-        // Get all offers for this campaign
-        $offers = MerchantOffer::where('merchant_offer_campaign_id', $this->campaign->id)->get();
-        
-        // Get campaign categories once to avoid repeated queries
         $campaignCategoryIds = $this->campaign->allOfferCategories->pluck('id');
-        
         $count = 0;
-        foreach ($offers as $offer) {
-            // Clear all existing categories
-            $offer->allOfferCategories()->detach();
-            
-            // Sync with campaign categories
-            $offer->allOfferCategories()->sync($campaignCategoryIds);
-            
-            $count++;
-        }
+
+        MerchantOffer::where('merchant_offer_campaign_id', $this->campaign->id)
+            ->chunkById(100, function ($offers) use ($campaignCategoryIds, &$count) {
+                foreach ($offers as $offer) {
+                    $offer->allOfferCategories()->detach();
+                    $offer->allOfferCategories()->sync($campaignCategoryIds);
+                    $count++;
+                }
+            });
 
         Log::info("[SyncMerchantOfferCategories] Completed", [
             'campaign_id' => $this->campaign->id,

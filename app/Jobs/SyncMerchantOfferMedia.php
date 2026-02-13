@@ -40,37 +40,34 @@ class SyncMerchantOfferMedia implements ShouldQueue
             'campaign_name' => $this->campaign->name
         ]);
 
-        // Get all offers for this campaign
-        $offers = MerchantOffer::where('merchant_offer_campaign_id', $this->campaign->id)->get();
-        
         $count = 0;
-        foreach ($offers as $offer) {
-            // Clear existing media collections
-            $offer->clearMediaCollection(MerchantOffer::MEDIA_COLLECTION_NAME);
-            $offer->clearMediaCollection(MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
+        $mediaItemsSynced = 0;
+        $model = MerchantOfferCampaign::find($this->campaign->id);
+        $mediaItems = $model->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_NAME);
+        $bannerMediaItems = $model->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_HORIZONTAL_BANNER);
 
-            // Get fresh campaign model to ensure we have the latest media
-            $model = MerchantOfferCampaign::find($this->campaign->id);
-            
-            // Copy standard media items
-            $mediaItems = $model->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_NAME);
-            foreach ($mediaItems as $mediaItem) {
-                $mediaItem->copy($offer, MerchantOffer::MEDIA_COLLECTION_NAME);
-            }
+        MerchantOffer::where('merchant_offer_campaign_id', $this->campaign->id)
+            ->chunkById(50, function ($offers) use ($mediaItems, $bannerMediaItems, &$count, &$mediaItemsSynced) {
+                foreach ($offers as $offer) {
+                    $offer->clearMediaCollection(MerchantOffer::MEDIA_COLLECTION_NAME);
+                    $offer->clearMediaCollection(MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
 
-            // Copy horizontal banner media items
-            $bannerMediaItems = $model->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_HORIZONTAL_BANNER);
-            foreach ($bannerMediaItems as $mediaItem) {
-                $mediaItem->copy($offer, MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
-            }
-            
-            $count++;
-        }
+                    foreach ($mediaItems as $mediaItem) {
+                        $mediaItem->copy($offer, MerchantOffer::MEDIA_COLLECTION_NAME);
+                    }
+                    foreach ($bannerMediaItems as $bannerItem) {
+                        $bannerItem->copy($offer, MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
+                    }
+
+                    $mediaItemsSynced += count($mediaItems) + count($bannerMediaItems);
+                    $count++;
+                }
+            });
 
         Log::info("[SyncMerchantOfferMedia] Completed", [
             'campaign_id' => $this->campaign->id,
             'offers_updated' => $count,
-            'media_items_synced' => count($mediaItems) + count($bannerMediaItems ?? [])
+            'media_items_synced' => $mediaItemsSynced
         ]);
     }
 }

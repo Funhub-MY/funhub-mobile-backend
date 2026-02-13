@@ -62,29 +62,30 @@ class ProcessMerchantOfferSchedules implements ShouldQueue
      */
     private function archiveRemovedOffers()
     {
-        $offers = MerchantOffer::where('merchant_offer_campaign_id', $this->campaign->id)->get();
-        $schedulesIds = $this->campaign->schedules->pluck('id');
-        
-        if ($offers->count() > $this->campaign->schedules->count()) {
-            $offersToArchive = $offers->whereNotIn('schedule_id', $schedulesIds);
-            
-            foreach ($offersToArchive as $offer) {
-                // Check if offer already has vouchers sold
-                if ($offer->vouchers()->whereNotNull('owned_by_id')->count() > 0) {
-                    Log::info('[ProcessMerchantOfferSchedules] Cannot archive offer as it has been sold', [
+        $scheduleIds = $this->campaign->schedules->pluck('id')->toArray();
+
+        $query = MerchantOffer::where('merchant_offer_campaign_id', $this->campaign->id);
+        if (!empty($scheduleIds)) {
+            $query->whereNotIn('schedule_id', $scheduleIds);
+        }
+
+        $query->chunkById(50, function ($offers) {
+                foreach ($offers as $offer) {
+                    if ($offer->vouchers()->whereNotNull('owned_by_id')->count() > 0) {
+                        Log::info('[ProcessMerchantOfferSchedules] Cannot archive offer as it has been sold', [
+                            'offer_id' => $offer->id,
+                            'schedule_id' => $offer->schedule_id,
+                        ]);
+                        continue;
+                    }
+
+                    $offer->delete();
+                    Log::info('[ProcessMerchantOfferSchedules] Archived offer as schedule is removed', [
                         'offer_id' => $offer->id,
                         'schedule_id' => $offer->schedule_id,
                     ]);
-                    continue;
                 }
-
-                $offer->delete(); // soft delete
-                Log::info('[ProcessMerchantOfferSchedules] Archived offer as schedule is removed', [
-                    'offer_id' => $offer->id,
-                    'schedule_id' => $offer->schedule_id,
-                ]);
-            }
-        }
+            });
     }
     
     /**
