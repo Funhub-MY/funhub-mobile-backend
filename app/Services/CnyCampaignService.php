@@ -448,6 +448,18 @@ class CnyCampaignService
                 }
             }
 
+            if (($result['reward_type'] ?? '') === 'promo_code' && isset($result['promotion_code']) && $user->email) {
+                try {
+                    Mail::to($user->email)->queue(new PromoCodeRewardEmail($user, $result['promotion_code'], 'CNY Campaign'));
+                } catch (\Throwable $e) {
+                    Log::warning('[CnyCampaignService] Failed to queue promo code reward email', [
+                        'user_id' => $user->id,
+                        'promotion_code_id' => $result['promotion_code']->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+
             $response = $this->formatLuckyDrawResponse($result);
 
             return [
@@ -490,18 +502,6 @@ class CnyCampaignService
 
         $code->update(['claimed_by_id' => $user->id]);
         $code = $code->fresh();
-
-        if ($user->email) {
-            try {
-                Mail::to($user->email)->queue(new PromoCodeRewardEmail($user, $code, 'CNY Campaign'));
-            } catch (\Throwable $e) {
-                Log::warning('[CnyCampaignService] Failed to queue promo code reward email', [
-                    'user_id' => $user->id,
-                    'promotion_code_id' => $code->id,
-                    'error' => $e->getMessage(),
-                ]);
-            }
-        }
 
         return $code;
     }
