@@ -38,29 +38,25 @@ class SyncMerchantOfferToAlgolia implements ShouldQueue
             'campaign_id' => $this->campaignId
         ]);
 
-        // Get all offers for this campaign
-        $offers = MerchantOffer::where('merchant_offer_campaign_id', $this->campaignId)->get();
-        
         $successCount = 0;
         $errorCount = 0;
-        
-        // Process in smaller batches to avoid memory issues
-        $batchSize = 50;
-        
-        foreach ($offers->chunk($batchSize) as $offerChunk) {
-            foreach ($offerChunk as $offer) {
-                try {
-                    $offer->searchable();
-                    $successCount++;
-                } catch (\Exception $e) {
-                    $errorCount++;
-                    Log::error('[SyncMerchantOfferToAlgolia] Error syncing offer to Algolia', [
-                        'offer_id' => $offer->id,
-                        'error' => $e->getMessage()
-                    ]);
+
+        // Use chunkById to avoid loading all offers into memory
+        MerchantOffer::where('merchant_offer_campaign_id', $this->campaignId)
+            ->chunkById(50, function ($offers) use (&$successCount, &$errorCount) {
+                foreach ($offers as $offer) {
+                    try {
+                        $offer->searchable();
+                        $successCount++;
+                    } catch (\Exception $e) {
+                        $errorCount++;
+                        Log::error('[SyncMerchantOfferToAlgolia] Error syncing offer to Algolia', [
+                            'offer_id' => $offer->id,
+                            'error' => $e->getMessage()
+                        ]);
+                    }
                 }
-            }
-        }
+            });
 
         Log::info("[SyncMerchantOfferToAlgolia] Completed", [
             'campaign_id' => $this->campaignId,

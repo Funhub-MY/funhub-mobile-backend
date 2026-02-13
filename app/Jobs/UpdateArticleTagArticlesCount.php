@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\ArticleTag;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -11,15 +12,27 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class UpdateArticleTagArticlesCount implements ShouldQueue
+class UpdateArticleTagArticlesCount implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    /**
+     * The number of seconds after which the job's unique lock will be released.
+     *
+     * @var int
+     */
+    public $uniqueFor = 60;
 
     protected $articleTag;
 
     public function __construct(ArticleTag $articleTag)
     {
         $this->articleTag = $articleTag;
+    }
+
+    public function uniqueId(): string
+    {
+        return 'article-tag-count-' . $this->articleTag->name;
     }
 
     public function handle()

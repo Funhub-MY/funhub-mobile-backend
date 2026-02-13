@@ -135,48 +135,36 @@ class GeneratePromotionCodesJob implements ShouldQueue
                 ]);
             }
 
-            // get all inserted promotion codes
-			// TODO: assigned too much into the variables. use 1000 per batch to get.
-            $promotionCodes = PromotionCode::where('promotion_code_group_id', $this->group->id)->get();
+            // prepare and insert reward pivot data in chunks to avoid memory exhaustion
+            if ($this->groupData['discount_type'] === 'reward' && $rewardable_type && $rewardable_id
+                && in_array($rewardable_type, [Reward::class, RewardComponent::class])) {
 
-            // prepare reward pivot data
-            if ($this->groupData['discount_type'] === 'reward' && $rewardable_type && $rewardable_id) {
-
-                $rewardPivotData = [];
-
-                foreach ($promotionCodes as $code) {
-                    if ($rewardable_type === Reward::class) {
-                        $rewardPivotData[] = [
-                            'promotion_code_id' => $code->id,
-                            'rewardable_id' => $rewardable_id,
-                            'rewardable_type' => $rewardable_type,
-                            'quantity' => $quantity,
-                            'created_at' => $now,
-                            'updated_at' => $now,
-                        ];
-                    } else if ($rewardable_type === RewardComponent::class) {
-                        $rewardPivotData[] = [
-                            'promotion_code_id' => $code->id,
-                            'rewardable_id' => $rewardable_id,
-                            'rewardable_type' => $rewardable_type,
-                            'quantity' => $quantity,
-                            'created_at' => $now,
-                            'updated_at' => $now,
-                        ];
-                    }
-                }
-
-                // insert reward pivot data in batches
                 $insertedPivotCount = 0;
-                foreach (array_chunk($rewardPivotData, $batchSize) as $batch) {
-                    DB::table('promotion_code_rewardable')->insert($batch);
-                    $insertedPivotCount += count($batch);
 
-                    // Log progress for large batches
-                    if (count($rewardPivotData) >= 10000 && $insertedPivotCount % 10000 === 0) {
-                        Log::info("[GeneratePromotionCodesJob] Inserted {$insertedPivotCount} reward relationships so far");
-                    }
-                }
+                PromotionCode::where('promotion_code_group_id', $this->group->id)
+                    ->select('id')
+                    ->chunkById($batchSize, function ($codes) use ($rewardable_type, $rewardable_id, $quantity, $now, $batchSize, &$insertedPivotCount) {
+                        $rewardPivotData = [];
+                        foreach ($codes as $code) {
+                            $rewardPivotData[] = [
+                                'promotion_code_id' => $code->id,
+                                'rewardable_id' => $rewardable_id,
+                                'rewardable_type' => $rewardable_type,
+                                'quantity' => $quantity,
+                                'created_at' => $now,
+                                'updated_at' => $now,
+                            ];
+                        }
+
+                        if (!empty($rewardPivotData)) {
+                            DB::table('promotion_code_rewardable')->insert($rewardPivotData);
+                            $insertedPivotCount += count($rewardPivotData);
+
+                            if ($insertedPivotCount >= 10000 && $insertedPivotCount % 10000 === 0) {
+                                Log::info("[GeneratePromotionCodesJob] Inserted {$insertedPivotCount} reward relationships so far");
+                            }
+                        }
+                    });
             }
 
             $logData = [
