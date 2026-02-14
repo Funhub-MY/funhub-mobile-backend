@@ -1,4 +1,6 @@
 <x-mail::message>
+<img src="{{ asset('images/cny_campaign/form-banner.png') }}" alt="马上FUN好运" style="max-width:100%;height:auto;display:block;margin-bottom:1em;" />
+
 亲爱的 {{ $user->name }}，
 
 感谢您参与【马上FUN好运】活动！
@@ -20,6 +22,8 @@
 **实体奖品：**  
 请在7天内通过 WhatsApp 联系小饭领取奖品：  
 📱 https://wa.me/60127055117  
+
+<img src="{{ asset('images/cny_campaign/whatsapp_qr.png') }}" alt="WhatsApp QR" style="max-width:200px;height:auto;display:block;margin:0.5em 0;" />
 
 小饭会为您核实信息，并说明如何领取奖品。
 
