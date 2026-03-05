@@ -320,25 +320,6 @@ class CnyCampaignService
         return $out;
     }
 
-    // ---------- Lucky draw (once per day, separate pool) ----------
-
-    public function luckyDrawsUsedOnDate(User $user, Carbon $date): int
-    {
-        return CnyLuckyDraw::where('user_id', $user->id)
-            ->whereDate('drawn_at', $date)
-            ->count();
-    }
-
-    /**
-     * Total lucky draws per day = number of Fun cards purchased that day.
-     * No base draw; 1 draw per Fun card purchase on that day (e.g. 3 purchases = 3 draws).
-     */
-    public function totalLuckyDrawsPerDay(User $user, array $config): int
-    {
-        $today = $this->today();
-        return $this->funcardPurchasesCountOnDate($user, $today, $config);
-    }
-
     /**
      * Lucky draw balance: total draws today = Fun cards purchased today; used = draws already taken.
      *
@@ -347,17 +328,17 @@ class CnyCampaignService
     public function getLuckyDrawBalance(User $user, array $config): array
     {
         $today = $this->today();
-        $total = $this->totalLuckyDrawsPerDay($user, $config);
-        $used = $this->luckyDrawsUsedOnDate($user, $today);
-        $available = max(0, $total - $used);
+        $totalEarned = $this->totalLuckyDrawsEarned($user, $config);
+        $totalUsed   = $this->totalLuckyDrawsUsed($user);
+        $available   = max(0, $totalEarned - $totalUsed);
 
         return [
-            'lucky_draw_available' => $available > 0,
-            'lucky_draws_available' => $available,
-            'lucky_draws_used_today' => $used,
-            'total_draws_today' => $total,
-            'has_funcard_draw_entry' => $total > 0,
-            'date' => $today->toDateString(),
+            'lucky_draw_available'    => $available > 0,
+            'lucky_draws_available'   => $available,
+            'lucky_draws_used_total'  => $totalUsed,
+            'total_draws_earned'      => $totalEarned,
+            'has_funcard_draw_entry'  => $totalEarned > 0,
+            'date'                    => $today->toDateString(),
         ];
     }
 
@@ -413,7 +394,7 @@ class CnyCampaignService
     {
         $balance = $this->getLuckyDrawBalance($user, $config);
         if (!$balance['lucky_draw_available'] || $balance['lucky_draws_available'] <= 0) {
-            throw new \RuntimeException('No lucky draw chances remaining for today.');
+            throw new \RuntimeException('No lucky draw chances remaining.');
         }
 
         return DB::transaction(function () use ($user, $config) {
@@ -524,5 +505,37 @@ class CnyCampaignService
             }
         }
         return null;
+    }
+
+    /**
+     * Total lucky draws earned within the campaign window (all time, not just today).
+     */
+    public function totalLuckyDrawsEarned(User $user, array $config): int
+    {
+        $productIds = $config['funcard_product_ids'] ?? [1];
+        if (empty($productIds)) {
+            return 0;
+        }
+
+        $query = Transaction::where('user_id', $user->id)
+            ->where('status', Transaction::STATUS_SUCCESS)
+            ->where('transactionable_type', Product::class)
+            ->whereIn('transactionable_id', $productIds);
+
+        $window = $this->getLuckyDrawCampaignWindow();
+        if ($window) {
+            $query->where('created_at', '>=', $window[0])
+                ->where('created_at', '<=', $window[1]);
+        }
+
+        return (int) $query->count();
+    }
+
+    /**
+     * Total lucky draws used by this user (all time).
+     */
+    public function totalLuckyDrawsUsed(User $user): int
+    {
+        return CnyLuckyDraw::where('user_id', $user->id)->count();
     }
 }
