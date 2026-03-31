@@ -67,9 +67,13 @@ class Kernel extends ConsoleKernel
 
         // Daily
         $schedule->command('telescope:prune')->daily()->onOneServer();
+        $schedule->command('notifications:prune --days=30')->dailyAt('02:45')->onOneServer();
         
         // Mixpanel Data Sync
         // $schedule->command('mixpanel:sync-voucher-sales')->dailyAt('02:00')->onOneServer();
+
+        // Weekly voucher redemption report (Wed–Tue window)
+        $schedule->command('report:voucher-redemptions')->weeklyOn(3, '00:05')->onOneServer();
 
         //Monthly 
         //House keeping failed jobs
