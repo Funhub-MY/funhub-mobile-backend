@@ -5,8 +5,8 @@ namespace App\Listeners;
 use App\Models\User;
 use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Support\Facades\Log;
-use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
 use NotificationChannels\Fcm\FcmChannel;
+use Throwable;
 
 class ClearInvalidFcmTokenListener
 {
@@ -15,6 +15,11 @@ class ClearInvalidFcmTokenListener
      * (expired, app uninstalled, or device unregistered). Clear it so we stop
      * sending to that token. The client must send a new token when the app
      * gets one from Firebase (e.g. on launch or onTokenRefresh).
+     *
+     * Note: FcmChannel dispatches NotificationFailed with the underlying
+     * Kreait\Firebase\Exception\MessagingException in $event->data['exception'],
+     * not CouldNotSendNotification, so we check the exception message for any
+     * throwable.
      *
      * @param  NotificationFailed  $event
      * @return void
@@ -26,11 +31,15 @@ class ClearInvalidFcmTokenListener
         }
 
         $exception = $event->data['exception'] ?? null;
-        if (! $exception instanceof CouldNotSendNotification) {
+        if (! $exception instanceof Throwable) {
             return;
         }
 
         $message = $exception->getMessage();
+        $previous = method_exists($exception, 'getPrevious') ? $exception->getPrevious() : null;
+        if ($previous instanceof Throwable) {
+            $message = $message . ' ' . $previous->getMessage();
+        }
         if (strpos($message, 'Requested entity was not found') === false
             && strpos($message, 'entity was not found') === false) {
             return;
