@@ -18,6 +18,8 @@ use Illuminate\Support\ServiceProvider;
 
 use Cheesegrits\FilamentGoogleMaps\Helpers\MapsHelper as OriginalMapsHelper;
 use App\MapsHelper;
+use App\Notifications\Channels\TolerantFcmChannel;
+use NotificationChannels\Fcm\FcmChannel;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,6 +36,8 @@ class AppServiceProvider extends ServiceProvider
         }
 
         $this->app->bind(OriginalMapsHelper::class, MapsHelper::class);
+
+        $this->app->bind(FcmChannel::class, TolerantFcmChannel::class);
     }
 
     /**
