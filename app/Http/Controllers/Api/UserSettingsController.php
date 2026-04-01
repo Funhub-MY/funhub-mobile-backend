@@ -136,7 +136,16 @@ class UserSettingsController extends Controller
         $user->save();
 
         // send verification email
-        $user->sendEmailVerificationNotification();
+        if (!$user->sendEmailVerificationNotification()) {
+            Log::error('[UserSettingsController] Failed to send verification email', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'endpoint' => 'POST /api/v1/user/settings/email',
+            ]);
+            return response()->json([
+                'message' => __('messages.error.user_settings_controller.Failed_to_send_verification_email'),
+            ], 422);
+        }
 
         return response()->json([
              'message' => __('messages.success.user_settings_controller.Email_updated_and_verification_email_sent'),

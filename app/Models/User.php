@@ -85,7 +85,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         return $this->hasRole('staff') || $this->hasRole('admin') || $this->hasRole('super_admin') || $this->hasRole('merchant');
     }
 
-    public function sendEmailVerificationNotification()
+    public function sendEmailVerificationNotification(): bool
     {
         $user = $this;
 
@@ -104,11 +104,13 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
                 'email' => $user->email,
                 'token' => $token,
             ]);
+            return true;
         } catch (\Exception $ex) {
             Log::error('[Error] Send email verification notification ', [
                 'user' => $user,
                 'error' => $ex->getMessage()
             ]);
+            return false;
         }
     }
 
