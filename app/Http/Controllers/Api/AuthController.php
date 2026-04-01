@@ -549,7 +549,16 @@ class AuthController extends Controller
         ]);
 
         // resend verification email
-        $user->sendEmailVerificationNotification();
+        if (!$user->sendEmailVerificationNotification()) {
+            Log::error('[AuthController] Failed to send verification email', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'endpoint' => 'POST /api/v1/user/send-email-verification',
+            ]);
+            return response()->json([
+                'message' => __('messages.error.auth_controller.Failed_to_send_verification_email'),
+            ], 422);
+        }
 
         return response()->json(['message' => __('messages.success.auth_controller.Verification_Email_Sent')], 200);
     }
