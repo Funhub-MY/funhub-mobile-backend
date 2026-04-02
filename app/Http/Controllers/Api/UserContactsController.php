@@ -82,15 +82,15 @@ class UserContactsController extends Controller
             return $contact;
         });
 
-        // match with users table phone_country_code and phone_no
-        $users = User::whereIn(DB::raw('CONCAT(phone_country_code, phone_no)'), $importedNumbers->pluck('full_phone_no')->toArray())
+        // match with users.full_phone_number (indexed)
+        $users = User::whereIn('full_phone_number', $importedNumbers->pluck('full_phone_no')->unique()->filter()->values()->all())
             ->get();
 
 
         // matched users, update related_user_id of related imported
         foreach ($users as $user) {
             $matchingUserId = $importedContacts->filter(function ($contact) use ($user) {
-                return $contact->full_phone_no == $user->phone_country_code . $user->phone_no;
+                return $contact->full_phone_no === $user->full_phone_no;
             })->pluck('id');
 
             // one query to update contact with matched user id
