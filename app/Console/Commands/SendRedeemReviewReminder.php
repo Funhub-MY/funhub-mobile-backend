@@ -73,12 +73,27 @@ class SendRedeemReviewReminder extends Command
 
 					$this->info('[SendRedeemReviewReminder] User ' . $user->id);
 				}
-			} catch (\Exception $e) {
-				Log::error('[SendRedeemReviewReminder] Error processing redemption ID: ' . $redemption->id, [
-					'error' => $e->getMessage(),
-					'stack' => $e->getTraceAsString(),
-				]);
-				$this->error('Error processing redemption ID: ' . $redemption->id . ' - ' . $e->getMessage());
+				} catch (\Exception $e) {
+				$message = $e->getMessage();
+				$isInvalidFcmToken = str_contains($message, 'Requested entity was not found')
+					|| str_contains($message, 'entity was not found');
+
+				if ($isInvalidFcmToken) {
+					// User's FCM token is invalid (app uninstalled, token expired, etc.). ClearInvalidFcmTokenListener clears token.
+					// Mark reminder as sent so we don't retry forever.
+					Log::warning('[SendRedeemReviewReminder] Skipping FCM for redemption ID: ' . $redemption->id . ' (invalid/expired device token)', [
+						'user_id' => $user->id,
+						'error' => $message,
+					]);
+					$redemption->update(['reminder_sent_at' => now()]);
+					$this->warn('Redemption ID ' . $redemption->id . ': invalid FCM token, reminder marked sent.');
+				} else {
+					Log::error('[SendRedeemReviewReminder] Error processing redemption ID: ' . $redemption->id, [
+						'error' => $message,
+						'stack' => $e->getTraceAsString(),
+					]);
+					$this->error('Error processing redemption ID: ' . $redemption->id . ' - ' . $message);
+				}
 			}
         }
     }

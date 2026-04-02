@@ -5,8 +5,6 @@ namespace App\Console\Commands;
 use App\Models\User;
 use App\Models\UserContact;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-
 class MatchContactToUser extends Command
 {
     /**
@@ -55,15 +53,15 @@ class MatchContactToUser extends Command
         // Chunk the phone numbers to avoid hitting the maximum query length limit
         foreach (array_chunk($phoneNumbers, 500) as $chunk) {
             // Find matching users for the current chunk of phone numbers
-            $users = User::whereIn(DB::raw('CONCAT(phone_country_code, phone_no)'), $chunk)
-                ->select('id', 'phone_country_code', 'phone_no')
+            $users = User::whereIn('full_phone_number', $chunk)
+                ->select('id', 'phone_country_code', 'phone_no', 'full_phone_number')
                 ->get();
 
             $this->info('Total users matched for imported contacts/per 500 chunks of numbers: ' . $users->count());
 
             // Update the related user ID for matching contacts
             foreach ($users as $user) {
-                $matchingContacts = $groupedContacts->get($user->phone_country_code . $user->phone_no);
+                $matchingContacts = $groupedContacts->get($user->full_phone_no);
 
                 if ($matchingContacts) {
                     UserContact::whereIn('id', $matchingContacts->pluck('id'))

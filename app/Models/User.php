@@ -42,7 +42,8 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
      * @var array<int, string>
      */
     protected $guarded = [
-        'id'
+        'id',
+        'full_phone_number',
     ];
 
 
@@ -70,6 +71,13 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
     protected static function boot()
     {
         parent::boot();
+
+        static::saving(function (User $user) {
+            $code = $user->phone_country_code;
+            $no = $user->phone_no;
+            $composed = ($code ?? '') . ($no ?? '');
+            $user->attributes['full_phone_number'] = $composed === '' ? null : $composed;
+        });
 
         // static::created(function ($user) {
         //     dispatch(new SyncUserWithOneSignal($user));
@@ -511,8 +519,13 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
      */
     public function getFullPhoneNoAttribute()
     {
-        // response 60123456789
-        return $this->phone_country_code . $this->phone_no;
+        if (array_key_exists('full_phone_number', $this->attributes)
+            && $this->attributes['full_phone_number'] !== null
+            && $this->attributes['full_phone_number'] !== '') {
+            return (string) $this->attributes['full_phone_number'];
+        }
+
+        return ($this->phone_country_code ?? '') . ($this->phone_no ?? '');
     }
 
     /**
