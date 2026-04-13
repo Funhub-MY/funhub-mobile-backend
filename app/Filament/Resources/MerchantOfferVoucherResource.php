@@ -70,8 +70,7 @@ class MerchantOfferVoucherResource extends Resource
 
 	public static function getEloquentQuery(): Builder
 	{
-        $query = parent::getEloquentQuery()
-        ->with([
+        $eager = [
             'latestSuccessfulClaim' => function ($query) {
                 $query->select('id', 'voucher_id', 'status', 'purchase_method', 'net_amount', 'created_at')
                       ->where('status', 1); // Only load successful claims
@@ -82,15 +81,18 @@ class MerchantOfferVoucherResource extends Resource
             'merchant_offer' => function ($query) {
                 $query->select('id', 'name', 'sku');
             },
-            'redeem'
-        ]);
-        
-        // // Add index hint for better performance when using MySQL
-        // if (config('database.default') === 'mysql') {
-        //     // Force the use of the primary key for faster searches
-        //     $query->from(\DB::raw('merchant_offer_vouchers USE INDEX (PRIMARY)'));
-        // }
-        
+            'redeem',
+        ];
+
+        // Campaign column uses hasOneThrough; eager-load to avoid N+1 on admin list.
+        if (auth()->check() && ! auth()->user()->hasRole('merchant')) {
+            $eager['campaign'] = function ($query) {
+                $query->select('merchant_offer_campaigns.id', 'merchant_offer_campaigns.name');
+            };
+        }
+
+        $query = parent::getEloquentQuery()->with($eager);
+
         return $query;
 	}
 
@@ -394,10 +396,6 @@ class MerchantOfferVoucherResource extends Resource
                         return $query;
                     })
                     ->label('Redemption Status'),
-                SelectFilter::make('merchant_offer_id')
-                    ->relationship('merchant_offer', 'name')
-                    ->searchable()
-                    ->label('Merchant Offer'),
 
                 Filter::make('purchased_from')
                     ->form([
