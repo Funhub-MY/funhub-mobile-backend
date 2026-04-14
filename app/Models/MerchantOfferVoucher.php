@@ -73,7 +73,7 @@ class MerchantOfferVoucher extends BaseModel implements Auditable
 
     public function getVoucherRedeemedAttribute()
     {
-        // List screens eager-load `redeem`; use it to avoid per-row redeem()->exists() queries.
+        // Filament list eager-loads `redeem`; use it to avoid N+1 queries from redeem()->exists().
         if ($this->relationLoaded('redeem')) {
             return $this->redeem !== null;
         }

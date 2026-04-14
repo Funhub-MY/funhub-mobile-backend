@@ -84,14 +84,16 @@ class MerchantOfferVoucherResource extends Resource
             'redeem',
         ];
 
-        // `campaign.name` column + campaign filter; load once per row batch, not N+1.
+        // Campaign column uses hasOneThrough; eager-load to avoid N+1 on admin list.
         if (auth()->check() && ! auth()->user()->hasRole('merchant')) {
             $eager['campaign'] = function ($query) {
                 $query->select('merchant_offer_campaigns.id', 'merchant_offer_campaigns.name');
             };
         }
 
-        return parent::getEloquentQuery()->with($eager);
+        $query = parent::getEloquentQuery()->with($eager);
+
+        return $query;
 	}
 
     public static function canEdit(Model $record): bool
