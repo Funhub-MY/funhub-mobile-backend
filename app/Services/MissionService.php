@@ -470,7 +470,7 @@ class MissionService
             Log::info('Mission status after update', [
                 'mission_id' => $mission->id,
                 'mission_data' => $mission,
-                'usermission_data' => $userMission
+                //'usermission_data' => $userMission
             ]);
 
         } catch (\Exception $e) {
