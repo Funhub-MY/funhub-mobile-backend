@@ -70,8 +70,7 @@ class MerchantOfferVoucherResource extends Resource
 
 	public static function getEloquentQuery(): Builder
 	{
-        $query = parent::getEloquentQuery()
-        ->with([
+        $eager = [
             'latestSuccessfulClaim' => function ($query) {
                 $query->select('id', 'voucher_id', 'status', 'purchase_method', 'net_amount', 'created_at')
                       ->where('status', 1); // Only load successful claims
@@ -80,18 +79,19 @@ class MerchantOfferVoucherResource extends Resource
                 $query->select('id', 'name');
             },
             'merchant_offer' => function ($query) {
-                $query->select('id', 'name', 'sku');
+                $query->select('id', 'name', 'sku', 'merchant_offer_campaign_id');
             },
-            'redeem'
-        ]);
-        
-        // // Add index hint for better performance when using MySQL
-        // if (config('database.default') === 'mysql') {
-        //     // Force the use of the primary key for faster searches
-        //     $query->from(\DB::raw('merchant_offer_vouchers USE INDEX (PRIMARY)'));
-        // }
-        
-        return $query;
+            'redeem',
+        ];
+
+        // `campaign.name` column + campaign filter; load once per row batch, not N+1.
+        if (auth()->check() && ! auth()->user()->hasRole('merchant')) {
+            $eager['campaign'] = function ($query) {
+                $query->select('merchant_offer_campaigns.id', 'merchant_offer_campaigns.name');
+            };
+        }
+
+        return parent::getEloquentQuery()->with($eager);
 	}
 
     public static function canEdit(Model $record): bool
@@ -141,7 +141,7 @@ class MerchantOfferVoucherResource extends Resource
 
 				(!auth()->user()->hasRole('merchant')) ?  TextColumn::make('campaign.name')
 					->label('Campaign')
-					->url(fn ($record) => ($record->merchant_offer->campaign) ? route('filament.resources.merchant-offer-campaigns.edit', $record->merchant_offer->campaign) : null)
+					->url(fn ($record) => $record->campaign ? route('filament.resources.merchant-offer-campaigns.edit', $record->campaign) : null)
 //                    ->searchable(query: function (Builder $query, string $search): Builder {
 //                        return $query->whereHas('campaign', function ($query) use ($search) {
 //                            $query->where('merchant_offer_campaigns.name', 'like', "%{$search}%");
@@ -292,19 +292,49 @@ class MerchantOfferVoucherResource extends Resource
             ])
             ->filters([
 
-                SelectFilter::make('campaign')
-                ->label('Campaign')
-                ->relationship('campaign', 'name', function ($query) {
-                    return $query->whereHas('merchantOffers', function ($query) {
-                        $query->whereHas('vouchers');
-                    });
-                })
-                ->searchable(),
+                // SelectFilter::relationship() loads ALL options via pluck() on every page load (no limit).
+                // Form Select with searchable() + preload(false) defers options until the user searches (see Filament Forms Select).
+                Filter::make('campaign')
+                    ->form([
+                        Select::make('campaign')
+                            ->label('Campaign')
+                            ->relationship(
+                                'campaign',
+                                'name',
+                                fn (Builder $query) => $query->whereHas('merchantOffers', function (Builder $q) {
+                                    $q->whereHas('vouchers');
+                                })
+                            )
+                            ->searchable()
+                            ->preload(false),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (blank($data['campaign'] ?? null)) {
+                            return $query;
+                        }
 
-                SelectFilter::make('merchant_offer_id')
-                    ->label('Merchant Offer')
-                    ->relationship('merchant_offer', 'name')
-                    ->searchable(),
+                        return $query->whereHas('merchant_offer', function (Builder $q) use ($data) {
+                            $q->where('merchant_offer_campaign_id', $data['campaign']);
+                        });
+                    })
+                    ->label('Campaign'),
+
+                Filter::make('merchant_offer_id')
+                    ->form([
+                        Select::make('merchant_offer_id')
+                            ->label('Merchant Offer')
+                            ->relationship('merchant_offer', 'name')
+                            ->searchable()
+                            ->preload(false),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (blank($data['merchant_offer_id'] ?? null)) {
+                            return $query;
+                        }
+
+                        return $query->where('merchant_offer_id', $data['merchant_offer_id']);
+                    })
+                    ->label('Merchant Offer'),
 
                 SelectFilter::make('financial_status')
                     ->options([
@@ -344,19 +374,29 @@ class MerchantOfferVoucherResource extends Resource
                     })
                     ->label('Financial Status'),
 
-                // Add optimized Purchased By filter
-                SelectFilter::make('purchased_by')
-                    ->label('Purchased By')
-                    ->relationship('owner', 'name', function ($query) {
-                        // Only include users who have purchased vouchers
-                        return $query->whereIn('id', function ($subquery) {
-                            $subquery->select('owned_by_id')
-                                    ->from('merchant_offer_vouchers')
-                                    ->whereNotNull('owned_by_id')
-                                    ->distinct();
-                        });
+                Filter::make('purchased_by')
+                    ->form([
+                        Select::make('purchased_by')
+                            ->label('Purchased By')
+                            ->relationship('owner', 'name', function (Builder $query) {
+                                return $query->whereIn('id', function ($subquery) {
+                                    $subquery->select('owned_by_id')
+                                        ->from('merchant_offer_vouchers')
+                                        ->whereNotNull('owned_by_id')
+                                        ->distinct();
+                                });
+                            })
+                            ->searchable()
+                            ->preload(false),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (blank($data['purchased_by'] ?? null)) {
+                            return $query;
+                        }
+
+                        return $query->where('owned_by_id', $data['purchased_by']);
                     })
-                    ->searchable(),
+                    ->label('Purchased By'),
                     
                 SelectFilter::make('redemption_status')
                     ->options([
@@ -394,10 +434,6 @@ class MerchantOfferVoucherResource extends Resource
                         return $query;
                     })
                     ->label('Redemption Status'),
-                SelectFilter::make('merchant_offer_id')
-                    ->relationship('merchant_offer', 'name')
-                    ->searchable()
-                    ->label('Merchant Offer'),
 
                 Filter::make('purchased_from')
                     ->form([
