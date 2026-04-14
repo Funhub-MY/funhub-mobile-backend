@@ -80,7 +80,7 @@ class MerchantOfferVoucherResource extends Resource
                 $query->select('id', 'name');
             },
             'merchant_offer' => function ($query) {
-                $query->select('id', 'name', 'sku');
+                $query->select('id', 'name', 'sku', 'merchant_offer_campaign_id');
             },
             'redeem',
         ];
@@ -144,7 +144,7 @@ class MerchantOfferVoucherResource extends Resource
 
 				(!auth()->user()->hasRole('merchant')) ?  TextColumn::make('campaign.name')
 					->label('Campaign')
-					->url(fn ($record) => ($record->merchant_offer->campaign) ? route('filament.resources.merchant-offer-campaigns.edit', $record->merchant_offer->campaign) : null)
+					->url(fn ($record) => $record->campaign ? route('filament.resources.merchant-offer-campaigns.edit', $record->campaign) : null)
 //                    ->searchable(query: function (Builder $query, string $search): Builder {
 //                        return $query->whereHas('campaign', function ($query) use ($search) {
 //                            $query->where('merchant_offer_campaigns.name', 'like', "%{$search}%");
@@ -295,8 +295,9 @@ class MerchantOfferVoucherResource extends Resource
             ])
             ->filters([
 
-                // Form Select::relationship() needs a model instance; filter forms have no record.
-                // SelectFilter::relationship() avoids that (uses table model) but loads all options — see below.
+                // SelectFilter::relationship() loads all options on every request; Form Select with
+                // searchable() + preload(false) defers until search. Filter forms have no row model, so
+                // Select::relationship() requires ->model(new MerchantOfferVoucher()) or Filament calls owner() on null.
                 Filter::make('campaign')
                     ->form([
                         Select::make('campaign')
