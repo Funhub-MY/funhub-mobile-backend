@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
@@ -12,9 +11,7 @@ use Filament\Resources\Resource;
 use App\Models\MerchantOfferClaim;
 use Filament\Forms\Components\Card;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Log;
-use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 use Pages\ViewMerchantOfferVoucher;
 use App\Models\MerchantOfferVoucher;
 use Filament\Forms\Components\Select;
@@ -22,8 +19,6 @@ use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DatePicker;
-use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\DateTimePicker;
@@ -42,8 +37,6 @@ use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\BulkAction;
 use Illuminate\Database\Eloquent\Collection;
-use Carbon\Carbon;
-
 class MerchantOfferVoucherResource extends Resource
 {
     protected static ?string $model = MerchantOfferVoucher::class;
@@ -134,13 +127,11 @@ class MerchantOfferVoucherResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('code')
                     ->label('Voucher Code')
-                    ->copyable()
-                    ->searchable(),
+                    ->copyable(),
                 
                 // imported voucher code
                 Tables\Columns\TextColumn::make('imported_code')
-                    ->label('Imported Code')
-                    ->searchable(),
+                    ->label('Imported Code'),
 
 				(!auth()->user()->hasRole('merchant')) ?  TextColumn::make('campaign.name')
 					->label('Campaign')
@@ -280,6 +271,21 @@ class MerchantOfferVoucherResource extends Resource
                             AND status = 1 
                             ORDER BY created_at DESC LIMIT 1), '1970-01-01')) {$direction}");
                     }),
+
+                // Purchase = successful claim time; redeem = redemption record (merchant_offer_claims_redemptions.created_at).
+                Tables\Columns\TextColumn::make('redeem.created_at')
+                    ->label('Redeemed At')
+                    ->date('d/m/Y h:ia')
+                    ->default('-')
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        return $query->orderByRaw(
+                            "(SELECT mor.created_at FROM merchant_offer_claims_redemptions mor
+                            INNER JOIN merchant_offer_user mou ON mor.claim_id = mou.id
+                            WHERE mou.voucher_id = merchant_offer_vouchers.id
+                            ORDER BY mor.created_at DESC LIMIT 1) {$direction}"
+                        );
+                    }),
+
                 Tables\Columns\TextColumn::make('voided')
                     ->label('Voided')
                     ->formatStateUsing(function ($state) {
@@ -293,206 +299,8 @@ class MerchantOfferVoucherResource extends Resource
                         }
                     })
             ])
-            ->filters([
-
-                // SelectFilter::relationship() loads all options on every request; Form Select with
-                // searchable() + preload(false) defers until search. Filter forms have no row model, so
-                // Select::relationship() requires ->model(new MerchantOfferVoucher()) or Filament calls owner() on null.
-                Filter::make('campaign')
-                    ->form([
-                        Select::make('campaign')
-                            ->label('Campaign')
-                            ->model(fn () => new MerchantOfferVoucher())
-                            ->relationship(
-                                'campaign',
-                                'name',
-                                fn (Builder $query) => $query->whereHas('merchantOffers', function (Builder $q) {
-                                    $q->whereHas('vouchers');
-                                })
-                            )
-                            ->searchable()
-                            ->preload(false),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        if (blank($data['campaign'] ?? null)) {
-                            return $query;
-                        }
-
-                        return $query->whereHas('merchant_offer', function (Builder $q) use ($data) {
-                            $q->where('merchant_offer_campaign_id', $data['campaign']);
-                        });
-                    })
-                    ->label('Campaign'),
-
-                Filter::make('merchant_offer_id')
-                    ->form([
-                        Select::make('merchant_offer_id')
-                            ->label('Merchant Offer')
-                            ->model(fn () => new MerchantOfferVoucher())
-                            ->relationship('merchant_offer', 'name')
-                            ->searchable()
-                            ->preload(false),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        if (blank($data['merchant_offer_id'] ?? null)) {
-                            return $query;
-                        }
-
-                        return $query->where('merchant_offer_id', $data['merchant_offer_id']);
-                    })
-                    ->label('Merchant Offer'),
-
-                SelectFilter::make('financial_status')
-                    ->options([
-                        'unclaimed' => 'Unclaimed',
-                        1 => MerchantOfferClaim::CLAIM_STATUS[1],
-                        2 => MerchantOfferClaim::CLAIM_STATUS[2],
-                        3 => MerchantOfferClaim::CLAIM_STATUS[3],
-                    ])
-                    ->query(function (Builder $query, array $data) {
-                        if (!isset($data['value']) || $data['value'] === null) {
-                            return $query;
-                        }
-                        
-                        if ($data['value'] === 'unclaimed') {
-							return $query->whereNotExists(function ($subquery) {
-								$subquery->select(DB::raw(1))
-									->from('merchant_offer_user')
-									->whereColumn('merchant_offer_user.voucher_id', 'merchant_offer_vouchers.id')
-									->where('merchant_offer_user.status', 1)
-									->limit(1);
-							});
-                        } else if ($data['value']) {
-							return $query->whereExists(function ($subquery) use ($data) {
-								$subquery->select(DB::raw(1))
-									->from('merchant_offer_user as mou1')
-									->whereColumn('mou1.voucher_id', 'merchant_offer_vouchers.id')
-									->where('mou1.status', $data['value'])
-									->whereRaw('mou1.created_at = (
-									SELECT MAX(mou2.created_at) 
-									FROM merchant_offer_user as mou2 
-									WHERE mou2.voucher_id = mou1.voucher_id
-								)');
-							});
-                        }
-                        
-                        return $query;
-                    })
-                    ->label('Financial Status'),
-
-                Filter::make('purchased_by')
-                    ->form([
-                        Select::make('purchased_by')
-                            ->label('Purchased By')
-                            ->model(fn () => new MerchantOfferVoucher())
-                            ->relationship('owner', 'name', function (Builder $query) {
-                                return $query->whereIn('id', function ($subquery) {
-                                    $subquery->select('owned_by_id')
-                                        ->from('merchant_offer_vouchers')
-                                        ->whereNotNull('owned_by_id')
-                                        ->distinct();
-                                });
-                            })
-                            ->searchable()
-                            ->preload(false),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        if (blank($data['purchased_by'] ?? null)) {
-                            return $query;
-                        }
-
-                        return $query->where('owned_by_id', $data['purchased_by']);
-                    })
-                    ->label('Purchased By'),
-                    
-                SelectFilter::make('redemption_status')
-                    ->options([
-                        false => 'Not Redeemed',
-                        true => 'Redeemed',
-                    ])
-                    ->query(function (Builder $query, array $data) {
-                        if (! isset($data['value']) || $data['value'] === null) {
-                            return $query;
-                        }
-
-                        // EXISTS on (redemptions ⋈ claims) — prefer mor → mou join order for claim_id FK index use.
-                        if ($data['value'] == true) {
-                            return $query->whereExists(function ($subquery) {
-                                $subquery->select(DB::raw(1))
-                                    ->from('merchant_offer_claims_redemptions as mor')
-                                    ->join('merchant_offer_user as mou', 'mor.claim_id', '=', 'mou.id')
-                                    ->whereColumn('mou.voucher_id', 'merchant_offer_vouchers.id');
-                            });
-                        }
-
-                        if ($data['value'] == false) {
-                            return $query->whereNotExists(function ($subquery) {
-                                $subquery->select(DB::raw(1))
-                                    ->from('merchant_offer_claims_redemptions as mor')
-                                    ->join('merchant_offer_user as mou', 'mor.claim_id', '=', 'mou.id')
-                                    ->whereColumn('mou.voucher_id', 'merchant_offer_vouchers.id');
-                            });
-                        }
-
-                        return $query;
-                    })
-                    ->label('Redemption Status'),
-
-                Filter::make('purchased_from')
-                    ->form([
-                        DatePicker::make('purchased_from')
-                            ->placeholder('Select start date'),
-                        DatePicker::make('purchased_until')
-                            ->placeholder('Select end date'),
-                    ])
-                    ->query(function (Builder $query, array $data) {
-                        $from = $data['purchased_from'] ?? null;
-                        $until = $data['purchased_until'] ?? null;
-
-                        if (blank($from) && blank($until)) {
-                            return $query;
-                        }
-
-                        // Direct EXISTS on merchant_offer_user avoids whereHas + extra relation SQL.
-                        // Match latestSuccessfulClaim: success row with max(created_at) per voucher.
-                        return $query->whereExists(function ($sub) use ($from, $until) {
-                            $sub->from('merchant_offer_user as mou')
-                                ->whereColumn('mou.voucher_id', 'merchant_offer_vouchers.id')
-                                ->where('mou.status', MerchantOfferClaim::CLAIM_SUCCESS)
-                                ->whereRaw(
-                                    'mou.created_at = (
-                                        SELECT MAX(m2.created_at)
-                                        FROM merchant_offer_user AS m2
-                                        WHERE m2.voucher_id = mou.voucher_id
-                                        AND m2.status = ?
-                                    )',
-                                    [MerchantOfferClaim::CLAIM_SUCCESS]
-                                );
-
-                            if (filled($from)) {
-                                $sub->where('mou.created_at', '>=', Carbon::parse($from)->startOfDay());
-                            }
-                            if (filled($until)) {
-                                $sub->where('mou.created_at', '<=', Carbon::parse($until)->endOfDay());
-                            }
-                        });
-                    })
-                    ->label('Purchased date range'),
-
-                // Filter::make('purchased_until')
-                //     ->form([
-                //         DatePicker::make('purchased_until')
-                //             ->placeholder('Select end date'),
-                //     ])
-                //     ->query(function (Builder $query, array $data) {
-                //         if ($data['purchased_until']) {
-                //             $query->whereHas('latestSuccessfulClaim', function ($q) use ($data) {
-                //                 $q->whereDate('created_at', '<=', $data['purchased_until']);
-                //             });
-                //         }
-                //     })
-                //     ->label('Purchased Until'),
-            ])
+            // Table filters removed: heavy relationship pluck queries caused timeouts/errors. Search uses the list page panel instead.
+            ->filters([])
             ->actions([
                 ViewAction::make(),
 
