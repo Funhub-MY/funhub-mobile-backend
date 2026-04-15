@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\MerchantOfferVoucherResource\Pages;
 
 use App\Filament\Resources\MerchantOfferVoucherResource;
+use App\Models\MerchantOfferClaim;
 use Filament\Pages\Actions;
-use Carbon\Carbon;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -18,23 +18,11 @@ class ListMerchantOfferVouchers extends ListRecords
     /** @var string */
     public $stockSearchCode = '';
 
-    /** @var string */
-    public $stockSearchMerchantOffer = '';
-
-    /** @var string */
-    public $stockSearchSku = '';
-
     /** '', 'redeemed', 'not_redeemed' */
     public $stockSearchRedemption = '';
 
-    /** @var string */
-    public $stockSearchPurchasedBy = '';
-
-    /** @var string Redeem date range (HTML date input Y-m-d); filters `merchant_offer_claims_redemptions.created_at`. */
-    public $stockSearchRedeemDateFrom = '';
-
-    /** @var string */
-    public $stockSearchRedeemDateUntil = '';
+    /** '', 'unclaimed', '1', '2', '3' — matches claim row semantics from Financial Status column. */
+    public $stockSearchFinancialStatus = '';
 
     protected $queryString = [
         'isTableReordering' => ['except' => false],
@@ -43,12 +31,8 @@ class ListMerchantOfferVouchers extends ListRecords
         'tableSortDirection' => ['except' => ''],
         'tableSearchQuery' => ['except' => ''],
         'stockSearchCode' => ['except' => ''],
-        'stockSearchMerchantOffer' => ['except' => ''],
-        'stockSearchSku' => ['except' => ''],
         'stockSearchRedemption' => ['except' => ''],
-        'stockSearchPurchasedBy' => ['except' => ''],
-        'stockSearchRedeemDateFrom' => ['except' => ''],
-        'stockSearchRedeemDateUntil' => ['except' => ''],
+        'stockSearchFinancialStatus' => ['except' => ''],
     ];
 
     /**
@@ -78,46 +62,37 @@ class ListMerchantOfferVouchers extends ListRecords
             });
         }
 
-        if (filled($this->stockSearchMerchantOffer)) {
-            $like = '%'.$this->escapeLike(trim($this->stockSearchMerchantOffer)).'%';
-            $query->whereHas('merchant_offer', function (Builder $q) use ($like) {
-                $q->where('merchant_offers.name', 'like', $like);
-            });
-        }
-
-        if (filled($this->stockSearchSku)) {
-            $like = '%'.$this->escapeLike(trim($this->stockSearchSku)).'%';
-            $query->whereHas('merchant_offer', function (Builder $q) use ($like) {
-                $q->where('merchant_offers.sku', 'like', $like);
-            });
-        }
-
-        $redeemFrom = filled($this->stockSearchRedeemDateFrom ?? null)
-            ? (string) $this->stockSearchRedeemDateFrom
-            : null;
-        $redeemUntil = filled($this->stockSearchRedeemDateUntil ?? null)
-            ? (string) $this->stockSearchRedeemDateUntil
-            : null;
-        $hasRedeemDateRange = filled($redeemFrom) || filled($redeemUntil);
-
-        if ($hasRedeemDateRange && $this->stockSearchRedemption === 'not_redeemed') {
-            // Cannot be "not redeemed" and have a redemption in a date range.
-            $query->whereRaw('1 = 0');
-        } elseif ($hasRedeemDateRange) {
-            $query->whereExists(function ($subquery) use ($redeemFrom, $redeemUntil) {
+        $financial = (string) ($this->stockSearchFinancialStatus ?? '');
+        if ($financial === 'unclaimed') {
+            $query->whereNotExists(function ($subquery) {
                 $subquery->select(DB::raw(1))
-                    ->from('merchant_offer_claims_redemptions as mor')
-                    ->join('merchant_offer_user as mou', 'mor.claim_id', '=', 'mou.id')
-                    ->whereColumn('mou.voucher_id', 'merchant_offer_vouchers.id');
-
-                if (filled($redeemFrom)) {
-                    $subquery->where('mor.created_at', '>=', Carbon::parse($redeemFrom)->startOfDay());
-                }
-                if (filled($redeemUntil)) {
-                    $subquery->where('mor.created_at', '<=', Carbon::parse($redeemUntil)->endOfDay());
-                }
+                    ->from('merchant_offer_user')
+                    ->whereColumn('merchant_offer_user.voucher_id', 'merchant_offer_vouchers.id')
+                    ->where('merchant_offer_user.status', MerchantOfferClaim::CLAIM_SUCCESS)
+                    ->limit(1);
             });
-        } elseif ($this->stockSearchRedemption === 'redeemed') {
+        } elseif ($financial !== '' && in_array((int) $financial, [
+            MerchantOfferClaim::CLAIM_SUCCESS,
+            MerchantOfferClaim::CLAIM_FAILED,
+            MerchantOfferClaim::CLAIM_AWAIT_PAYMENT,
+        ], true)) {
+            $statusVal = (int) $financial;
+            $query->whereExists(function ($subquery) use ($statusVal) {
+                $subquery->select(DB::raw(1))
+                    ->from('merchant_offer_user as mou1')
+                    ->whereColumn('mou1.voucher_id', 'merchant_offer_vouchers.id')
+                    ->where('mou1.status', $statusVal)
+                    ->whereRaw(
+                        'mou1.created_at = (
+                            SELECT MAX(mou2.created_at)
+                            FROM merchant_offer_user as mou2
+                            WHERE mou2.voucher_id = mou1.voucher_id
+                        )'
+                    );
+            });
+        }
+
+        if ($this->stockSearchRedemption === 'redeemed') {
             $query->whereExists(function ($subquery) {
                 $subquery->select(DB::raw(1))
                     ->from('merchant_offer_claims_redemptions as mor')
@@ -130,13 +105,6 @@ class ListMerchantOfferVouchers extends ListRecords
                     ->from('merchant_offer_claims_redemptions as mor')
                     ->join('merchant_offer_user as mou', 'mor.claim_id', '=', 'mou.id')
                     ->whereColumn('mou.voucher_id', 'merchant_offer_vouchers.id');
-            });
-        }
-
-        if (filled($this->stockSearchPurchasedBy)) {
-            $like = '%'.$this->escapeLike(trim($this->stockSearchPurchasedBy)).'%';
-            $query->whereHas('owner', function (Builder $q) use ($like) {
-                $q->where('users.name', 'like', $like);
             });
         }
 
@@ -156,12 +124,8 @@ class ListMerchantOfferVouchers extends ListRecords
     public function resetStockVoucherSearch(): void
     {
         $this->stockSearchCode = '';
-        $this->stockSearchMerchantOffer = '';
-        $this->stockSearchSku = '';
         $this->stockSearchRedemption = '';
-        $this->stockSearchPurchasedBy = '';
-        $this->stockSearchRedeemDateFrom = '';
-        $this->stockSearchRedeemDateUntil = '';
+        $this->stockSearchFinancialStatus = '';
         $this->resetPage();
     }
 
