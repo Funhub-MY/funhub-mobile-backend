@@ -14,7 +14,7 @@
             {{ __('Search stock vouchers') }}
         </h2>
         <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-            {{ __('Fill any field and click Search. Redeem date uses the redemption record timestamp. Do not combine “Not redeemed” with a redeem date range.') }}
+            {{ __('Fill any field and click Search.') }}
         </p>
 
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -33,28 +33,18 @@
 
             <div>
                 <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {{ __('Merchant offer') }}
+                    {{ __('Financial status') }}
                 </label>
-                <input
-                    type="text"
-                    wire:model.defer="stockSearchMerchantOffer"
+                <select
+                    wire:model.defer="stockSearchFinancialStatus"
                     class="filament-forms-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-600 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
-                    placeholder="{{ __('Offer name contains…') }}"
-                    autocomplete="off"
-                />
-            </div>
-
-            <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {{ __('SKU') }}
-                </label>
-                <input
-                    type="text"
-                    wire:model.defer="stockSearchSku"
-                    class="filament-forms-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-600 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
-                    placeholder="{{ __('SKU contains…') }}"
-                    autocomplete="off"
-                />
+                >
+                    <option value="">{{ __('All') }}</option>
+                    <option value="unclaimed">{{ __('Unclaimed') }}</option>
+                    @foreach(\App\Models\MerchantOfferClaim::CLAIM_STATUS as $statusId => $statusLabel)
+                        <option value="{{ $statusId }}">{{ $statusLabel }}</option>
+                    @endforeach
+                </select>
             </div>
 
             <div>
@@ -69,47 +59,6 @@
                     <option value="redeemed">{{ __('Redeemed') }}</option>
                     <option value="not_redeemed">{{ __('Not redeemed') }}</option>
                 </select>
-            </div>
-
-            <div class="md:col-span-2">
-                <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {{ __('Purchased by user') }}
-                </label>
-                <input
-                    type="text"
-                    wire:model.defer="stockSearchPurchasedBy"
-                    class="filament-forms-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-600 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
-                    placeholder="{{ __('Buyer name contains…') }}"
-                    autocomplete="off"
-                />
-            </div>
-
-            <div class="border-t border-gray-200 pt-4 dark:border-gray-600 md:col-span-2 lg:col-span-3">
-                <p class="mb-2 text-sm font-medium text-gray-800 dark:text-gray-200">
-                    {{ __('Redeem date range') }}
-                </p>
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                        <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                            {{ __('From') }}
-                        </label>
-                        <input
-                            type="date"
-                            wire:model.defer="stockSearchRedeemDateFrom"
-                            class="filament-forms-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-600 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
-                        />
-                    </div>
-                    <div>
-                        <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                            {{ __('Until') }}
-                        </label>
-                        <input
-                            type="date"
-                            wire:model.defer="stockSearchRedeemDateUntil"
-                            class="filament-forms-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-600 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
-                        />
-                    </div>
-                </div>
             </div>
         </div>
 
