@@ -273,10 +273,16 @@ class MerchantOfferVoucherResource extends Resource
                     }),
 
                 // Purchase = successful claim time; redeem = redemption record (merchant_offer_claims_redemptions.created_at).
+                // Do not use ->default('-') with ->date(): Filament passes '-' through Carbon::parse and crashes.
                 Tables\Columns\TextColumn::make('redeem.created_at')
                     ->label('Redeemed At')
-                    ->date('d/m/Y h:ia')
-                    ->default('-')
+                    ->formatStateUsing(function ($state) {
+                        if (blank($state)) {
+                            return '-';
+                        }
+
+                        return \Illuminate\Support\Carbon::parse($state)->format('d/m/Y h:ia');
+                    })
                     ->sortable(query: function (Builder $query, string $direction): Builder {
                         return $query->orderByRaw(
                             "(SELECT mor.created_at FROM merchant_offer_claims_redemptions mor
