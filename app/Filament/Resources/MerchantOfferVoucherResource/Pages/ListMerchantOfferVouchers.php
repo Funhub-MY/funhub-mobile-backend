@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\MerchantOfferVoucherResource\Pages;
 
 use App\Filament\Resources\MerchantOfferVoucherResource;
+use App\Models\MerchantOfferCampaign;
 use App\Models\MerchantOfferClaim;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
@@ -18,6 +19,12 @@ class ListMerchantOfferVouchers extends ListRecords
     /** @var string */
     public $stockSearchCode = '';
 
+    /** @var string Merchant offer name contains… */
+    public $stockSearchMerchantOffer = '';
+
+    /** @var string Campaign id or empty (campaigns that have offers with vouchers). */
+    public $stockSearchCampaignId = '';
+
     /** '', 'redeemed', 'not_redeemed' */
     public $stockSearchRedemption = '';
 
@@ -31,6 +38,8 @@ class ListMerchantOfferVouchers extends ListRecords
         'tableSortDirection' => ['except' => ''],
         'tableSearchQuery' => ['except' => ''],
         'stockSearchCode' => ['except' => ''],
+        'stockSearchMerchantOffer' => ['except' => ''],
+        'stockSearchCampaignId' => ['except' => ''],
         'stockSearchRedemption' => ['except' => ''],
         'stockSearchFinancialStatus' => ['except' => ''],
     ];
@@ -50,9 +59,37 @@ class ListMerchantOfferVouchers extends ListRecords
         return [];
     }
 
+    /**
+     * Campaigns that have at least one offer with vouchers.
+     */
+    public function getCampaignOptionsProperty(): array
+    {
+        return MerchantOfferCampaign::query()
+            ->whereHas('merchantOffers', function (Builder $q) {
+                $q->whereHas('vouchers');
+            })
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->all();
+    }
+
     protected function getTableQuery(): Builder
     {
         $query = parent::getTableQuery();
+
+        $canFilterCampaign = auth()->check() && ! auth()->user()->hasRole('merchant');
+        if ($canFilterCampaign && filled($this->stockSearchCampaignId)) {
+            $query->whereHas('merchant_offer', function (Builder $q) {
+                $q->where('merchant_offer_campaign_id', $this->stockSearchCampaignId);
+            });
+        }
+
+        if (filled($this->stockSearchMerchantOffer)) {
+            $like = '%'.$this->escapeLike(trim($this->stockSearchMerchantOffer)).'%';
+            $query->whereHas('merchant_offer', function (Builder $q) use ($like) {
+                $q->where('merchant_offers.name', 'like', $like);
+            });
+        }
 
         if (filled($this->stockSearchCode)) {
             $like = '%'.$this->escapeLike(trim($this->stockSearchCode)).'%';
@@ -124,6 +161,8 @@ class ListMerchantOfferVouchers extends ListRecords
     public function resetStockVoucherSearch(): void
     {
         $this->stockSearchCode = '';
+        $this->stockSearchMerchantOffer = '';
+        $this->stockSearchCampaignId = '';
         $this->stockSearchRedemption = '';
         $this->stockSearchFinancialStatus = '';
         $this->resetPage();

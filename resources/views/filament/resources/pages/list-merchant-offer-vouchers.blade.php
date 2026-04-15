@@ -33,6 +33,36 @@
 
             <div>
                 <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {{ __('Merchant offer') }}
+                </label>
+                <input
+                    type="text"
+                    wire:model.defer="stockSearchMerchantOffer"
+                    class="filament-forms-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-600 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
+                    placeholder="{{ __('Offer name contains…') }}"
+                    autocomplete="off"
+                />
+            </div>
+
+            @unless(auth()->check() && auth()->user()->hasRole('merchant'))
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {{ __('Campaign') }}
+                    </label>
+                    <select
+                        wire:model.defer="stockSearchCampaignId"
+                        class="filament-forms-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-600 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
+                    >
+                        <option value="">{{ __('All') }}</option>
+                        @foreach($this->campaignOptions as $id => $name)
+                            <option value="{{ $id }}">{{ $name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            @endunless
+
+            <div>
+                <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                     {{ __('Financial status') }}
                 </label>
                 <select
