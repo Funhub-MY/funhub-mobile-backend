@@ -2,51 +2,41 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Events\MerchantOfferClaimed;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\MerchantOfferClaimResource;
-use App\Http\Resources\MerchantOfferResource;
-use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductHistoryResource;
-use App\Models\Interaction;
-use App\Models\Merchant;
-use App\Models\MerchantOffer;
-use App\Models\MerchantOfferClaim;
-use App\Models\MerchantOfferVoucher;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\UserCard;
-use App\Notifications\OfferClaimed;
-use App\Notifications\OfferRedeemed;
 use App\Services\Mpay;
 use App\Services\PointService;
 use App\Services\TransactionService;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
     use QueryBuilderTrait;
 
-    protected $pointService, $transactionService;
+    protected $pointService;
+
+    protected $transactionService;
 
     public function __construct()
     {
-        $this->pointService = new PointService();
-        $this->transactionService = new TransactionService();
+        $this->pointService = new PointService;
+        $this->transactionService = new TransactionService;
     }
 
     /**
      * Get Products for Sale (Gift Cards)
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Product
+     *
      * @response scenario=success {
      * "current_page": 1,
      * "data": []
@@ -57,7 +47,7 @@ class ProductController extends Controller
         $products = Product::with('rewards')
             ->published()
             ->normal()
-			->orderBy('order')
+            ->orderBy('order')
             ->get();
 
         return ProductResource::collection($products);
@@ -66,10 +56,10 @@ class ProductController extends Controller
     /**
      * Get Products for Sale (Limited Gift Cards)
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Product
+     *
      * @response scenario=success {
      * "current_page": 1,
      * "data": []
@@ -89,15 +79,16 @@ class ProductController extends Controller
     /**
      * Get Product By ID
      *
-     * @param Product $product
+     * @param  Product  $product
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Product
+     *
      * @queryParam product_id integer required Product ID. Example: 1
+     *
      * @response scenario=success {
      * "data": {}
      * }
-     *
      */
     public function show($id)
     {
@@ -105,7 +96,7 @@ class ProductController extends Controller
             ->published()
             ->first();
 
-        if (!$product) {
+        if (! $product) {
             return response()->json(['message' => 'Product not found'], 422);
         }
 
@@ -115,19 +106,20 @@ class ProductController extends Controller
     /**
      * Get Total Quantity of Funcard purchased by user
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Product
+     *
      * @queryParam from_date string optional Filter by transaction created from this date (Y-m-d format). Example: 2025-01-01
      * @queryParam to_date string optional Filter by transaction created until this date (Y-m-d format). Example: 2025-01-16
      * @queryParam product_ids integer optional Filter by product_id. Example: 1,2,3,4 or 1
+     *
      * @response scenario=success {
      *     "quantity": 10
      * }
      */
-
-    public function getTotalPurchasedByUser(Request $request) {
+    public function getTotalPurchasedByUser(Request $request)
+    {
         // base query builder for date filtering
         $dateQuery = function ($query) use ($request) {
             if ($request->has('from_date')) {
@@ -136,6 +128,7 @@ class ProductController extends Controller
             if ($request->has('to_date')) {
                 $query->whereDate('created_at', '<=', $request->to_date);
             }
+
             return $query;
         };
 
@@ -152,23 +145,23 @@ class ProductController extends Controller
             ->count();
 
         return response()->json([
-            'quantity' => (int) $transaction
+            'quantity' => (int) $transaction,
         ]);
     }
 
     /**
      * Get Funcard or Funbox for last 30 days Transactions History
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Product
+     *
      * @response scenario=success {
      * "data": []
      * }
      */
-
-    public function getHistory(Request $request) {
+    public function getHistory(Request $request)
+    {
 
         $query = Transaction::where('transactions.user_id', auth()->user()->id)
             ->where('transactions.status', Transaction::STATUS_SUCCESS)
@@ -177,12 +170,11 @@ class ProductController extends Controller
             ->whereDate('transactions.created_at', '<=', Carbon::now())
             ->join('point_ledgers', function ($join) {
                 $join->on('transactions.user_id', '=', 'point_ledgers.user_id')
-                     ->on('transactions.transaction_no', '=', 'point_ledgers.remarks');
+                    ->on('transactions.transaction_no', '=', 'point_ledgers.remarks');
             })
-            ->select('transactions.*', 'point_ledgers.amount AS point_amount') 
+            ->select('transactions.*', 'point_ledgers.amount AS point_amount')
             ->orderBy('transactions.created_at', 'desc')
             ->get();
-
 
         return ProductHistoryResource::collection($query);
     }
@@ -190,17 +182,20 @@ class ProductController extends Controller
     /**
      * Post Checkout
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Product
+     *
      * @subgroup Product Rewards
+     *
      * @bodyParam product_id integer required Product ID. Example: 1
      * @bodyParam quantity integer required Quantity. Example: 1
      * @bodyParam payment_method string required Payment Method. Example: fiat
      * @bodyParam fiat_payment_method string required_if:payment_method,fiat Payment Method. Example: fpx/card
      * @bodyParam card_id integer required_if:fiat_payment_method,card Card ID. Example: 1
      * @bodyParam wallet_type string optional Wallet Type. Example: TNG/FPX-CIMB
+     * @bodyParam email string optional Saved on the user and used for checkout; verification is not required. Example: john@example.com
+     *
      * @response scenario=success {
      * "message": "Redirect to Gateway"
      * }
@@ -232,50 +227,46 @@ class ProductController extends Controller
             'fiat_payment_method' => 'required_if:payment_method,fiat,in:fpx,card',
             'card_id' => 'exists:user_cards,id',
             'quantity' => 'required|integer|min:1',
-			'referral_code' => 'nullable|string',
-            'promotion_code' => 'nullable|string|exists:promotion_codes,code'
+            'referral_code' => 'nullable|string',
+            'promotion_code' => 'nullable|string|exists:promotion_codes,code',
+            'email' => 'nullable|email',
         ]);
 
-       // check if user has verified email address
-        if (!auth()->user()->hasVerifiedEmail()) {
-            return response()->json([
-                'message' => __('messages.error.product_controller.Please_verify_your_email_address_first')
-            ], 422);
-        }
+        $user = $request->user();
+        $user->saveEmailFromCheckout($request->input('email'));
 
         $product = Product::where('id', request()->product_id)
             ->published()
             //->with('rewards')
             ->first();
 
-        if (!$product) {
+        if (! $product) {
             return response()->json([
-                'message' => __('messages.error.product_controller.Product_is_no_longer_valid')
+                'message' => __('messages.error.product_controller.Product_is_no_longer_valid'),
             ], 422);
         }
 
         if ($product->unlimited_supply == 0) { //this product has limited supply
             if ($product->quantity < $request->quantity) {
                 return response()->json([
-                    'message' => __('messages.error.product_controller.Product_is_sold_out')
+                    'message' => __('messages.error.product_controller.Product_is_sold_out'),
                 ], 422);
             }
         }
 
         //proceed to transaction
-        $user = request()->user();
-        $net_amount = (($product->discount_price) ?? $product->unit_price)  * $request->quantity;
-        
+        $net_amount = (($product->discount_price) ?? $product->unit_price) * $request->quantity;
+
         // Handle promotion code if provided
         $promotionDiscount = 0;
         $appliedPromotionCode = null;
-        
+
         if ($request->has('promotion_code') && $request->promotion_code != null) {
-			$promotionCode = \App\Models\PromotionCode::where('code', $request->promotion_code)
+            $promotionCode = \App\Models\PromotionCode::where('code', $request->promotion_code)
 //                ->where('is_redeemed', false)
                 ->where('status', true)
                 ->first();
-            
+
             if ($promotionCode && $promotionCode->isActive()) {
                 $promotionCodeGroup = $promotionCode->promotionCodeGroup;
 
@@ -285,14 +276,12 @@ class ProductController extends Controller
 
                     // The promotion code has already been validated in PromotionCodeController::postCheckPromoCode
                     // We just need to get the user's data for tracking purposes
-                    $user = request()->user();
-
                     $promotionDiscount = $promotionCodeGroup->discount_amount;
                     $appliedPromotionCode = $promotionCode;
 
                     // Apply the discount
                     $net_amount = $net_amount - $promotionDiscount;
-                    
+
                     Log::info('[ProductController] Promotion code discount applied', [
                         'promotion_code' => $request->promotion_code,
                         'discount_amount' => $promotionDiscount,
@@ -301,9 +290,10 @@ class ProductController extends Controller
                     ]);
                 }
             } else {
-				Log::info('[ProductController] Promotion code is not valid');
+                Log::info('[ProductController] Promotion code is not valid');
+
                 return response()->json([
-                    'message' => __('messages.success.promotion_code_controller.Code_invalid')
+                    'message' => __('messages.success.promotion_code_controller.Code_invalid'),
                 ], 400);
             }
         }
@@ -333,7 +323,7 @@ class ProductController extends Controller
             $user->id,
             ($walletType) ? $walletType : $request->fiat_payment_method,
             'app',
-            ($request->has('email') ? $request->email : null),
+            $user->email,
             ($request->has('name') ? $request->name : null),
             ($request->has('referral_code') ? $request->referral_code : null),
         );
@@ -346,7 +336,7 @@ class ProductController extends Controller
                 'promotion_code_id' => $appliedPromotionCode->id,
                 'transaction_id' => $transaction->id,
                 'user_id' => $user->id,
-                'discount_amount' => $promotionDiscount
+                'discount_amount' => $promotionDiscount,
             ]);
         }
 
@@ -389,10 +379,10 @@ class ProductController extends Controller
     /**
      * Cancel Product Checkout
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Product
+     *
      * @bodyParam transaction_no string required Transaction No. Example: 11234455
      *
      * @response scenario=success {
@@ -402,7 +392,7 @@ class ProductController extends Controller
     public function postCancelCheckout(Request $request)
     {
         $this->validate($request, [
-            'transaction_no' => 'required'
+            'transaction_no' => 'required',
         ]);
 
         // find transaciton is by user and transaction_no
@@ -410,9 +400,9 @@ class ProductController extends Controller
             ->where('transaction_no', $request->transaction_no)
             ->first();
 
-        if (!$transaction) {
+        if (! $transaction) {
             return response()->json([
-                'message' => __('messages.error.product_controller.Transaction_not_found')
+                'message' => __('messages.error.product_controller.Transaction_not_found'),
             ], 404);
         }
 
@@ -423,7 +413,7 @@ class ProductController extends Controller
         // $transaction = $this->transactionService->updateTransactionStatus($transaction->id, Transaction::STATUS_FAILED);
 
         return response()->json([
-            'message' => __('messages.success.product_controller.Transaction_cancelled')
+            'message' => __('messages.success.product_controller.Transaction_cancelled'),
         ], 200);
     }
 }

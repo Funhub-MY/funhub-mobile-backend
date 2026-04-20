@@ -5,35 +5,39 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Jobs\SyncUserWithOneSignal;
-use OwenIt\Auditing\Contracts\Auditable;
+use App\Mail\EmailVerification;
+use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Illuminate\Support\Str;
-use Laravel\Scout\Searchable;
-use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Mail\EmailVerification;
 use Illuminate\Support\Facades\Mail;
-use App\Services\OneSignalService;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+use Laravel\Sanctum\HasApiTokens;
+use Laravel\Scout\Searchable;
+use OwenIt\Auditing\Contracts\Auditable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
+class User extends Authenticatable implements Auditable, FilamentUser, HasMedia
 {
-    use SoftDeletes, HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, Searchable, \OwenIt\Auditing\Auditable;
+    use HasApiTokens, HasFactory, HasRoles, InteractsWithMedia, Notifiable, \OwenIt\Auditing\Auditable, Searchable, SoftDeletes;
 
     const USER_VIDEO_UPLOADS = 'user_video_uploads';
+
     const USER_AVATAR = 'user_avatar';
+
     const USER_UPLOADS = 'user_uploads';
 
     const STATUS_ACTIVE = 1;
+
     const STATUS_SUSPENDED = 2;
+
     const STATUS_ARCHIVED = 3;
 
     /**
@@ -45,7 +49,6 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         'id',
         'full_phone_number',
     ];
-
 
     /**
      * The attributes that should be hidden for serialization.
@@ -65,9 +68,9 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         'auth_provider',
         'has_completed_profile',
         'cover_url',
-        'profile_is_private'
+        'profile_is_private',
     ];
-    
+
     protected static function boot()
     {
         parent::boot();
@@ -75,7 +78,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         static::saving(function (User $user) {
             $code = $user->phone_country_code;
             $no = $user->phone_no;
-            $composed = ($code ?? '') . ($no ?? '');
+            $composed = ($code ?? '').($no ?? '');
             $user->attributes['full_phone_number'] = $composed === '' ? null : $composed;
         });
 
@@ -91,6 +94,50 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
     public function canAccessFilament(): bool
     {
         return $this->hasRole('staff') || $this->hasRole('admin') || $this->hasRole('super_admin') || $this->hasRole('merchant');
+    }
+
+    /**
+     * Persist an email from a purchase/checkout request without requiring verification.
+     */
+    public function saveEmailFromCheckout(?string $email): void
+    {
+        if ($email === null || trim($email) === '') {
+            return;
+        }
+
+        $normalized = Str::lower(trim($email));
+
+        if (! filter_var($normalized, FILTER_VALIDATE_EMAIL)) {
+            throw ValidationException::withMessages([
+                'email' => [trans('validation.email', ['attribute' => 'email'])],
+            ]);
+        }
+
+        $current = $this->email !== null ? Str::lower(trim($this->email)) : null;
+        if ($current === $normalized) {
+            if ($this->email !== $normalized) {
+                $this->forceFill(['email' => $normalized])->save();
+            }
+
+            return;
+        }
+
+        $taken = static::query()
+            ->withTrashed()
+            ->where('id', '!=', $this->id)
+            ->whereRaw('LOWER(TRIM(email)) = ?', [$normalized])
+            ->exists();
+
+        if ($taken) {
+            throw ValidationException::withMessages([
+                'email' => [trans('validation.unique', ['attribute' => 'email'])],
+            ]);
+        }
+
+        $this->forceFill([
+            'email' => $normalized,
+            'email_verified_at' => null,
+        ])->save();
     }
 
     public function sendEmailVerificationNotification(): bool
@@ -112,12 +159,14 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
                 'email' => $user->email,
                 'token' => $token,
             ]);
+
             return true;
         } catch (\Exception $ex) {
             Log::error('[Error] Send email verification notification ', [
                 'user' => $user,
-                'error' => $ex->getMessage()
+                'error' => $ex->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -143,7 +192,6 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         'rsvp' => 'boolean',
     ];
 
-
     /**
      * Search Setup
      */
@@ -162,7 +210,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         ];
     }
 
-    public function shouldBeSearchable() : bool
+    public function shouldBeSearchable(): bool
     {
         return $this->status == self::STATUS_ACTIVE && $this->name != null;
     }
@@ -170,11 +218,12 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
     /**
      * Spatia Media conversions for thumbnail
      */
-    public function registerAllMediaConversions() : void {
+    public function registerAllMediaConversions(): void
+    {
         $this->addMediaConversion('thumb')
-                ->performOnCollections('avatar')
-                ->width(60)
-                ->height(60);
+            ->performOnCollections('avatar')
+            ->width(60)
+            ->height(60);
     }
 
     public function articles()
@@ -291,7 +340,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
 
     public function stores()
     {
-         return $this->hasMany(Store::class);
+        return $this->hasMany(Store::class);
     }
 
     public function interestArticleTags()
@@ -342,6 +391,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
     {
         return $this->hasMany(PointComponentLedger::class);
     }
+
     // missions user created
     public function missions()
     {
@@ -408,8 +458,8 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
     public function campaignAnswers()
     {
         return $this->belongsToMany(CampaignQuestion::class, 'campaigns_questions_answers_users', 'user_id', 'campaign_question_id')
-          ->withPivot('answer')
-          ->withTimestamps();
+            ->withPivot('answer')
+            ->withTimestamps();
     }
 
     public function cnyFortunePicks()
@@ -494,12 +544,12 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         return $this->hasMany(ArticleRecommendation::class, 'user_id');
     }
 
-	public function promotionCodes()
-	{
-		return $this->belongsToMany(PromotionCode::class, 'promotion_code_user')
-			->withPivot('usage_count', 'last_used_at')
-			->withTimestamps();
-	}
+    public function promotionCodes()
+    {
+        return $this->belongsToMany(PromotionCode::class, 'promotion_code_user')
+            ->withPivot('usage_count', 'last_used_at')
+            ->withTimestamps();
+    }
 
     // /**
     //  * Get the user's point balance
@@ -525,7 +575,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
             return (string) $this->attributes['full_phone_number'];
         }
 
-        return ($this->phone_country_code ?? '') . ($this->phone_no ?? '');
+        return ($this->phone_country_code ?? '').($this->phone_no ?? '');
     }
 
     /**
@@ -569,7 +619,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         if ($avatar) {
             return $avatar->getUrl('thumb');
         } else {
-            return 'https://ui-avatars.com/api/?name=' . $this->name;
+            return 'https://ui-avatars.com/api/?name='.$this->name;
         }
     }
 
@@ -578,14 +628,14 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
      *
      * When user save a name, it also overrides the username if its null
      *
-     * @param string $value
+     * @param  string  $value
      * @return void
      */
     public function setNameAttribute($value)
     {
         $this->attributes['name'] = $value;
 
-        if (!$this->username) {
+        if (! $this->username) {
             try {
                 // check if english language
                 if (preg_match('/^[a-zA-Z]+$/', $value)) {
@@ -594,24 +644,24 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
                     $username = strtolower(substr($value, 0, 9));
                     $user = User::where('username', $username)->first();
                     if ($user) {
-                        $username = $username . rand(1, 9);
+                        $username = $username.rand(1, 9);
                     }
                     // remove any empty space
                     $username = str_replace(' ', '', $username);
                     $this->attributes['username'] = $username;
                 } else {
                     // random 6 character username with 3 numbers
-                    $this->attributes['username'] = strtolower( Str::random(6) . rand(100, 999));
+                    $this->attributes['username'] = strtolower(Str::random(6).rand(100, 999));
                 }
             } catch (\Throwable $th) {
                 Log::error('[Error] Username invalid when set name attribute ', [
                     'name' => $value,
                     'username' => $this->username,
-                    'error' => $th->getMessage()
+                    'error' => $th->getMessage(),
                 ]);
 
                 // use random 6 character username with 3 numbers
-                 $this->attributes['username'] = strtolower( Str::random(6) . rand(100, 999));
+                $this->attributes['username'] = strtolower(Str::random(6).rand(100, 999));
                 //throw $th;
             }
         }
@@ -626,7 +676,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
             return 'google';
         } elseif ($this->facebook_id) {
             return 'facebook';
-        } elseif($this->apple_id) {
+        } elseif ($this->apple_id) {
             return 'apple';
         } else {
             return 'phone_no';
@@ -641,9 +691,9 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         // ensure name and email are set for social auth user
         // else ensure name, email, password are set for phone no sms otp login user
         if ($this->auth_provider == 'phone_no') {
-            return !is_null($this->name);
-        } else if ($this->auth_provider == 'facebook') {
-            return !is_null($this->name) && !empty($this->name);
+            return ! is_null($this->name);
+        } elseif ($this->auth_provider == 'facebook') {
+            return ! is_null($this->name) && ! empty($this->name);
         } else {
             return $this->name && $this->email;
         }
@@ -655,7 +705,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
             ->orderBy('id', 'desc')
             ->first();
 
-         return $privacy ? !($privacy->profile == 'public') : false;
+        return $privacy ? ! ($privacy->profile == 'public') : false;
     }
 
     /**
@@ -672,7 +722,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
     /**
      * Get Point Component balance
      *
-     * @param RewardComponent $component
+     * @param  RewardComponent  $component
      */
     public function getPointComponentBalance($component)
     {
@@ -684,8 +734,8 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
     /**
      * Get Is User Blocking User
      *
-     * @param User $user
-     * @return boolean
+     * @param  User  $user
+     * @return bool
      */
     public function isBlocking($user)
     {
@@ -695,7 +745,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
     /**
      * Unfollow a user
      *
-     * @param User $user
+     * @param  User  $user
      * @return void
      */
     public function unfollow($user)
