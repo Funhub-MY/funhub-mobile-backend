@@ -7,13 +7,13 @@ use App\Events\PurchasedMerchantOffer;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MerchantOfferClaimResource;
 use App\Http\Resources\MerchantOfferResource;
-use App\Models\OfferLimitWhitelist;
 use App\Http\Resources\PublicMerchantOfferResource;
 use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
+use App\Models\OfferLimitWhitelist;
 use App\Models\ShareableLink;
 use App\Models\Store;
 use App\Models\Transaction;
@@ -36,21 +36,23 @@ class MerchantOfferController extends Controller
 {
     use QueryBuilderTrait;
 
-    protected $pointService, $transactionService;
+    protected $pointService;
+
+    protected $transactionService;
 
     public function __construct()
     {
-        $this->pointService = new PointService();
-        $this->transactionService = new TransactionService();
+        $this->pointService = new PointService;
+        $this->transactionService = new TransactionService;
     }
 
     /**
      * Get Offers
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Merchant
+     *
      * @subgroup Merchant Offers
      *
      * @bodyParam category_ids array optional Merchant Category Ids to Filter. Example: [1, 2, 3]
@@ -82,7 +84,6 @@ class MerchantOfferController extends Controller
      *     "current_page": 1,
      *   }
      * }
-     *
      */
     public function index(Request $request)
     {
@@ -132,7 +133,7 @@ class MerchantOfferController extends Controller
             $merchant_offer_ids = str_replace(['[', ']', ' '], '', $request->merchant_offer_ids);
             $ids = explode(',', $merchant_offer_ids);
             $query->whereIn('id', $ids)
-                ->orderByRaw("FIELD(id," . implode(',', $ids) . ")");
+                ->orderByRaw('FIELD(id,'.implode(',', $ids).')');
         }
 
         if ($request->has('available_only')) {
@@ -158,7 +159,7 @@ class MerchantOfferController extends Controller
         // get offers by city
         if ($request->has('city')) {
             $query->whereHas('location', function ($query) use ($request) {
-                $query->where('city', 'like', '%' . $request->city . '%');
+                $query->where('city', 'like', '%'.$request->city.'%');
             });
         }
 
@@ -166,7 +167,7 @@ class MerchantOfferController extends Controller
         if ($request->has('state')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->whereHas('state', function ($q) use ($request) {
-                    $q->where('name', 'like', '%' . $request->state . '%');
+                    $q->where('name', 'like', '%'.$request->state.'%');
                 });
             });
         }
@@ -188,7 +189,7 @@ class MerchantOfferController extends Controller
                     ) + sin( radians(?) ) *
                     sin( radians( lat ) ) )
                     ) AS distance', [$request->lat, $request->lng, $request->lat])
-                    ->havingRaw("distance < ?", [$radius]);
+                    ->havingRaw('distance < ?', [$radius]);
             });
         }
 
@@ -205,16 +206,16 @@ class MerchantOfferController extends Controller
                         ->where('locatables.location_id', $locationId);
                 })
                 // Second condition: merchant offer's stores tagged with same location id
-                ->orWhereExists(function ($query) use ($locationId) {
-                    $query->select(DB::raw(1))
-                        ->from('merchant_offer_stores')
-                        ->join('locatables', function ($join) use ($locationId) {
-                            $join->on('locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
-                                ->where('locatables.locatable_type', '=', 'App\\Models\\Store')
-                                ->where('locatables.location_id', '=', $locationId);
-                        })
-                        ->whereRaw('merchant_offer_stores.merchant_offer_id = merchant_offers.id');
-                });
+                    ->orWhereExists(function ($query) use ($locationId) {
+                        $query->select(DB::raw(1))
+                            ->from('merchant_offer_stores')
+                            ->join('locatables', function ($join) use ($locationId) {
+                                $join->on('locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+                                    ->where('locatables.locatable_type', '=', 'App\\Models\\Store')
+                                    ->where('locatables.location_id', '=', $locationId);
+                            })
+                            ->whereRaw('merchant_offer_stores.merchant_offer_id = merchant_offers.id');
+                    });
             });
         }
 
@@ -249,6 +250,7 @@ class MerchantOfferController extends Controller
             } else {
                 $item->user_purchased_before_from_merchant = false;
             }
+
             return $item;
         });
 
@@ -260,13 +262,13 @@ class MerchantOfferController extends Controller
     /**
      * Get Point Discount for Offers
      *
-     * @param EloquentCollection $offersCollection
+     * @param  EloquentCollection  $offersCollection
      * @return EloquentCollection
      */
     protected function getPointDiscount($offersCollection)
     {
         $user = auth()->user();
-        $latestBalancePointsOfUser = cache()->remember('latestBalancePointsOfUser_' . $user->id, 5, function () use ($user) {
+        $latestBalancePointsOfUser = cache()->remember('latestBalancePointsOfUser_'.$user->id, 5, function () use ($user) {
             return $this->pointService->getBalanceOfUser($user);
         });
 
@@ -287,7 +289,6 @@ class MerchantOfferController extends Controller
     /**
      * Get User Purchased Before From Merchant Ids
      *
-     * @param $user
      * @return array
      */
     protected function getUserPurchasedBeforeFromMerchantIds($user)
@@ -297,7 +298,7 @@ class MerchantOfferController extends Controller
             // Check if the user belongs to the limit whitelist first if whitelisted, they can repeatedly buy any merchant offers
             $isWhitelisted = OfferLimitWhitelist::where('user_id', $user->id)->exists();
 
-            if (!$isWhitelisted) {
+            if (! $isWhitelisted) {
                 $merchantIds = MerchantOfferClaim::where('user_id', $user->id)
                     ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
                     ->where('created_at', '>=', now()->subDays(config('app.same_merchant_spend_limit_days')))
@@ -309,8 +310,8 @@ class MerchantOfferController extends Controller
                     ->unique()
                     ->toArray();
 
-                $merchantUserWhitelist = [28825,93716,94359,94361,94377,94515,94516,94519,94520,94521,94522,94552,94557,94561,94588,94589,94590,94591,94592,93761,94739,95133,95174,96126,96135,96142,96151,96870]; //Merchant Whitelist, user can view merchant offer after purchase
-                $userPurchasedBeforeFromMerchantIds = array_values(array_diff($userPurchasedBeforeFromMerchantIds, $merchantUserWhitelist));    
+                $merchantUserWhitelist = [28825, 93716, 94359, 94361, 94377, 94515, 94516, 94519, 94520, 94521, 94522, 94552, 94557, 94561, 94588, 94589, 94590, 94591, 94592, 93761, 94739, 95133, 95174, 96126, 96135, 96142, 96151, 96870]; //Merchant Whitelist, user can view merchant offer after purchase
+                $userPurchasedBeforeFromMerchantIds = array_values(array_diff($userPurchasedBeforeFromMerchantIds, $merchantUserWhitelist));
 
                 Log::info('User purchased before from merchant ids', [
                     'user_id' => $user->id,
@@ -326,17 +327,19 @@ class MerchantOfferController extends Controller
         return $userPurchasedBeforeFromMerchantIds;
     }
 
-
     /**
      * Get My Merchant Offers (Logged in User)
      *
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Merchant
+     *
      * @subgroup Merchant Offers
+     *
      * @urlParam is_redeemed number optional Filter by Redeemed. Example: 0/1
      * @urlParam is_expired number optional Filter by Expired. Example: 0/1
      * @urlParam claim_id integer optional Filter by Claim ID. Example: 1
+     *
      * @response scenario=success {
      * "data": []
      * }
@@ -354,7 +357,7 @@ class MerchantOfferController extends Controller
         if ($request->has('is_redeemed')) {
             if ($request->get('is_redeemed') == 1) { // true
                 $query->whereHas('redeem');
-            } else if ($request->get('is_redeemed') == 0) { // false
+            } elseif ($request->get('is_redeemed') == 0) { // false
                 $query->whereDoesntHave('redeem');
             }
         }
@@ -369,7 +372,7 @@ class MerchantOfferController extends Controller
                             ->whereRaw('CONCAT(DATE_ADD(DATE(merchant_offer_user.created_at), INTERVAL merchant_offers.expiry_days DAY), " 23:59:59") < NOW()');
                     });
                 });
-            } else if ($request->get('is_expired') == 0) { // false - non-expired offers
+            } elseif ($request->get('is_expired') == 0) { // false - non-expired offers
                 $query->whereHas('merchantOffer', function ($query) {
                     $query->where(function ($q) {
                         $q->whereRaw('DATE(merchant_offer_user.created_at) IS NOT NULL')
@@ -390,16 +393,18 @@ class MerchantOfferController extends Controller
     /**
      * Get Offer By ID
      *
-     * @param MerchantOffer $merchantOffer
+     * @param  MerchantOffer  $merchantOffer
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Merchant
+     *
      * @subgroup Merchant Offers
+     *
      * @queryParam offer_id integer required Offer ID. Example: 1
+     *
      * @response scenario=success {
      * "offer": {}
      * }
-     *
      */
     public function show($id)
     {
@@ -441,8 +446,8 @@ class MerchantOfferController extends Controller
                 'claims',
                 'categories',
                 'stores' => function ($query) {
-					$query->where('status', Store::STATUS_ACTIVE);
-				},
+                    $query->where('status', Store::STATUS_ACTIVE);
+                },
                 'stores.location',
                 'stores.storeRatings',
                 'claims',
@@ -462,7 +467,6 @@ class MerchantOfferController extends Controller
                 'unclaimedVouchers',
             ])->first();
 
-
         // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
         // eg. customer buy from Merchant A offer A today, they should not see Merchant A offer A for next 30 days
         $userPurchasedBeforeFromMerchantIds = $this->getUserPurchasedBeforeFromMerchantIds(auth()->user());
@@ -471,17 +475,19 @@ class MerchantOfferController extends Controller
         $offer->user_purchased_before_from_merchant = in_array($offer->user->id, $userPurchasedBeforeFromMerchantIds) ? true : false;
 
         $offer = $this->getPointDiscount(collect([$offer]))->first();
+
         return new MerchantOfferResource($offer);
     }
 
     /**
      * Claim Offer
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Merchant
+     *
      * @subgroup Merchant Offers
+     *
      * @bodyParam offer_id integer required Offer ID. Example: 1
      * @bodyParam quantity integer required Quantity. Example: 1
      * @bodyParam payment_method string required Payment Method. Example: points/fiat
@@ -489,9 +495,10 @@ class MerchantOfferController extends Controller
      * @bodyParam card_id integer required_if:fiat_payment_method,card Card ID. Example: 1
      * @bodyParam wallet_type string optional Wallet Type. Example: TNG/FPX-CIMB
      * @bodyParam channel string optional Channel. Example: app/funhub_web
-     * @bodyParam email string optional Email for web channel to fire purchased email after successful purchase. Example: john@email.com
+     * @bodyParam email string optional Saved on the user and used for checkout; verification is not required. Example: john@email.com
      * @bodyParam use_point_discount boolean optional Use Point(Funbox) Discount. Example: 1
      * @bodyParam points_to_use integer optional Points(Funbox) to Use. Example: 2
+     *
      * @response scenario=success {
      * "message": "Offer Claimed"
      * }
@@ -529,7 +536,11 @@ class MerchantOfferController extends Controller
             'use_point_discount' => 'nullable|boolean',
             'points_to_use' => 'nullable|required_if:use_point_discount,true|integer|exists:point_ledgers,id',
             'referral_code' => 'nullable|string',
+            'email' => 'nullable|email',
         ]);
+
+        $user = $request->user();
+        $user->saveEmailFromCheckout($request->input('email'));
 
         // check offer is still valid by checking available_at and available_until, available quantity check is at next statement
         $offer = MerchantOffer::where('id', request()->offer_id)
@@ -539,9 +550,9 @@ class MerchantOfferController extends Controller
             ->where('available_until', '>=', now())
             ->first();
 
-        if (!$offer) {
+        if (! $offer) {
             return response()->json([
-                'message' => __('messages.error.merchant_offer_controller.Offer_is_no_longer_valid')
+                'message' => __('messages.error.merchant_offer_controller.Offer_is_no_longer_valid'),
             ], 422);
         }
 
@@ -556,7 +567,6 @@ class MerchantOfferController extends Controller
             ], 422);
         }
 
-        $user = request()->user();
         $claim = null;
         $redemption_start_date = null;
         $redemption_end_date = null;
@@ -571,7 +581,7 @@ class MerchantOfferController extends Controller
                 ->orderBy('id', 'asc')
                 ->first();
 
-            if (!$voucher) {
+            if (! $voucher) {
                 return response()->json([
                     'message' => __('messages.error.merchant_offer_controller.Offer_is_sold_out'),
                 ], 422);
@@ -581,12 +591,12 @@ class MerchantOfferController extends Controller
             $userPointBalance = $this->pointService->getBalanceOfUser($user);
             if ($userPointBalance < $net_amount) {
                 return response()->json([
-                    'message' => __('messages.error.merchant_offer_controller.Insufficient_Point_Balance')
+                    'message' => __('messages.error.merchant_offer_controller.Insufficient_Point_Balance'),
                 ], 422);
             }
 
             // direct claim
-            $orderNo = 'C' . date('Ymd') . strtoupper(Str::random(5));
+            $orderNo = 'C'.date('Ymd').strtoupper(Str::random(5));
 
             $offer->claims()->attach($user->id, [
                 // order no is CLAIM(YMd)
@@ -600,7 +610,7 @@ class MerchantOfferController extends Controller
                 'tax' => 0,
                 'net_amount' => $net_amount,
                 'voucher_id' => $voucher->id,
-                'status' => MerchantOffer::CLAIM_SUCCESS // status set as 1 as right now the offer should be ready to claim.
+                'status' => MerchantOffer::CLAIM_SUCCESS, // status set as 1 as right now the offer should be ready to claim.
             ]);
             // update voucher owned_by_id to this user
             $voucher->update(['owned_by_id' => $user->id]);
@@ -620,7 +630,6 @@ class MerchantOfferController extends Controller
             $claim = MerchantOfferClaim::where('order_no', $orderNo)->first();
             $redemption_start_date = $claim->created_at;
             $redemption_end_date = $claim->created_at->addDays($offer->expiry_days)->endOfDay();
-
 
             /*
             $encrypted_data = $this->processEncrypt([
@@ -665,15 +674,8 @@ class MerchantOfferController extends Controller
                 ]);
             }
 
-        } else if ($request->payment_method == 'fiat') {
-            $channel = $request->has('channel') ? $request->channel : 'app';
+        } elseif ($request->payment_method == 'fiat') {
             // ------------------------------------ CASH (FPX/CARD/WALET) CHECKOUT ------------------------------------
-            // check if user has verified email address
-            if ($channel === 'app' && !$user->hasVerifiedEmail()) {
-                return response()->json([
-                    'message' => __('messages.error.merchant_offer_controller.Please_verify_your_email_address_first')
-                ], 422);
-            }
             $amount = (($offer->discounted_fiat_price) ?? $offer->fiat_price) * $request->quantity;
             $net_amount = (($offer->discounted_fiat_price) ?? $offer->fiat_price) * $request->quantity;
             $walletType = null;
@@ -705,13 +707,13 @@ class MerchantOfferController extends Controller
                 // make sure net amount is wlays using not discounted fiat_price
                 $net_amount = $offer->fiat_price & $request->quantity;
 
-                $pointService = new PointService();
+                $pointService = new PointService;
                 $latestBalancePointsOfUser = $pointService->getBalanceOfUser($user);
 
                 // check if user has enough points to use
                 if ($latestBalancePointsOfUser < $request->points_to_use) {
                     return response()->json([
-                        'message' => __('messages.error.merchant_offer_controller.Insufficient_Point_Balance')
+                        'message' => __('messages.error.merchant_offer_controller.Insufficient_Point_Balance'),
                     ], 422);
                 }
 
@@ -727,7 +729,7 @@ class MerchantOfferController extends Controller
                 $user->id,
                 ($walletType) ? $walletType : $request->fiat_payment_method,
                 $request->get('channel', 'app'),
-                $request->get('email', null),
+                $user->email,
                 $request->get('channel') === 'funhub_web' ? $request->get('name') : $user->name,
                 $request->get('referral_code'),
             );
@@ -741,7 +743,7 @@ class MerchantOfferController extends Controller
                     ->orderBy('id', 'asc')
                     ->first();
 
-                if (!$voucher) {
+                if (! $voucher) {
                     return response()->json([
                         'message' => __('messages.error.merchant_offer_controller.Offer_is_sold_out'),
                     ], 422);
@@ -766,7 +768,7 @@ class MerchantOfferController extends Controller
                     $user->id
                 );
 
-                $orderNo = 'CLAIM-' . date('Ymd') . strtoupper(Str::random(3));
+                $orderNo = 'CLAIM-'.date('Ymd').strtoupper(Str::random(3));
                 $offer->claims()->attach($user->id, [
                     // order no is CLAIM(YMd)
                     'order_no' => $orderNo,
@@ -780,7 +782,7 @@ class MerchantOfferController extends Controller
                     'net_amount' => $net_amount,
                     'voucher_id' => $voucher->id,
                     'transaction_no' => $transaction->transaction_no, // store transaction no for later use
-                    'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT // await payment claims
+                    'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT, // await payment claims
                 ]);
 
                 // update voucher owned_by_id to this user
@@ -796,38 +798,40 @@ class MerchantOfferController extends Controller
                 // Claim is not successful yet, return mpay data for app to redirect (post)
                 return response()->json([
                     'message' => __('messages.success.merchant_offer_controller.Redirect_to_Gateway'),
-                    'gateway_data' => $mpayData
+                    'gateway_data' => $mpayData,
                 ], 200);
             }
         }
 
         // refresh offer with latest data
         $offer->refresh();
+
         return response()->json([
             'message' => __('messages.success.merchant_offer_controller.Claimed_successfully'),
             'offer_claim_id' => $claim->id,
             'server_time' => Carbon::now(),
             'redemption_start_date' => $redemption_start_date,
             'redemption_end_date' => $redemption_end_date,
-            'offer' => new MerchantOfferResource($offer)
+            'offer' => new MerchantOfferResource($offer),
         ], 200);
     }
 
     public function getInstoreClaimLink(Request $request)
     {
         $this->validate($request, [
-            'offer_id' => 'required|exists:merchant_offers,id'
+            'offer_id' => 'required|exists:merchant_offers,id',
         ]);
     }
 
     /**
      * Get My Bookmarked Merchant Offers
      *
-     * @param Request $request
      * @return \Illuminate\Http\Response
      *
      * @group Merchant
+     *
      * @subgroup Merchant Offers
+     *
      * @bodyParam filter string Column to Filter. Example: Filterable columns are:  id, name, description, available_at, available_until, sku
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at
@@ -842,7 +846,6 @@ class MerchantOfferController extends Controller
      *     "current_page": 1,
      *   }
      * }
-     *
      */
     public function getMyBookmarkedMerchantOffers(Request $request)
     {
@@ -862,12 +865,14 @@ class MerchantOfferController extends Controller
     /**
      * Cancel a Merchant Offer Transaction
      *
-     * @param Request $request
      * @return void
      *
      * @group Merchant
+     *
      * @subgroup Merchant Offers
+     *
      * @bodyParam merchant_offer_id integer required Merchant Offer ID. Example: 1
+     *
      * @response scenario=success {
      * "message": "Transaction cancelled"
      * }
@@ -891,7 +896,7 @@ class MerchantOfferController extends Controller
         Log::info('[ProductController] User cancelled transaction, but status maintain PENDING, offer quantity still locked', ['offer' => $offer, 'user_id' => auth()->user()->id]);
 
         return response()->json([
-            'message' => __('messages.success.merchant_offer_controller.Transaction_cancelled')
+            'message' => __('messages.success.merchant_offer_controller.Transaction_cancelled'),
         ], 200);
         // if ($offer) {
         // // release quantity back to MerchantOffer
@@ -967,11 +972,12 @@ class MerchantOfferController extends Controller
      * Redeem a Merchant Offer (In-Store)
      * This is when customer with claimed merchant offer wishes to redeem in store
      *
-     * @param Request $request
      * @return \Illuminate\Http\Response
      *
      * @group Merchant
+     *
      * @subgroup Merchant Offers
+     *
      * @bodyParam claim_id integer required Claim ID. Example: 1
      * @bodyParam offer_id integer required Merchant Offer ID. Example: 1
      * @bodyParam quantity integer required Quantity to Redeem. Example: 1
@@ -998,9 +1004,9 @@ class MerchantOfferController extends Controller
                 $query->where('user_id', auth()->user()->id);
             })->first();
 
-        if (!$offer) {
+        if (! $offer) {
             return response()->json([
-                'message' => __('messages.error.merchant_offer_controller.You_have_not_claimed_this_offer')
+                'message' => __('messages.error.merchant_offer_controller.You_have_not_claimed_this_offer'),
             ], 422);
         }
 
@@ -1012,21 +1018,21 @@ class MerchantOfferController extends Controller
                 ->wherePivot('id', '=', $request->claim_id)
                 ->first();
 
-            if (!$userClaim) {
+            if (! $userClaim) {
                 return response()->json([
-                    'message' => __('messages.error.merchant_offer_controller.You_have_not_claimed_this_offer')
+                    'message' => __('messages.error.merchant_offer_controller.You_have_not_claimed_this_offer'),
                 ], 422);
             }
             Log::info('user claim', [
                 $userClaim->toArray(),
                 Carbon::parse($userClaim->pivot->created_at),
                 Carbon::parse($userClaim->pivot->created_at)->endOfDay()->addDays($offer->expiry_days),
-                Carbon::parse($userClaim->pivot->created_at)->endOfDay()->addDays($offer->expiry_days)->isPast()
+                Carbon::parse($userClaim->pivot->created_at)->endOfDay()->addDays($offer->expiry_days)->isPast(),
             ]);
 
             if (Carbon::parse($userClaim->pivot->created_at)->endOfDay()->addDays($offer->expiry_days)->isPast()) {
                 return response()->json([
-                    'message' => __('messages.error.merchant_offer_controller.This_offer_has_expired')
+                    'message' => __('messages.error.merchant_offer_controller.This_offer_has_expired'),
                 ], 422);
             }
         }
@@ -1038,9 +1044,9 @@ class MerchantOfferController extends Controller
             ->first();
 
         // already redeemed fully
-        if (!$claim || $claim->quantity < $request->quantity) {
+        if (! $claim || $claim->quantity < $request->quantity) {
             return response()->json([
-                'message' => __('messages.error.merchant_offer_controller.You_do_not_have_enough_to_redeem')
+                'message' => __('messages.error.merchant_offer_controller.You_do_not_have_enough_to_redeem'),
             ], 422);
         }
 
@@ -1048,29 +1054,29 @@ class MerchantOfferController extends Controller
             // if voucher dont have imported code, must provide redeem_code
             if (empty($claim->voucher->imported_code)) {
                 $this->validate($request, [
-                    'redeem_code' => 'required'
+                    'redeem_code' => 'required',
                 ]);
-                
+
                 $isValidMerchantCode = false;
-                
+
                 // Load the merchant relationship if not already loaded
                 $offer->load('user.merchant');
 
-                Log::info('Offer Redemption by User '. auth()->user()->id, [
+                Log::info('Offer Redemption by User '.auth()->user()->id, [
                     'offer_user' => $offer->user,
                     'merchant' => $offer->user->merchant,
                     'merchant_redeem_code' => $offer->user->merchant->redeem_code,
-                    'request_redeem_code' => $request->redeem_code
+                    'request_redeem_code' => $request->redeem_code,
                 ]);
-                
+
                 // Verify the redeem_code belongs to the merchant who owns this offer
-                if ($offer->user && $offer->user->merchant && $offer->user->merchant->redeem_code === (string)$request->redeem_code) {
+                if ($offer->user && $offer->user->merchant && $offer->user->merchant->redeem_code === (string) $request->redeem_code) {
                     $isValidMerchantCode = true;
                 }
 
-                if (!$isValidMerchantCode) {
+                if (! $isValidMerchantCode) {
                     return response()->json([
-                        'message' => __('messages.error.merchant_offer_controller.Invalid_merchant_redeem_code')
+                        'message' => __('messages.error.merchant_offer_controller.Invalid_merchant_redeem_code'),
                     ], 422);
                 }
             } else {
@@ -1078,8 +1084,9 @@ class MerchantOfferController extends Controller
             }
         } catch (\Exception $e) {
             Log::error('[MerchantOfferController] postRedeemOffer: Error validating voucher code', [$e->getMessage()]);
+
             return response()->json([
-                'message' => __('messages.error.merchant_offer_controller.You_do_not_have_enough_to_redeem')
+                'message' => __('messages.error.merchant_offer_controller.You_do_not_have_enough_to_redeem'),
             ], 422);
         }
 
@@ -1113,31 +1120,31 @@ class MerchantOfferController extends Controller
 
             if ($offer->user->email) {
                 $offer->user->notify(new VoucherRedeemedNotification($username, $userEmail, $offer->user->name, $offer));
-				Log::info('[MerchantOfferController] Notification email sent to merchant.');
-			} else {
-				Log::info('[MerchantOfferController] Redeem offer voucher, dont have offer user email.');
-			}
+                Log::info('[MerchantOfferController] Notification email sent to merchant.');
+            } else {
+                Log::info('[MerchantOfferController] Redeem offer voucher, dont have offer user email.');
+            }
         } catch (\Exception $e) {
-			Log::error('Error sending offer redeemed notification to merchant', [
-				'error' => $e->getMessage(),
-				'trace' => $e->getTraceAsString(),
-				'merchant_email' => $offer->user->email ?? 'null'
-			]);
-		}
+            Log::error('Error sending offer redeemed notification to merchant', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'merchant_email' => $offer->user->email ?? 'null',
+            ]);
+        }
 
         return response()->json([
             'message' => __('messages.success.merchant_offer_controller.Redeemed_Successfully'),
-            'offer' => new MerchantOfferResource($offer)
+            'offer' => new MerchantOfferResource($offer),
         ], 200);
     }
 
     /**
      * Web - Get Public Offers
      *
-     * @param Request $request
      * @return JsonResponse
      *
      * @group Merchant
+     *
      * @urlParam category_ids array optional Category Ids to Filter. Example: 1,2,3
      * @urlParam merchant_offer_ids array optional Merchant Offer Ids to Filter. Example: 1,2,3
      * @urlParam city string optional Filter by City. Example: Subang Jaya
@@ -1198,7 +1205,7 @@ class MerchantOfferController extends Controller
             $merchant_offer_ids = str_replace(['[', ']', ' '], '', $request->merchant_offer_ids);
             $ids = explode(',', $merchant_offer_ids);
             $query->whereIn('id', $ids)
-                ->orderByRaw("FIELD(id," . implode(',', $ids) . ")");
+                ->orderByRaw('FIELD(id,'.implode(',', $ids).')');
         }
 
         if ($request->has('available_only')) {
@@ -1224,7 +1231,7 @@ class MerchantOfferController extends Controller
         // get articles by city
         if ($request->has('city')) {
             $query->whereHas('location', function ($query) use ($request) {
-                $query->where('city', 'like', '%' . $request->city . '%');
+                $query->where('city', 'like', '%'.$request->city.'%');
             });
         }
 
@@ -1232,7 +1239,7 @@ class MerchantOfferController extends Controller
         if ($request->has('state')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->whereHas('state', function ($q) use ($request) {
-                    $q->where('name', 'like', '%' . $request->state . '%');
+                    $q->where('name', 'like', '%'.$request->state.'%');
                 });
             });
         }
@@ -1254,7 +1261,7 @@ class MerchantOfferController extends Controller
                     ) + sin( radians(?) ) *
                     sin( radians( lat ) ) )
                     ) AS distance', [$request->lat, $request->lng, $request->lat])
-                    ->havingRaw("distance < ?", [$radius]);
+                    ->havingRaw('distance < ?', [$radius]);
             });
         }
 
@@ -1296,12 +1303,13 @@ class MerchantOfferController extends Controller
     /**
      * Web - Get Single Public Offer
      *
-     * @param Request $request
      * @return JsonResponse
      *
      * @group Merchant
+     *
      * @urlParam id integer optional The id of the merchant offer. Example: 1
      * @urlParam sku string optional The id of the merchant offer. Example: ABC-1234
+     *
      * @response scenario=success {
      * "offer": {}
      * }
@@ -1325,7 +1333,7 @@ class MerchantOfferController extends Controller
                 ->first();
         }
 
-        if (!$offer) {
+        if (! $offer) {
             return response()->json(['message' => __('messages.error.merchant_offer_controller.Deal_not_found')], 404);
         }
 
@@ -1333,27 +1341,26 @@ class MerchantOfferController extends Controller
         $offer->unclaimed_vouchers_count = $offer->unclaimedVouchers()->count();
 
         return response()->json([
-            'offer' => new PublicMerchantOfferResource($offer)
+            'offer' => new PublicMerchantOfferResource($offer),
         ]);
     }
 
     /**
      * Get Merchant Offer Public
      *
-     * @param Request $request
      * @return void
      */
     public function getPublicOfferPublicView(Request $request)
     {
         $this->validate($request, [
-            'share_code' => 'required|string'
+            'share_code' => 'required|string',
         ]);
         // get merchant offer by ShareableLink
         $share = ShareableLink::where('link', $request->share_code)
             ->where('model_type', MerchantOffer::class)
             ->first();
 
-        if (!$share) {
+        if (! $share) {
             return abort(404);
         }
 
@@ -1363,23 +1370,23 @@ class MerchantOfferController extends Controller
             ->withCount(relations: 'unclaimedVouchers')
             ->first();
 
-        if (!$offer) {
+        if (! $offer) {
             return response()->json(['message' => __('messages.error.merchant_offer_controller.Deal_not_found')], 404);
         }
 
         // return user profile
         return response()->json([
-            'offer' => new PublicMerchantOfferResource($offer)
+            'offer' => new PublicMerchantOfferResource($offer),
         ]);
     }
 
     /**
      * Get Merchant Offers Nearby
      *
-     * @param Request $request
      * @return void
      *
      * @group Merchant
+     *
      * @subgroup Merchant Offers
      *
      * @queryParam  category_ids array optional Merchant Category Ids to Filter. Example: [1, 2, 3]
@@ -1407,7 +1414,7 @@ class MerchantOfferController extends Controller
             // City-based search remains the same...
             $query = MerchantOffer::query();
             $query->whereHas('location', function ($query) use ($request) {
-                $query->where('city', 'like', '%' . $request->city . '%');
+                $query->where('city', 'like', '%'.$request->city.'%');
             });
 
             // pass to query builder
@@ -1416,7 +1423,7 @@ class MerchantOfferController extends Controller
         } else {
             // step 1: get nearby offers using Algolia's geosearch
             $searchQuery = MerchantOffer::search('')->with([
-                'aroundLatLng' => $request->lat . ',' . $request->lng,
+                'aroundLatLng' => $request->lat.','.$request->lng,
                 'aroundRadius' => $radius * 1000,
                 'aroundPrecision' => 50,
                 'getRankingInfo' => true,
@@ -1427,11 +1434,12 @@ class MerchantOfferController extends Controller
 
             // step 2: apply additional filters
             $query = MerchantOffer::whereIn('id', $nearbyOfferIds)
-                ->orderByRaw("FIELD(id, " . implode(',', $nearbyOfferIds) . ") ASC");
+                ->orderByRaw('FIELD(id, '.implode(',', $nearbyOfferIds).') ASC');
             // pass to query builder
             $data = $this->merchantOfferQueryBuilder($query, $request)
                 ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         }
+
         return MerchantOfferResource::collection($data);
     }
 
@@ -1455,7 +1463,7 @@ class MerchantOfferController extends Controller
             $merchant_offer_ids = str_replace(['[', ']', ' '], '', $request->merchant_offer_ids);
             $ids = explode(',', $merchant_offer_ids);
             $query->whereIn('id', $ids)
-                ->orderByRaw("FIELD(id," . implode(',', $ids) . ")");
+                ->orderByRaw('FIELD(id,'.implode(',', $ids).')');
         }
 
         if ($request->has('available_only')) {
@@ -1481,7 +1489,7 @@ class MerchantOfferController extends Controller
         // get offers by city
         if ($request->has('city')) {
             $query->whereHas('location', function ($query) use ($request) {
-                $query->where('city', 'like', '%' . $request->city . '%');
+                $query->where('city', 'like', '%'.$request->city.'%');
             });
         }
 
@@ -1489,7 +1497,7 @@ class MerchantOfferController extends Controller
         if ($request->has('state')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->whereHas('state', function ($q) use ($request) {
-                    $q->where('name', 'like', '%' . $request->state . '%');
+                    $q->where('name', 'like', '%'.$request->state.'%');
                 });
             });
         }
@@ -1535,12 +1543,14 @@ class MerchantOfferController extends Controller
     /**
      * Get Last Purchase Date of user on a Merchant User
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Merchant
+     *
      * @subgroup Merchant Offers
+     *
      * @bodyParam merchant_user_id integer required Merchant User ID(merchant->user->id). Example: 1
+     *
      * @response scenario=success {
      * "last_purchase_offer_id": 1,
      * "last_purchase_date": "2023-08-01 12:00:00"
@@ -1549,7 +1559,7 @@ class MerchantOfferController extends Controller
     public function getLastPurchaseDateFromMerchantUser(Request $request)
     {
         $this->validate($request, [
-            'merchant_user_id' => 'required|exists:users,id'
+            'merchant_user_id' => 'required|exists:users,id',
         ]);
 
         // check any MerchantOfferClaims for this auth user has the merchant user
@@ -1564,12 +1574,12 @@ class MerchantOfferController extends Controller
         if ($claim) {
             return response()->json([
                 'last_purchase_offer_id' => $claim->merchant_offer_id,
-                'last_purchase_date' => $claim->created_at
+                'last_purchase_date' => $claim->created_at,
             ]);
         } else {
             return response()->json([
                 'last_purchase_offer_id' => null,
-                'last_purchase_date' => null
+                'last_purchase_date' => null,
             ]);
         }
     }
@@ -1577,14 +1587,16 @@ class MerchantOfferController extends Controller
     /**
      * Get Total Quantity of Purchased Offers by User
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Merchant
+     *
      * @subgroup Merchant Offers
+     *
      * @queryParam from_date string optional Filter by claims created from this date (Y-m-d format). Example: 2025-01-01
      * @queryParam to_date string optional Filter by claims created until this date (Y-m-d format). Example: 2025-01-16
      * @queryParam status integer optional Filter by claim status (1: Success, 2: Failed, 3: Awaiting Payment). Example: 1
+     *
      * @response scenario=success {
      *     "total_quantity": 10
      * }
@@ -1609,14 +1621,14 @@ class MerchantOfferController extends Controller
         $totalQuantity = $query->sum('quantity');
 
         return response()->json([
-            'total_quantity' => (int) $totalQuantity
+            'total_quantity' => (int) $totalQuantity,
         ]);
     }
 
     /**
      * Process Encrypt
      *
-     * @param array $data
+     * @param  array  $data
      * @return string
      */
     public function processEncrypt($data)
@@ -1634,7 +1646,7 @@ class MerchantOfferController extends Controller
 
             if ($encrypted_data === false) {
                 Log::error('Error encrypting data', [
-                    'error' => 'Encryption Failed - ' . openssl_error_string(),
+                    'error' => 'Encryption Failed - '.openssl_error_string(),
                     'data' => json_encode($data),
                 ]);
             }
@@ -1644,7 +1656,7 @@ class MerchantOfferController extends Controller
         } catch (\Exception $e) {
             Log::error('Error encrypting data', [
                 'error' => $e->getMessage(),
-                'data' => $data
+                'data' => $data,
             ]);
 
             return '';
