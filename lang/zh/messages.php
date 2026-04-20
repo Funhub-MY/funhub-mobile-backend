@@ -17,6 +17,7 @@ return [
             'OTP_sent' => 'OTP 已发送',
             'Profile_Updated_Email_verification_sent' => '个人资料已更新，邮件验证已发送',
             'Verification_Email_Sent' => '电邮验证已发送',
+            'Email_saved' => '电邮已保存',
             'Email_Verified' => '邮箱已验证',
             'Logged_out' => '退出登录',
             'Logged_in_successfully' => '成功登录',

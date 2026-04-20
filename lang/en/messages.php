@@ -17,6 +17,7 @@ return [
             'OTP_sent' => 'OTP sent',
             'Profile_Updated_Email_verification_sent' => 'Profile Updated, Email verification sent',
             'Verification_Email_Sent' => 'Verification Email Sent',
+            'Email_saved' => 'Email saved',
             'Email_Verified' => 'Email Verified',
             'Logged_out' => 'Logged out',
             'Logged_in_successfully' => 'Logged in successfully',
