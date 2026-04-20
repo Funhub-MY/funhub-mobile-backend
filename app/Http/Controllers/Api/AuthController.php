@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 use Kreait\Laravel\Firebase\Facades\Firebase;
 use Laravel\Socialite\Facades\Socialite;
@@ -528,7 +527,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Send Verification Email with Token Inside
+     * Save email for checkout (no verification email sent; same rules as purchase checkout).
      *
      * @return \Illuminate\Http\JsonResponse
      *
@@ -536,9 +535,9 @@ class AuthController extends Controller
      *
      * @authenticated
      *
-     * @bodyParam email string required You can pass in email address here if user decide to change it again. Example: john@example.com
+     * @bodyParam email string required Example: john@example.com
      *
-     * @response scenario=success {"message" : "Verification Email Sent"}
+     * @response scenario=success {"success": true, "message": "Email saved"}
      */
     public function postSendVerificationEmail(Request $request)
     {
@@ -548,44 +547,12 @@ class AuthController extends Controller
             'email' => 'required|email',
         ]);
 
-        $email = Str::lower(trim((string) $request->input('email')));
-        $request->merge(['email' => $email]);
+        $user->saveEmailFromCheckout($request->input('email'));
 
-        $currentNormalized = $user->email !== null
-            ? Str::lower(trim($user->email))
-            : null;
-        $isSameEmail = $currentNormalized !== null && $email === $currentNormalized;
-
-        if (! $isSameEmail) {
-            $this->validate($request, [
-                'email' => [
-                    'required',
-                    'email',
-                    Rule::unique('users', 'email')->ignore($user->id),
-                ],
-            ]);
-        }
-
-        // update login user email first (only clear verified_at when the address actually changes)
-        $user->update([
-            'email' => $email,
-            'email_verified_at' => $isSameEmail ? $user->email_verified_at : null,
-        ]);
-
-        // resend verification email
-        if (! $user->sendEmailVerificationNotification()) {
-            Log::error('[AuthController] Failed to send verification email', [
-                'user_id' => $user->id,
-                'email' => $user->email,
-                'endpoint' => 'POST /api/v1/user/send-email-verification',
-            ]);
-
-            return response()->json([
-                'message' => __('messages.error.auth_controller.Failed_to_send_verification_email'),
-            ], 422);
-        }
-
-        return response()->json(['message' => __('messages.success.auth_controller.Verification_Email_Sent')], 200);
+        return response()->json([
+            'success' => true,
+            'message' => __('messages.success.auth_controller.Email_saved'),
+        ], 200);
     }
 
     /**
