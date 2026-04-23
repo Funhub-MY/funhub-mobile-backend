@@ -20,8 +20,8 @@ class FunhubTitleLibraryUsersSeeder extends Seeder
 {
     private const CSV_RELATIVE_PATH = 'seeders/data/funhub_title_library_users.csv';
 
-    /** Synthetic domain so email_local values stay unique and valid; not for real mail. */
-    private const EMAIL_DOMAIN = 'funhub-seed.invalid';
+    /** Emails are `{email_local}@funhub.my` so each seed id stays unique. */
+    private const EMAIL_DOMAIN = 'funhub.my';
 
     public function run(): void
     {
