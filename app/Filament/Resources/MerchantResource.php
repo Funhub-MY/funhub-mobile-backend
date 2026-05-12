@@ -66,7 +66,7 @@ class MerchantResource extends Resource
         return parent::getEloquentQuery()
             ->withExists('autoLink')
             ->with([
-                'user' => static fn (Builder $q) => $q->select(['id', 'name']),
+                'user' => static fn (Relation $q) => $q->select(['id', 'name']),
             ])
             ->orderBy('status', 'asc')
             ->orderBy('created_at', 'desc');
