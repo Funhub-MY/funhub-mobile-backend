@@ -16,7 +16,11 @@ class Merchant extends BaseModel implements HasMedia, Auditable
     use HasFactory, InteractsWithMedia, \OwenIt\Auditing\Auditable, Searchable;
 
     protected $guarded = ['id'];
-    protected $appends = ['has_auto_linked_user'];
+
+    /**
+     * Not in $appends: appending triggered an EXISTS query per model during Filament listings.
+     * Use MerchantResource::getEloquentQuery() withExists('autoLink') and read via accessor, or set explicitly when needed.
+     */
 
     const MEDIA_COLLECTION_NAME = 'merchant_logos';
     const MEDIA_COLLECTION_NAME_PHOTOS = 'merchant_photos';
@@ -166,8 +170,12 @@ class Merchant extends BaseModel implements HasMedia, Auditable
         $query->where($this->getTable() . '.status', self::STATUS_APPROVED);
     }
 
-    public function getHasAutoLinkedUserAttribute()
+    public function getHasAutoLinkedUserAttribute(): bool
     {
+        if (array_key_exists('auto_link_exists', $this->attributes)) {
+            return (bool) $this->attributes['auto_link_exists'];
+        }
+
         return $this->autoLink()->exists();
     }
 }

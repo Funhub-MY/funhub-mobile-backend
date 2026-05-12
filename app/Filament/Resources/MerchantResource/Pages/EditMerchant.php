@@ -26,6 +26,9 @@ class EditMerchant extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
+        // has_auto_linked_user is no longer $appended on Merchant (listing N+1); set for form visibility.
+        $data['has_auto_linked_user'] = $this->record->has_auto_linked_user;
+
 		$this->originalKocUserId = $data['koc_user_id'] ?? null;
 		Log::info('Original KOC User ID: ', ['originalKocUserId' => $this->originalKocUserId]);
 

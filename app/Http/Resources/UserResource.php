@@ -2,13 +2,11 @@
 
 namespace App\Http\Resources;
 
-use App\Models\FollowRequest;
-use App\Models\User;
 use App\Models\Setting;
+use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 
 class UserResource extends JsonResource
 {
@@ -18,7 +16,7 @@ class UserResource extends JsonResource
     {
         parent::__construct($resource);
         $this->isAuthUser = $isAuthUser;
-	}
+    }
 
     /**
      * The "data" wrapper that should be applied.
@@ -52,7 +50,7 @@ class UserResource extends JsonResource
         }
 
         $tutorialSteps = Config::get('app.tutorial_steps', []);
-        
+
         // check override setting from cache, if not exists, get from DB and cache it
         $overrideAllTutorials = Cache::remember('setting_override_all_tutorial_completed', 3600, function () {
             return Setting::where('key', 'override_all_tutorial_completed')->value('value') === 'true';
@@ -63,33 +61,33 @@ class UserResource extends JsonResource
         $tutorialProgress = array_map(function ($step) use ($completedSteps, $overrideAllTutorials) {
             return [
                 'step' => $step,
-                'completed' => $overrideAllTutorials ? true : in_array($step, $completedSteps)
+                'completed' => $overrideAllTutorials ? true : in_array($step, $completedSteps),
             ];
         }, $tutorialSteps);
 
-		$currentUser = $request->user();
-		$isFollowing = false;
-		$hasRequestedFollow = false;
+        $currentUser = $request->user();
+        $isFollowing = false;
+        $hasRequestedFollow = false;
 
-		if ($currentUser) {
-			// Check if the current user is already a follower
-			$isFollowing = $this->resource->followers->contains($currentUser->id);
+        if ($currentUser) {
+            // Check if the current user is already a follower
+            $isFollowing = $this->resource->followers->contains($currentUser->id);
 
-			// If already a follower, set has_requested_follow to false
-			if ($isFollowing) {
-				$hasRequestedFollow = false;
-			} else {
-				// Otherwise, check for follow requests
-				$hasRequestedFollow = $this->resource->beingFollowedRequests->contains('user_id', $currentUser->id);
-			}
-		}
+            // If already a follower, set has_requested_follow to false
+            if ($isFollowing) {
+                $hasRequestedFollow = false;
+            } else {
+                // Otherwise, check for follow requests
+                $hasRequestedFollow = $this->resource->beingFollowedRequests->contains('user_id', $currentUser->id);
+            }
+        }
 
         return [
             'id' => $this->id,
             'name' => $name,
             'username' => $username,
             'email' => $this->email,
-            'verified_email' => $this->hasVerifiedEmail(),
+            'verified_email' => $this->verifiedEmailForApi(),
             'phone_country_code' => $this->phone_country_code,
             'phone_no' => $this->phone_no,
             'auth_provider' => $this->auth_provider,
@@ -105,10 +103,10 @@ class UserResource extends JsonResource
             'has_avatar' => $this->hasMedia('avatar'),
             'point_balance' => $this->point_balance,
             'unread_notifications_count' => $this->unreadNotifications()->count(),
-			'is_following' => $isFollowing,
-			'has_requested_follow' => $hasRequestedFollow,
-//            'is_following' => ($request->user()) ? $this->resource->followers->contains($request->user()->id) : false,
-//            'has_requested_follow' => ($request->user()) ? $this->resource->beingFollowedRequests->contains('user_id', $request->user()->id) : false,
+            'is_following' => $isFollowing,
+            'has_requested_follow' => $hasRequestedFollow,
+            //            'is_following' => ($request->user()) ? $this->resource->followers->contains($request->user()->id) : false,
+            //            'has_requested_follow' => ($request->user()) ? $this->resource->beingFollowedRequests->contains('user_id', $request->user()->id) : false,
             'is_profile_private' => $this->profile_is_private,
             'account_restricted' => ($this->account_restricted == 1) ? true : false,
             'account_restricted_until' => $this->account_restricted_until,

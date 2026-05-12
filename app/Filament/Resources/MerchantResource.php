@@ -63,13 +63,13 @@ class MerchantResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery();
-
-        $query
-        ->orderBy('status', 'asc')
-        ->orderBy('created_at', 'desc');
-
-        return $query;
+        return parent::getEloquentQuery()
+            ->withExists('autoLink')
+            ->with([
+                'user' => static fn (Builder $q) => $q->select(['id', 'name']),
+            ])
+            ->orderBy('status', 'asc')
+            ->orderBy('created_at', 'desc');
     }
 
     public static function form(Form $form): Form

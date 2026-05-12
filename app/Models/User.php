@@ -97,6 +97,14 @@ class User extends Authenticatable implements Auditable, FilamentUser, HasMedia
     }
 
     /**
+     * Mobile API: treat as verified when an email is present (verification UI bypassed for checkout flows).
+     */
+    public function verifiedEmailForApi(): bool
+    {
+        return filled($this->email);
+    }
+
+    /**
      * Persist an email from a purchase/checkout request without requiring verification.
      */
     public function saveEmailFromCheckout(?string $email): void
@@ -113,10 +121,19 @@ class User extends Authenticatable implements Auditable, FilamentUser, HasMedia
             ]);
         }
 
+        $verifiedAt = now();
+
         $current = $this->email !== null ? Str::lower(trim($this->email)) : null;
         if ($current === $normalized) {
+            $updates = [];
             if ($this->email !== $normalized) {
-                $this->forceFill(['email' => $normalized])->save();
+                $updates['email'] = $normalized;
+            }
+            if ($this->email_verified_at === null) {
+                $updates['email_verified_at'] = $verifiedAt;
+            }
+            if ($updates !== []) {
+                $this->forceFill($updates)->save();
             }
 
             return;
@@ -136,7 +153,7 @@ class User extends Authenticatable implements Auditable, FilamentUser, HasMedia
 
         $this->forceFill([
             'email' => $normalized,
-            'email_verified_at' => null,
+            'email_verified_at' => $verifiedAt,
         ])->save();
     }
 

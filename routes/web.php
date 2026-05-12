@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PaymentController;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 use Kreait\Laravel\Firebase\Facades\Firebase;
@@ -45,7 +46,9 @@ Route::post('/card-tokenization/return', [PaymentController::class, 'cardTokeniz
 
 // any route other than /s redirect to /admin/login
 Route::get('/{any}', function () {
-    return redirect()->to('/admin/login');
+    // Use RedirectResponse directly: when Livewire has rebound `redirect`, `redirect()->to()`
+    // returns Livewire\Redirector (no `send()`), which breaks the HTTP kernel.
+    return new RedirectResponse(url('/admin/login'));
 })->where('any', '^((?!s).)*$');
 
 // TODO:: routes below can be deleted once flutter end finish login implementation.
@@ -57,7 +60,7 @@ Route::get('/get/google-access-token', function () {
 Route::get('/login/google_provider', [\App\Http\Controllers\Api\AuthController::class, 'redirectToGoogle']);
 // this call back is use for socialite callback only for unit test. not using at any place.
 Route::get('/auth/facebook/callback', function () {
-    return redirect()->to('/admin/login');
+    return new RedirectResponse(url('/admin/login'));
 });
 // this call back is use for socialite callback only for unit test. not using at any place.
 Route::get('/auth/google/callback', [\App\Http\Controllers\Api\AuthController::class, 'googleCallBack']);

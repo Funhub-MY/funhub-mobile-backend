@@ -6,7 +6,6 @@ use App\Models\FollowRequest;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Log;
 
 class FollowRequestResource extends JsonResource
 {
@@ -16,7 +15,7 @@ class FollowRequestResource extends JsonResource
     {
         parent::__construct($resource);
         $this->isAuthUser = $isAuthUser;
-	}
+    }
 
     /**
      * The "data" wrapper that should be applied.
@@ -55,27 +54,27 @@ class FollowRequestResource extends JsonResource
         $tutorialProgress = array_map(function ($step) use ($completedSteps) {
             return [
                 'step' => $step,
-                'completed' => in_array($step, $completedSteps)
+                'completed' => in_array($step, $completedSteps),
             ];
         }, $tutorialSteps);
 
-		$currentUser = $request->user();
-		$isFollowing = false;
-		$hasRequestedFollow = false;
+        $currentUser = $request->user();
+        $isFollowing = false;
+        $hasRequestedFollow = false;
 
-		$isFollowing = $this->resource->followers->contains($currentUser->id);
+        $isFollowing = $this->resource->followers->contains($currentUser->id);
 
-		$hasRequestedFollow = FollowRequest::where('following_id', $currentUser->id)
-					->where('user_id', $this->id)
-					->where('accepted', false)
-					->exists();
+        $hasRequestedFollow = FollowRequest::where('following_id', $currentUser->id)
+            ->where('user_id', $this->id)
+            ->where('accepted', false)
+            ->exists();
 
         return [
             'id' => $this->id,
             'name' => $name,
             'username' => $username,
             'email' => $this->email,
-            'verified_email' => $this->hasVerifiedEmail(),
+            'verified_email' => $this->verifiedEmailForApi(),
             'phone_country_code' => $this->phone_country_code,
             'phone_no' => $this->phone_no,
             'auth_provider' => $this->auth_provider,
@@ -91,10 +90,10 @@ class FollowRequestResource extends JsonResource
             'has_avatar' => $this->hasMedia('avatar'),
             'point_balance' => $this->point_balance,
             'unread_notifications_count' => $this->unreadNotifications()->count(),
-			'is_following' => $isFollowing,
-			'has_requested_follow' => $hasRequestedFollow,
-//            'is_following' => ($request->user()) ? $this->resourcbeingFollowedRequestse->followers->contains($request->user()->id) : false,
-//            'has_requested_follow' => ($request->user()) ? $this->resource->->contains('user_id', $request->user()->id) : false,
+            'is_following' => $isFollowing,
+            'has_requested_follow' => $hasRequestedFollow,
+            //            'is_following' => ($request->user()) ? $this->resourcbeingFollowedRequestse->followers->contains($request->user()->id) : false,
+            //            'has_requested_follow' => ($request->user()) ? $this->resource->->contains('user_id', $request->user()->id) : false,
             'is_profile_private' => $this->profile_is_private,
             'dob' => $this->when($this->isAuthUser, $this->dob),
             'gender' => $this->when($this->isAuthUser, $this->gender),
