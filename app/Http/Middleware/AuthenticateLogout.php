@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,8 +22,12 @@ class AuthenticateLogout
             if (Auth::check()) {
                 Auth::logout();
                 $request->session()->invalidate();
-                
-                return redirect()->route('filament.auth.login')->with('error', 'You have been logged out due to unauthorized access.');
+
+                $redirect = new RedirectResponse(route('filament.auth.login'));
+                $redirect->setSession($request->session());
+                $redirect->setRequest($request);
+
+                return $redirect->with('error', 'You have been logged out due to unauthorized access.');
             }
         }
 

@@ -362,7 +362,10 @@ class MerchantRegister extends Component implements HasForms
 
         if ($user && $merchant) {
             session()->flash('message', 'Your Merchant Account has been created. Please await our admins to approve your account and once approved you will received the instructions to login. Thank you!');
-            return redirect()->route('merchant.register');
+            // Do not use redirect()->route() here: Livewire swaps `redirect` and returns Redirector, not a Response.
+            $this->redirectRoute('merchant.register');
+
+            return;
         }
 
     }

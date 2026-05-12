@@ -467,11 +467,11 @@ class MissionService
                 ->orderByDesc('missions_users.id')
                 ->first();
 
-            Log::info('Mission status after update', [
-                'mission_id' => $mission->id,
-                'mission_data' => $mission,
+            //Log::info('Mission status after update', [
+                //'mission_id' => $mission->id,
+                //'mission_data' => $mission,
                 //'usermission_data' => $userMission
-            ]);
+            //]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update mission progress', [
