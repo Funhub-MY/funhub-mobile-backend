@@ -25,7 +25,6 @@ use Filament\Resources\Pages\CreateRecord;
 use App\Notifications\MerchantOnboardEmail;
 use App\Filament\Resources\MerchantResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Filament\Resources\MerchantResource\RelationManagers;
 use App\Filament\Resources\MerchantResource\RelationManagers\StoresRelationManager;
 use App\Models\Store;
@@ -66,7 +65,8 @@ class MerchantResource extends Resource
         return parent::getEloquentQuery()
             ->withExists('autoLink')
             ->with([
-                'user' => static fn (Relation $q) => $q->select(['id', 'name']),
+                // Eager-load constraint receives a Relation (e.g. BelongsTo), not Eloquent\Builder.
+                'user' => static fn ($query) => $query->select(['id', 'name']),
             ])
             ->orderBy('status', 'asc')
             ->orderBy('created_at', 'desc');
