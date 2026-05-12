@@ -3,34 +3,18 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Previously logged the user out on any HTTP 403 response. That is incorrect:
+ * 403 means "authenticated but not allowed for this action" (e.g. Filament policy / abort_unless),
+ * not a broken session. Treating it as logout sent users back to the login page when opening
+ * resources they were forbidden to see (e.g. Merchants list for non-super_admin).
+ */
 class AuthenticateLogout
 {
     public function handle(Request $request, Closure $next)
     {
-
-        $response = $next($request);
-
-        // Ensure user is authenticated before logging out
-        if ($response->getStatusCode() === Response::HTTP_FORBIDDEN) {
-
-            // Prevent infinite redirect loop
-            if (Auth::check()) {
-                Auth::logout();
-                $request->session()->invalidate();
-
-                $redirect = new RedirectResponse(route('filament.auth.login'));
-                $redirect->setSession($request->session());
-                $redirect->setRequest($request);
-
-                return $redirect->with('error', 'You have been logged out due to unauthorized access.');
-            }
-        }
-
-        return $response;
+        return $next($request);
     }
 }

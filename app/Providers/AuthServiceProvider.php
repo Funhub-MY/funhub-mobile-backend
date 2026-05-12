@@ -18,6 +18,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // ModelsAudit::class => App\Providers\AuditPolicy::class,
+        \App\Models\Merchant::class => \App\Policies\MerchantPolicy::class,
     ];
 
     /**
