@@ -65,8 +65,15 @@ class Kernel extends ConsoleKernel
         $schedule->command('generate:article-views')->everyTwoHours()->onOneServer();
         $schedule->command('update:scheduled-views')->everyTwoHours()->onOneServer();
 
-        // Daily
-        $schedule->command('telescope:prune')->daily()->onOneServer();
+        // Daily — wipe Telescope in dev; prune stale rows elsewhere
+        $schedule->command('telescope:clear')
+            ->daily()
+            ->environments(['local', 'development', 'dev'])
+            ->onOneServer();
+        $schedule->command('telescope:prune')
+            ->daily()
+            ->when(fn () => ! app()->environment(['local', 'development', 'dev']))
+            ->onOneServer();
         $schedule->command('notifications:prune --days=30')->dailyAt('02:45')->onOneServer();
         
         // Mixpanel Data Sync
