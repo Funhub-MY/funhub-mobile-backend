@@ -8,8 +8,6 @@ use Laravel\Scout\ModelObserver;
 
 trait ImportsFunhubCsvUsers
 {
-    private const EMAIL_DOMAIN = 'funhub.my';
-
     /**
      * Import users from a CSV with columns display_name, username, email_local (or full email), phone_no, country_code.
      *
@@ -169,7 +167,12 @@ trait ImportsFunhubCsvUsers
             return $emailCell;
         }
 
-        return $emailCell.'@'.self::EMAIL_DOMAIN;
+        return $emailCell.'@'.$this->funhubCsvEmailDomain();
+    }
+
+    private function funhubCsvEmailDomain(): string
+    {
+        return 'funhub.my';
     }
 
     /**
