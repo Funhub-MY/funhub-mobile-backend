@@ -68,9 +68,8 @@ class GeneratePromotionCodesJob implements ShouldQueue
             $rewardable_id = null;
             $quantity = null;
 
-            // Only process reward data if not using fix amount discount
-            if (!($this->groupData['use_fix_amount_discount'] ?? false)) {
-                // rewards data
+            // Only process reward data for reward-type discounts
+            if (($this->groupData['discount_type'] ?? null) === 'reward') {
                 $rewardable_type = $this->groupData['rewardable_type'] ?? null;
                 $rewardable_id = $this->groupData['rewardable_id'] ?? null;
                 $quantity = $this->groupData['quantity'] ?? null;
@@ -116,7 +115,16 @@ class GeneratePromotionCodesJob implements ShouldQueue
 
             // Generate Static code created by user
             if ($this->groupData['code_type'] === 'static') {
-                $code = $this->groupData['static_code'];
+                $code = $this->groupData['static_code'] ?? null;
+
+                if (blank($code)) {
+                    Log::error('[GeneratePromotionCodesJob] Static code is missing', [
+                        'promotion_code_group_id' => $this->group->id,
+                    ]);
+
+                    return;
+                }
+
                 $codeQuantity = $this->groupData['total_codes'] ?? 1;
 
                 DB::table('promotion_codes')->insert([

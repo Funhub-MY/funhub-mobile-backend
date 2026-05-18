@@ -70,6 +70,7 @@ class PromotionCodeGroupResource extends Resource
 
 								Forms\Components\TextInput::make('static_code')
 									->label('Code')
+									->dehydrated(fn (callable $get) => $get('code_type') === 'static')
 									->helperText(function ($livewire) {
 										if ($livewire instanceof Pages\EditPromotionCodeGroup && $livewire->record?->hasUserRedemptions()) {
 											return 'This code cannot be edited because it has already been redeemed by users.';
@@ -160,6 +161,7 @@ class PromotionCodeGroupResource extends Resource
 									->label('Discount Amount')
 									->numeric()
 									->minValue(0)
+									->dehydrated(fn (callable $get) => $get('discount_type') === 'fix_amount')
 									->visible(fn (callable $get) => $get('discount_type') === 'fix_amount')
 									->required(fn (callable $get) => $get('discount_type') === 'fix_amount')
 									->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup),
@@ -176,6 +178,7 @@ class PromotionCodeGroupResource extends Resource
                                     ->label('Reward Quantity')
                                     ->helperText('How many rewards to give when code is redeemed')
 									->visible(fn (callable $get) => $get('discount_type') === 'reward')
+									->dehydrated(fn (callable $get) => $get('discount_type') === 'reward')
 									->numeric()
                                     ->default(1)
                                     ->required(fn ($livewire) => $livewire instanceof Pages\CreatePromotionCodeGroup)
@@ -183,11 +186,11 @@ class PromotionCodeGroupResource extends Resource
 
 								Forms\Components\TextInput::make('min_spend_amount')
 									->label('Min Spend Amount (RM)')
-									->helperText('Minimum spend amount required to redeem this code')
+									->helperText('Minimum spend amount required to redeem this code (must be greater than discount amount)')
 									->numeric()
 									->visible(fn(callable $get) => $get('discount_type') === 'fix_amount')
 									->required(fn(callable $get) => $get('discount_type') === 'fix_amount')
-									->default(0)
+									->dehydrated(fn (callable $get) => $get('discount_type') === 'fix_amount')
 									->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup)
 									->rule(function (callable $get) {
 										return function (string $attribute, $value, $fail) use ($get) {
