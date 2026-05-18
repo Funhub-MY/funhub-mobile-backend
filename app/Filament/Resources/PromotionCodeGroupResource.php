@@ -69,15 +69,32 @@ class PromotionCodeGroupResource extends Resource
                                     ->required(),
 
 								Forms\Components\TextInput::make('static_code')
-									->label('Code')->helperText('Custom Code')
+									->label('Code')
+									->helperText(function ($livewire) {
+										if ($livewire instanceof Pages\EditPromotionCodeGroup && $livewire->record?->hasUserRedemptions()) {
+											return 'This code cannot be edited because it has already been redeemed by users.';
+										}
+
+										return 'Custom Code';
+									})
 									->minLength(8)
 									->maxLength(12)
-									->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup)
+									->disabled(fn ($livewire) => $livewire instanceof Pages\EditPromotionCodeGroup && $livewire->record?->hasUserRedemptions())
 									->visible(fn(callable $get) => $get('code_type') === 'static')
 									->required(fn(callable $get) => $get('code_type') === 'static')
 									->rules([
 										fn ($livewire) => function (string $attribute, $value, \Closure $fail) use ($livewire) {
 											if (!$value) return; // Skip if empty
+
+											if ($livewire instanceof Pages\EditPromotionCodeGroup && $livewire->record?->hasUserRedemptions()) {
+												$currentCode = \App\Models\PromotionCode::where('promotion_code_group_id', $livewire->record->id)
+													->value('code');
+
+												if ($currentCode && strtoupper($value) !== strtoupper($currentCode)) {
+													$fail('This promo code cannot be changed because it has already been redeemed by users.');
+													return;
+												}
+											}
 
 											$query = \App\Models\PromotionCode::where('code', $value);
 

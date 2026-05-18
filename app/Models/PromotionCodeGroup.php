@@ -83,4 +83,17 @@ class PromotionCodeGroup extends Model implements Auditable
             ($this->campaign_from === null || $now->gte($this->campaign_from)) &&
             ($this->campaign_until === null || $now->lte($this->campaign_until));
     }
+
+    public function hasUserRedemptions(): bool
+    {
+        return $this->promotionCodes()
+            ->where(function ($query) {
+                $query->where('used_code_count', '>', 0)
+                    ->orWhere('is_redeemed', true);
+            })
+            ->exists()
+            || $this->promotionCodes()
+                ->whereHas('users')
+                ->exists();
+    }
 }
