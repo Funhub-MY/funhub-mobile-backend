@@ -540,17 +540,95 @@ class StoreController extends Controller
     public function getStoreByLocationId(Request $request)
     {
         $this->validate($request, [
-            'location_id' => 'required',
+            'location_id' => 'required|integer',
+            'store_id' => 'sometimes|integer|exists:stores,id',
         ]);
 
-        $location = Location::where('id', $request->location_id)->first();
+        $location = Location::find($request->location_id);
         if (!$location) {
             return response()->json(['message' => 'Location not found'], 404);
         }
 
-        $stores = $location->stores()->paginate(config('app.paginate_per_page'));
+        // morphedByMany only returns Store rows (locatable_type = App\Models\Store).
+        // Articles on the same location_id are ignored — but multiple stores can share one location.
+        $query = Store::whereHas('location', function ($q) use ($location) {
+            $q->where('locations.id', $location->id);
+        })
+            ->where('stores.status', Store::STATUS_ACTIVE);
+
+        if ($request->filled('store_id')) {
+            $query->where('stores.id', $request->store_id);
+        }
+
+        $query
+            ->orderByRaw('CASE WHEN stores.merchant_id IS NOT NULL THEN 0 ELSE 1 END')
+            ->orderByRaw('CASE WHEN stores.name = ? THEN 0 ELSE 1 END', [$location->name])
+            ->orderByDesc('stores.id');
+
+        $query = $this->applyStoreApiRelations($query);
+
+        $stores = $query->paginate($request->input('limit', config('app.paginate_per_page')));
+
+        $this->hydrateStoreArticlesFromLocation($stores);
 
         return StoreResource::collection($stores);
+    }
+
+    /**
+     * Eager loads and counts required by StoreResource.
+     */
+    protected function applyStoreApiRelations($query)
+    {
+        return $query->with([
+            'merchant',
+            'merchant.media',
+            'storeRatings' => function ($query) {
+                $query->whereHas('user', function ($q) {
+                    $q->where('status', '!=', User::STATUS_ARCHIVED);
+                });
+            },
+            'location',
+            'location.articles' => function ($query) {
+                $query->published()
+                    ->public()
+                    ->latest();
+            },
+            'location.articles.media',
+            'location.ratings',
+            'interactions',
+            'categories',
+            'parentCategories',
+            'media',
+        ])->withCount([
+            'storeRatings as store_ratings_count' => function ($query) {
+                $query->whereHas('user', function ($q) {
+                    $q->where('status', '!=', User::STATUS_ARCHIVED);
+                })
+                    ->select(DB::raw('COUNT(DISTINCT user_id)'));
+            },
+            'availableMerchantOffers',
+        ]);
+    }
+
+    /**
+     * @param \Illuminate\Contracts\Pagination\LengthAwarePaginator $stores
+     */
+    protected function hydrateStoreArticlesFromLocation($stores): void
+    {
+        $stores->getCollection()->transform(function ($store) {
+            $storeLocation = $store->location->first();
+            if ($storeLocation && $storeLocation->relationLoaded('articles')) {
+                $store->articles = $storeLocation->articles;
+                $store->location_ratings_count = $storeLocation->relationLoaded('ratings')
+                    ? $storeLocation->ratings->count()
+                    : 0;
+            } else {
+                $store->articles = null;
+                $store->location_ratings_count = 0;
+            }
+
+            return $store;
+        });
     }
 
     /**
