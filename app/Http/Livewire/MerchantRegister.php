@@ -208,7 +208,7 @@ class MerchantRegister extends Component implements HasForms
         //     $company_logo_livewire_tmp = array_values($data['company_logo'])[0];
         //     Log::info($company_logo_livewire_tmp);
         //     Log::info('[MerchantOnboarding] Company logo upload: ' . $company_logo_livewire_tmp->getRealPath());
-        //     $merchant->addMediaFromDisk($company_logo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+        //     $merchant->addMediaFromDisk($company_logo_livewire_tmp->getRealPath(), storage_public_disk())
         //         ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME);
         // } catch (\Exception $e) {
         //     Log::error('[MerchantOnboarding] Company logo upload failed: ' . $e->getMessage());
@@ -221,11 +221,11 @@ class MerchantRegister extends Component implements HasForms
         //         $company_photo_livewire_tmp = $company_photo;
         //         Log::info($company_photo_livewire_tmp);
         //         Log::info('[MerchantOnboarding] Company photo upload: ' . $company_photo_livewire_tmp->getRealPath());
-        //         $merchant->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+        //         $merchant->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), storage_public_disk())
         //             ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
 
         //         // also add to store photos
-        //         // $store->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+        //         // $store->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), storage_public_disk())
         //         //     ->toMediaCollection(Store::MEDIA_COLLECTION_PHOTOS);
         //     }
         // } catch (\Exception $e) {

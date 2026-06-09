@@ -9,6 +9,7 @@ use App\Models\Country;
 use App\Models\Location;
 use App\Models\State;
 use App\Models\Store;
+use App\Services\LocationStoreLinker;
 use Illuminate\Http\Request;
 use App\Http\Resources\StoreRatingResource;
 use Illuminate\Support\Facades\Log;
@@ -272,48 +273,7 @@ class LocationController extends Controller
             'rating' => $request->rating
         ]);
 
-        // find store that has this location as primary location
-        $store = Store::whereHas('location', function ($query) use ($location) {
-            $query->where('locations.id', $location->id);
-        })->first();
-
-        if (!$store) {
-            // create new store with same name as location
-            Log::info('[LocationController] Creating store for location: ' . $location->name);
-
-            $status = Store::STATUS_ACTIVE;
-            // if full address starts with Lorong, Jalan or Street then set to unlisted first
-            $smallLetterAddress = trim(strtolower($location->name));
-            if (str_starts_with($smallLetterAddress, 'lorong') || str_starts_with($smallLetterAddress, 'jalan') || str_starts_with($smallLetterAddress, 'street')) {
-                $status = Store::STATUS_INACTIVE;
-            }
-
-            // create store
-            $store = Store::create([
-                'user_id' => null,
-                'name' => $location->name,
-                'manager_name' => null,
-                'business_phone_no' => null,
-                'business_hours' => null,
-                'address' => $location->full_address,
-                'address_postcode' => $location->zip_code,
-                'lang' => $location->lat,
-                'long' => $location->lng,
-                'is_hq' => false,
-                'state_id' => $location->state_id,
-                'country_id' => $location->country_id,
-                'status' => $status, // all new stores will be inactive first
-            ]);
-
-            // also attach the location to the store
-            $store->location()->attach($location->id);
-
-            Log::info('[LocationController] Store created for location: ' . $location->id . ' with store id: ' . $store->id);
-
-            // Set this location as the store's primary location
-            $store->location()->attach($location->id);
-            $store->save();
-        }
+        $store = LocationStoreLinker::resolveOrCreateForLocation($location);
 
         // Create store rating linked to location rating
         $rating = $store->storeRatings()->create([

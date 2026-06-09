@@ -53,8 +53,8 @@ class ProductResource extends Resource
 									->required()
                                     ->collection(Product::MEDIA_COLLECTION_NAME)
                                     ->disk(function () {
-                                        if (config('filesystems.default') === 's3') {
-                                            return 's3_public';
+                                        if (storage_is_cloud()) {
+                                            return storage_public_disk();
                                         }
                                     })
                                     ->acceptedFileTypes(['image/*'])
@@ -63,8 +63,8 @@ class ProductResource extends Resource
                                     ->label('Background Image')
                                     ->collection(Product::MEDIA_BG_COLLECTION_NAME)
                                     ->disk(function () {
-                                        if (config('filesystems.default') === 's3') {
-                                            return 's3_public';
+                                        if (storage_is_cloud()) {
+                                            return storage_public_disk();
                                         }
                                     })
                                     ->acceptedFileTypes(['image/*'])

@@ -7,31 +7,33 @@ use Illuminate\Support\Facades\Storage;
 
 class S3CloneCommand extends Command
 {
-    protected $signature = 's3:clone';
-    protected $description = 'Clone files and folders from local storage to S3 if filesystem.default is set to S3';
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
-    public function handle()
+    protected $signature = 'storage:clone-local-to-cloud';
+
+    protected $description = 'Clone files from local storage to Huawei OBS when cloud storage is configured';
+
+    public function handle(): int
     {
-        if (config('filesystems.default') !== 's3' || config('filesystems.default') !== 's3-public') {
-            $this->error('The default filesystem is not set to S3.');
-            return;
+        if (! storage_is_cloud()) {
+            $this->error('Set FILESYSTEM_DISK to hwc_obs (or legacy s3) to use cloud storage.');
+
+            return Command::FAILURE;
         }
 
-        $localPath = $this->ask('Enter the local path to clone from',  storage_path('app/public'));
+        $localPath = $this->ask('Enter the local path to clone from', storage_path('app/public'));
         $visibility = $this->choice('Do you want to make the files public?', ['public', 'private'], 0);
-        $s3Path = $this->ask('Enter the S3 path to clone to', '/');
+        $cloudPath = $this->ask('Enter the cloud path to clone to', '/');
 
         try {
-            Storage::disk(config('filesystems.default'))
-                ->copyDirectory($localPath, $s3Path, $visibility);
+            Storage::disk(storage_private_disk())
+                ->copyDirectory($localPath, $cloudPath, $visibility);
 
-            $this->info('Files and folders cloned successfully to S3.');
+            $this->info('Files cloned successfully to Huawei OBS.');
         } catch (\Exception $e) {
-            $this->error('An error occurred while cloning files and folders to S3: ' . $e->getMessage());
+            $this->error('An error occurred while cloning files: ' . $e->getMessage());
+
+            return Command::FAILURE;
         }
+
+        return Command::SUCCESS;
     }
 }

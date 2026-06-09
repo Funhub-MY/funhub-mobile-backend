@@ -47,8 +47,8 @@ class MerchantBannerResource extends Resource
                         ->collection(MerchantBanner::MEDIA_COLLECTION_NAME)
                         ->required()
                         ->disk(function () {
-                            if (config('filesystems.default') === 's3') {
-                                return 's3_public';
+                            if (storage_is_cloud()) {
+                                return storage_public_disk();
                             }
                             return config('filesystems.default');
                         }),

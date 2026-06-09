@@ -85,8 +85,8 @@ class EditArticle extends EditRecord
             // Handle Video Thumbnail
             if (isset($data['video_thumbnail'])) {
                 $disk = config('filesystems.default');
-                if ($disk == 's3') {
-                    $disk = 's3_public';
+                if (storage_is_cloud()) {
+                    $disk = storage_public_disk();
                 }
 
                 Log::info('Video thumbnail: ', ['video_thumbnail' => $data['video_thumbnail']]);
@@ -144,8 +144,8 @@ class EditArticle extends EditRecord
             // Handle Video
             if (isset($data['video'])) {
                 $disk = config('filesystems.default');
-                if ($disk == 's3') {
-                    $disk = 's3_public';
+                if (storage_is_cloud()) {
+                    $disk = storage_public_disk();
                 }
 
                 Log::info('Video: ', ['video' => $data['video']]);

@@ -108,7 +108,7 @@ class CreateArticle extends CreateRecord
             $media = $article->addMediaFromDisk($video_thumbnail)
                 ->withCustomProperties(['is_cover' => true])
                 ->toMediaCollection(Article::MEDIA_COLLECTION_NAME,
-                    (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
+                    storage_public_disk(),
                 );
 
             Log::info('Media added: ', $media->toArray());
@@ -129,7 +129,7 @@ class CreateArticle extends CreateRecord
             $media = $article->addMediaFromDisk($video)
                 // ->withCustomProperties(['is_cover' => false])
                 ->toMediaCollection(Article::MEDIA_COLLECTION_NAME,
-                    (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
+                    storage_public_disk(),
                 );
 
             Log::info('Media added: ', $media->toArray());

@@ -84,8 +84,8 @@ class MerchantOfferResource extends Resource
                                     ->customProperties(['is_cover' => false])
                                     // disk is s3_public
                                     ->disk(function () {
-                                        if (config('filesystems.default') === 's3') {
-                                            return 's3_public';
+                                        if (storage_is_cloud()) {
+                                            return storage_public_disk();
                                         }
                                     })
                                     ->acceptedFileTypes(['image/*'])
@@ -101,8 +101,8 @@ class MerchantOfferResource extends Resource
                                     ->customProperties(['is_cover' => false])
                                     // disk is s3_public
                                     ->disk(function () {
-                                        if (config('filesystems.default') === 's3') {
-                                            return 's3_public';
+                                        if (storage_is_cloud()) {
+                                            return storage_public_disk();
                                         }
                                     })
                                     ->acceptedFileTypes(['image/*'])
@@ -540,10 +540,10 @@ class MerchantOfferResource extends Resource
                         foreach ($originalMediaCollectionNameImgs as $originalMediaCollectionNameImg) {
                             // Copy the image to the new model.
                             $replica
-                            ->addMediaFromDisk($originalMediaCollectionNameImg->getPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+                            ->addMediaFromDisk($originalMediaCollectionNameImg->getPath(), storage_public_disk())
                             ->preservingOriginal()
                             ->toMediaCollection(MerchantOffer::MEDIA_COLLECTION_NAME,
-                            (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
+                            storage_public_disk(),
                         );
                         }
 
@@ -554,10 +554,10 @@ class MerchantOfferResource extends Resource
                         foreach ($originalHorizontalBannerImgs as $originalHorizontalBannerImg) {
                             // Copy the image to the new model.
                             $replica
-                            ->addMediaFromDisk($originalHorizontalBannerImg->getPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+                            ->addMediaFromDisk($originalHorizontalBannerImg->getPath(), storage_public_disk())
                             ->preservingOriginal()
                             ->toMediaCollection(MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER,
-                            (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),);
+                            storage_public_disk(),);
                         }
 
                         redirect()->route('filament.resources.merchant-offers.edit', $replica);

@@ -40,7 +40,7 @@ class PublicArticleResource extends JsonResource
             'slug' => $this->slug,
             'type' => $this->type,
             'title' => $this->title,
-            'body' => $this->body,
+            'body' => storage_rewrite_text($this->body),
             'user' => [
                 'id' => $this->user->id,
                 'name' => $this->user->name,
@@ -50,7 +50,9 @@ class PublicArticleResource extends JsonResource
             ],
             'media' => MediaResource::collection($this->media),
             'is_video' => $this->type == 'video',
-            'cover' => $this->getMedia(Article::MEDIA_COLLECTION_NAME)->where('is_cover', true)->first(),
+            'cover' => ($cover = $this->getMedia(Article::MEDIA_COLLECTION_NAME)->where('is_cover', true)->first())
+                ? new MediaResource($cover)
+                : null,
             // 'tags' => $this->tags,
             // 'interactions' => InteractionResource::collection($this->interactions),
             'location' => $location,

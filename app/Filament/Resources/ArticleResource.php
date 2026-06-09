@@ -119,8 +119,8 @@ class ArticleResource extends Resource
                                 ->customProperties(['is_cover' => false])
                                 // disk is s3_public
                                 ->disk(function () {
-                                    if (config('filesystems.default') === 's3') {
-                                        return 's3_public';
+                                    if (storage_is_cloud()) {
+                                        return storage_public_disk();
                                     }
                                 })
                                 ->acceptedFileTypes(['image/*'])
@@ -137,8 +137,8 @@ class ArticleResource extends Resource
                                 ->helperText('This image will be used as the thumbnail for the video (Max file size 4MB)')
                                 ->columnSpan('full')
                                 ->disk(function () {
-                                    if (config('filesystems.default') === 's3') {
-                                        return 's3_public';
+                                    if (storage_is_cloud()) {
+                                        return storage_public_disk();
                                     }
                                 })
                                 ->directory('filament-article-uploads')
@@ -150,20 +150,19 @@ class ArticleResource extends Resource
                                 ->getUploadedFileUrlUsing(function ($file) {
                                     $disk = config('filesystems.default');
 
-                                    if (config('filesystems.default') === 's3') {
-                                        $disk = 's3_public';
-                                        Log::info('Disk: '. $disk);
+                                    if (storage_is_cloud()) {
+                                        $disk = storage_public_disk();
                                     }
-                                    Log::info(Storage::disk($disk)->url($file));
-                                    return Storage::disk($disk)->url($file);
+
+                                    return storage_disk_url($disk, $file);
                                 }),
                             FileUpload::make('video')
                                 ->label('Video File')
                                 ->helperText('One Video Only, Maximum file size: '. (config('app.max_size_per_video_kb') / 1024 / 1024). ' MB. Allowable types: mp4, mov')
                                 ->columnSpan('full')
                                 ->disk(function () {
-                                    if (config('filesystems.default') === 's3') {
-                                        return 's3_public';
+                                    if (storage_is_cloud()) {
+                                        return storage_public_disk();
                                     }
                                 })
                                 ->directory('filament-article-uploads')
@@ -174,12 +173,12 @@ class ArticleResource extends Resource
 								->getUploadedFileUrlUsing(function ($file) {
                                     $disk = config('filesystems.default');
 
-                                    if (config('filesystems.default') === 's3') {
-                                        $disk = 's3_public';
+                                    if (storage_is_cloud()) {
+                                        $disk = storage_public_disk();
                                         Log::info('Disk: '. $disk);
                                     }
-                                    Log::info(Storage::disk($disk)->url($file));
-                                    return Storage::disk($disk)->url($file);
+                                    Log::info(storage_disk_url($disk, $file));
+                                    return storage_disk_url($disk, $file);
                                 }),
                         ])->columnSpan('full')
                     ])

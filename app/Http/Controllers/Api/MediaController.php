@@ -28,17 +28,17 @@ class MediaController extends Controller
      *
      * @response scenario=success {
      * "id": "1619114400-608b7a10a3b3d",
-     * "url": "https://s3-ap-southeast-1.amazonaws.com/your-bucket-name/user_uploads/my-photo.jpg?AWSAccessKeyId=your-access-key-id&Expires=1619114400&Signature=your-signature"
+     * "url": "https://your-bucket.obs.ap-southeast-3.myhuaweicloud.com/user_uploads/my-photo.jpg?..."
      * }
      * @response scenario=failed {
-     * "message": "Only applicable for S3 Storage",
+     * "message": "Only applicable for cloud object storage",
      * "url": null
      * }
      */
     public function getSignedUploadLink(Request $request)
     {
        // if s3 filesystems is default, create temporary upload url with s3
-       if (config('filesystems.default') == 's3') {
+       if (storage_is_cloud()) {
             // reject file name if non alphabets letters exists
             if (!preg_match('/^[a-zA-Z0-9-_\.]+$/', $request->get('filename'))) {
                 return response()->json([
@@ -85,7 +85,7 @@ class MediaController extends Controller
      * {
      * "id": 1,
      * "name": "1619114400-608b7a10a3b3d_my-photo.jpg",
-     * "url": "https://your-bucket-name.s3-ap-southeast-1.amazonaws.com/user_uploads/1619114400-608b7a10a3b3d_my-photo.jpg",
+     * "url": "https://your-bucket.obs.ap-southeast-3.myhuaweicloud.com/user_uploads/1619114400-608b7a10a3b3d_my-photo.jpg",
      * "size": 12345,
      * "type": "image/jpeg"
      * },
@@ -95,7 +95,7 @@ class MediaController extends Controller
     public function postUploadMediaComplete(Request $request)
     {
         // only applicable if storage is s3
-        if (config('filesystems.default') != 's3') {
+        if (! storage_is_cloud()) {
             return response()->json([
                 'message' => __('messages.error.media_controller.Only_applicable_for_S3_Storage'),
                 'media_ids' => null,
@@ -124,7 +124,7 @@ class MediaController extends Controller
 
                 try {
                     // user add media from Storage::file($fullPath) to collection "user_uploads"
-                    $file = $user->addMediaFromDisk($fullPath, 's3')
+                    $file = $user->addMediaFromDisk($fullPath, storage_private_disk())
                         ->toMediaCollection(User::USER_UPLOADS); // image and video consolidate here
                 } catch (\Exception $e) {
                     Log::error('[MediaController] Error completing file upload to user_uploads: ' . $e->getMessage(), [
@@ -169,7 +169,7 @@ class MediaController extends Controller
                 ];
 
                 // delete temporary file from signed_uploads temporary
-                Storage::disk('s3')->delete($fullPath);
+                Storage::disk(storage_private_disk())->delete($fullPath);
             } else {
                 // filename not found from uploadId
                 Log::error('[MediaController] Filename not found from uploadId: ' . $uploadId);

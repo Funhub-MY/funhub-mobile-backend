@@ -50,7 +50,7 @@ class ArticleResource extends JsonResource
             'slug' => $this->slug,
             'type' => $this->type,
             'title' => $this->title,
-            'body' => $this->body,
+            'body' => storage_rewrite_text($this->body),
             'user' => $this->when($user, function() use ($user, $userAvatar, $request, $currentUserId) {
                 return [
                     'id' => $user->id,
@@ -69,7 +69,9 @@ class ArticleResource extends JsonResource
             'sub_categories' => ArticleCategoryResource::collection($this->subCategories->load('media')),
             'media' => MediaResource::collection($this->media),
             // get cover where medialibrary media is_cover custom property is true
-            'cover' => $this->getMedia(Article::MEDIA_COLLECTION_NAME)->where('is_cover', true)->first(),
+            'cover' => ($cover = $this->getMedia(Article::MEDIA_COLLECTION_NAME)->where('is_cover', true)->first())
+                ? new MediaResource($cover)
+                : null,
             'tags' => $this->tags,
             // 'comments' => CommentResource::collection($this->comments),
             'interactions' => InteractionResource::collection($this->interactions),

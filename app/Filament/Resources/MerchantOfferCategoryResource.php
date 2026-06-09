@@ -134,8 +134,8 @@ class MerchantOfferCategoryResource extends Resource
                         ->label('Icon')
                         ->collection('merchant_offer_category')
                         ->disk(function () {
-                            if (config('filesystems.default') === 's3') {
-                                return 's3_public';
+                            if (storage_is_cloud()) {
+                                return storage_public_disk();
                             }
                         })
                         ->acceptedFileTypes(['image/*'])

@@ -40,7 +40,8 @@ class Kernel extends ConsoleKernel
 		$schedule->command('city-names:populate')->everyThirtyMinutes()->onOneServer();
 
         // Hourly
-        $schedule->command('fetch:news-feed')->hourly()->onOneServer();
+        // RSS import disabled — re-enable when article_imports watermark is needed again
+        // $schedule->command('fetch:news-feed')->hourly()->onOneServer();
         $schedule->command('media-partner:auto-publish-by-keywords')->hourly()->onOneServer();
         $schedule->job(new \App\Jobs\ImportedContactMatching())->hourly()->onOneServer();
         $schedule->command('stores:auto-hide-unonboarded')->hourly()->onOneServer();

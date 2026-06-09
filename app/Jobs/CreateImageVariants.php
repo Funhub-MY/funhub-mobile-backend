@@ -18,10 +18,10 @@ class CreateImageVariants implements ShouldQueue
 
     protected $media, $disk;
 
-    public function __construct(Media $media, $disk = 's3')
+    public function __construct(Media $media, $disk = null)
     {
         $this->media = $media;
-        $this->disk = $disk;
+        $this->disk = $disk ?? storage_private_disk();
     }
 
     public function handle()
@@ -64,7 +64,7 @@ class CreateImageVariants implements ShouldQueue
             ]);
 
             // upload the medium variant to S3
-            Storage::disk($this->disk)->put(
+            Storage::disk(storage_resolve_disk($this->disk))->put(
                 $s3Directory . '/' . $mediumFilename,
                 file_get_contents($image->target_path)
             );

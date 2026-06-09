@@ -29,6 +29,7 @@ use App\Models\User;
 use App\Models\View;
 use App\Notifications\TaggedUserInArticle;
 use App\Services\ArticleRecommenderService;
+use App\Services\LocationStoreLinker;
 use App\Traits\QueryBuilderTrait;
 use Carbon\Carbon;
 use Exception;
@@ -1386,86 +1387,44 @@ class ArticleController extends Controller
             }
         }
         
-        // Create or find store for this location, similar to postRateLocation
-        $store = Store::whereHas('location', function ($query) use ($location) {
-            $query->where('locations.id', $location->id);
-        })->first();
-        
-        if (!$store) {
-            // Check if a store with the same name already exists to avoid duplicates
-            if (!Store::where('name', $location->name)->exists()) {
-                Log::info('[ArticleController] Creating store for location: ' . $location->name);
-                
-                $status = Store::STATUS_ACTIVE;
-                // If full address starts with Lorong, Jalan or Street then set to inactive first
-                $smallLetterAddress = trim(strtolower($location->name));
-                if (str_starts_with($smallLetterAddress, 'lorong') || str_starts_with($smallLetterAddress, 'jalan') || str_starts_with($smallLetterAddress, 'street')) {
-                    $status = Store::STATUS_INACTIVE;
-                }
-                
-                // Create store
-                $store = Store::create([
-                    'user_id' => null,
-                    'name' => $location->name,
-                    'manager_name' => null,
-                    'business_phone_no' => null,
-                    'business_hours' => null,
-                    'address' => $location->full_address,
-                    'address_postcode' => $location->zip_code,
-                    'lang' => $location->lat,
-                    'long' => $location->lng,
-                    'is_hq' => false,
-                    'state_id' => $location->state_id,
-                    'country_id' => $location->country_id,
-                    'status' => $status,
-                ]);
-                
-                // Attach the location to the store
-                $store->location()->attach($location->id);
-                
-                Log::info('[ArticleController] Store created for location: ' . $location->id . ' with store id: ' . $store->id);
-                
-                // If there's a rating, update the store's ratings field
-                if (isset($locationData['rating']) && $locationData['rating'] != 0) {
-                    $store->ratings = $locationData['rating'];
-                    $store->save();
-                    
-                    // Dispatch job to index the store in search
-                    dispatch(new \App\Jobs\IndexStore($store->id));
-                }
-                
-                // If article has categories, try to map them to store categories
-                if ($article->categories->isNotEmpty() || $article->subCategories->isNotEmpty()) {
+        $store = LocationStoreLinker::resolveOrCreateForLocation($location, $article);
+
+        if ($store && isset($locationData['rating']) && $locationData['rating'] != 0) {
+            $store->ratings = $locationData['rating'];
+            $store->save();
+            dispatch(new \App\Jobs\IndexStore($store->id));
+        }
+
+        if ($store && ($article->categories->isNotEmpty() || $article->subCategories->isNotEmpty())) {
+            try {
+                $allArticleCategoryIds = $article->categories->pluck('id')
+                    ->merge($article->subCategories->pluck('id'));
+
+                $storeCategoriesToAttach = \App\Models\ArticleStoreCategory::whereIn('article_category_id', $allArticleCategoryIds)
+                    ->pluck('merchant_category_id')
+                    ->unique();
+
+                $currentStoreCategories = $store->categories->pluck('id');
+                foreach ($storeCategoriesToAttach->diff($currentStoreCategories) as $categoryId) {
                     try {
-                        // Get article category IDs
-                        $articleCategoryIds = $article->categories->pluck('id');
-                        $articleSubCategoryIds = $article->subCategories->pluck('id');
-                        
-                        $allArticleCategoryIds = $articleCategoryIds->merge($articleSubCategoryIds);
-                        
-                        // Find mapped merchant categories from ArticleStoreCategory
-                        $storeCategoriesToAttach = \App\Models\ArticleStoreCategory::whereIn('article_category_id', $allArticleCategoryIds)
-                            ->pluck('merchant_category_id')
-                            ->unique();
-                        
-                        // Attach categories to store
-                        foreach ($storeCategoriesToAttach as $categoryId) {
-                            try {
-                                $store->categories()->attach($categoryId);
-                                Log::info('[ArticleController] Store category attached: ' . $categoryId . ' to store: ' . $store->id);
-                            } catch (\Exception $e) {
-                                Log::error('[ArticleController] Error attaching store category: ' . $categoryId . ' to store: ' . $store->id . '. Error: ' . $e->getMessage());
-                            }
-                        }
+                        $store->categories()->attach($categoryId);
                     } catch (\Exception $e) {
-                        Log::error('[ArticleController] Error processing categories for store: ' . $store->id . ' and article: ' . $article->id . '. Error: ' . $e->getMessage());
+                        Log::error('[ArticleController] Error attaching store category', [
+                            'category_id' => $categoryId,
+                            'store_id' => $store->id,
+                            'error' => $e->getMessage(),
+                        ]);
                     }
                 }
-            } else {
-                Log::info('[ArticleController] Store with same name already exists for location: ' . $location->name);
+            } catch (\Exception $e) {
+                Log::error('[ArticleController] Error processing categories for store', [
+                    'store_id' => $store->id,
+                    'article_id' => $article->id,
+                    'error' => $e->getMessage(),
+                ]);
             }
         }
-        
+
         return $location;
     }
 
@@ -1796,7 +1755,7 @@ class ArticleController extends Controller
                 ->withCustomProperties(['is_cover' => $request->is_cover])
                 ->toMediaCollection(
                     'user_uploads',
-                    (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
+                    storage_public_disk(),
                 );
             return response()->json([
                 'uploaded' => [
@@ -1816,7 +1775,7 @@ class ArticleController extends Controller
                     ->withCustomProperties(['is_cover' => $request->is_cover])
                     ->toMediaCollection(
                         'user_uploads',
-                        (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
+                        storage_public_disk(),
                     );
             });
             $uploaded->each(function ($image) use (&$images) {
@@ -1863,15 +1822,16 @@ class ArticleController extends Controller
         $media = $user->addMedia($videoFile)
             ->toMediaCollection(
                 User::USER_VIDEO_UPLOADS,
-                (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
+                storage_public_disk()
             );
 
         $filesystem = config('filesystems.default');
 
-        if ($filesystem == 's3' || $filesystem == 's3_public') {
-            $fullUrl = Storage::disk(config('filesystems.default'))->url($media->getPath());
-            $stream = Storage::disk(config('filesystems.default'))->readStream($media->getPath());
-            $filesize = Storage::disk(config('filesystems.default'))->size($media->getPath());
+        if (storage_is_cloud()) {
+            $disk = storage_private_disk();
+            $fullUrl = storage_disk_url($disk, $media->getPath());
+            $stream = Storage::disk($disk)->readStream($media->getPath());
+            $filesize = Storage::disk($disk)->size($media->getPath());
         } else {
             $fullUrl = Storage::url($media->getPath());
             $stream = Storage::readStream($media->getPath());

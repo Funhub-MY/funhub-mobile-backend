@@ -34,6 +34,9 @@ class FetchNewsFeed extends Command
     protected $mortify_service = null;
     protected $noodou_service = null;
 
+    /** Set to true when re-enabling fetch:news-feed in Console\Kernel */
+    private const RSS_IMPORT_ENABLED = false;
+
     /**
      * Execute the console command.
      *
@@ -50,6 +53,11 @@ class FetchNewsFeed extends Command
 
     public function handle(): bool
     {
+        if (!self::RSS_IMPORT_ENABLED) {
+            $this->warn('RSS news feed import is disabled.');
+            return true;
+        }
+
         // record time used.
         $start = now();
         $this->line('Processing Fetch news feed...');

@@ -537,7 +537,7 @@ class UserSettingsController extends Controller
         // upload new profile picture
         $uploadedAvatar = $user->addMedia($request->avatar)
             ->toMediaCollection('avatar',
-                (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
+                storage_public_disk()
             );
 
         // save user avatar id
@@ -594,7 +594,7 @@ class UserSettingsController extends Controller
         // upload new profile picture
         $uploadedCover = $user->addMedia($request->cover)
             ->toMediaCollection('cover',
-                (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
+                storage_public_disk()
             );
 
         // save user avatar id

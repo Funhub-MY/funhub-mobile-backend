@@ -335,9 +335,8 @@ class EditStore extends EditRecord
 
         if (isset($data['menus'])) {
             $disk = config('filesystems.default');
-            if ($disk == 's3') {
-                // use s3_public
-                $disk = 's3_public';
+            if (storage_is_cloud()) {
+                $disk = storage_public_disk();
             }
 
             Log::info('Menus: ', ['menus' => $data['menus']]);

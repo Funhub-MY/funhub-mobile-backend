@@ -14,11 +14,14 @@ class StoreResource extends JsonResource
 {
     protected function encodeUrl($originalUrl)
     {
-        if ($originalUrl && strpos($originalUrl, 'cloudfront') !== false) {
+        $originalUrl = storage_rewrite_url($originalUrl);
+
+        if ($originalUrl && (str_contains($originalUrl, 'cloudfront') || str_contains($originalUrl, 'myhuaweicloud.com'))) {
             $parts = explode('/', $originalUrl);
             $parts[count($parts) - 1] = urlencode($parts[count($parts) - 1]);
             $originalUrl = implode('/', $parts);
         }
+
         return $originalUrl;
     }
 

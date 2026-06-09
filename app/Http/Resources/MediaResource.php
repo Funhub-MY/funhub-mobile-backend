@@ -8,8 +8,9 @@ class MediaResource extends JsonResource
 {
     public function toArray($request)
     {
-        $originalUrl = $this->original_url;
-        if ($originalUrl && strpos($originalUrl, 'cloudfront') !== false) {
+        $originalUrl = storage_rewrite_url($this->original_url);
+
+        if ($originalUrl && (str_contains($originalUrl, 'cloudfront') || str_contains($originalUrl, 'myhuaweicloud.com'))) {
             $parts = explode('/', $originalUrl);
             $parts[count($parts) - 1] = urlencode($parts[count($parts) - 1]);
             $originalUrl = implode('/', $parts);

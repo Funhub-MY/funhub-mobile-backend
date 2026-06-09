@@ -57,8 +57,8 @@ class CampaignResource extends Resource
                             ->collection(Campaign::EVENT_COLLECTION)
                             ->columnSpan('full')
                             ->disk(function () {
-                                if (config('filesystems.default') === 's3') {
-                                    return 's3_public';
+                                if (storage_is_cloud()) {
+                                    return storage_public_disk();
                                 }
                             })
                             ->acceptedFileTypes(['image/*'])
@@ -72,8 +72,8 @@ class CampaignResource extends Resource
                             ->collection(Campaign::BANNER_COLLECTION)
                             ->columnSpan('full')
                             ->disk(function () {
-                                if (config('filesystems.default') === 's3') {
-                                    return 's3_public';
+                                if (storage_is_cloud()) {
+                                    return storage_public_disk();
                                 }
                             })
                             ->acceptedFileTypes(['image/*'])
@@ -87,8 +87,8 @@ class CampaignResource extends Resource
                             ->collection(Campaign::ICON_COLLECTION)
                             ->columnSpan('full')
                             ->disk(function () {
-                                if (config('filesystems.default') === 's3') {
-                                    return 's3_public';
+                                if (storage_is_cloud()) {
+                                    return storage_public_disk();
                                 }
                             })
                             ->acceptedFileTypes(['image/*'])

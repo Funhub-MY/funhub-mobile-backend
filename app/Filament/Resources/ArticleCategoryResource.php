@@ -127,8 +127,8 @@ class ArticleCategoryResource extends Resource
                     ->collection('article_category_icon')
                     ->columnSpan('full')
                     ->disk(function () {
-                        if (config('filesystems.default') === 's3') {
-                            return 's3_public';
+                        if (storage_is_cloud()) {
+                            return storage_public_disk();
                         }
                     })
                     ->acceptedFileTypes(['image/*'])
@@ -141,8 +141,8 @@ class ArticleCategoryResource extends Resource
                 //     ->collection('article_category')
                 //     ->columnSpan('full')
                 //     ->disk(function () {
-                //         if (config('filesystems.default') === 's3') {
-                //             return 's3_public';
+                //         if (storage_is_cloud()) {
+                //             return storage_public_disk();
                 //         }
                 //     })
                 //     ->acceptedFileTypes(['image/*'])

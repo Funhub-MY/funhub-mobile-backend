@@ -34,8 +34,8 @@ class ExportPromotionCodesJob implements ShouldQueue
 		$filename = 'promotion-codes-' . $timestamp . '.csv';
 		$filePath = $filename;
 
-		$defaultDisk = config('filesystems.default');
-		$disk = in_array($defaultDisk, ['s3', 's3_public']) ? 's3_public' : 'public';
+        $defaultDisk = config('filesystems.default');
+        $disk = storage_is_cloud() ? storage_public_disk() : 'public';
 
 		Excel::store(
 			new \App\Exports\PromotionCodesExport($this->promotionCodeGroup, $this->promotionCodeIds),
@@ -48,8 +48,8 @@ class ExportPromotionCodesJob implements ShouldQueue
 		);
 
 		// Generate appropriate URL based on disk
-		$downloadUrl = $disk === 's3_public'
-			? Storage::disk('s3_public')->temporaryUrl(
+        $downloadUrl = storage_is_cloud() && $disk === storage_public_disk()
+			? Storage::disk($disk)->temporaryUrl(
 				$filePath,
 				now()->addHour(),
 				['ResponseContentDisposition' => 'attachment; filename="' . $filename . '"']

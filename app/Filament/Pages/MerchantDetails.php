@@ -515,7 +515,7 @@ class MerchantDetails extends Page implements HasForms
                                     $merchant_id = $get('merchant_id');
                                     $merchant = Merchant::find($merchant_id);
                                     try {
-                                        $merchant->addMediaFromDisk($state->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+                                        $merchant->addMediaFromDisk($state->getRealPath(), storage_public_disk())
                                         ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME);
                                     } catch (\Exception $e) {
                                         Log::error('[MerchantDetailsEdit] Company logo upload failed: ' . $e->getMessage());
@@ -566,11 +566,11 @@ class MerchantDetails extends Page implements HasForms
 
                                         try {
                                             // foreach ($state as $file) {
-                                            //     $merchant->addMediaFromDisk($file->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+                                            //     $merchant->addMediaFromDisk($file->getRealPath(), storage_public_disk())
                                             //         ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
                                             // }
                                             
-                                            $merchant->addMediaFromDisk($state->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+                                            $merchant->addMediaFromDisk($state->getRealPath(), storage_public_disk())
                                             ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
                                         } catch (\Exception $e) {
                                             Log::error('[MerchantDetailsEdit] Company logo upload failed: ' . $e->getMessage());

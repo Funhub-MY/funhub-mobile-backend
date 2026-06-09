@@ -2,16 +2,19 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\Admin\MediaProxyController;
 use App\Filament\Macros\TranslationsMacro;
 use App\Models\ArticleFeedWhitelistUser;
 use App\Models\MerchantOffer;
 use App\Models\Setting;
 use Filament\Facades\Filament;
+use Filament\Http\Middleware\Authenticate;
 use Filament\Forms\Components\Field;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\ServiceProvider;
@@ -47,6 +50,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->normalizeCloudStorageDiskUrls();
+        $this->registerFilamentStorageProxyRoute();
 
         MerchantOffer::observe(\App\Observers\MerchantOfferObserver::class);
         ArticleFeedWhitelistUser::observe(\App\Observers\ArticleFeedWhitelistUserObserver::class);
@@ -139,5 +144,39 @@ class AppServiceProvider extends ServiceProvider
                 URL::forceScheme('https');
             });
         }
+    }
+
+    protected function normalizeCloudStorageDiskUrls(): void
+    {
+        foreach (['s3', 's3_public', 'hwc_obs', 'hwc_obs_public'] as $disk) {
+            $url = config("filesystems.disks.{$disk}.url");
+
+            if ($url) {
+                config(["filesystems.disks.{$disk}.url" => storage_normalize_url($url)]);
+            }
+
+            $endpoint = config("filesystems.disks.{$disk}.endpoint");
+
+            if ($endpoint) {
+                config(["filesystems.disks.{$disk}.endpoint" => storage_normalize_endpoint($endpoint)]);
+            }
+        }
+
+        $replaceTo = config('storage.url_replace_to');
+
+        if ($replaceTo) {
+            config(['storage.url_replace_to' => storage_normalize_url($replaceTo)]);
+        }
+    }
+
+    protected function registerFilamentStorageProxyRoute(): void
+    {
+        Route::middleware(['web', Authenticate::class])
+            ->prefix(config('filament.path', 'admin'))
+            ->name('filament.')
+            ->group(function () {
+                Route::get('storage/media/{media}/{conversion?}', MediaProxyController::class)
+                    ->name('storage.media');
+            });
     }
 }

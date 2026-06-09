@@ -308,8 +308,8 @@ class StoreResource extends Resource
                             ->collection(Store::MEDIA_COLLECTION_PHOTOS)
                             ->columnSpan('full')
                             ->disk(function () {
-                                if (config('filesystems.default') === 's3') {
-                                    return 's3_public';
+                                if (storage_is_cloud()) {
+                                    return storage_public_disk();
                                 }
                             })
                             ->acceptedFileTypes(['image/*'])
@@ -326,18 +326,18 @@ class StoreResource extends Resource
                                     ->label('Menu File (PDF ONLY)')
                                     ->enableDownload(true)
                                     ->disk(function () {
-                                        if (config('filesystems.default') === 's3') {
-                                            return 's3_public';
+                                        if (storage_is_cloud()) {
+                                            return storage_public_disk();
                                         }
                                     })
                                     ->acceptedFileTypes(['application/pdf'])
                                     ->rules('mimes:pdf')
                                     ->getUploadedFileUrlUsing(function ($file) {
                                         $disk = config('filesystems.default');
-                                        if (config('filesystems.default') === 's3') {
-                                            $disk = 's3_public';
+                                        if (storage_is_cloud()) {
+                                            $disk = storage_public_disk();
                                         }
-                                        return Storage::disk($disk)->url($file);
+                                        return storage_disk_url($disk, $file);
                                     }),
                             ])
                     ]),

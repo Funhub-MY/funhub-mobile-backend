@@ -234,8 +234,8 @@ class MerchantResource extends Resource
                             ->enableDownload(true)
                             ->columnSpan('full')
                             ->disk(function () {
-                                if (config('filesystems.default') === 's3') {
-                                    return 's3_public';
+                                if (storage_is_cloud()) {
+                                    return storage_public_disk();
                                 }
                             })
                             ->acceptedFileTypes(['image/*'])
@@ -250,8 +250,8 @@ class MerchantResource extends Resource
                             // ->required()
                             ->columnSpan('full')
                             ->disk(function () {
-                                if (config('filesystems.default') === 's3') {
-                                    return 's3_public';
+                                if (storage_is_cloud()) {
+                                    return storage_public_disk();
                                 }
                             })
                             ->acceptedFileTypes(['image/*'])
@@ -268,8 +268,8 @@ class MerchantResource extends Resource
                         //         FileUpload::make('file')
                         //             ->label('Menu File (PDF ONLY)')
                         //             ->disk(function () {
-                        //                 if (config('filesystems.default') === 's3') {
-                        //                     return 's3_public';
+                        //                 if (storage_is_cloud()) {
+                        //                     return storage_public_disk();
                         //                 }
                         //             })
                         //             ->required()
@@ -277,8 +277,8 @@ class MerchantResource extends Resource
                         //             ->rules('mimes:pdf')
                         //             ->getUploadedFileUrlUsing(function ($file) {
                         //                 $disk = config('filesystems.default');
-                        //                 if (config('filesystems.default') === 's3') {
-                        //                     $disk = 's3_public';
+                        //                 if (storage_is_cloud()) {
+                        //                     $disk = storage_public_disk();
                         //                 }
                         //                 return Storage::disk($disk)->url($file);
                         //             }),

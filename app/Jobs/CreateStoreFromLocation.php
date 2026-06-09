@@ -2,9 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Models\Article;
 use App\Models\Location;
 use App\Models\Store;
-use App\Models\Article;
+use App\Services\LocationStoreLinker;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -54,107 +55,13 @@ class CreateStoreFromLocation implements ShouldQueue
 				return;
 			}
 
-			// Check if a store already exists for this location
-			$existingStore = Store::whereHas('location', function ($query) use ($location) {
-				$query->where('locations.id', $location->id);
-			})->first();
+			$article = $this->articleId ? Article::find($this->articleId) : null;
+			$store = LocationStoreLinker::resolveOrCreateForLocation($location, $article);
 
-			$store = null;
-
-			if ($existingStore) {
-				Log::info('[CreateStoreFromLocation] Store already exists for location', [
-					'location_id' => $location->id,
-					'store_id' => $existingStore->id,
-					'store_name' => $existingStore->name
-				]);
-				$store = $existingStore;
-			} else {
-				// Check if a store with the same name already exists to avoid duplicates
-				$storeWithSameName = Store::where('name', $location->name)->first();
-				if ($storeWithSameName) {
-					Log::info('[CreateStoreFromLocation] Store with same name already exists', [
-						'location_id' => $location->id,
-						'location_name' => $location->name,
-						'existing_store_id' => $storeWithSameName->id
-					]);
-					$store = $storeWithSameName;
-				} else {
-					Log::info('[CreateStoreFromLocation] No store with same name exists, proceeding with creation', [
-						'location_name' => $location->name
-					]);
-
-					// Determine store status
-					$status = Store::STATUS_ACTIVE;
-					$smallLetterAddress = trim(strtolower($location->name));
-
-					if (str_starts_with($smallLetterAddress, 'lorong') ||
-						str_starts_with($smallLetterAddress, 'jalan') ||
-						str_starts_with($smallLetterAddress, 'street')) {
-						$status = Store::STATUS_INACTIVE;
-						Log::info('[CreateStoreFromLocation] Setting store status to INACTIVE based on name pattern', [
-							'location_name' => $location->name,
-							'pattern_matched' => true
-						]);
-					} else {
-						Log::info('[CreateStoreFromLocation] Setting store status to ACTIVE', [
-							'location_name' => $location->name
-						]);
-					}
-
-					// Create store
-					try {
-						$store = Store::create([
-							'user_id' => null,
-							'name' => $location->name,
-							'manager_name' => null,
-							'business_phone_no' => null,
-							'business_hours' => null,
-							'address' => $location->full_address,
-							'address_postcode' => $location->zip_code,
-							'lat' => $location->lat,
-							'long' => $location->lng,
-							'is_hq' => false,
-							'state_id' => $location->state_id,
-							'country_id' => $location->country_id,
-							'status' => $status,
-						]);
-
-						Log::info('[CreateStoreFromLocation] Store created successfully', [
-							'store_id' => $store->id,
-							'store_name' => $store->name
-						]);
-					} catch (\Exception $e) {
-						Log::error('[CreateStoreFromLocation] Failed to create store', [
-							'location_id' => $location->id,
-							'error_message' => $e->getMessage(),
-							'error_trace' => $e->getTraceAsString()
-						]);
-						throw $e;
-					}
-
-					// Attach the location to the store
-					try {
-						$store->location()->attach($location->id);
-
-						Log::info('[CreateStoreFromLocation] Location attached to store successfully', [
-							'store_id' => $store->id,
-							'location_id' => $location->id
-						]);
-					} catch (\Exception $e) {
-						Log::error('[CreateStoreFromLocation] Failed to attach location to store', [
-							'store_id' => $store->id,
-							'location_id' => $location->id,
-							'error_message' => $e->getMessage(),
-							'error_trace' => $e->getTraceAsString()
-						]);
-						throw $e;
-					}
-				}
-			}
-
-			// If we have an article ID, process categories
 			if ($this->articleId && $store) {
-				$article = Article::find($this->articleId);
+				if (!$article) {
+					$article = Article::find($this->articleId);
+				}
 
 				if (!$article) {
 					Log::warning('[CreateStoreFromLocation] Article not found', [

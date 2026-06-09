@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\MerchantCategory;
 use App\Models\Store;
+use App\Services\LocationStoreLinker;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -60,47 +61,24 @@ class SyncArticlesLocationAsStores extends Command
         foreach($locations as $location)
         {
             try {
-				$store = $location->stores->first();
+				$store = LocationStoreLinker::findLinkedStore($location, true)
+					?? LocationStoreLinker::findLinkedStore($location, false);
+
 				if (!$store) {
-					// make sure same Store location never created before
-					if (Store::where('name', $location->name)->exists()) {
-						$this->info('Store same name already exists for location: ' . $location->id);
-						continue;
+					$article = $location->articles()
+						->where('status', \App\Models\Article::STATUS_PUBLISHED)
+						->latest()
+						->first();
+
+					$store = LocationStoreLinker::resolveOrCreateForLocation($location, $article);
+
+					if ($store) {
+						$this->info('Store resolved for location: ' . $location->id . ' with store id: ' . $store->id);
+						Log::info('[SyncArticlesLocationAsStores] Store resolved for location', [
+							'location_id' => $location->id,
+							'store_id' => $store->id,
+						]);
 					}
-
-					$this->info('Creating store for location: ' . $location->name);
-
-					$status = Store::STATUS_ACTIVE;
-					// if full address starts with Lorong, Jalan or Street then set to unlisted first
-					$smallLetterAddress = trim(strtolower($location->name));
-					if (str_starts_with($smallLetterAddress, 'lorong') || str_starts_with($smallLetterAddress, 'jalan') || str_starts_with($smallLetterAddress, 'street')) {
-						$status = Store::STATUS_INACTIVE;
-					}
-
-					// create store
-					$store = Store::create([
-						'user_id' => null,
-						'name' => $location->name,
-						'manager_name' => null,
-						'business_phone_no' => null,
-						'business_hours' => null,
-						'address' => $location->full_address,
-						'address_postcode' => $location->zip_code,
-						'lang' => $location->lat,
-						'long' => $location->lng,
-						'is_hq' => false,
-						'state_id' => $location->state_id,
-						'country_id' => $location->country_id,
-						'status' => $status, // all new stores will be inactive first
-					]);
-
-					// get google place types
-
-					// also attach the location to the store
-					$store->location()->attach($location->id);
-
-					$this->info('Store created for location: ' . $location->id . ' with store id: ' . $store->id);
-					Log::info('[SyncArticlesLocationAsStores] Store created for location: ' . $location->id . ' with store id: ' . $store->id);
 				}
 
                 // get first article latest

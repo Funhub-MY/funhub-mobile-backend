@@ -42,8 +42,8 @@ class RewardComponentResource extends Resource
                     ->collection(RewardComponent::COLLECTION_NAME)
                     // disk is s3_public 
                     ->disk(function () {
-                        if (config('filesystems.default') === 's3') {
-                            return 's3_public';
+                        if (storage_is_cloud()) {
+                            return storage_public_disk();
                         }
                     })
                     ->acceptedFileTypes(['image/*'])

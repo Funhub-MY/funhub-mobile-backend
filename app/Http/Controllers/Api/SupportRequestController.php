@@ -332,7 +332,7 @@ class SupportRequestController extends Controller
             $uploaded = $user->addMedia($request->images)
                 ->toMediaCollection(
                     SupportRequestMessage::MEDIA_COLLECTION_NAME,
-                    (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
+                    storage_public_disk(),
                 );
             return response()->json([
                 'uploaded' => [
@@ -351,7 +351,7 @@ class SupportRequestController extends Controller
                 return $user->addMedia($image)
                     ->toMediaCollection(
                         SupportRequestMessage::MEDIA_COLLECTION_NAME,
-                        (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
+                        storage_public_disk(),
                     );
             });
             $uploaded->each(function ($image) use (&$images) {

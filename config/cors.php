@@ -15,7 +15,11 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie', env('AWS_URL')],
+    'paths' => array_values(array_filter([
+        'api/*',
+        'sanctum/csrf-cookie',
+        env('HWC_OBS_URL'),
+    ])),
 
     'allowed_methods' => ['*'],
 
