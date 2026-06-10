@@ -51,7 +51,7 @@ return [
 
     'mpay' => [
         'uat_url' => env('MPAY_UAT_URL', 'https://pcimdex.mpay.my/mdex2/'),
-        'prod_url' => env('MPAY_PROD_URL', ' https://mpaypayment.mpay.my/mdex/'),
+        'prod_url' => env('MPAY_PROD_URL', 'https://mpaypayment.mpay.my/mdex/'),
         'mid' => env('MPAY_MID'),
         'hash_key' => env('MPAY_HASH_KEY'),
         'mid_card_only' => env('MPAY_MID_CARD_ONLY'),
