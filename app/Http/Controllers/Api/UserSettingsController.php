@@ -768,17 +768,33 @@ class UserSettingsController extends Controller
 
         if (!$user) { // does not exists
             $otp = rand(100000, 999999);
-            auth()->user()->update([
-                'otp' => $otp,
-                'otp_expiry' => now()->addMinutes(1),
-                'otp_verified_at' => null,
-            ]);
 
-            // full no
-            $fullPhoneNo = $request->country_code . $request->phone_no;
+            try {
+                User::withoutAuditing(function () use ($otp) {
+                    User::withoutSyncingToSearch(function () use ($otp) {
+                        auth()->user()->update([
+                            'otp' => (string) $otp,
+                            'otp_expiry' => now()->addMinutes(1),
+                            'otp_verified_at' => null,
+                        ]);
+                    });
+                });
 
-            // send otp
-            $this->smsService->sendSms($fullPhoneNo, config('app.name')." - Your OTP is ".auth()->user()->otp);
+                // full no
+                $fullPhoneNo = $request->country_code . $request->phone_no;
+
+                // send otp
+                $this->smsService->sendSms($fullPhoneNo, config('app.name')." - Your OTP is ".auth()->user()->otp);
+            } catch (\Throwable $e) {
+                Log::error('postUpdatePhoneNoSendOtp failed', [
+                    'user_id' => auth()->id(),
+                    'error' => $e->getMessage(),
+                ]);
+
+                return response()->json([
+                    'message' => __('messages.error.auth_controller.Failed_to_send_OTP'),
+                ], 422);
+            }
 
             return response()->json([
                 'status' => 'success',

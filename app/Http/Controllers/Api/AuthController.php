@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\AuthOtpService;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,23 +21,7 @@ use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
-    protected $smsService;
-
-    public function __construct()
-    {
-        $this->smsService = new \App\Services\Sms(
-            [
-                'url' => config('services.byteplus.sms_url'),
-                'username' => config('services.byteplus.sms_account'),
-                'password' => config('services.byteplus.sms_password'),
-            ],
-            [
-                'api_url' => config('services.movider.api_url'),
-                'key' => config('services.movider.key'),
-                'secret' => config('services.movider.secret'),
-            ]
-        );
-    }
+    public function __construct(protected AuthOtpService $authOtpService) {}
 
     /**
      * Login with Password
@@ -282,67 +268,34 @@ class AuthController extends Controller
         }
 
         // check if start with 0 or 60 for phone_no, remove it first
-        if (substr($request->phone_no, 0, 1) == '0') {
-            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
-        } elseif (substr($request->phone_no, 0, 2) == '60') {
-            $request->merge(['phone_no' => substr($request->phone_no, 2)]);
-        }
-        // get user
-        $user = User::where('phone_no', $request->phone_no)
-            ->where('phone_country_code', $request->country_code)
-            ->first();
-
-        // Generate new OTP
-        $otp = rand(100000, 999999);
-        $otpPayload = [
-            'otp' => $otp,
-            'otp_expiry' => now()->addMinutes(1),
-            'otp_verified_at' => null,
-        ];
+        $phoneNo = $this->authOtpService->normalizePhoneNumber($request->phone_no);
+        $request->merge(['phone_no' => $phoneNo]);
 
         try {
-            if (! $user) {
-                // user doest not exist
-                // register user account first with phone no.
-                $user = User::withoutSyncingToSearch(function () use ($request, $otpPayload) {
-                    return User::create([
-                        'phone_country_code' => $request->country_code,
-                        'phone_no' => $request->phone_no, // unique
-                        'name' => $request->input('name', null), // if pass in name will skip onboarding
-                        ...$otpPayload,
-                    ]);
-                });
-            } else {
-                User::withoutSyncingToSearch(function () use ($user, $otpPayload) {
-                    $user->update($otpPayload);
-                });
+            $this->authOtpService->issueAndSend(
+                $request->country_code,
+                $phoneNo,
+                $request->input('name')
+            );
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => __('messages.error.auth_controller.Phone_Number_already_registered'),
+            ], 422);
+        } catch (\Throwable $e) {
+            try {
+                Log::error('sendOtp failed', [
+                    'phone_no' => $phoneNo,
+                    'country_code' => $request->country_code,
+                    'error' => $e->getMessage(),
+                    'exception' => get_class($e),
+                ]);
+            } catch (\Throwable) {
+                error_log('sendOtp failed: '.$e->getMessage());
             }
-        } catch (\Exception $e) {
-            Log::error('Failed to save OTP', [
-                'phone_no' => $request->phone_no,
-                'country_code' => $request->country_code,
-                'error' => $e->getMessage(),
-            ]);
 
             return response()->json([
-                'message' => $user
-                    ? __('messages.error.auth_controller.Failed_to_send_OTP')
-                    : __('messages.error.auth_controller.Phone_Number_already_registered'),
+                'message' => __('messages.error.auth_controller.Failed_to_send_OTP'),
             ], 422);
-        }
-
-        // Fires SMS
-        if ($user) {
-            try {
-                $this->smsService->sendSms($user->full_phone_no, config('app.name').' - Your OTP is '.$user->otp);
-            } catch (\Exception $e) {
-                Log::error($e->getMessage(), [
-                    'phone_no' => $user->full_phone_no,
-                    'otp' => $user->otp,
-                ]);
-
-                return response()->json(['message' => __('messages.error.auth_controller.Failed_to_send_OTP')], 422);
-            }
         }
 
         return response()->json(['message' => __('messages.success.auth_controller.OTP_sent')], 200);
@@ -952,17 +905,20 @@ class AuthController extends Controller
                 ], 400);
             }
 
-            // create a new otp
-            $otp = rand(100000, 999999);
-            User::withoutSyncingToSearch(function () use ($user, $otp) {
-                $user->update([
-                    'otp' => $otp,
-                    'otp_expiry' => now()->addMinutes(1),
+            try {
+                $this->authOtpService->issueAndSendForUser($user);
+            } catch (\Throwable $e) {
+                Log::error('postResetPasswordSendOtp failed', [
+                    'phone_no' => $user->phone_no,
+                    'error' => $e->getMessage(),
+                    'exception' => get_class($e),
                 ]);
-            });
 
-            // send otp to user
-            $this->smsService->sendSms($user->full_phone_no, config('app.name').' - Your OTP is '.$user->otp);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => __('messages.error.auth_controller.Failed_to_send_OTP'),
+                ], 422);
+            }
 
             return response()->json([
                 'status' => 'success',
