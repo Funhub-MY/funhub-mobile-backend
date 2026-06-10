@@ -42,17 +42,30 @@ class Sms {
      * @param string $phoneNumber
      * @return bool
      */
-    protected function isAllowedCountryCode($phoneNumber)
+    protected function isAllowedCountryCode($phoneNumber, ?array $allowedCountryCodes = null)
     {
-        $allowedCountryCodes = config('app.sms.allowed_country_codes');
-        
+        $allowedCountryCodes ??= config('app.sms.allowed_country_codes', ['60', '65']);
+
+        if (! is_array($allowedCountryCodes)) {
+            return false;
+        }
+
         foreach ($allowedCountryCodes as $code) {
-            if (str_starts_with($phoneNumber, $code)) {
+            if (str_starts_with($phoneNumber, (string) $code)) {
                 return true;
             }
         }
-        
+
         return false;
+    }
+
+    protected function safeLog(string $level, string $message, array $context = []): void
+    {
+        try {
+            Log::log($level, $message, $context);
+        } catch (\Throwable $e) {
+            error_log($message.' '.json_encode($context).' '.$e->getMessage());
+        }
     }
 
     /**
@@ -64,50 +77,58 @@ class Sms {
      */
     public function sendSms($to, $message)
     {
-        // check if the country code is allowed
-        if (!$this->isAllowedCountryCode($to)) {
-            Log::warning('SMS blocked', ['phone' => $to]);
+        try {
+            $allowedCountryCodes = config('app.sms.allowed_country_codes', ['60', '65']);
+            if (! is_array($allowedCountryCodes)) {
+                $allowedCountryCodes = ['60', '65'];
+            }
+
+            if (! $this->isAllowedCountryCode($to, $allowedCountryCodes)) {
+                $this->safeLog('warning', 'SMS blocked', ['phone' => $to]);
+
+                return false;
+            }
+
+            $activeProvider = config('app.sms.active_provider', 'byteplus');
+            $this->safeLog('info', 'Using SMS provider', ['provider' => $activeProvider]);
+
+            if ($activeProvider === 'movider') {
+                $moviderResponse = $this->sendMoviderSms($to, $message);
+
+                if ($moviderResponse !== false) {
+                    return $moviderResponse;
+                }
+
+                $this->safeLog('info', 'Movider SMS failed, falling back to BytePlus');
+                $byteplusResponse = $this->sendBytePlusSms($to, $message);
+
+                if ($byteplusResponse !== false) {
+                    return $byteplusResponse;
+                }
+            } else {
+                $byteplusResponse = $this->sendBytePlusSms($to, $message);
+
+                if ($byteplusResponse !== false) {
+                    return $byteplusResponse;
+                }
+
+                $this->safeLog('info', 'BytePlus SMS failed, falling back to Movider');
+                $moviderResponse = $this->sendMoviderSms($to, $message);
+
+                if ($moviderResponse !== false) {
+                    return $moviderResponse;
+                }
+            }
+
+            return false;
+        } catch (\Throwable $e) {
+            $this->safeLog('error', 'Error sending SMS: '.$e->getMessage(), [
+                'phone' => $to,
+                'exception' => get_class($e),
+            ]);
+
             return false;
         }
-
-        // Get the active SMS provider from config
-        $activeProvider = config('app.sms.active_provider', 'byteplus');
-        Log::info('Using SMS provider', ['provider' => $activeProvider]);
-        
-        if ($activeProvider === 'movider') {
-            // Try sending SMS using Movider first
-            $moviderResponse = $this->sendMoviderSms($to, $message);
-            
-            if ($moviderResponse !== false) {
-                return $moviderResponse;
-            }
-            
-            // If Movider fails, fallback to BytePlus
-            Log::info('Movider SMS failed, falling back to BytePlus');
-            $byteplusResponse = $this->sendBytePlusSms($to, $message);
-            
-            if ($byteplusResponse !== false) {
-                return $byteplusResponse;
-            }
-        } else {
-            // Default to BytePlus
-            $byteplusResponse = $this->sendBytePlusSms($to, $message);
-            
-            if ($byteplusResponse !== false) {
-                return $byteplusResponse;
-            }
-            
-            // If BytePlus fails, fallback to Movider
-            Log::info('BytePlus SMS failed, falling back to Movider');
-            $moviderResponse = $this->sendMoviderSms($to, $message);
-            
-            if ($moviderResponse !== false) {
-                return $moviderResponse;
-            }
-        }
-
-        // If both services fail, return false
-        return false;
     }
 
     /**
@@ -126,29 +147,31 @@ class Sms {
         ];
 
         try {
-            Log::info('Sending SMS using BytePlus', $params);
+            $this->safeLog('info', 'Sending SMS using BytePlus', $params);
 
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json;charset=utf-8',
-                'Authorization' => 'Basic ' . base64_encode($this->byteplusUsername . ':' . $this->byteplusPassword),
+                'Authorization' => 'Basic '.base64_encode($this->byteplusUsername.':'.$this->byteplusPassword),
             ])->post($this->byteplusUrl, $params);
 
-            Log::info('BytePlus SMS response', [
+            $this->safeLog('info', 'BytePlus SMS response', [
                 'status' => $response->getStatusCode(),
-                'body' => $response->body()
+                'body' => $response->body(),
             ]);
 
             if ($response->status() == 200) {
                 return $response->body();
-            } else {
-                Log::error('Error sending SMS using BytePlus: ' . $response->body(), [
-                    'params' => $params
-                ]);
-                return false;
             }
-        } catch (\Exception $e) {
-            Log::error('Error sending SMS using BytePlus: ' . $e->getMessage(), $params);
+
+            $this->safeLog('error', 'Error sending SMS using BytePlus: '.$response->body(), [
+                'params' => $params,
+            ]);
+
+            return false;
+        } catch (\Throwable $e) {
+            $this->safeLog('error', 'Error sending SMS using BytePlus: '.$e->getMessage(), $params);
             $this->sendFailureNotificationEmail('BytePlus', $to, $e->getMessage());
+
             return false;
         }
     }
@@ -171,24 +194,29 @@ class Sms {
         ];
 
         try {
-            Log::info('Sending SMS using Movider', $data);
+            $this->safeLog('info', 'Sending SMS using Movider', [
+                'to' => $to,
+                'from' => config('app.name'),
+            ]);
 
             $response = Http::asForm()->post($this->moviderApiUrl, $data);
 
-            Log::info('Movider SMS response', [
+            $this->safeLog('info', 'Movider SMS response', [
                 'status' => $response->getStatusCode(),
-                'body' => $response->body()
+                'body' => $response->body(),
             ]);
 
             if ($response->status() == 200) {
                 return $response->body();
-            } else {
-                Log::error('Error sending SMS using Movider: ' . $response->body());
-                return false;
             }
-        } catch (\Exception $e) {
-            Log::error('Error sending SMS using Movider: ' . $e->getMessage(), $data);
+
+            $this->safeLog('error', 'Error sending SMS using Movider: '.$response->body());
+
+            return false;
+        } catch (\Throwable $e) {
+            $this->safeLog('error', 'Error sending SMS using Movider: '.$e->getMessage(), ['to' => $to]);
             $this->sendFailureNotificationEmail('Movider', $to, $e->getMessage());
+
             return false;
         }
     }
@@ -202,9 +230,17 @@ class Sms {
      */
     protected function sendFailureNotificationEmail($gateway, $to, $errorMessage)
     {
-        $subject = "Failed to send SMS from {$gateway} to number: {$to}";
-        $content = "Error message: {$errorMessage}\n\nTimestamp: " . now()->format('Y-m-d H:i:s');
+        try {
+            $subject = "Failed to send SMS from {$gateway} to number: {$to}";
+            $content = "Error message: {$errorMessage}\n\nTimestamp: ".now()->format('Y-m-d H:i:s');
 
-        Mail::to(config('app.tech_support'))->queue(new SmsFailureNotification($subject, $content));
+            Mail::to(config('app.tech_support'))->queue(new SmsFailureNotification($subject, $content));
+        } catch (\Throwable $e) {
+            $this->safeLog('error', 'Failed to queue SMS failure notification email', [
+                'gateway' => $gateway,
+                'to' => $to,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }

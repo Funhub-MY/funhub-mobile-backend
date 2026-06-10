@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class AuthOtpService
@@ -57,8 +58,9 @@ class AuthOtpService
      * Uses a direct query update for existing users to avoid Scout/Auditing/model events.
      *
      * @throws QueryException when a new phone number violates a unique constraint
+     * @return bool whether the SMS gateway accepted the send request
      */
-    public function issueAndSend(string $countryCode, string $phoneNo, ?string $name = null): void
+    public function issueAndSend(string $countryCode, string $phoneNo, ?string $name = null): bool
     {
         $otp = (string) rand(100000, 999999);
         $expiresAt = now()->addMinutes(1);
@@ -72,16 +74,14 @@ class AuthOtpService
             $this->createUserWithOtp($countryCode, $phoneNo, $fullPhoneNo, $name, $otp, $expiresAt);
         }
 
-        $this->smsService->sendSms(
-            $fullPhoneNo,
-            config('app.name').' - Your OTP is '.$otp
-        );
+        return $this->sendOtpSms($fullPhoneNo, $otp);
     }
 
     /**
      * @throws QueryException
+     * @return bool whether the SMS gateway accepted the send request
      */
-    public function issueAndSendForUser(User $user): void
+    public function issueAndSendForUser(User $user): bool
     {
         $otp = (string) rand(100000, 999999);
         $expiresAt = now()->addMinutes(1);
@@ -90,10 +90,31 @@ class AuthOtpService
 
         $fullPhoneNo = $user->phone_country_code.$user->phone_no;
 
-        $this->smsService->sendSms(
-            $fullPhoneNo,
-            config('app.name').' - Your OTP is '.$otp
-        );
+        return $this->sendOtpSms($fullPhoneNo, $otp);
+    }
+
+    protected function sendOtpSms(string $fullPhoneNo, string $otp): bool
+    {
+        try {
+            $result = $this->smsService->sendSms(
+                $fullPhoneNo,
+                config('app.name').' - Your OTP is '.$otp
+            );
+
+            return $result !== false;
+        } catch (\Throwable $e) {
+            try {
+                Log::error('OTP SMS send failed', [
+                    'phone' => $fullPhoneNo,
+                    'error' => $e->getMessage(),
+                    'exception' => get_class($e),
+                ]);
+            } catch (\Throwable) {
+                error_log('OTP SMS send failed: '.$e->getMessage());
+            }
+
+            return false;
+        }
     }
 
     protected function persistOtpForExistingUser(int $userId, string $otp, $expiresAt): void

@@ -272,7 +272,7 @@ class AuthController extends Controller
         $request->merge(['phone_no' => $phoneNo]);
 
         try {
-            $this->authOtpService->issueAndSend(
+            $smsSent = $this->authOtpService->issueAndSend(
                 $request->country_code,
                 $phoneNo,
                 $request->input('name')
@@ -293,6 +293,12 @@ class AuthController extends Controller
                 error_log('sendOtp failed: '.$e->getMessage());
             }
 
+            return response()->json([
+                'message' => __('messages.error.auth_controller.Failed_to_send_OTP'),
+            ], 422);
+        }
+
+        if (! $smsSent) {
             return response()->json([
                 'message' => __('messages.error.auth_controller.Failed_to_send_OTP'),
             ], 422);
@@ -906,7 +912,7 @@ class AuthController extends Controller
             }
 
             try {
-                $this->authOtpService->issueAndSendForUser($user);
+                $smsSent = $this->authOtpService->issueAndSendForUser($user);
             } catch (\Throwable $e) {
                 Log::error('postResetPasswordSendOtp failed', [
                     'phone_no' => $user->phone_no,
@@ -914,6 +920,13 @@ class AuthController extends Controller
                     'exception' => get_class($e),
                 ]);
 
+                return response()->json([
+                    'status' => 'error',
+                    'message' => __('messages.error.auth_controller.Failed_to_send_OTP'),
+                ], 422);
+            }
+
+            if (! $smsSent) {
                 return response()->json([
                     'status' => 'error',
                     'message' => __('messages.error.auth_controller.Failed_to_send_OTP'),
