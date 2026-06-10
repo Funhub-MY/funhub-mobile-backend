@@ -294,10 +294,13 @@ class Mpay {
 
         $responseData = json_decode($response['body'], true);
         if ($response['status'] == 200 && isset($responseData['responseCode']) && $responseData['responseCode'] == '00' && isset($responseData['paymentTypeList'])) {
-            $paymentTypes = explode(',', $responseData['paymentTypeList']);
-            return array_map(function ($paymentType) {
+            $paymentTypes = array_map(function ($paymentType) {
                 return trim(str_replace(['[', ']'], '', $paymentType));
-            }, $paymentTypes);
+            }, explode(',', $responseData['paymentTypeList']));
+
+            return array_values(array_filter($paymentTypes, function ($paymentType) {
+                return !preg_match('/-null$/i', $paymentType);
+            }));
         } else {
             Log::error('Error checking available payment types', [
                 'status' => $response['status'],
