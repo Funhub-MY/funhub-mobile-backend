@@ -29,7 +29,7 @@ class MediaResource extends JsonResource
 
         // add video resolutions if this is a video with processed resolutions
         // video resolutions refer to VideoJob
-        if (str_contains($this->mime_type, 'video') && $this->video_resolutions) {
+        if ($this->mime_type && str_contains($this->mime_type, 'video') && $this->video_resolutions) {
             $response['resolutions'] = [
                 'abr' => $this->video_resolutions['abr'] ?? null,
                 'master_abr' => $this->video_resolutions['master_abr'] ?? null,

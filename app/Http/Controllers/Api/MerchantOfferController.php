@@ -91,31 +91,8 @@ class MerchantOfferController extends Controller
         $query = MerchantOffer::query()
             ->published()
             // ->available()
-            ->with([
-                'user',
-                'user.merchant',
-                'user.merchant.media',
-                'claims',
-                'categories',
-                'stores',
-                'stores.location',
-                'stores.storeRatings',
-                'claims',
-                'location',
-                'location.ratings',
-                'media',
-                'interactions',
-                'views',
-                'likes' => function ($query) {
-                    $query->where('user_id', auth()->user()->id);
-                },
-                'interactions' => function ($query) {
-                    $query->where('user_id', auth()->user()->id);
-                },
-            ])
-            ->withCount([
-                'unclaimedVouchers',
-            ]);
+            ->with($this->merchantOfferEagerLoads())
+            ->withCount($this->merchantOfferWithCounts());
 
         // category_ids filter
         if ($request->has('category_ids')) {
@@ -128,13 +105,7 @@ class MerchantOfferController extends Controller
             }
         }
 
-        if ($request->has('merchant_offer_ids')) {
-            // remove square brackets and spaces before exploding
-            $merchant_offer_ids = str_replace(['[', ']', ' '], '', $request->merchant_offer_ids);
-            $ids = explode(',', $merchant_offer_ids);
-            $query->whereIn('id', $ids)
-                ->orderByRaw('FIELD(id,'.implode(',', $ids).')');
-        }
+        $this->applyMerchantOfferIdsFilter($query, $request);
 
         if ($request->has('available_only')) {
             $query->available();
@@ -245,11 +216,8 @@ class MerchantOfferController extends Controller
         $userPurchasedBeforeFromMerchantIds = $this->getUserPurchasedBeforeFromMerchantIds($request->user());
         // map userPurchasedBeforeFromMerchantIds to MerchantOfferResource
         $data->map(function ($item, $key) use ($userPurchasedBeforeFromMerchantIds) {
-            if (in_array($item->user->id, $userPurchasedBeforeFromMerchantIds)) {
-                $item->user_purchased_before_from_merchant = true;
-            } else {
-                $item->user_purchased_before_from_merchant = false;
-            }
+            $item->user_purchased_before_from_merchant = $item->user
+                && in_array($item->user->id, $userPurchasedBeforeFromMerchantIds);
 
             return $item;
         });
@@ -439,40 +407,21 @@ class MerchantOfferController extends Controller
         $offer = MerchantOffer::query()
             ->where('id', $id)
             // ->available()
-            ->with([
-                'user',
-                'user.merchant',
-                'user.merchant.media',
-                'claims',
-                'categories',
+            ->with(array_merge($this->merchantOfferEagerLoads(), [
                 'stores' => function ($query) {
                     $query->where('status', Store::STATUS_ACTIVE);
                 },
-                'stores.location',
-                'stores.storeRatings',
-                'claims',
-                'location',
-                'location.ratings',
-                'media',
-                'interactions',
-                'views',
-                'likes' => function ($query) {
-                    $query->where('user_id', auth()->user()->id);
-                },
-                'interactions' => function ($query) {
-                    $query->where('user_id', auth()->user()->id);
-                },
-            ])
-            ->withCount([
-                'unclaimedVouchers',
-            ])->first();
+            ]))
+            ->withCount($this->merchantOfferWithCounts())
+            ->first();
 
         // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
         // eg. customer buy from Merchant A offer A today, they should not see Merchant A offer A for next 30 days
         $userPurchasedBeforeFromMerchantIds = $this->getUserPurchasedBeforeFromMerchantIds(auth()->user());
 
         // override $offer->user_purchased_before_from_merchant with the value
-        $offer->user_purchased_before_from_merchant = in_array($offer->user->id, $userPurchasedBeforeFromMerchantIds) ? true : false;
+        $offer->user_purchased_before_from_merchant = $offer->user
+            && in_array($offer->user->id, $userPurchasedBeforeFromMerchantIds);
 
         $offer = $this->getPointDiscount(collect([$offer]))->first();
 
@@ -1163,31 +1112,8 @@ class MerchantOfferController extends Controller
             ->published()
             ->where('available_for_web', true)
             // ->available()
-            ->with([
-                'user',
-                'user.merchant',
-                'user.merchant.media',
-                'claims',
-                'categories',
-                'stores',
-                'stores.location',
-                'stores.storeRatings',
-                'claims',
-                'location',
-                'location.ratings',
-                'media',
-                'interactions',
-                'views',
-                // 'likes' => function ($query) {
-                //     $query->where('user_id', auth()->user()->id);
-                // },
-                // 'interactions' => function ($query) {
-                //     $query->where('user_id', auth()->user()->id);
-                // },
-            ])
-            ->withCount([
-                'unclaimedVouchers',
-            ]);
+            ->with($this->merchantOfferEagerLoads(requireAuth: false))
+            ->withCount($this->merchantOfferWithCounts());
 
         // category_ids filter
         if ($request->has('category_ids')) {
@@ -1200,13 +1126,7 @@ class MerchantOfferController extends Controller
             }
         }
 
-        if ($request->has('merchant_offer_ids')) {
-            // Remove square brackets and spaces before exploding
-            $merchant_offer_ids = str_replace(['[', ']', ' '], '', $request->merchant_offer_ids);
-            $ids = explode(',', $merchant_offer_ids);
-            $query->whereIn('id', $ids)
-                ->orderByRaw('FIELD(id,'.implode(',', $ids).')');
-        }
+        $this->applyMerchantOfferIdsFilter($query, $request);
 
         if ($request->has('available_only')) {
             $query->available();
@@ -1458,13 +1378,7 @@ class MerchantOfferController extends Controller
             }
         }
 
-        if ($request->has('merchant_offer_ids')) {
-            // Remove square brackets and spaces before exploding
-            $merchant_offer_ids = str_replace(['[', ']', ' '], '', $request->merchant_offer_ids);
-            $ids = explode(',', $merchant_offer_ids);
-            $query->whereIn('id', $ids)
-                ->orderByRaw('FIELD(id,'.implode(',', $ids).')');
-        }
+        $this->applyMerchantOfferIdsFilter($query, $request);
 
         if ($request->has('available_only')) {
             $query->available();
@@ -1508,34 +1422,13 @@ class MerchantOfferController extends Controller
             });
         }
 
-        $query->with([
-            'user',
-            'user.merchant',
-            'user.merchant.media',
-            'claims',
-            'categories',
+        $query->with(array_merge($this->merchantOfferEagerLoads(), [
             'stores' => function ($query) use ($request) {
                 $query->withDistance($request->lat, $request->lng)
                     ->orderBy('distance', 'ASC');
             },
-            'stores.location',
-            'stores.storeRatings',
-            'claims',
-            'location',
-            'location.ratings',
-            'media',
-            'interactions',
-            'views',
-            'likes' => function ($query) {
-                $query->where('user_id', auth()->user()->id);
-            },
-            'interactions' => function ($query) {
-                $query->where('user_id', auth()->user()->id);
-            },
-        ])
-            ->withCount([
-                'unclaimedVouchers',
-            ]);
+        ]))
+            ->withCount($this->merchantOfferWithCounts());
 
         return $query;
     }
@@ -1661,5 +1554,79 @@ class MerchantOfferController extends Controller
 
             return '';
         }
+    }
+
+    protected function parseMerchantOfferIds($value): array
+    {
+        $merchantOfferIds = str_replace(['[', ']', ' '], '', (string) $value);
+
+        return array_values(array_filter(
+            explode(',', $merchantOfferIds),
+            fn ($id) => $id !== '' && is_numeric($id)
+        ));
+    }
+
+    protected function applyMerchantOfferIdsFilter($query, Request $request): void
+    {
+        if (! $request->has('merchant_offer_ids')) {
+            return;
+        }
+
+        $ids = $this->parseMerchantOfferIds($request->merchant_offer_ids);
+
+        if (count($ids) === 0) {
+            return;
+        }
+
+        $query->whereIn('id', $ids)
+            ->orderByRaw('FIELD(id,'.implode(',', $ids).')');
+    }
+
+    protected function merchantOfferEagerLoads(bool $requireAuth = true): array
+    {
+        $loads = [
+            'user',
+            'user.merchant',
+            'user.merchant.media',
+            'categories',
+            'stores',
+            'stores.location',
+            'stores.storeRatings',
+            'location',
+            'location.ratings',
+            'media',
+        ];
+
+        if ($requireAuth && auth()->user()) {
+            $userId = auth()->user()->id;
+            $loads['likes'] = function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            };
+            $loads['interactions'] = function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            };
+        }
+
+        return $loads;
+    }
+
+    protected function merchantOfferWithCounts(): array
+    {
+        return [
+            'unclaimedVouchers',
+            'claims as claimed_quantity_count' => function ($query) {
+                $query->where('merchant_offer_user.status', MerchantOffer::CLAIM_SUCCESS);
+            },
+            'views as views_count',
+            'interactions as likes_count' => function ($query) {
+                $query->where('type', Interaction::TYPE_LIKE);
+            },
+            'interactions as shares_count' => function ($query) {
+                $query->where('type', Interaction::TYPE_SHARE);
+            },
+            'interactions as bookmarks_count' => function ($query) {
+                $query->where('type', Interaction::TYPE_BOOKMARK);
+            },
+        ];
     }
 }

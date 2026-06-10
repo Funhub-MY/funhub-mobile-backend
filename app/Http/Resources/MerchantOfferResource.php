@@ -24,7 +24,7 @@ class MerchantOfferResource extends JsonResource
             $loc = $this->location->first();
 
             // if artilce locaiton has ratings, get current article owner's ratings
-            if ($loc && $loc->has('ratings')) {
+            if ($loc && $loc->has('ratings') && $this->user) {
                 $articleOwnerRating = $loc->ratings->where('user_id', $this->user->id)->first();
                 $location = [
                     'id' => $loc->id,
@@ -45,9 +45,9 @@ class MerchantOfferResource extends JsonResource
 				$this->highlight_messages;
 
 			// Filter out null messages and keep only valid ones
-			$validMessages = array_filter($messages, function($message) {
+			$validMessages = is_array($messages) ? array_filter($messages, function($message) {
 				return isset($message['message']) && $message['message'] !== null;
-			});
+			}) : [];
 
 			// If we have valid messages, return them, otherwise return null
 			if (!empty($validMessages)) {
@@ -94,8 +94,8 @@ class MerchantOfferResource extends JsonResource
                 'business_name' => ($this->user && $this->user->merchant) ? $this->user->merchant->business_name : null,
                 'business_phone_no' => ($this->user && $this->user->merchant) ? $this->user->merchant->business_phone_no : null,
                 'user' => [
-                    'id' => $this->user->id,
-                    'name' => $this->user->name,
+                    'id' => $this->user?->id,
+                    'name' => $this->user?->name,
                 ]
             ],
             'name' => $this->name,
@@ -117,9 +117,7 @@ class MerchantOfferResource extends JsonResource
             'available_until' => $this->available_until,
             'expiry_days' => $this->expiry_days,
             'quantity' => $this->unclaimed_vouchers_count,
-            'claimed_quantity' => ($this->claims) ? $this->claims->filter(function ($q) {
-                return $q->pivot->status == MerchantOffer::CLAIM_SUCCESS;
-            })->count() : 0,
+            'claimed_quantity' => (int) ($this->claimed_quantity_count ?? 0),
             'media' => MediaResource::collection($this->media),
             'gallery' => ($this->media) ? MediaResource::collection($this->media->filter(function ($item) {
                 return $item->collection_name != MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER;
@@ -129,10 +127,10 @@ class MerchantOfferResource extends JsonResource
             'interactions' => InteractionResource::collection($this->interactions),
             'location' => $location,
             'count' => [
-                'likes' => $this->interactions->where('type', Interaction::TYPE_LIKE)->count(),
-                'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),
-                'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
-                'views' => $this->views->count()
+                'likes' => (int) ($this->likes_count ?? 0),
+                'share' => (int) ($this->shares_count ?? 0),
+                'bookmarks' => (int) ($this->bookmarks_count ?? 0),
+                'views' => (int) ($this->views_count ?? 0),
             ],
             'my_interactions' => [
                 'like' => $this->whenLoaded('likes', function () {
