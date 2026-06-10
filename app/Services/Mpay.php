@@ -16,6 +16,7 @@ class Mpay {
             // uat mode
             $this->url = config('services.mpay.uat_url');
         }
+        $this->url = rtrim(trim($this->url), '/');
         $this->mid = $mid;
         $this->hashKey = $hashKey;
 
@@ -269,7 +270,12 @@ class Mpay {
      */
     public function checkAvailablePaymentTypes()
     {
-        $url = rtrim(trim($this->url), '/') . '/api/paymentService/checkPaymentType/';
+        if (!$this->mid || !$this->hashKey) {
+            Log::error('[MPAY] checkAvailablePaymentTypes skipped: MPAY_MID or MPAY_HASH_KEY is not configured');
+            return [];
+        }
+
+        $url = $this->url . '/api/paymentService/checkPaymentType/';
 
         $data = [
             'mid' => $this->mid,

@@ -294,27 +294,41 @@ class AuthController extends Controller
 
         // Generate new OTP
         $otp = rand(100000, 999999);
-        if (! $user) {
-            // user doest not exist
-            // register user account first with phone no.
-            try {
-                $user = User::create([
-                    'phone_country_code' => $request->country_code,
-                    'phone_no' => $request->phone_no, // unique
-                    'name' => $request->input('name', null), // if pass in name will skip onboarding
-                    'otp' => $otp,
-                    'otp_expiry' => now()->addMinutes(1),
-                    'otp_verified_at' => null,
-                ]);
-            } catch (\Exception $e) {
-                return response()->json(['message' => __('messages.error.auth_controller.Phone_Number_already_registered')], 422);
+        $otpPayload = [
+            'otp' => $otp,
+            'otp_expiry' => now()->addMinutes(1),
+            'otp_verified_at' => null,
+        ];
+
+        try {
+            if (! $user) {
+                // user doest not exist
+                // register user account first with phone no.
+                $user = User::withoutSyncingToSearch(function () use ($request, $otpPayload) {
+                    return User::create([
+                        'phone_country_code' => $request->country_code,
+                        'phone_no' => $request->phone_no, // unique
+                        'name' => $request->input('name', null), // if pass in name will skip onboarding
+                        ...$otpPayload,
+                    ]);
+                });
+            } else {
+                User::withoutSyncingToSearch(function () use ($user, $otpPayload) {
+                    $user->update($otpPayload);
+                });
             }
-        } else {
-            $user->update([
-                'otp' => $otp,
-                'otp_expiry' => now()->addMinutes(1),
-                'otp_verified_at' => null,
+        } catch (\Exception $e) {
+            Log::error('Failed to save OTP', [
+                'phone_no' => $request->phone_no,
+                'country_code' => $request->country_code,
+                'error' => $e->getMessage(),
             ]);
+
+            return response()->json([
+                'message' => $user
+                    ? __('messages.error.auth_controller.Failed_to_send_OTP')
+                    : __('messages.error.auth_controller.Phone_Number_already_registered'),
+            ], 422);
         }
 
         // Fires SMS
@@ -940,10 +954,12 @@ class AuthController extends Controller
 
             // create a new otp
             $otp = rand(100000, 999999);
-            $user->update([
-                'otp' => $otp,
-                'otp_expiry' => now()->addMinutes(1),
-            ]);
+            User::withoutSyncingToSearch(function () use ($user, $otp) {
+                $user->update([
+                    'otp' => $otp,
+                    'otp_expiry' => now()->addMinutes(1),
+                ]);
+            });
 
             // send otp to user
             $this->smsService->sendSms($user->full_phone_no, config('app.name').' - Your OTP is '.$user->otp);
