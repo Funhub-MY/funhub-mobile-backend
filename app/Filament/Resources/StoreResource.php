@@ -307,11 +307,7 @@ class StoreResource extends Resource
                             ->maxFiles(7)
                             ->collection(Store::MEDIA_COLLECTION_PHOTOS)
                             ->columnSpan('full')
-                            ->disk(function () {
-                                if (storage_is_cloud()) {
-                                    return storage_public_disk();
-                                }
-                            })
+                            ->disk(fn () => storage_filament_upload_disk())
                             ->acceptedFileTypes(['image/*'])
                             ->enableDownload(true)
                             ->rules('image'),
@@ -325,20 +321,10 @@ class StoreResource extends Resource
                                 FileUpload::make('file')
                                     ->label('Menu File (PDF ONLY)')
                                     ->enableDownload(true)
-                                    ->disk(function () {
-                                        if (storage_is_cloud()) {
-                                            return storage_public_disk();
-                                        }
-                                    })
+                                    ->disk(fn () => storage_filament_upload_disk())
                                     ->acceptedFileTypes(['application/pdf'])
                                     ->rules('mimes:pdf')
-                                    ->getUploadedFileUrlUsing(function ($file) {
-                                        $disk = config('filesystems.default');
-                                        if (storage_is_cloud()) {
-                                            $disk = storage_public_disk();
-                                        }
-                                        return storage_disk_url($disk, $file);
-                                    }),
+                                    ->getUploadedFileUrlUsing(fn ($file) => storage_disk_url(storage_filament_upload_disk(), $file)),
                             ])
                     ]),
 				Toggle::make('is_appointment_only')

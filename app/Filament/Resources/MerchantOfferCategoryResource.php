@@ -133,11 +133,7 @@ class MerchantOfferCategoryResource extends Resource
                     Forms\Components\SpatieMediaLibraryFileUpload::make('icon')
                         ->label('Icon')
                         ->collection('merchant_offer_category')
-                        ->disk(function () {
-                            if (storage_is_cloud()) {
-                                return storage_public_disk();
-                            }
-                        })
+                        ->disk(fn () => storage_filament_upload_disk())
                         ->acceptedFileTypes(['image/*'])
                         ->rules('image')
                         ->columnSpanFull(),

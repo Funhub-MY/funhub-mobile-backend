@@ -72,16 +72,18 @@ class CreateStore extends CreateRecord
 
         // create menus
         if (isset($data['menus']) && count($data['menus']) > 0) {
+            $publicDisk = storage_filament_upload_disk();
+
             foreach ($data['menus'] as $menu) {
                 if (!isset($menu['file'])) continue;
 
-                // add from url to media collection with custom properties $menu['name'] then remove from file
-                $merchant->addMediaFromDisk($menu['file'])
+                $merchant->addMediaFromDisk($menu['file'], $publicDisk)
                     ->withCustomProperties(['name' => $menu['name']])
-                    ->toMediaCollection(Store::MEDIA_COLLECTION_MENUS);
+                    ->toMediaCollection(Store::MEDIA_COLLECTION_MENUS, $publicDisk);
 
-                // remove $menu['file'] from storage as moved to spatiemedialibrary
-                Storage::delete($menu['file']);
+                if (Storage::disk($publicDisk)->exists($menu['file'])) {
+                    Storage::disk($publicDisk)->delete($menu['file']);
+                }
             }
         }
 

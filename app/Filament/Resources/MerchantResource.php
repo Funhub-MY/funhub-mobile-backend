@@ -233,11 +233,7 @@ class MerchantResource extends Resource
                             // ->required()
                             ->enableDownload(true)
                             ->columnSpan('full')
-                            ->disk(function () {
-                                if (storage_is_cloud()) {
-                                    return storage_public_disk();
-                                }
-                            })
+                            ->disk(fn () => storage_filament_upload_disk())
                             ->acceptedFileTypes(['image/*'])
                             ->rules('image'),
 
@@ -249,11 +245,7 @@ class MerchantResource extends Resource
                             ->collection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)
                             // ->required()
                             ->columnSpan('full')
-                            ->disk(function () {
-                                if (storage_is_cloud()) {
-                                    return storage_public_disk();
-                                }
-                            })
+                            ->disk(fn () => storage_filament_upload_disk())
                             ->acceptedFileTypes(['image/*'])
                             ->rules('image'),
 

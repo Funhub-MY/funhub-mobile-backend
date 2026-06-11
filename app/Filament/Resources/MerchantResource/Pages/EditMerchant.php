@@ -58,10 +58,7 @@ class EditMerchant extends EditRecord
 
         // save uploads from repeater files
         if (isset($data['menus'])) {
-            $disk = config('filesystems.default');
-            if (storage_is_cloud()) {
-                $disk = storage_public_disk();
-            }
+            $disk = storage_filament_upload_disk();
 
             Log::info('Menus: ', ['menus' => $data['menus']]);
             // Save existing menu files to a temporary directory
@@ -97,7 +94,7 @@ class EditMerchant extends EditRecord
 
                 $media = $this->record->addMediaFromDisk($filePath, $disk)
                     ->withCustomProperties($customProperties)
-                    ->toMediaCollection(Merchant::MEDIA_COLLECTION_MENUS);
+                    ->toMediaCollection(Merchant::MEDIA_COLLECTION_MENUS, $disk);
 
                 Log::info('File uploaded: ', ['media' => $media, 'file' => $file]);
 
@@ -112,7 +109,7 @@ class EditMerchant extends EditRecord
             }
 
             // Delete the temporary directory
-            Storage::deleteDirectory($tempDir);
+            Storage::disk($disk)->deleteDirectory($tempDir);
 
             // Clear the media collection after processing all files
             $this->record->clearMediaCollection(Merchant::MEDIA_COLLECTION_MENUS);

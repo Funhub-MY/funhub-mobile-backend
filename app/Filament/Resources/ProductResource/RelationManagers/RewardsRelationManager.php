@@ -29,11 +29,7 @@ class RewardsRelationManager extends RelationManager
                     ->label('Thumbnail')
                     ->collection(Reward::COLLECTION_NAME)
                     // disk is s3_public 
-                    ->disk(function () {
-                        if (storage_is_cloud()) {
-                            return storage_public_disk();
-                        }
-                    })
+                    ->disk(fn () => storage_filament_upload_disk())
                     ->acceptedFileTypes(['image/*'])
                     ->maxFiles(1)
                     ->rules('image'),

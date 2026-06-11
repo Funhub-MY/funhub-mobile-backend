@@ -118,11 +118,7 @@ class ArticleResource extends Resource
                                 ->columnSpan('full')
                                 ->customProperties(['is_cover' => false])
                                 // disk is s3_public
-                                ->disk(function () {
-                                    if (storage_is_cloud()) {
-                                        return storage_public_disk();
-                                    }
-                                })
+                                ->disk(fn () => storage_filament_upload_disk())
                                 ->acceptedFileTypes(['image/*'])
                                 ->maxFiles(20)
                                 ->enableReordering()
@@ -136,50 +132,25 @@ class ArticleResource extends Resource
                                 ->label('Video Thumbnail')
                                 ->helperText('This image will be used as the thumbnail for the video (Max file size 4MB)')
                                 ->columnSpan('full')
-                                ->disk(function () {
-                                    if (storage_is_cloud()) {
-                                        return storage_public_disk();
-                                    }
-                                })
+                                ->disk(fn () => storage_filament_upload_disk())
                                 ->directory('filament-article-uploads')
                                 ->acceptedFileTypes(['image/*'])
                                 ->rules('image')
 								->required()
 								->maxSize(4096)
                                 ->hidden(fn (Closure $get) => $get('type') !== 'video')
-                                ->getUploadedFileUrlUsing(function ($file) {
-                                    $disk = config('filesystems.default');
-
-                                    if (storage_is_cloud()) {
-                                        $disk = storage_public_disk();
-                                    }
-
-                                    return storage_disk_url($disk, $file);
-                                }),
+                                ->getUploadedFileUrlUsing(fn ($file) => storage_disk_url(storage_filament_upload_disk(), $file)),
                             FileUpload::make('video')
                                 ->label('Video File')
                                 ->helperText('One Video Only, Maximum file size: '. (config('app.max_size_per_video_kb') / 1024 / 1024). ' MB. Allowable types: mp4, mov')
                                 ->columnSpan('full')
-                                ->disk(function () {
-                                    if (storage_is_cloud()) {
-                                        return storage_public_disk();
-                                    }
-                                })
+                                ->disk(fn () => storage_filament_upload_disk())
                                 ->directory('filament-article-uploads')
                                 ->acceptedFileTypes(['video/*'])
                                 ->hidden(fn (Closure $get) => $get('type') !== 'video')
                                 ->rules('mimes:m4v,mp4,mov|max:'.config('app.max_size_per_video_kb'))
 								->required()
-								->getUploadedFileUrlUsing(function ($file) {
-                                    $disk = config('filesystems.default');
-
-                                    if (storage_is_cloud()) {
-                                        $disk = storage_public_disk();
-                                        Log::info('Disk: '. $disk);
-                                    }
-                                    Log::info(storage_disk_url($disk, $file));
-                                    return storage_disk_url($disk, $file);
-                                }),
+								->getUploadedFileUrlUsing(fn ($file) => storage_disk_url(storage_filament_upload_disk(), $file)),
                         ])->columnSpan('full')
                     ])
                     ->columnSpan(['lg' => 2]),

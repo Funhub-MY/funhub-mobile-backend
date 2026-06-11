@@ -62,6 +62,8 @@ class ArticlesRelationManager extends RelationManager
                                 ->collection(Article::MEDIA_COLLECTION_NAME)
                                 ->columnSpan('full')
                                 ->customProperties(['is_cover' => false])
+                                ->disk(fn () => storage_filament_upload_disk())
+                                ->acceptedFileTypes(['image/*'])
                                 ->maxFiles(10)
                                 ->rules('image'),
                         ])->columnSpan('full')

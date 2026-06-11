@@ -52,21 +52,13 @@ class ProductResource extends Resource
                                     ->label('Card Image')
 									->required()
                                     ->collection(Product::MEDIA_COLLECTION_NAME)
-                                    ->disk(function () {
-                                        if (storage_is_cloud()) {
-                                            return storage_public_disk();
-                                        }
-                                    })
+                                    ->disk(fn () => storage_filament_upload_disk())
                                     ->acceptedFileTypes(['image/*'])
                                     ->rules('image'),
                                 Forms\Components\SpatieMediaLibraryFileUpload::make('product_bg_image')
                                     ->label('Background Image')
                                     ->collection(Product::MEDIA_BG_COLLECTION_NAME)
-                                    ->disk(function () {
-                                        if (storage_is_cloud()) {
-                                            return storage_public_disk();
-                                        }
-                                    })
+                                    ->disk(fn () => storage_filament_upload_disk())
                                     ->acceptedFileTypes(['image/*'])
                                     ->rules('image'),
 

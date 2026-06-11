@@ -105,7 +105,7 @@ class CreateArticle extends CreateRecord
         if (isset($data['video_thumbnail'])) {
             $video_thumbnail = $data['video_thumbnail'];
 
-            $publicDisk = storage_public_disk();
+            $publicDisk = storage_filament_upload_disk();
 
             $media = $article->addMediaFromDisk($video_thumbnail, $publicDisk)
                 ->withCustomProperties(['is_cover' => true])
@@ -124,7 +124,7 @@ class CreateArticle extends CreateRecord
         if (isset($data['video'])) {
             $video = $data['video'];
 
-            $publicDisk = storage_public_disk();
+            $publicDisk = storage_filament_upload_disk();
 
             $media = $article->addMediaFromDisk($video, $publicDisk)
                 ->toMediaCollection(Article::MEDIA_COLLECTION_NAME, $publicDisk);

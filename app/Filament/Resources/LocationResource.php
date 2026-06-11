@@ -50,11 +50,7 @@ class LocationResource extends Resource
                                 ->collection(Location::MEDIA_COLLECTION_NAME)
                                 ->columnSpan('full')
                                 // disk is s3_public
-                                ->disk(function () {
-                                    if (storage_is_cloud()) {
-                                        return storage_public_disk();
-                                    }
-                                })
+                                ->disk(fn () => storage_filament_upload_disk())
                                 ->acceptedFileTypes(['image/*'])
                                 ->maxFiles(1)
                                 ->rules('image'),

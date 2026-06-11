@@ -85,11 +85,7 @@ class CampaignQuestionResource extends Resource
                             ->label('Question Banner')
                             ->collection(CampaignQuestion::QUESTION_BANNER)
                             ->columnSpan('full')
-                            ->disk(function () {
-                                if (storage_is_cloud()) {
-                                    return storage_public_disk();
-                                }
-                            })
+                            ->disk(fn () => storage_filament_upload_disk())
                             ->acceptedFileTypes(['image/*'])
                             ->maxFiles(20)
                             ->enableReordering()
@@ -100,11 +96,7 @@ class CampaignQuestionResource extends Resource
                             ->label('Footer Banner')
                             ->collection(CampaignQuestion::FOOTER_BANNER)
                             ->columnSpan('full')
-                            ->disk(function () {
-                                if (storage_is_cloud()) {
-                                    return storage_public_disk();
-                                }
-                            })
+                            ->disk(fn () => storage_filament_upload_disk())
                             ->acceptedFileTypes(['image/*'])
                             ->maxFiles(20)
                             ->enableReordering()

@@ -56,11 +56,7 @@ class CampaignResource extends Resource
                             ->label('Event Banner Image')
                             ->collection(Campaign::EVENT_COLLECTION)
                             ->columnSpan('full')
-                            ->disk(function () {
-                                if (storage_is_cloud()) {
-                                    return storage_public_disk();
-                                }
-                            })
+                            ->disk(fn () => storage_filament_upload_disk())
                             ->acceptedFileTypes(['image/*'])
                             ->maxFiles(20)
                             ->enableReordering()
@@ -71,11 +67,7 @@ class CampaignResource extends Resource
                             ->label('Banner Image (Home)')
                             ->collection(Campaign::BANNER_COLLECTION)
                             ->columnSpan('full')
-                            ->disk(function () {
-                                if (storage_is_cloud()) {
-                                    return storage_public_disk();
-                                }
-                            })
+                            ->disk(fn () => storage_filament_upload_disk())
                             ->acceptedFileTypes(['image/*'])
                             ->maxFiles(20)
                             ->enableReordering()
@@ -86,11 +78,7 @@ class CampaignResource extends Resource
                             ->label('Floating Button Image')
                             ->collection(Campaign::ICON_COLLECTION)
                             ->columnSpan('full')
-                            ->disk(function () {
-                                if (storage_is_cloud()) {
-                                    return storage_public_disk();
-                                }
-                            })
+                            ->disk(fn () => storage_filament_upload_disk())
                             ->acceptedFileTypes(['image/*'])
                             ->maxFiles(20)
                             ->enableReordering()

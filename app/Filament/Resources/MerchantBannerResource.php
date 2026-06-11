@@ -46,12 +46,7 @@ class MerchantBannerResource extends Resource
                         ->image()
                         ->collection(MerchantBanner::MEDIA_COLLECTION_NAME)
                         ->required()
-                        ->disk(function () {
-                            if (storage_is_cloud()) {
-                                return storage_public_disk();
-                            }
-                            return config('filesystems.default');
-                        }),
+                        ->disk(fn () => storage_filament_upload_disk()),
                     Forms\Components\TextInput::make('order')
                         ->label('Order')
                         ->numeric()

@@ -40,12 +40,7 @@ class MessagesRelationManager extends RelationManager
                     ->multiple()
                     ->enableReordering()
                     ->acceptedFileTypes(['image/*', 'video/*'])
-                    ->disk(function () {
-                        if (storage_is_cloud()) {
-                            return storage_public_disk();
-                        }
-                        return config('filesystems.default');
-                    })
+                    ->disk(fn () => storage_filament_upload_disk())
                     ->directory('filament-support-request-uploads'),
             ]);
     }

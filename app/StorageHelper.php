@@ -20,6 +20,20 @@ if (! function_exists('storage_public_disk')) {
     }
 }
 
+if (! function_exists('storage_filament_upload_disk')) {
+    /**
+     * Disk used by Filament FileUpload / SpatieMediaLibraryFileUpload components.
+     */
+    function storage_filament_upload_disk(): string
+    {
+        if (storage_is_cloud()) {
+            return storage_public_disk();
+        }
+
+        return 'public';
+    }
+}
+
 if (! function_exists('storage_private_disk')) {
     function storage_private_disk(): string
     {

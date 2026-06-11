@@ -126,11 +126,7 @@ class ArticleCategoryResource extends Resource
                     ->multiple()
                     ->collection('article_category_icon')
                     ->columnSpan('full')
-                    ->disk(function () {
-                        if (storage_is_cloud()) {
-                            return storage_public_disk();
-                        }
-                    })
+                    ->disk(fn () => storage_filament_upload_disk())
                     ->acceptedFileTypes(['image/*'])
                     ->maxFiles(1)
                     ->rules('image'),

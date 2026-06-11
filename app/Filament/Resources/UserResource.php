@@ -162,11 +162,7 @@ class UserResource extends Resource
                             ->maxFiles(1)
                             ->nullable()
                             // disk is s3_public
-                            ->disk(function () {
-                                if (storage_is_cloud()) {
-                                    return storage_public_disk();
-                                }
-                            })
+                            ->disk(fn () => storage_filament_upload_disk())
                             ->collection('avatar'),
 
                         // bio

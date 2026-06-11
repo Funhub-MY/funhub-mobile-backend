@@ -83,11 +83,7 @@ class MerchantOfferResource extends Resource
                                     ->columnSpan('full')
                                     ->customProperties(['is_cover' => false])
                                     // disk is s3_public
-                                    ->disk(function () {
-                                        if (storage_is_cloud()) {
-                                            return storage_public_disk();
-                                        }
-                                    })
+                                    ->disk(fn () => storage_filament_upload_disk())
                                     ->acceptedFileTypes(['image/*'])
                                     ->maxFiles(20)
                                     ->rules('image'),
@@ -100,11 +96,7 @@ class MerchantOfferResource extends Resource
                                     ->columnSpan('full')
                                     ->customProperties(['is_cover' => false])
                                     // disk is s3_public
-                                    ->disk(function () {
-                                        if (storage_is_cloud()) {
-                                            return storage_public_disk();
-                                        }
-                                    })
+                                    ->disk(fn () => storage_filament_upload_disk())
                                     ->acceptedFileTypes(['image/*'])
                                     ->rules('image'),
 

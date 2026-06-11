@@ -181,11 +181,7 @@ class MissionResource extends Resource
                                ->collection(Mission::MEDIA_COLLECTION_NAME)
                                ->columnSpan('full')
                                // disk is s3_public
-                               ->disk(function () {
-                                   if (storage_is_cloud()) {
-                                       return storage_public_disk();
-                                   }
-                               })
+                               ->disk(fn () => storage_filament_upload_disk())
                                ->acceptedFileTypes(['image/*'])
                                ->maxFiles(20)
                                ->rules('image'),
@@ -194,11 +190,7 @@ class MissionResource extends Resource
                                ->collection(Mission::COMPLETED_MISSION_COLLECTION_EN)
                                ->columnSpan('full')
                                // disk is s3_public
-                               ->disk(function () {
-                                   if (storage_is_cloud()) {
-                                       return storage_public_disk();
-                                   }
-                               })
+                               ->disk(fn () => storage_filament_upload_disk())
                                ->acceptedFileTypes(['image/*'])
                                ->maxFiles(20)
                                ->rules('image'),
@@ -207,11 +199,7 @@ class MissionResource extends Resource
                                ->collection(Mission::COMPLETED_MISSION_COLLECTION_ZH)
                                ->columnSpan('full')
                                // disk is s3_public
-                               ->disk(function () {
-                                   if (storage_is_cloud()) {
-                                       return storage_public_disk();
-                                   }
-                               })
+                               ->disk(fn () => storage_filament_upload_disk())
                                ->acceptedFileTypes(['image/*'])
                                ->maxFiles(20)
                                ->rules('image'),

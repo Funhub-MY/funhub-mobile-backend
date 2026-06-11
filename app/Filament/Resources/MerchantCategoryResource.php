@@ -106,6 +106,8 @@ class MerchantCategoryResource extends Resource
                     ->collection('merchant_category_cover')
                     ->customProperties(['is_cover' => true])
                     ->columnSpan('full')
+                    ->disk(fn () => storage_filament_upload_disk())
+                    ->acceptedFileTypes(['image/*'])
                     ->maxFiles(1)
                     ->rules('image'),
                 Forms\Components\RichEditor::make('description')

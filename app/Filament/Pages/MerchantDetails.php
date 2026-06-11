@@ -509,14 +509,15 @@ class MerchantDetails extends Page implements HasForms
                                 ->label('Company Logo')
                                 ->maxFiles(1)
                                 ->collection(Merchant::MEDIA_COLLECTION_NAME)
+                                ->disk(fn () => storage_filament_upload_disk())
                                 ->required()
                                 ->afterStateUpdated(function ($state, Merchant $merchant, Closure $get) {
                                     //find the merchant
                                     $merchant_id = $get('merchant_id');
                                     $merchant = Merchant::find($merchant_id);
                                     try {
-                                        $merchant->addMediaFromDisk($state->getRealPath(), storage_public_disk())
-                                        ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME);
+                                        $merchant->addMedia($state->getRealPath())
+                                        ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME, storage_public_disk());
                                     } catch (\Exception $e) {
                                         Log::error('[MerchantDetailsEdit] Company logo upload failed: ' . $e->getMessage());
                                     }
@@ -558,6 +559,7 @@ class MerchantDetails extends Page implements HasForms
                                     // ->multiple()
                                     ->maxFiles(7)
                                     ->collection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)
+                                    ->disk(fn () => storage_filament_upload_disk())
                                     ->required()
                                     ->afterStateUpdated(function ($state, Merchant $merchant, Closure $get) {
                                         //find the merchant
@@ -565,13 +567,8 @@ class MerchantDetails extends Page implements HasForms
                                         $merchant = Merchant::find($merchant_id);
 
                                         try {
-                                            // foreach ($state as $file) {
-                                            //     $merchant->addMediaFromDisk($file->getRealPath(), storage_public_disk())
-                                            //         ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
-                                            // }
-                                            
-                                            $merchant->addMediaFromDisk($state->getRealPath(), storage_public_disk())
-                                            ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
+                                            $merchant->addMedia($state->getRealPath())
+                                            ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS, storage_public_disk());
                                         } catch (\Exception $e) {
                                             Log::error('[MerchantDetailsEdit] Company logo upload failed: ' . $e->getMessage());
                                         }

@@ -50,13 +50,14 @@ class KdccTeamResource extends Resource
                         FileUpload::make('team_image_path')
                             ->label('Team Image')
                             ->image()
-                            ->disk('public')
+                            ->disk(fn () => storage_filament_upload_disk())
                             ->directory('images/kdcc')
                             ->nullable()
                             ->maxSize(5120)
                             ->hint('Accepted formats: JPG, PNG, GIF. Max size: 5MB')
                             ->imagePreviewHeight(200)
-                            ->preserveFilenames() // Keeps original filename
+                            ->preserveFilenames()
+                            ->getUploadedFileUrlUsing(fn ($file) => storage_disk_url(storage_filament_upload_disk(), $file))
                     ])
                     ->columns(2),
             ]);
@@ -82,7 +83,7 @@ class KdccTeamResource extends Resource
                 ->sortable(),
                 TextColumn::make('team_image_path')
                     ->label('Image')
-                    ->url(fn ($record) => asset('storage/' . $record->team_image_path))
+                    ->url(fn ($record) => $record->image_url)
                     ->openUrlInNewTab()
                     ->color('primary'),
             ])

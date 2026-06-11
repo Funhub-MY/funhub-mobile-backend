@@ -39,14 +39,16 @@ class CreateMerchant extends CreateRecord
 
         // create menus
         if (isset($data['menus'])) {
-            foreach ($data['menus'] as $menu) {
-                // add from url to media collection with custom properties $menu['name'] then remove from file
-                $merchant->addMediaFromDisk($menu['file'])
-                    ->withCustomProperties(['name' => $menu['name']])
-                    ->toMediaCollection(Merchant::MEDIA_COLLECTION_MENUS);
+            $publicDisk = storage_filament_upload_disk();
 
-                // remove $menu['file'] from storage as moved to spatiemedialibrary
-                Storage::delete($menu['file']);
+            foreach ($data['menus'] as $menu) {
+                $merchant->addMediaFromDisk($menu['file'], $publicDisk)
+                    ->withCustomProperties(['name' => $menu['name']])
+                    ->toMediaCollection(Merchant::MEDIA_COLLECTION_MENUS, $publicDisk);
+
+                if (Storage::disk($publicDisk)->exists($menu['file'])) {
+                    Storage::disk($publicDisk)->delete($menu['file']);
+                }
             }
         }
 
