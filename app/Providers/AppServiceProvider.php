@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\Admin\FileProxyController;
 use App\Http\Controllers\Admin\MediaProxyController;
 use App\Filament\Macros\TranslationsMacro;
 use App\Models\ArticleFeedWhitelistUser;
@@ -177,6 +178,9 @@ class AppServiceProvider extends ServiceProvider
             ->group(function () {
                 Route::get('storage/media/{media}/{conversion?}', MediaProxyController::class)
                     ->name('storage.media');
+
+                Route::get('storage/file', FileProxyController::class)
+                    ->name('storage.file');
             });
     }
 }

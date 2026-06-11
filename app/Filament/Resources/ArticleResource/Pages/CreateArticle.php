@@ -105,18 +105,16 @@ class CreateArticle extends CreateRecord
         if (isset($data['video_thumbnail'])) {
             $video_thumbnail = $data['video_thumbnail'];
 
-            $media = $article->addMediaFromDisk($video_thumbnail)
+            $publicDisk = storage_public_disk();
+
+            $media = $article->addMediaFromDisk($video_thumbnail, $publicDisk)
                 ->withCustomProperties(['is_cover' => true])
-                ->toMediaCollection(Article::MEDIA_COLLECTION_NAME,
-                    storage_public_disk(),
-                );
+                ->toMediaCollection(Article::MEDIA_COLLECTION_NAME, $publicDisk);
 
             Log::info('Media added: ', $media->toArray());
 
-            // Then remove the file from storage
-            // Check if the thumbnail exists and then delete it
-            if (Storage::exists($video_thumbnail)) {
-                Storage::delete($video_thumbnail);
+            if (Storage::disk($publicDisk)->exists($video_thumbnail)) {
+                Storage::disk($publicDisk)->delete($video_thumbnail);
                 Log::info('Video thumbnail deleted: ' . $video_thumbnail);
             } else {
                 Log::warning('Video thumbnail not found: ' . $video_thumbnail);
@@ -126,24 +124,20 @@ class CreateArticle extends CreateRecord
         if (isset($data['video'])) {
             $video = $data['video'];
 
-            $media = $article->addMediaFromDisk($video)
-                // ->withCustomProperties(['is_cover' => false])
-                ->toMediaCollection(Article::MEDIA_COLLECTION_NAME,
-                    storage_public_disk(),
-                );
+            $publicDisk = storage_public_disk();
+
+            $media = $article->addMediaFromDisk($video, $publicDisk)
+                ->toMediaCollection(Article::MEDIA_COLLECTION_NAME, $publicDisk);
 
             Log::info('Media added: ', $media->toArray());
 
-            // Process video with ByteplusVOD if it's a video
             if (str_contains($media->mime_type, 'video')) {
                 ByteplusVODProcess::dispatch($media);
                 Log::info('ByteplusVODProcess dispatched for media: ' . $media->id);
             }
 
-            // Then remove the file from storage
-            // Check if the video exists and then delete it
-            if (Storage::exists($video)) {
-                Storage::delete($video);
+            if (Storage::disk($publicDisk)->exists($video)) {
+                Storage::disk($publicDisk)->delete($video);
                 Log::info('Video deleted: ' . $video);
             } else {
                 Log::warning('Video not found: ' . $video);

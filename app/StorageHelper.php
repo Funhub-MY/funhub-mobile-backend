@@ -37,9 +37,23 @@ if (! function_exists('storage_resolve_disk')) {
     }
 }
 
+if (! function_exists('storage_admin_disk_file_url')) {
+    function storage_admin_disk_file_url(string $disk, string $path): string
+    {
+        return route('filament.storage.file', [
+            'disk' => $disk,
+            'path' => $path,
+        ]);
+    }
+}
+
 if (! function_exists('storage_disk_url')) {
     function storage_disk_url(string $disk, string $path): string
     {
+        if (storage_use_admin_proxy()) {
+            return storage_admin_disk_file_url($disk, $path);
+        }
+
         return storage_rewrite_url(
             \Illuminate\Support\Facades\Storage::disk(storage_resolve_disk($disk))->url($path)
         ) ?? '';

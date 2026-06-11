@@ -126,7 +126,7 @@ class EditArticle extends EditRecord
                     return $data;
                 }
 
-                $media = $article->addMediaFromDisk($data['video_thumbnail'])
+                $media = $article->addMediaFromDisk($data['video_thumbnail'], $disk)
                     ->withCustomProperties(['is_cover' => true])
                     ->toMediaCollection(Article::MEDIA_COLLECTION_NAME, $disk);
 
@@ -185,7 +185,7 @@ class EditArticle extends EditRecord
                     return $data;
                 }
 
-                $media = $article->addMediaFromDisk($data['video'])
+                $media = $article->addMediaFromDisk($data['video'], $disk)
                     ->withCustomProperties(['is_cover' => false])
                     ->toMediaCollection(Article::MEDIA_COLLECTION_NAME, $disk);
 
